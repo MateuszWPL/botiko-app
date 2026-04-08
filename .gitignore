@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.next/
+.out/
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.development
+.env.production
+.env*.local
+
+# Docs & internal files — not for the repo
+docs/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# Misc
+*.pem
