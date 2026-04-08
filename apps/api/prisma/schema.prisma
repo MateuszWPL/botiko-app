@@ -13,6 +13,7 @@ model Tenant {
   plan                 Plan     @default(STARTER)
   stripeCustomerId     String?
   stripeSubscriptionId String?
+  tokenUsage           Int      @default(0)
   createdAt            DateTime @default(now())
   bots                 Bot[]
   users                User[]

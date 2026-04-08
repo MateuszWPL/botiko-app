@@ -4,6 +4,7 @@ import { Launcher } from './Launcher';
 import { ChatWindow } from './ChatWindow';
 
 interface BotConfig {
+  id: string;
   name: string;
   welcomeMsg: string;
   primaryColor: string;
@@ -12,18 +13,22 @@ interface BotConfig {
 function Widget({
   botId,
   config,
+  apiUrl,
 }: {
   botId: string;
   config: BotConfig;
+  apiUrl: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return h('div', { id: 'botiko-widget-root' }, [
     h(ChatWindow, {
       botId,
+      botName: config.name,
       primaryColor: config.primaryColor,
       welcomeMessage: config.welcomeMsg,
       isOpen,
+      apiUrl,
     }),
     h(Launcher, {
       primaryColor: config.primaryColor,
@@ -43,10 +48,12 @@ async function init() {
   }
 
   const apiUrl =
+    scriptEl?.getAttribute('data-api-url') ||
     (window as unknown as Record<string, string>).__BOTIKO_API_URL__ ||
     'https://api.botiko.pl';
 
   let config: BotConfig = {
+    id: botId,
     name: 'Asystentka',
     welcomeMsg: 'Dzień dobry! W czym mogę pomóc?',
     primaryColor: '#6366F1',
@@ -58,14 +65,19 @@ async function init() {
       config = (await res.json()) as BotConfig;
     }
   } catch {
-    // use defaults
+    // use defaults — bot still works without remote config
   }
 
-  const container = document.createElement('div');
-  container.id = 'botiko-container';
-  document.body.appendChild(container);
+  // Shadow DOM — isolates widget CSS from host page
+  const host = document.createElement('div');
+  host.id = 'botiko-host';
+  document.body.appendChild(host);
+  const shadow = host.attachShadow({ mode: 'closed' });
 
-  render(h(Widget, { botId, config }), container);
+  const mountPoint = document.createElement('div');
+  shadow.appendChild(mountPoint);
+
+  render(h(Widget, { botId, config, apiUrl }), mountPoint);
 }
 
 if (document.readyState === 'loading') {

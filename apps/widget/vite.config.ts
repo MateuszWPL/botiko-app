@@ -1,9 +1,39 @@
 import { defineConfig } from 'vite';
 import preact from '@preact/preset-vite';
 import { resolve } from 'path';
+import { gzipSync } from 'zlib';
+import { readFileSync } from 'fs';
+import type { Plugin } from 'vite';
+
+const MAX_GZIP_KB = 12;
+
+function bundleSizeCheck(): Plugin {
+  return {
+    name: 'bundle-size-check',
+    closeBundle() {
+      try {
+        const content = readFileSync('dist/embed.js');
+        const gzipped = gzipSync(content);
+        const sizeKb = gzipped.length / 1024;
+        if (sizeKb > MAX_GZIP_KB) {
+          console.error(
+            `\n❌ Bundle too large: ${sizeKb.toFixed(1)}KB gzip (max ${MAX_GZIP_KB}KB)\n`,
+          );
+          process.exit(1);
+        } else {
+          console.log(
+            `\n✅ Bundle size OK: ${sizeKb.toFixed(1)}KB gzip (max ${MAX_GZIP_KB}KB)\n`,
+          );
+        }
+      } catch {
+        // Skip check if file not yet written
+      }
+    },
+  };
+}
 
 export default defineConfig({
-  plugins: [preact()],
+  plugins: [preact(), bundleSizeCheck()],
   build: {
     lib: {
       entry: resolve(__dirname, 'src/embed.ts'),
