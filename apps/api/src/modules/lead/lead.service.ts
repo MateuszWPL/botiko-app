@@ -5,6 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
+import { LeadStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EncryptionService } from '../../common/services/encryption.service';
 import type { CreateLeadDto } from './dto/create-lead.dto';
@@ -96,7 +97,7 @@ export class LeadService {
 
     const updated = await this.prisma.lead.update({
       where: { id: leadId },
-      data: { status: status as any },
+      data: { status: status as LeadStatus },
       select: { id: true, status: true },
     });
 
