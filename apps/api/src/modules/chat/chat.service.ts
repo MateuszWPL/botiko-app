@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   Inject,
   Injectable,
   Logger,
@@ -9,6 +10,13 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { EmbeddingService } from '../knowledge/embedding.service';
 import { AI_SERVICE, type AIService, type ChatMessage } from '../ai/ai.service.interface';
 import { getBrandTemplate } from '../../brand-templates';
+
+/** Monthly conversation limits per plan. null = unlimited. */
+const PLAN_CONVERSATION_LIMITS: Record<string, number | null> = {
+  STARTER: 300,
+  PRO: 2000,
+  PREMIUM: null,
+};
 
 export interface ChatRequest {
   botId: string;
@@ -36,12 +44,14 @@ export class ChatService {
   async sendMessage(req: ChatRequest): Promise<ChatResponse> {
     const bot = await this.prisma.bot.findFirst({
       where: { id: req.botId, isActive: true },
-      include: { tenant: { select: { id: true, industry: true } } },
+      include: { tenant: { select: { id: true, industry: true, plan: true } } },
     });
 
     if (!bot) {
       throw new NotFoundException('Bot not found');
     }
+
+    await this.checkPlanLimit(bot.tenant.id, bot.tenant.plan);
 
     // Retrieve relevant knowledge chunks via RAG
     const relevantChunks = await this.embeddingService.findRelevantChunks(
@@ -131,6 +141,28 @@ export class ChatService {
     });
 
     return { message: result.content, sessionId: req.sessionId };
+  }
+
+  private async checkPlanLimit(tenantId: string, plan: string): Promise<void> {
+    const limit = PLAN_CONVERSATION_LIMITS[plan] ?? null;
+    if (limit === null) return;
+
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const count = await this.prisma.conversation.count({
+      where: {
+        bot: { tenantId },
+        createdAt: { gte: startOfMonth },
+      },
+    });
+
+    if (count >= limit) {
+      throw new ForbiddenException(
+        `Monthly conversation limit (${limit}) reached for the ${plan} plan. Please upgrade to continue.`,
+      );
+    }
   }
 
   private async trackTokenUsage(
