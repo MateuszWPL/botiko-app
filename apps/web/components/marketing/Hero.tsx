@@ -30,13 +30,20 @@ export default function Hero() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [showLeadBadge, setShowLeadBadge] = useState(false);
-  const chatRef = useRef<HTMLDivElement>(null);
+  const [chatOpacity, setChatOpacity] = useState(1);
 
-  // Auto-scroll chat to bottom
+  // For transform-based scroll (no scrollbar, no manual scroll)
+  const outerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const [scrollOffset, setScrollOffset] = useState(0);
+
+  // Recalculate transform offset whenever messages/typing change
   useEffect(() => {
-    const el = chatRef.current;
-    if (!el) return;
-    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+    const outer = outerRef.current;
+    const inner = innerRef.current;
+    if (!outer || !inner) return;
+    const excess = inner.scrollHeight - outer.clientHeight;
+    setScrollOffset(Math.max(0, excess));
   }, [messages, isTyping]);
 
   // Auto-typing sequence loop
@@ -46,8 +53,9 @@ export default function Hero() {
 
     async function runLoop() {
       while (!cancelled) {
-        setMessages([]);
-        setShowLeadBadge(false);
+        // Smooth fade-in start
+        setChatOpacity(1);
+        setScrollOffset(0);
         await sleep(1200);
 
         for (const item of CHAT_SEQUENCE) {
@@ -68,9 +76,20 @@ export default function Hero() {
           await sleep(item.pauseAfterMs ?? 600);
         }
 
-        // Show lead badge after last bot message
+        // Show lead badge after sequence ends
         setShowLeadBadge(true);
-        await sleep(5000);
+        await sleep(3500);
+
+        // Smooth fade out before restart
+        setChatOpacity(0);
+        setShowLeadBadge(false);
+        await sleep(600);
+
+        // Reset
+        setMessages([]);
+        setIsTyping(false);
+        setScrollOffset(0);
+        await sleep(400);
       }
     }
 
@@ -136,7 +155,7 @@ export default function Hero() {
             >
               <Link
                 href="/register"
-                className="animate-pulse-ring inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-white text-brand font-bold text-base shadow-xl hover:shadow-2xl hover:bg-brand-soft transition-all cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-white text-brand font-bold text-base shadow-xl hover:shadow-2xl hover:bg-brand-soft transition-all cursor-pointer"
               >
                 Zacznij za darmo — 14 dni
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -161,14 +180,19 @@ export default function Hero() {
             </p>
           </div>
 
-          {/* Right — animated chat */}
+          {/* Right — animated chat film */}
           <div className="animate-fade-in-up flex justify-center lg:justify-end" style={{ animationDelay: '0.2s' }}>
             <div className="relative w-full max-w-sm">
 
-              {/* Phone frame */}
+              {/* Phone frame — fade controlled by chatOpacity */}
               <div
                 className="rounded-3xl shadow-2xl overflow-hidden"
-                style={{ background: '#1e1b4b', border: '1px solid rgba(255,255,255,0.1)' }}
+                style={{
+                  background: '#1e1b4b',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  opacity: chatOpacity,
+                  transition: 'opacity 0.55s ease',
+                }}
               >
                 {/* Status bar */}
                 <div className="flex items-center justify-between px-5 py-3 bg-white/5">
@@ -187,44 +211,53 @@ export default function Hero() {
                   <span className="text-indigo-300 text-[10px]">22:14</span>
                 </div>
 
-                {/* Chat messages — scrollable, auto-scroll via ref */}
+                {/* Chat viewport — overflow hidden, no scrollbar, no manual scroll */}
                 <div
-                  ref={chatRef}
-                  className="flex flex-col gap-3 px-4 py-4 overflow-y-auto"
-                  style={{ minHeight: '280px', maxHeight: '320px' }}
+                  ref={outerRef}
+                  style={{ height: 300, overflow: 'hidden' }}
                 >
-                  {messages.map((msg, i) => (
-                    <div
-                      key={i}
-                      className="flex animate-fade-in-up"
-                      style={{ justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}
-                    >
+                  {/* Inner div moves up via transform — smooth film effect */}
+                  <div
+                    ref={innerRef}
+                    className="flex flex-col gap-3 px-4 py-4"
+                    style={{
+                      transform: `translateY(-${scrollOffset}px)`,
+                      transition: 'transform 0.65s cubic-bezier(0.4, 0, 0.2, 1)',
+                    }}
+                  >
+                    {messages.map((msg, i) => (
                       <div
-                        className="rounded-2xl px-4 py-2.5 max-w-[80%] text-sm leading-relaxed whitespace-pre-line"
-                        style={
-                          msg.role === 'user'
-                            ? { background: '#6366F1', color: 'white', borderBottomRightRadius: 4 }
-                            : { background: 'rgba(255,255,255,0.1)', color: 'white', borderBottomLeftRadius: 4 }
-                        }
+                        key={i}
+                        className="flex animate-fade-in"
+                        style={{ justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}
                       >
-                        {msg.text}
+                        <div
+                          className="rounded-2xl px-4 py-2.5 max-w-[80%] text-sm leading-relaxed whitespace-pre-line"
+                          style={
+                            msg.role === 'user'
+                              ? { background: '#6366F1', color: 'white', borderBottomRightRadius: 4 }
+                              : { background: 'rgba(255,255,255,0.1)', color: 'white', borderBottomLeftRadius: 4 }
+                          }
+                        >
+                          {msg.text}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
 
-                  {/* Typing indicator */}
-                  {isTyping && (
-                    <div className="flex justify-start animate-fade-in">
-                      <div
-                        className="rounded-2xl px-4 py-3 flex items-center gap-1"
-                        style={{ background: 'rgba(255,255,255,0.1)', borderBottomLeftRadius: 4 }}
-                      >
-                        <span className="typing-dot w-2 h-2 rounded-full bg-indigo-300 inline-block" />
-                        <span className="typing-dot w-2 h-2 rounded-full bg-indigo-300 inline-block" />
-                        <span className="typing-dot w-2 h-2 rounded-full bg-indigo-300 inline-block" />
+                    {/* Typing indicator */}
+                    {isTyping && (
+                      <div className="flex justify-start animate-fade-in">
+                        <div
+                          className="rounded-2xl px-4 py-3 flex items-center gap-1"
+                          style={{ background: 'rgba(255,255,255,0.1)', borderBottomLeftRadius: 4 }}
+                        >
+                          <span className="typing-dot w-2 h-2 rounded-full bg-indigo-300 inline-block" />
+                          <span className="typing-dot w-2 h-2 rounded-full bg-indigo-300 inline-block" />
+                          <span className="typing-dot w-2 h-2 rounded-full bg-indigo-300 inline-block" />
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
 
                 {/* Input bar */}
@@ -246,10 +279,15 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Floating badge — speed (top left, always visible) */}
+              {/* Floating badge — speed (top-left, moved further left to avoid overlap) */}
               <div
-                className="absolute -left-4 top-12 glass rounded-2xl px-3 py-2 shadow-xl"
-                style={{ animation: 'fadeInUp 0.5s 1.5s both' }}
+                className="absolute glass rounded-2xl px-3 py-2 shadow-xl"
+                style={{
+                  left: '-48px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  animation: 'fadeInUp 0.5s 1.5s both',
+                }}
               >
                 <p className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2.5">
@@ -260,12 +298,13 @@ export default function Hero() {
                 <p className="text-[10px] text-slate-500">Ty śpisz spokojnie</p>
               </div>
 
-              {/* Floating badge — lead (bottom right, appears after last message) */}
+              {/* Floating badge — lead (bottom-right, appears after last bot message) */}
               <div
-                className="absolute -right-4 bottom-16 glass rounded-2xl px-3 py-2 shadow-xl transition-all duration-500"
+                className="absolute -right-4 bottom-16 glass rounded-2xl px-3 py-2 shadow-xl"
                 style={{
                   opacity: showLeadBadge ? 1 : 0,
                   transform: showLeadBadge ? 'translateY(0)' : 'translateY(8px)',
+                  transition: 'opacity 0.45s ease, transform 0.45s ease',
                 }}
               >
                 <p className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">

@@ -66,10 +66,15 @@ export default function Demo() {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messageCount = useRef(0); // Track count to skip initial scroll
 
-  // Auto-scroll to bottom when messages update
+  // Auto-scroll to bottom only when new messages are added (not on page load)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const current = messages.length + (isTyping ? 1 : 0);
+    if (current > messageCount.current) {
+      messageCount.current = current;
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages, isTyping]);
 
   function sendMessage(text: string) {

@@ -120,7 +120,7 @@ export default function Industries() {
     setTimeout(() => {
       setActive(ind);
       setFading(false);
-    }, 200);
+    }, 250);
   }
 
   return (
@@ -164,13 +164,14 @@ export default function Industries() {
           })}
         </ScrollReveal>
 
-        {/* Content panel with fade transition */}
+        {/* Content panel with fade transition — inline transition so opacity+color change together */}
         <div
-          className="rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all duration-200"
+          className="rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
           style={{
             background: active.bg,
             opacity: fading ? 0 : 1,
-            transform: fading ? 'translateY(6px)' : 'translateY(0)',
+            transform: fading ? 'translateY(8px)' : 'translateY(0)',
+            transition: 'opacity 0.25s ease, transform 0.25s ease, background 0.25s ease',
           }}
         >
           <div className="grid lg:grid-cols-2">
@@ -203,8 +204,10 @@ export default function Industries() {
 
               <Link
                 href="/register"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white transition-colors cursor-pointer hover:opacity-90"
-                style={{ background: active.color }}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white cursor-pointer"
+                style={{ background: active.color, transition: 'opacity 0.2s ease, background 0.25s ease' }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
               >
                 Wypróbuj dla {active.label.toLowerCase()}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
