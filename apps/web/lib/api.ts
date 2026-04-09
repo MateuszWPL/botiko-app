@@ -1,4 +1,4 @@
-import { createServerSupabaseClient } from './supabase';
+import { createServerSupabaseClient } from './supabase-server';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 

@@ -79,7 +79,9 @@ async function init() {
 
   // Inject CSS variables into shadow root so components can use var(--botiko-primary)
   const styleEl = document.createElement('style');
-  styleEl.textContent = `:host { --botiko-primary: ${CSS.escape ? config.primaryColor.replace(/[^#0-9a-fA-F]/g, '') : config.primaryColor}; }`;
+  // Sanitize to hex color only — prevents CSS injection through the primaryColor value
+  const safeColor = config.primaryColor.replace(/[^#0-9a-fA-F]/g, '');
+  styleEl.textContent = `:host { --botiko-primary: ${safeColor}; }`;
   shadow.appendChild(styleEl);
 
   const mountPoint = document.createElement('div');
