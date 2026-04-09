@@ -71,8 +71,16 @@ async function init() {
   // Shadow DOM — isolates widget CSS from host page
   const host = document.createElement('div');
   host.id = 'botiko-host';
+  // Expose --botiko-primary on the host element so the page owner can override:
+  // #botiko-host { --botiko-primary: #ff0000; }
+  host.style.setProperty('--botiko-primary', config.primaryColor);
   document.body.appendChild(host);
   const shadow = host.attachShadow({ mode: 'closed' });
+
+  // Inject CSS variables into shadow root so components can use var(--botiko-primary)
+  const styleEl = document.createElement('style');
+  styleEl.textContent = `:host { --botiko-primary: ${CSS.escape ? config.primaryColor.replace(/[^#0-9a-fA-F]/g, '') : config.primaryColor}; }`;
+  shadow.appendChild(styleEl);
 
   const mountPoint = document.createElement('div');
   shadow.appendChild(mountPoint);

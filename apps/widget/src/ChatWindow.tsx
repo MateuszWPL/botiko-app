@@ -157,7 +157,7 @@ export function ChatWindow({
       {/* Header */}
       <div
         style={{
-          backgroundColor: primaryColor,
+          backgroundColor: `var(--botiko-primary, ${primaryColor})`,
           color: '#fff',
           padding: '14px 16px',
           fontWeight: 600,
@@ -208,7 +208,7 @@ export function ChatWindow({
                     ? '14px 14px 4px 14px'
                     : '14px 14px 14px 4px',
                 backgroundColor:
-                  msg.role === 'user' ? primaryColor : '#f1f5f9',
+                  msg.role === 'user' ? `var(--botiko-primary, ${primaryColor})` : '#f1f5f9',
                 color: msg.role === 'user' ? '#fff' : '#0f172a',
                 fontSize: '14px',
                 lineHeight: '1.5',
@@ -468,7 +468,7 @@ function btnStyle(color: string) {
   return {
     padding: '8px 14px',
     borderRadius: '8px',
-    backgroundColor: color,
+    backgroundColor: `var(--botiko-primary, ${color})`,
     color: '#fff',
     border: 'none',
     cursor: 'pointer',

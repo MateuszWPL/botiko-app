@@ -27,6 +27,12 @@ export const metadata: Metadata = {
   creator: 'Botiko.pl',
   publisher: 'Botiko.pl',
   metadataBase: new URL(process.env.APP_URL ?? 'https://botiko.pl'),
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Botiko',
+  },
   openGraph: {
     type: 'website',
     locale: 'pl_PL',

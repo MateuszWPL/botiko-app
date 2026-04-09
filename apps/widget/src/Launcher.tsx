@@ -16,7 +16,7 @@ export function Launcher({ primaryColor, isOpen, onClick }: LauncherProps) {
         width: '56px',
         height: '56px',
         borderRadius: '50%',
-        backgroundColor: primaryColor,
+        backgroundColor: `var(--botiko-primary, ${primaryColor})`,
         border: 'none',
         cursor: 'pointer',
         display: 'flex',

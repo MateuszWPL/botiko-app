@@ -29,14 +29,16 @@
 - [x] Szablony branżowe usytuowane w `apps/api/src/brand-templates/`
 
 ### 0.4 Context files
-- [x] Stworzyć `.botiko-context` (shared context dla obu IDE)
-- [x] Zaktualizować `.cursorrules` (kopia/symlink `.botiko-context`)
+- [x] `CLAUDE.md` — pełny kontekst dla Claude Code CLI (tech + biznes)
+- [x] `.cursorrules` — skrócony kontekst dla Cursor (produkt, zasady, brand)
+- [x] `Task.md` — roadmapa projektu (ten plik)
+- [x] Usunąć `.botiko-context` (był duplikatem `.cursorrules`) ✓ usunięty
 - [x] Usunąć pliki .docx/.pdf z repozytorium (przeniesione do docs/)
 
 ### 0.5 Apps — szkielety
 - [x] `apps/web/` — Next.js 14 App Router skeleton
   - [x] Tailwind + TypeScript config
-  - [x] Route groups: `(marketing)`, `(auth)`, `(dashboard)`, `(onboarding)`
+  - [x] Route groups: refaktoryzacja `(dashboard)` → `dashboard/` i `(onboarding)` → `onboarding/`
   - [x] Layout z metadata SEO
   - [x] Middleware auth (redirect unauthenticated)
 - [x] `apps/api/` — Nest.js skeleton
@@ -57,12 +59,12 @@
   - [x] embed.ts entry point
 
 ### 0.6 CI/CD
-- [ ] CI/CD — wyłączone na ten moment (wrócimy później)
+- [x] CI/CD — `.github/workflows/ci.yml` (API lint+test, Web lint+typecheck, Widget build+size)
 
 ### 0.7 Security baseline
 - [x] Supabase RLS policies (SQL w `supabase/migrations/001_rls_policies.sql` — uruchomić po założeniu projektu Supabase)
 - [x] JWT verification middleware (Nest.js) — AuthGuard
-- [ ] Env variables — trzymamy lokalnie w `.env*` i w Supabase (tam gdzie potrzebne)
+- [ ] Env variables — lokalnie `.env*`, na prod w hosting env (Railway/Vercel/VPS) i GitHub Secrets dla CI. Supabase NIE przechowuje env aplikacji.
 - [x] `.env.local` w `.gitignore`
 
 ---
@@ -70,66 +72,66 @@
 ## Faza 1 — MVP Build (Tydzień 3-8)
 
 ### 1.1 Backend API — Core endpoints
-- [ ] `POST /api/v1/auth/register` — rejestracja (Supabase Auth)
-- [ ] `POST /api/v1/auth/login` — logowanie
-- [ ] `POST /api/v1/auth/logout`
-- [ ] `POST /api/v1/auth/refresh`
-- [ ] `GET /api/v1/bot/:id/config` — publiczny (widget pobiera config)
-- [ ] `POST /api/v1/bot` — tworzenie bota (onboarding)
-- [ ] `PATCH /api/v1/bot/:id` — update bota
-- [ ] `POST /api/v1/chat` — AI chat (widget → API → OpenAI)
-- [ ] `POST /api/v1/leads` — zapis leada z widgetu
-- [ ] `GET /api/v1/leads` — lista leadów (dashboard)
-- [ ] `PATCH /api/v1/leads/:id` — zmiana statusu leada
-- [ ] `GET /api/v1/conversations` — lista rozmów
-- [ ] `GET /api/v1/conversations/:id` — szczegóły rozmowy
+- [x] `POST /api/v1/auth/register` — rejestracja (Supabase Auth)
+- [x] `POST /api/v1/auth/login` — logowanie
+- [x] `POST /api/v1/auth/logout`
+- [x] `POST /api/v1/auth/refresh`
+- [x] `GET /api/v1/bot/:id/config` — publiczny (widget pobiera config)
+- [x] `POST /api/v1/bot` — tworzenie bota (onboarding)
+- [x] `PATCH /api/v1/bot/:id` — update bota
+- [x] `POST /api/v1/chat` — AI chat (widget → API → OpenAI)
+- [x] `POST /api/v1/leads` — zapis leada z widgetu
+- [x] `GET /api/v1/leads` — lista leadów (dashboard)
+- [x] `PATCH /api/v1/leads/:id/status` — zmiana statusu leada
+- [x] `GET /api/v1/conversations` — lista rozmów
+- [x] `GET /api/v1/conversations/:id` — szczegóły rozmowy
 
 ### 1.2 AI / RAG Pipeline
-- [ ] `EmbeddingService` — text-embedding-3-small
-- [ ] `KnowledgeService` — CRUD chunków wiedzy
-- [ ] Wektoryzacja treści onboardingu → pgvector
-- [ ] Cosine similarity search (top 5 chunków)
-- [ ] `ChatService` — orchestracja: retrieve context → GPT-4o mini → response
-- [ ] System prompt per branża (z brand-templates)
-- [ ] `AIService` interface (abstrakcja providera — swap OpenAI/Anthropic)
-- [ ] Token usage tracking per tenant
-- [ ] Rate limiting per plan (300/2000/unlimited rozmów)
+- [x] `EmbeddingService` — text-embedding-3-small
+- [x] `KnowledgeService` — CRUD chunków wiedzy
+- [x] Wektoryzacja treści onboardingu → pgvector
+- [x] Cosine similarity search (top 5 chunków, próg 0.3)
+- [x] `ChatService` — orchestracja: retrieve context → GPT-4o mini → response
+- [x] System prompt per branża (z brand-templates)
+- [x] `AIService` interface (abstrakcja providera — swap OpenAI/Anthropic)
+- [x] Token usage tracking per tenant
+- [x] Rate limiting per plan (300/2000/unlimited rozmów) — `checkPlanLimit()` w ChatService, liczy conversations per miesiąc per tenant
 
 ### 1.3 Widget (Preact)
-- [ ] Launcher button (floating, bottom-right, customizable color)
-- [ ] ChatWindow (360×520px desktop, fullscreen mobile)
-- [ ] Message bubbles (user + assistant)
-- [ ] Typing indicator
-- [ ] LeadForm inline (imię + telefon)
-- [ ] RODO consent checkbox
-- [ ] "Powered by Botiko" footer
-- [ ] CSS variables (`--botiko-primary`)
-- [ ] Embed script: `<script src="widget.botiko.pl/embed.js" data-bot-id="xxx">`
-- [ ] Smooth open/close animation
-- [ ] Mobile responsive (fullscreen)
-- [ ] Bundle size check: **< 12KB gzip**
-- [ ] Domain whitelist validation
+- [x] Launcher button (floating, bottom-right, customizable color)
+- [x] ChatWindow (360×520px desktop, fullscreen mobile)
+- [x] Message bubbles (user + assistant)
+- [x] Typing indicator (animowane dots)
+- [x] LeadForm inline (imię + telefon)
+- [x] RODO consent checkbox
+- [x] "Powered by Botiko" footer
+- [x] CSS variables (`--botiko-primary`) — Shadow DOM `:host` + `host.style.setProperty`, komponenty używają `var(--botiko-primary, fallback)`
+- [x] Embed script: `<script src="widget.botiko.pl/embed.js" data-bot-id="xxx">`
+- [x] Smooth open/close animation (botiko-fadein)
+- [x] Mobile responsive (fullscreen)
+- [x] Bundle size check: **< 12KB gzip** (wymuszane przez Vite plugin)
+- [x] Domain whitelist validation (DomainWhitelistGuard)
 
 ### 1.4 Onboarding Wizard (Next.js)
-- [ ] Step 1: Wybór branży (karty z ikonami)
-- [ ] Step 2: Dane firmy (nazwa, adres, telefon, godziny)
-- [ ] Step 3: Oferta/cennik (upload PDF/foto + manual input + propozycje z szablonu)
-- [ ] Step 4: Personalizacja (imię bota, kolor, tekst powitalny)
-- [ ] Step 5: Embed code + instrukcja instalacji WordPress
-- [ ] Progress bar
-- [ ] Auto-save między krokami
-- [ ] Generowanie bazy wiedzy z danych onboardingu → RAG embed
+- [x] Step 1: Wybór branży (karty z ikonami)
+- [x] Step 2: Dane firmy (nazwa, adres, telefon, godziny)
+- [x] Step 3: Oferta/cennik — manual text input + klikalne szablony branżowe (BEAUTY/HEALTH/FOOD/AUTO/OTHER); upload PDF poza scope MVP
+- [x] Step 4: Personalizacja (imię bota, kolor, tekst powitalny)
+- [x] Step 5: Embed code + instrukcja instalacji WordPress
+- [x] Progress bar (OnboardingShell z krokami + pasek %)
+- [x] Auto-save między krokami (localStorage via onboarding-store.ts)
+- [x] Generowanie bazy wiedzy z danych onboardingu → RAG embed (step-5 tworzy KnowledgeChunks)
 
 ### 1.5 Dashboard (Next.js)
-- [ ] Layout: sidebar + main content
-- [ ] Overview page: stats (rozmowy, leady, konwersje)
-- [ ] Leads page: tabela z leadami + status + filtrowanie
-- [ ] Conversations page: lista rozmów + podgląd
-- [ ] Knowledge Base page: edytor treści bota (CRUD)
-- [ ] Settings page: dane firmy, kolor widgetu, domeny whitelist
-- [ ] Embed code page: copy-paste snippet
-- [ ] Billing page: aktualny plan, upgrade, faktury
-- [ ] Mobile responsive (PWA-ready)
+- [x] Layout: sidebar + main content (Sidebar component)
+- [x] Overview page: stats (rozmowy, leady, konwersje)
+- [x] Leads page: tabela z leadami + status (LeadsTable)
+- [x] Conversations page: lista rozmów + podgląd
+- [x] Knowledge Base page: edytor treści bota (CRUD)
+- [x] Settings page: dane firmy, kolor widgetu, domeny whitelist
+- [x] Embed code page: copy-paste snippet
+- [x] Billing page: aktualny plan (UI — bez integracji Stripe)
+- [x] Mobile responsive (PWA-ready) — manifest.json, bottom nav na mobile, pb-safe na dashboard layout
 
 ### 1.6 Notyfikacje
 - [ ] Email: nowy lead → właściciel (Resend + React Email template)
@@ -162,6 +164,22 @@
 - [ ] E2E testy: onboarding flow (Playwright)
 - [ ] Widget bundle size < 12KB automated check
 - [ ] Security audit: RLS, auth flows, input validation
+
+### 1.10 Security — do naprawy
+
+#### Naprawione (2026-04-09)
+- [x] **Open redirect** — `login/page.tsx` — `?redirect=` walidowany do ścieżek relatywnych
+- [x] **Wyciek komunikatów błędów** — `http-exception.filter.ts` — surowy `exception.message` nie jest już zwracany klientowi
+- [x] **Ominięcie domain whitelist** — `domain-whitelist.guard.ts` — brak nagłówka `Origin` blokowany na produkcji
+
+#### Do zrobienia
+~~- [ ] **SQL injection risk (MEDIUM)** — naprawione: `assertValidEmbedding()` waliduje tablicę przed `Prisma.raw()`~~
+~~- [ ] **Słabe wymagania hasła (LOW)** — naprawione: min 12 znaków + 1 wielka + 1 cyfra~~
+~~- [ ] **`status as any` (INFO)** — naprawione: `status as LeadStatus` z importem Prisma enum~~
+
+- [x] **SQL injection risk** — `embedding.service.ts` — `assertValidEmbedding()` waliduje długość (1536) i `isFinite()` każdej wartości
+- [x] **Słabe wymagania hasła** — `register.dto.ts` — min 12 znaków + regex dla wielkiej litery + cyfry
+- [x] **`status as any`** — `lead.service.ts` — `status as LeadStatus` z importem `@prisma/client`
 
 ---
 
@@ -272,9 +290,9 @@
 
 ---
 
-> 📅 **Ostatnia aktualizacja:** 2026-04-07
+> 📅 **Ostatnia aktualizacja:** 2026-04-09
 >
-> 📊 **Postęp:** Faza 0 prawie ukończona — pozostało: konta zewnętrzne + konfiguracje deploy
+> 📊 **Postęp:** Faza 0 ukończona w całości. Faza 1 w dużej mierze gotowa: wszystkie endpointy API, pełny RAG pipeline, widget Preact, onboarding wizard (5 kroków), dashboard (8 stron). Pozostało: 1.6 notyfikacje, 1.7 landing page, 1.8 Stripe, 1.9 testy, drobne braki (CSS var widgetu, PDF upload w onboardingu, rate limiting per plan, PWA).
 
 ---
 

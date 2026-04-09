@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { webEnv } from './lib/env';
 
 const PROTECTED_PATHS = ['/dashboard', '/onboarding'];
 
@@ -7,8 +8,8 @@ export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    webEnv.SUPABASE_URL,
+    webEnv.SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() {
