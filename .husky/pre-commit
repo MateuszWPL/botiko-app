@@ -1,0 +1,5 @@
+# Prevent committing .env files with secrets
+if git diff --cached --name-only | grep -qE '^apps/.*\.env$|^\.env'; then
+  echo "ERROR: Próbujesz commitować plik .env z sekretami!"
+  exit 1
+fi
