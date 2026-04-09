@@ -37,8 +37,6 @@ export default function RegisterPage() {
         body: JSON.stringify(form),
       });
 
-      const data = (await res.json()) as { message?: string; statusCode?: number };
-
       if (!res.ok) {
         setError(
           res.status === 409
