@@ -4,116 +4,124 @@ import { useState } from 'react';
 import ScrollReveal from './ScrollReveal';
 import Link from 'next/link';
 
+// SVG icons per industry
+const IconScissors = () => (
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="6" cy="6" r="3" /><circle cx="6" cy="18" r="3" />
+    <line x1="20" y1="4" x2="8.12" y2="15.88" />
+    <line x1="14.47" y1="14.48" x2="20" y2="20" />
+    <line x1="8.12" y1="8.12" x2="12" y2="12" />
+  </svg>
+);
+const IconStethoscope = () => (
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3" />
+    <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4" />
+    <circle cx="20" cy="10" r="2" />
+  </svg>
+);
+const IconUtensils = () => (
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
+    <path d="M7 2v20" /><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7" />
+  </svg>
+);
+const IconWrench = () => (
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+  </svg>
+);
+const IconStar = () => (
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+);
+
 const INDUSTRIES = [
   {
     id: 'beauty',
     label: 'Salon beauty',
-    emoji: '💅',
+    Icon: IconScissors,
     color: '#EC4899',
     bg: '#FDF2F8',
-    headline: 'Asystentka dla salonu urody',
-    description:
-      'Manicure, pedicure, stylizacja rzęs, brwi — bot zna Twój cennik i zapisuje klientki nawet o 23:00.',
-    features: [
-      'Odpowiada na pytania o cennik usług',
-      'Informuje o dostępnych terminach',
-      'Zbiera rezerwacje i dane klientek',
-      'Odsyła do Booksy / Vagaro',
-      'Wysyła przypomnienia o wizycie',
-    ],
+    headline: 'Bot dla salonu urody',
+    description: 'Manicure, stylizacja rzęs, brwi — bot zna Twój cennik i zapisuje klientki nawet o 23:00.',
+    features: ['Odpowiada na pytania o cennik', 'Informuje o wolnych terminach', 'Zbiera rezerwacje i dane klientek', 'Odsyła do Booksy / Vagaro', 'Wysyła przypomnienia o wizycie'],
     sample: [
       { role: 'user', text: 'Ile kosztuje manicure hybrydowy?' },
-      { role: 'bot', text: 'Manicure hybrydowy u nas kosztuje 90 zł 💅 Czas trwania ok. 75 minut. Wolny termin już jutro o 14:00 — zarezerwować?' },
+      { role: 'bot', text: 'Manicure hybrydowy to 90 zł 💅 Czas ok. 75 min. Mam wolne miejsce jutro o 14:00 — zarezerwować?' },
     ],
   },
   {
     id: 'health',
     label: 'Gabinet',
-    emoji: '🏥',
+    Icon: IconStethoscope,
     color: '#06B6D4',
     bg: '#ECFEFF',
-    headline: 'Asystentka dla gabinetu medycznego',
-    description:
-      'Fizjoterapia, kosmetologia, stomatologia — bot informuje o usługach i zbiera dane do rejestracji.',
-    features: [
-      'Odpowiada na pytania o zabiegi i ceny',
-      'Informuje o wymaganiach przed wizytą',
-      'Zbiera dane do rejestracji',
-      'Odsyła do systemu rejestracji online',
-      'Odpowiada na pytania o specjalistów',
-    ],
+    headline: 'Bot dla gabinetu medycznego',
+    description: 'Fizjoterapia, kosmetologia, stomatologia — bot informuje o usługach i zbiera dane do rejestracji.',
+    features: ['Odpowiada na pytania o zabiegi i ceny', 'Informuje o wymaganiach przed wizytą', 'Zbiera dane do rejestracji', 'Odsyła do systemu rejestracji online', 'Odpowiada o specjalistach i godzinach'],
     sample: [
       { role: 'user', text: 'Czy przyjmujecie bez skierowania na fizjo?' },
-      { role: 'bot', text: 'Tak, do fizjoterapeuty nie potrzebujesz skierowania ✅ Pierwsza wizyta trwa 60 min i kosztuje 150 zł. Mamy wolny termin w środę o 10:00. Chcesz się zapisać?' },
+      { role: 'bot', text: 'Tak, bez skierowania ✅ Pierwsza wizyta 60 min / 150 zł. Mamy wolny termin w środę o 10:00. Chcesz się zapisać?' },
     ],
   },
   {
     id: 'food',
     label: 'Restauracja',
-    emoji: '🍽️',
+    Icon: IconUtensils,
     color: '#F97316',
     bg: '#FFF7ED',
-    headline: 'Asystentka dla restauracji',
-    description:
-      'Godziny otwarcia, menu, rezerwacje stołów — bot obsługuje klientów nawet gdy lokal jest pełny.',
-    features: [
-      'Informuje o menu i specjalnościach dnia',
-      'Przyjmuje rezerwacje stolików',
-      'Odpowiada na pytania o alergie',
-      'Informuje o godzinach i lokalizacji',
-      'Obsługuje pytania o catering i eventy',
-    ],
+    headline: 'Bot dla restauracji',
+    description: 'Godziny otwarcia, menu, rezerwacje stolików — bot obsługuje gości nawet gdy lokal jest pełny.',
+    features: ['Informuje o menu i specjalnościach dnia', 'Przyjmuje rezerwacje stolików', 'Odpowiada na pytania o alergie', 'Informuje o godzinach i lokalizacji', 'Obsługuje pytania o catering i eventy'],
     sample: [
       { role: 'user', text: 'Czy przyjmujecie rezerwacje na jutro wieczór dla 6 osób?' },
-      { role: 'bot', text: 'Oczywiście! 🍽️ Mamy wolny stolik jutro o 19:00 i 20:30. Jaka godzina odpowiada? Podaj imię i numer telefonu — potwierdzimy SMS-em.' },
+      { role: 'bot', text: 'Oczywiście! 🍽️ Mamy wolny stolik jutro o 19:00 i 20:30. Jaka godzina odpowiada? Podaj imię — potwierdzimy SMS-em.' },
     ],
   },
   {
     id: 'auto',
     label: 'Warsztat',
-    emoji: '🔧',
+    Icon: IconWrench,
     color: '#64748B',
     bg: '#F8FAFC',
-    headline: 'Asystentka dla warsztatu',
-    description:
-      'Wyceny, terminy, pytania o usługi — bot odpowiada zamiast Ciebie, gdy masz ręce w silniku.',
-    features: [
-      'Odpowiada na pytania o usługi i ceny',
-      'Zapisuje na diagnostykę i naprawę',
-      'Informuje o czasie oczekiwania',
-      'Zbiera dane pojazdu od klienta',
-      'Wysyła potwierdzenie przyjęcia auta',
-    ],
+    headline: 'Bot dla warsztatu',
+    description: 'Wyceny, terminy, pytania o usługi — bot odpowiada gdy masz ręce w silniku.',
+    features: ['Odpowiada na pytania o usługi i ceny', 'Zapisuje na diagnostykę i naprawę', 'Informuje o czasie oczekiwania', 'Zbiera dane pojazdu od klienta', 'Wysyła potwierdzenie przyjęcia auta'],
     sample: [
       { role: 'user', text: 'Ile kosztuje wymiana oleju i kiedy możecie przyjąć?' },
-      { role: 'bot', text: 'Wymiana oleju to koszt 120–180 zł zależnie od rodzaju oleju 🔧 Czas: ok. 45 minut. Mamy wolny slot jutro o 9:00 i pojutrze o 13:00. Kiedy wpadacie?' },
+      { role: 'bot', text: 'Wymiana oleju: 120–180 zł zależnie od oleju 🔧 Czas: ~45 min. Mamy wolny slot jutro 9:00 i pojutrze 13:00. Kiedy wpadacie?' },
     ],
   },
   {
     id: 'other',
     label: 'Inna branża',
-    emoji: '✨',
+    Icon: IconStar,
     color: '#6366F1',
     bg: '#EEF2FF',
-    headline: 'Asystentka dla każdej firmy usługowej',
-    description:
-      'Szkoła tańca, studio jogi, fotograf, tłumacz — stworzysz własny szablon dopasowany do Twojej działalności.',
-    features: [
-      'W pełni konfigurowalny szablon',
-      'Wgrywasz własne FAQ i cennik',
-      'Dostosowujesz styl komunikacji',
-      'Integrujesz z dowolnym linkiem rezerwacji',
-      'Wsparcie przy konfiguracji gratis',
-    ],
+    headline: 'Bot dla każdej firmy usługowej',
+    description: 'Szkoła tańca, studio jogi, fotograf, tłumacz — tworzysz własny szablon w 15 minut.',
+    features: ['W pełni konfigurowalny szablon', 'Wgrywasz własne FAQ i cennik', 'Dostosowujesz styl komunikacji', 'Integrujesz z dowolnym linkiem rezerwacji', 'Wsparcie przy konfiguracji gratis'],
     sample: [
       { role: 'user', text: 'Czy prowadzicie zajęcia dla początkujących?' },
-      { role: 'bot', text: 'Tak! Mamy specjalny kurs dla zupełnych początkujących 🌟 Zajęcia w poniedziałki i środy o 18:00. Pierwszy próbny wejście za darmo. Chcesz zapisać się na próbne zajęcia?' },
+      { role: 'bot', text: 'Tak! Mamy kurs dla zupełnych początkujących 🌟 Zajęcia pn. i śr. o 18:00. Pierwsze wejście za darmo. Zapisać Cię?' },
     ],
   },
 ];
 
 export default function Industries() {
   const [active, setActive] = useState(INDUSTRIES[0]);
+  const [fading, setFading] = useState(false);
+
+  function selectIndustry(ind: typeof INDUSTRIES[0]) {
+    if (ind.id === active.id) return;
+    setFading(true);
+    setTimeout(() => {
+      setActive(ind);
+      setFading(false);
+    }, 200);
+  }
 
   return (
     <section id="branze" className="py-24 bg-white">
@@ -131,36 +139,48 @@ export default function Industries() {
 
         {/* Tab pills */}
         <ScrollReveal className="flex flex-wrap justify-center gap-2 mb-10">
-          {INDUSTRIES.map((ind) => (
-            <button
-              key={ind.id}
-              onClick={() => setActive(ind)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all"
-              style={
-                active.id === ind.id
-                  ? { background: active.color, color: 'white', boxShadow: `0 4px 14px ${active.color}40` }
-                  : { background: '#F1F5F9', color: '#475569' }
-              }
-            >
-              <span>{ind.emoji}</span>
-              {ind.label}
-            </button>
-          ))}
+          {INDUSTRIES.map((ind) => {
+            const isActive = active.id === ind.id;
+            return (
+              <button
+                key={ind.id}
+                onClick={() => selectIndustry(ind)}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 cursor-pointer"
+                style={
+                  isActive
+                    ? { background: ind.color, color: 'white', boxShadow: `0 4px 14px ${ind.color}45` }
+                    : { background: '#F1F5F9', color: '#475569' }
+                }
+              >
+                <span
+                  className="w-5 h-5 flex items-center justify-center"
+                  style={{ color: isActive ? 'white' : ind.color }}
+                >
+                  <ind.Icon />
+                </span>
+                {ind.label}
+              </button>
+            );
+          })}
         </ScrollReveal>
 
-        {/* Content panel */}
+        {/* Content panel with fade transition */}
         <div
-          className="rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
-          style={{ background: active.bg }}
+          className="rounded-3xl overflow-hidden border border-slate-100 shadow-sm transition-all duration-200"
+          style={{
+            background: active.bg,
+            opacity: fading ? 0 : 1,
+            transform: fading ? 'translateY(6px)' : 'translateY(0)',
+          }}
         >
           <div className="grid lg:grid-cols-2">
             {/* Left — info */}
             <div className="p-8 lg:p-12">
               <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-6"
-                style={{ background: `${active.color}18` }}
+                className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
+                style={{ background: `${active.color}18`, color: active.color, border: `1px solid ${active.color}25` }}
               >
-                {active.emoji}
+                <active.Icon />
               </div>
               <h3 className="text-2xl font-bold text-text mb-3">{active.headline}</h3>
               <p className="text-slate-500 leading-relaxed mb-8">{active.description}</p>
@@ -169,10 +189,12 @@ export default function Industries() {
                 {active.features.map((feat) => (
                   <li key={feat} className="flex items-center gap-3 text-sm text-slate-700">
                     <span
-                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-white text-[10px] font-bold"
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-white"
                       style={{ background: active.color }}
                     >
-                      ✓
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </span>
                     {feat}
                   </li>
@@ -181,12 +203,12 @@ export default function Industries() {
 
               <Link
                 href="/register"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white transition-all hover:opacity-90 hover:scale-105"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white transition-colors cursor-pointer hover:opacity-90"
                 style={{ background: active.color }}
               >
                 Wypróbuj dla {active.label.toLowerCase()}
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </Link>
             </div>
@@ -194,13 +216,12 @@ export default function Industries() {
             {/* Right — chat preview */}
             <div className="p-8 lg:p-12 flex items-center">
               <div className="w-full bg-white rounded-2xl shadow-md overflow-hidden border border-slate-100">
-                {/* Chat header */}
                 <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-100">
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-white"
                     style={{ background: active.color }}
                   >
-                    {active.emoji}
+                    <active.Icon />
                   </div>
                   <div>
                     <p className="font-semibold text-text text-xs">{active.label}</p>
@@ -211,13 +232,9 @@ export default function Industries() {
                   </div>
                 </div>
 
-                {/* Messages */}
                 <div className="flex flex-col gap-3 p-4">
                   {active.sample.map((msg, i) => (
-                    <div
-                      key={i}
-                      className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
+                    <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                       <div
                         className="rounded-2xl px-4 py-2.5 max-w-[85%] text-sm leading-relaxed"
                         style={
