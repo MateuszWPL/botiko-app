@@ -41,7 +41,7 @@ jobs:
         run: pnpm lint
 
       - name: Unit tests
-        run: pnpm test --ci --passWithNoTests
+        run: pnpm test -- --ci --passWithNoTests
 
   web:
     name: Web (lint + type-check)
