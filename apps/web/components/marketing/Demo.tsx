@@ -65,16 +65,14 @@ export default function Demo() {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messageCount = useRef(0); // Track count to skip initial scroll
+  // Ref on the chat container — scroll WITHIN the box, never the whole page
+  const chatBoxRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom only when new messages are added (not on page load)
   useEffect(() => {
-    const current = messages.length + (isTyping ? 1 : 0);
-    if (current > messageCount.current) {
-      messageCount.current = current;
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
+    // Skip initial mount (1 message already there); scroll only when user sends / bot replies
+    if (messages.length <= 1 && !isTyping) return;
+    const el = chatBoxRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages, isTyping]);
 
   function sendMessage(text: string) {
@@ -128,8 +126,8 @@ export default function Demo() {
                 </div>
               </div>
 
-              {/* Messages */}
-              <div className="flex flex-col gap-3 p-5 h-72 overflow-y-auto">
+              {/* Messages — scrolls ONLY within this box */}
+              <div ref={chatBoxRef} className="flex flex-col gap-3 p-5 h-72 overflow-y-auto">
                 {messages.map((msg, i) => (
                   <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div
@@ -155,8 +153,6 @@ export default function Demo() {
                   </div>
                 )}
 
-                {/* Scroll anchor */}
-                <div ref={messagesEndRef} />
               </div>
 
               {/* Preset chips */}

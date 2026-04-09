@@ -279,41 +279,40 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Floating badge — speed (top-left, moved further left to avoid overlap) */}
+            </div>
+
+            {/* Badges row — pod telefonem, dwie obok siebie */}
+            <div className="flex gap-3 mt-4">
+              {/* Badge 1 — speed, zawsze widoczny */}
               <div
-                className="absolute glass rounded-2xl px-3 py-2 shadow-xl"
-                style={{
-                  left: '-48px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  animation: 'fadeInUp 0.5s 1.5s both',
-                }}
+                className="glass rounded-2xl px-4 py-2.5 flex-1 shadow-lg"
+                style={{ animation: 'fadeInUp 0.5s 2s both' }}
               >
                 <p className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2.5">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2.5">
                     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                   </svg>
                   Odpowiedź w 1.2s
                 </p>
-                <p className="text-[10px] text-slate-500">Ty śpisz spokojnie</p>
+                <p className="text-[11px] text-slate-500 mt-0.5">Ty śpisz spokojnie</p>
               </div>
 
-              {/* Floating badge — lead (bottom-right, appears after last bot message) */}
+              {/* Badge 2 — lead, pojawia się po ostatniej wiadomości */}
               <div
-                className="absolute -right-4 bottom-16 glass rounded-2xl px-3 py-2 shadow-xl"
+                className="glass rounded-2xl px-4 py-2.5 flex-1 shadow-lg"
                 style={{
                   opacity: showLeadBadge ? 1 : 0,
-                  transform: showLeadBadge ? 'translateY(0)' : 'translateY(8px)',
-                  transition: 'opacity 0.45s ease, transform 0.45s ease',
+                  transform: showLeadBadge ? 'translateY(0)' : 'translateY(10px)',
+                  transition: 'opacity 0.5s ease, transform 0.5s ease',
                 }}
               >
                 <p className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                   Lead zapisany
                 </p>
-                <p className="text-[10px] text-slate-500">Anna K. · Piątek 14:30</p>
+                <p className="text-[11px] text-slate-500 mt-0.5">Anna K. · Piątek 14:30</p>
               </div>
             </div>
           </div>
