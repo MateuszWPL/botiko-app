@@ -93,7 +93,7 @@ export class BotService {
   }
 
   async findAllByTenant(tenantId: string): Promise<BotDetail[]> {
-    return this.prisma.bot.findMany({
+    return await this.prisma.bot.findMany({
       where: { tenantId },
       select: {
         id: true,

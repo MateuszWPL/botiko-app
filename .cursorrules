@@ -1,82 +1,80 @@
-# BOTIKO — AI AGENT CONTEXT
+# BOTIKO — CURSOR CONTEXT
 
-## Projekt
-Botiko.pl — polska SaaS platforma AI chatbot B2B dla mikro/małych firm usługowych.
-Jeden produkt, wiele branż. Klient wybiera branżę w onboardingu → dostaje gotowy szablon.
-MVP: widget chatbota + onboarding 15 min + RAG + lead capture. Cel: 15 płacących w 6 miesięcy.
+Pełny kontekst projektu w `CLAUDE.md`. Poniżej kluczowe zasady dla codziennej pracy.
 
-## Struktura repo
-```
-botiko/
-├── apps/web/      → Next.js 14 App Router + Tailwind v4 + TypeScript
-├── apps/api/      → Nest.js + TypeScript + Prisma ORM
-├── apps/widget/   → Preact + Vite, bundle target <12KB gzip → widget.botiko.pl
-├── docs/          → Masterplan, notatki (gitignored!)
-├── .botiko-context
-└── .cursorrules   (= .botiko-context)
-```
+## Projekt w skrócie
+SaaS AI chatbot dla polskich mikrofirm usługowych. Widget na stronie klienta → asystentka AI odpowiada na pytania, zbiera leady. Dashboard dla właściciela. 3 osobne apps (web, api, widget) — każda z własnym `pnpm install`.
 
 ## Stack
-- Frontend:  Next.js 14 App Router + Tailwind v4 + TypeScript
-- Backend:   Nest.js + TypeScript + Prisma ORM
-- Widget:    Preact + Vite. Bundle <12KB gzip. NIE używaj React w widgecie.
-- AI:        OpenAI GPT-4o mini + text-embedding-3-small + Supabase pgvector (RAG)
-- DB:        Supabase PostgreSQL + pgvector + Auth + Storage. EU region obowiązkowy (RODO).
-- Email:     Resend + React Email templates
-- SMS:       SMSAPI.pl (nie Twilio — tańsze dla PL)
-- Payments:  Stripe (subscriptions + Connect dla partnerów) + PayU (backup PL)
+- **web**: Next.js 14 App Router + Tailwind v4 + Supabase Auth
+- **api**: NestJS + Prisma + Supabase PostgreSQL + pgvector + OpenAI
+- **widget**: Preact + Vite — HARD LIMIT <12KB gzip, NIE używaj React
 
-## Środowiska
-- Local: localhost:3000 (web), localhost:3001 (api), localhost:5173 (widget)
-- Zdalne środowiska: na razie niekonfigurowane (wrócimy później)
+## Zasady których pilnujemy
+- TypeScript strict, zero `any`, zero `ts-ignore`
+- Zod na WSZYSTKICH inputach API (nie class-validator)
+- `tenant_id` w każdej operacji bazodanowej — izolacja multi-tenant
+- Widget: każdy dodany import/zależność = sprawdź rozmiar bundle
+- PII (imię, telefon leada) zawsze przez `EncryptionService` — nigdy plaintext
+- Env variables tylko przez `config/env.ts` (Zod validated)
 
-## Multi-tenant
-- tenant_id w KAŻDEJ tabeli Supabase
-- RLS (Row Level Security) na każdej tabeli
-- TenantGuard w Nest.js — inject tenant_id z JWT do każdego query
-- Widget: bot_id w request → API ładuje config konkretnego bota
+## Czego NIE robimy w MVP
+- Rezerwacje, płatności za usługi klientów, native apka, korporacje
+- Osobne domeny per branża — jedna platforma Botiko.pl
+- Turborepo/workspace — 3 osobne apps
 
-## Bezpieczeństwo
-- JWT verification na każdym API endpoint
-- Zod validation na WSZYSTKICH inputach
-- CORS whitelisted origins only
-- Helmet.js (CSP, HSTS, X-Frame)
-- Rate limiting per tenant + per IP (widget)
-- PII encryption at-rest (AES-256-GCM) dla danych leadów
-- RODO: dane w EU region, consent checkbox w widgecie
-- Secrets tylko w env — nigdy w kodzie
+## Brand
+`brand: #6366F1` | `accent: #10B981` | `beauty: #EC4899` | `health: #06B6D4` | `food: #F97316`
 
-## Priorytety (w tej kolejności)
-1. Widget MUSI być <12KB gzip — nie może spowalniać strony klienta
-2. Onboarding max 15 minut od rejestracji do działającego bota
-3. Multi-tenant — izolacja danych przez tenant_id + Supabase RLS
-4. RODO compliance — dane w EU region, checkbox zgody w widgecie
-5. Mobile first — właścicielki sprawdzają leady na telefonie
+Mów: **"asystentka która odpowiada za Ciebie"** — nie "chatbot AI".
 
-## CZEGO NIE ROBIMY w MVP
-- NIE budujemy systemu rezerwacji (bot odsyła do Booksy)
-- NIE obsługujemy płatności za zabiegi klientów
-- NIE budujemy osobnych domen per branża — JEDNA platforma Botiko.pl
-- NIE robimy native mobilnej apki — dashboard jest responsive PWA
-- NIE targetujemy korporacji — tylko mikro i małe firmy usługowe
-- NIE używamy Turborepo/monorepo — 3 osobne apps z własnym package.json
+---
 
-## Konwencje kodu
-- TypeScript strict mode, zero any, zero ts-ignore
-- Walidacja przez zod na WSZYSTKICH endpoints API
-- Error handling: typed errors, try/catch, nigdy unhandled promises
-- Env variables przez process.env, walidowane zod w config/env.ts
-- Komponenty: PascalCase. Hooks: use+PascalCase. Utils: camelCase. Types: PascalCase
-- API endpoints: REST, /api/v1/* format, versioned od początku
-- Git: Conventional Commits (feat:, fix:, chore:, docs:)
-- Branches: na razie pojedyncza gałąź `main`
+## Git Workflow (OBOWIĄZKOWY — agent robi to autonomicznie)
 
-## Brand colors (Tailwind config)
-brand: '#6366F1'  brandDark: '#4338CA'  brandSoft: '#EEF2FF'
-accent: '#10B981'  warning: '#F59E0B'
-beauty: '#EC4899'  health: '#06B6D4'  food: '#F97316'  auto: '#64748B'
-text: '#0F172A'  bg: '#F8FAFC'
+### Zasada główna
+**Użytkownik NIE pilnuje git. Agent wykonuje cały flow samodzielnie.**
 
-## Marketing language
-NIE mów 'chatbot AI'. Mów 'asystentka która odpowiada za Ciebie gdy robisz zabieg'.
-Ból = 'tracisz klientki o 22:00'. ROI = '1 klientka = 150-300 zł. Bot = 149 zł.'
+### Autonomiczny flow agenta
+1. Przed pracą → sprawdź branch. Jeśli `main` → utwórz nowy branch
+2. Podczas pracy → `git commit` + `git push` po każdym działającym etapie
+3. Po skończeniu zadania → `gh pr create` i podaj użytkownikowi link do PR
+4. Poinformuj co zrobiłeś — ale nie pytaj o pozwolenie na każdy krok
+
+### Kiedy commitować
+| Zdarzenie | Akcja |
+|---|---|
+| Funkcjonalność działa lokalnie | commit + push |
+| Bug naprawiony | commit + push |
+| Zmiana konfiguracji/deps | commit + push |
+| Etap większego zadania skończony | commit + push |
+| Zadanie całkowicie skończone | PR na GitHub |
+
+### Nazewnictwo branchy
+```
+feat/<opis>      fix/<opis>      chore/<opis>
+refactor/<opis>  docs/<opis>
+```
+
+### Format commitów (Conventional Commits — commitlint blokuje inne)
+```
+feat: dodaj endpoint /api/v1/bots
+fix: napraw błąd walidacji leada
+chore: zaktualizuj zależności
+refactor: wydziel ChatService
+docs: opisz RAG pipeline
+test: dodaj testy EncryptionService
+ci: dodaj job size check
+```
+
+### Staging — zawsze konkretne pliki
+```bash
+git add apps/api/src/modules/...   # nigdy git add -A bez sprawdzenia
+```
+
+### Nigdy nie commitować
+`.env`, `node_modules/`, `.next/`, `dist/`, sekrety, klucze API
+
+### Merge — robi użytkownik na GitHub
+Agent NIE merguje. Merge = nieodwracalna decyzja po stronie użytkownika.
+Agent informuje: "PR gotowy: [link] — CI przeszło/nie przeszło, możesz mergować."
