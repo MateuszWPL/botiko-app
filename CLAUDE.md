@@ -136,12 +136,30 @@ Enums: `Industry` (BEAUTY/HEALTH/FOOD/AUTO/OTHER), `Plan` (STARTER/PRO/PREMIUM),
 
 ---
 
-## Git Workflow (OBOWIĄZKOWY — nie omijać)
+## Git Workflow (OBOWIĄZKOWY — Claude robi to autonomicznie)
 
-### Zasady naczelne
-- **NIGDY** nie pushuj bezpośrednio na `main` — jest branch protection
-- Każda zmiana = osobny branch → PR → merge przez CI
-- Commity zawsze w Conventional Commits — wymuszane przez commitlint + Husky
+### Zasada główna — Claude zarządza git samodzielnie
+**Użytkownik NIE musi pilnować commitów, pushów ani PR-ów.**
+Claude wykonuje cały flow git autonomicznie po każdym logicznym etapie pracy — bez czekania na polecenie.
+
+### Autonomiczny flow Claude'a (krok po kroku)
+```
+1. Przed pracą → sprawdź branch (jeśli main: utwórz nowy branch)
+2. Podczas pracy → commit po każdym działającym etapie
+3. Po etapie → push na branch
+4. Po skończeniu zadania → gh pr create (jeśli PR jeszcze nie istnieje)
+```
+
+Claude informuje użytkownika co zrobił ("Zacommitowałem X na branchu Y, PR: link") — ale nie pyta o pozwolenie na każdy krok.
+
+### Kiedy commitować (checkpoint strategy)
+| Zdarzenie | Akcja Claude'a |
+|---|---|
+| Nowa funkcjonalność działa | `git commit` + `git push` |
+| Bug naprawiony i sprawdzony | `git commit` + `git push` |
+| Zmiana konfiguracji / deps | `git commit` + `git push` |
+| Logiczny etap większego zadania skończony | `git commit` + `git push` |
+| Zadanie całkowicie skończone | `gh pr create` (jeśli nie ma jeszcze PR) |
 
 ### Nazewnictwo branchy
 ```
@@ -152,7 +170,7 @@ refactor/<opis>    # refaktoryzacja bez zmiany zachowania
 docs/<opis>        # tylko dokumentacja
 ```
 
-### Conventional Commits (wymagane)
+### Conventional Commits (wymagane, commitlint to blokuje)
 ```
 feat: dodaj endpoint /api/v1/bots
 fix: napraw błąd walidacji leada
@@ -164,46 +182,23 @@ ci: dodaj job sprawdzający rozmiar widgetu
 ```
 Scope opcjonalny: `feat(api):`, `fix(web):`, `chore(widget):`
 
-### Kiedy commitować (checkpoint strategy)
-Claude commituje po każdym logicznie zamkniętym kroku — NIE czeka na koniec całego zadania:
-
-| Zdarzenie | Akcja |
-|---|---|
-| Nowa funkcjonalność działa lokalnie | `git commit` na feature branchu |
-| Naprawiony bug + sprawdzony | `git commit` na fix branchu |
-| Zmiana konfiguracji / deps | `git commit` na chore branchu |
-| Skończony logiczny etap większego zadania | `git commit` (można kilka commitów per PR) |
-| PR gotowy do review | `gh pr create` |
-
-### Pełny flow pracy
+### Staging — zawsze konkretne pliki
 ```bash
-# 1. Nowy branch od main
-git checkout main && git pull origin main
-git checkout -b feat/nazwa-funkcji
-
-# 2. Praca + commity w trakcie
-git add <konkretne pliki>   # nigdy git add -A bez sprawdzenia
-git commit -m "feat: opis"  # commitlint sprawdza format
-
-# 3. Push i PR
-git push -u origin feat/nazwa-funkcji
-gh pr create                # otwiera PR z templatem
-
-# 4. Po przejściu CI → merge na GitHub (nie lokalnie)
+git add <konkretne pliki>   # NIGDY git add -A bez weryfikacji
+git add apps/api/src/...    # jawnie, żeby nie commitować .env przez pomyłkę
 ```
 
 ### Czego NIGDY nie commitować
-- Pliki `.env` — pre-commit hook blokuje
+- Pliki `.env` — pre-commit hook blokuje automatycznie
 - `node_modules/`, `.next/`, `dist/`
 - Sekrety, klucze API, tokeny
 
-### CI (GitHub Actions)
-Każdy PR uruchamia 3 joby równolegle:
+### CI (GitHub Actions) — uruchamia się automatycznie na każdym PR
 - `API (lint + test)` — ESLint + Jest
 - `Web (lint + type-check)` — ESLint + tsc
 - `Widget (build + size check)` — Vite build z limitem <12KB
 
-Merge możliwy tylko gdy wszystkie 3 przechodzą.
+Merge możliwy tylko gdy wszystkie 3 przechodzą. Claude informuje o statusie CI.
 
 ## Brand Colors
 
