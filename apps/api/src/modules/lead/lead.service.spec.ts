@@ -1,6 +1,10 @@
 jest.mock('../../prisma/prisma.service', () => ({ PrismaService: jest.fn() }));
-jest.mock('../../common/services/encryption.service', () => ({ EncryptionService: jest.fn() }));
-jest.mock('../../common/services/notification.service', () => ({ NotificationService: jest.fn() }));
+jest.mock('../../common/services/encryption.service', () => ({
+  EncryptionService: jest.fn(),
+}));
+jest.mock('../../common/services/notification.service', () => ({
+  NotificationService: jest.fn(),
+}));
 
 import { Test } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
@@ -44,7 +48,12 @@ async function buildService(mocks = buildMocks()) {
     ],
   }).compile();
 
-  return { service: module.get(LeadService), ...mocks };
+  return {
+    service: module.get(LeadService),
+    prisma: mocks.prisma,
+    encryption: mocks.encryption,
+    notification: mocks.notification,
+  };
 }
 
 describe('LeadService.create', () => {
@@ -63,10 +72,8 @@ describe('LeadService.create', () => {
     expect(result).toHaveProperty('id');
     expect(prisma.lead.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({
-          botId: 'bot-1',
-          status: 'NEW',
-        }),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        data: expect.objectContaining({ botId: 'bot-1', status: 'NEW' }),
       }),
     );
   });
@@ -74,16 +81,19 @@ describe('LeadService.create', () => {
   it('encrypts name and phone before saving', async () => {
     const { service, prisma, encryption } = await buildService();
 
-    await service.create({ botId: 'bot-1', name: 'Jan', phone: '500', consentGiven: true });
+    await service.create({
+      botId: 'bot-1',
+      name: 'Jan',
+      phone: '500',
+      consentGiven: true,
+    });
 
     expect(encryption.encrypt).toHaveBeenCalledWith('Jan');
     expect(encryption.encrypt).toHaveBeenCalledWith('500');
     expect(prisma.lead.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({
-          name: 'enc:Jan',
-          phone: 'enc:500',
-        }),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        data: expect.objectContaining({ name: 'enc:Jan', phone: 'enc:500' }),
       }),
     );
   });
@@ -91,7 +101,12 @@ describe('LeadService.create', () => {
   it('calls sendNewLeadEmail with correct data', async () => {
     const { service, notification } = await buildService();
 
-    await service.create({ botId: 'bot-1', name: 'Jan', phone: '500', consentGiven: true });
+    await service.create({
+      botId: 'bot-1',
+      name: 'Jan',
+      phone: '500',
+      consentGiven: true,
+    });
 
     // Allow async fire-and-forget to settle
     await Promise.resolve();
@@ -114,7 +129,12 @@ describe('LeadService.create', () => {
     });
     const { service, notification } = await buildService(mocks);
 
-    await service.create({ botId: 'bot-1', name: 'Jan', phone: '500', consentGiven: true });
+    await service.create({
+      botId: 'bot-1',
+      name: 'Jan',
+      phone: '500',
+      consentGiven: true,
+    });
     await Promise.resolve();
 
     expect(notification.sendNewLeadEmail).not.toHaveBeenCalled();
@@ -122,7 +142,9 @@ describe('LeadService.create', () => {
 
   it('returns lead id even when sendNewLeadEmail throws', async () => {
     const mocks = buildMocks();
-    mocks.notification.sendNewLeadEmail.mockRejectedValue(new Error('Resend down'));
+    mocks.notification.sendNewLeadEmail.mockRejectedValue(
+      new Error('Resend down'),
+    );
     const { service } = await buildService(mocks);
 
     // Should not throw — fire-and-forget with .catch
@@ -142,7 +164,12 @@ describe('LeadService.create', () => {
     const { service } = await buildService(mocks);
 
     await expect(
-      service.create({ botId: 'missing', name: 'Jan', phone: '500', consentGiven: true }),
+      service.create({
+        botId: 'missing',
+        name: 'Jan',
+        phone: '500',
+        consentGiven: true,
+      }),
     ).rejects.toThrow(NotFoundException);
   });
 });
