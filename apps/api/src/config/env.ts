@@ -1,9 +1,7 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  NODE_ENV: z
-    .enum(['development', 'production'])
-    .default('development'),
+  NODE_ENV: z.enum(['development', 'production']).default('development'),
 
   // Database
   DATABASE_URL: z.string().url(),
@@ -23,6 +21,10 @@ const envSchema = z.object({
   // Rate limiting
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(60000),
   RATE_LIMIT_MAX: z.coerce.number().default(100),
+
+  // Email (Resend) — optional, notifications disabled when absent
+  RESEND_API_KEY: z.string().min(1).optional(),
+  RESEND_FROM_EMAIL: z.string().email().default('powiadomienia@botiko.pl'),
 
   // App
   APP_URL: z.string().url().default('http://localhost:3000'),

@@ -8,6 +8,7 @@ import { randomUUID } from 'crypto';
 import { LeadStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EncryptionService } from '../../common/services/encryption.service';
+import { NotificationService } from '../../common/services/notification.service';
 import type { CreateLeadDto } from './dto/create-lead.dto';
 
 export interface LeadResponse {
@@ -27,12 +28,22 @@ export class LeadService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly encryption: EncryptionService,
+    private readonly notification: NotificationService,
   ) {}
 
   async create(dto: CreateLeadDto): Promise<{ id: string }> {
     const bot = await this.prisma.bot.findFirst({
       where: { id: dto.botId, isActive: true },
-      select: { id: true, tenantId: true },
+      select: {
+        id: true,
+        name: true,
+        tenantId: true,
+        tenant: {
+          select: {
+            users: { select: { email: true }, take: 1 },
+          },
+        },
+      },
     });
 
     if (!bot) {
@@ -55,6 +66,23 @@ export class LeadService {
     });
 
     this.logger.log(`New lead: ${id} for bot: ${dto.botId}`);
+
+    // Non-blocking email notification — failure must not affect lead save response
+    const ownerEmail = bot.tenant.users[0]?.email;
+    if (ownerEmail) {
+      this.notification
+        .sendNewLeadEmail({
+          leadId: id,
+          name: dto.name,
+          phone: dto.phone,
+          botName: bot.name,
+          toEmail: ownerEmail,
+        })
+        .catch((err: unknown) => {
+          this.logger.error('Unexpected notification error', err);
+        });
+    }
+
     return { id };
   }
 
@@ -108,7 +136,6 @@ export class LeadService {
     try {
       return this.encryption.decrypt(value);
     } catch {
-      // If decryption fails (e.g. legacy data), return masked value
       return '[encrypted]';
     }
   }
