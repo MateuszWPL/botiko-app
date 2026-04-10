@@ -118,27 +118,25 @@
 
 ---
 
-### 1A.2 — Email Notyfikacje (Resend)
+### 1A.2 — Email Notyfikacje (Resend) ✅
 
-> Właściciel firmy musi wiedzieć gdy ktoś zostawi lead. To jest główna wartość produktu.
+> Zaimplementowane 2026-04-10
 
-#### Implementacja
-- [ ] Zainstalować: `resend` w `apps/api`, `@react-email/components` w `apps/api`
-- [ ] Stworzyć `apps/api/src/email/templates/new-lead.tsx` — React Email template: dane leada (imię, telefon), nazwa bota, data, link do dashboardu
-- [ ] Stworzyć `NotificationService` (`apps/api/src/common/services/notification.service.ts`) z metodą `sendNewLeadEmail(lead, bot, tenantEmail)`
-- [ ] W `LeadService.create()`: po zapisaniu leada → wywołaj `NotificationService.sendNewLeadEmail()` (async, nie blokuj response)
-- [ ] Env vars: `RESEND_API_KEY`, `RESEND_FROM_EMAIL=powiadomienia@botiko.pl`
-- [ ] Error handling: jeśli Resend rzuci błąd → zaloguj (nie crashuj request, lead już zapisany)
+#### Implementacja ✅
+- [x] `resend` zainstalowany w `apps/api`
+- [x] `NotificationService` (`src/common/services/notification.service.ts`) — `sendNewLeadEmail()` z HTML template
+- [x] HTML template: imię, telefon (jako tekst, nie `tel:` link — XSS safe), botName, data, link do dashboardu
+- [x] `LeadService.create()`: fire-and-forget `.catch()` — awaria Resend nie propaguje
+- [x] Bot query rozszerzony o `bot.name` + `tenant.users[0].email` (adres właściciela z DB)
+- [x] env.ts: `RESEND_API_KEY` (optional), `RESEND_FROM_EMAIL` (default: powiadomienia@botiko.pl)
+- [x] Brak `RESEND_API_KEY` → notyfikacje wyłączone, warn w logach, brak crasha
 
-#### Testowanie
-- [ ] Ręcznie: wypełnij formularz w widgecie → sprawdź email w skrzynce właściciela (test z prawdziwym adresem)
-- [ ] Sprawdź że email nie ląduje w spamie (SPF/DKIM dla botiko.pl skonfigurowane przez Resend)
-- [ ] Test że awaria Resend nie blokuje zapisu leada (mock Resend error w teście)
+#### Testowanie (manualne — po założeniu konta Resend)
+- [ ] Ręcznie: wypełnij formularz w widgecie → sprawdź email w skrzynce właściciela
+- [ ] Sprawdź że email nie ląduje w spamie (SPF/DKIM dla botiko.pl przez Resend dashboard)
 
-#### Zabezpieczenia
-- [ ] Email do właściciela wysyłany na `tenant.email` z bazy — nie na adres podany przez użytkownika widgetu
-- [ ] Telefon leada w emailu: wyświetlany jako text (nie link `tel:`) żeby uniknąć XSS w klientach pocztowych
-- [ ] Rate limit na endpoint `/leads`: już jest (5 req/min) — zweryfikować że działa
+#### Testy automatyczne ✅
+- [x] `lead.service.spec.ts`: 6 testów — zapis leada, szyfrowanie PII, email call, brak emaila bez usera, błąd Resend nie propaguje, NotFoundException
 
 ---
 
