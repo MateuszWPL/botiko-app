@@ -172,7 +172,107 @@
 
 ---
 
-### 1A.4 — Landing Page — Domknięcie
+### 1A.4 — Dashboard UI/UX Redesign
+
+> Aktualny panel jest niefunkcjonalny wizualnie: emoji zamiast ikon, brak animacji, brak empty states, brak spójności. Cel: profesjonalny SaaS dashboard gotowy do pokazania płacącym klientom.
+
+#### Stack do zainstalowania
+- [ ] `lucide-react` — ikony SVG (zamiana wszystkich emoji)
+- [ ] `sonner` — toast notifications (sukces/błąd/info)
+- [ ] `class-variance-authority` + `clsx` — warianty komponentów (opcjonalnie jeśli okaże się potrzebny)
+
+#### Fundament — Design System
+- [ ] **Paleta kolorów** — indigo-600 brand, slate-900 sidebar, białe karty z subtelnymi borderami
+- [ ] **Typografia** — jasna hierarchia: `text-2xl font-bold` nagłówki, `text-sm text-slate-500` opisy
+- [ ] **Glassmorphism** — karty stat na overview: `bg-white/80 backdrop-blur-sm border border-white/20` na gradientowym tle
+- [ ] **Gradienty** — sidebar: gradient `from-slate-900 to-slate-800`, przyciski akcji: `from-indigo-600 to-indigo-500`, stat cards: per-kolor gradient overlay
+- [ ] **Animacje CSS** — `transition-all duration-200` na wszystkich przyciskach/linkach, `hover:scale-105` na kartach statystyk, `hover:-translate-y-0.5` na primary buttonach
+- [ ] **Skeleton loaders** — dla overview stats, listy leadów, konwersacji (zamiast pustego ekranu podczas ładowania)
+
+#### Sidebar (components/dashboard/Sidebar.tsx)
+- [ ] Zamień wszystkie emoji na **Lucide icons**: `LayoutDashboard`, `Users`, `MessageSquare`, `BookOpen`, `Settings`, `Code2`, `CreditCard`, `LogOut`
+- [ ] Aktywny item: `bg-indigo-600/20 text-indigo-400 border-l-2 border-indigo-500` (subtelny, nie full-fill)
+- [ ] Logo: gradient tekst `bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent`
+- [ ] Dodaj badge "● Online" przy logo (zielona kropka animowana — pulse)
+- [ ] Mobile bottom nav: ikony z labelami, active state bardziej wyraźny
+- [ ] Dodaj tooltip na hover dla każdego item (collapsed sidebar na desktop opcjonalnie)
+
+#### Overview (dashboard/overview/page.tsx)
+- [ ] Tło strony: delikatny gradient `from-slate-50 to-indigo-50/30`
+- [ ] Stat karty: glassmorphism — `bg-white/70 backdrop-blur-sm` z kolorową ikoną w gradient boksie
+- [ ] Każda karta: ikona Lucide (nie emoji), liczba, label, mini trend-arrow (np. `TrendingUp` w kolorze)
+- [ ] Sekcja "Szybkie akcje" pod statystykami: 2-3 przyciski (Dodaj wiedzę, Testuj bota, Zainstaluj)
+- [ ] Empty state gdy brak bota: ładna karta z ilustracją (SVG inline), CTA "Utwórz bota"
+- [ ] Skeleton: 4 karty placeholder z `animate-pulse` podczas ładowania
+
+#### Sidebar Plan Badge
+- [ ] Przy dole sidebar: badge z aktualnym planem
+- [ ] STARTER: `bg-slate-700 text-slate-300` — neutralny
+- [ ] PRO (przyszłość): `bg-gradient-to-r from-blue-600 to-cyan-500` z ikoną `Zap`
+- [ ] PREMIUM (przyszłość): `bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-900` z ikoną `Crown` — złoty kolor + korona
+
+#### Leads (dashboard/leads/)
+- [ ] Zamień emoji 👥 na `<Users />` Lucide w empty state — stylowany, duży, slate-300
+- [ ] Empty state: ikona + tytuł + opis + przycisk "Zainstaluj bota" (z linkiem do /embed)
+- [ ] Tabela: dodaj hover row `hover:bg-indigo-50/50 transition-colors`
+- [ ] Status badge: kolorowe chipelki z ikoną — `Clock` (NEW), `Phone` (CONTACTED), `CheckCircle` (CONVERTED), `XCircle` (LOST)
+- [ ] Dropdown statusu: zamień na custom styled select z ikonami
+- [ ] Animacja: nowy lead pojawiający się → `animate-fade-in` (CSS)
+- [ ] Licznik leadów w nagłówku: pill z gradientem
+
+#### Conversations (dashboard/conversations/)
+- [ ] Zamień emoji 💬 na `<MessageSquare />` w empty state
+- [ ] Każda pozycja na liście: Avatar inicjałów (zamiast ID), nazwa bota (zamiast botId.slice(0,8)), podgląd ostatniej wiadomości
+- [ ] Strzałka → zamień na `<ChevronRight />` Lucide
+- [ ] Hover: `hover:bg-slate-50 hover:shadow-sm transition-all`
+- [ ] Conversation detail: dodaj `<Bot />` avatar dla wiadomości bota, `<User />` dla użytkownika
+- [ ] Breadcrumb: ikona `<ArrowLeft />` zamiast "←"
+
+#### Knowledge Base (dashboard/knowledge/)
+- [ ] Przycisk "+ Dodaj": spinner `<Loader2 className="animate-spin" />` zamiast tekstu "Dodaję..."
+- [ ] Delete button: `<Trash2 />` ikona zamiast "✕", z `confirm()` dialog przed usunięciem
+- [ ] Każdy chunk: lekki hover `hover:border-indigo-200 transition-colors`
+- [ ] Empty state: ikona `<BookOpen />` + opis + przykładowe wpisy jako "Sugestie"
+- [ ] Toast (sonner): "✓ Wpis dodany" po sukcesie, "✕ Błąd dodawania" po błędzie
+- [ ] Kategoria badge: bardziej kolorowe (per kategoria hash koloru)
+
+#### Settings (dashboard/settings/)
+- [ ] Section headers z ikonami: `<Bot />` Asystentka, `<Palette />` Wygląd, `<Globe />` Domeny, `<Power />` Aktywność
+- [ ] Podziel formularz na sekcje z separatorami
+- [ ] Color picker: preview bąbelka czatu w wybranym kolorze (live update)
+- [ ] Toggle zamiast checkbox dla "Aktywna": custom styled `<Switch />` (CSS)
+- [ ] Przycisk zapisz: `<Loader2 />` spinner + disabled state podczas zapisywania
+- [ ] Toast success/error zamiast div komunikatu
+
+#### Billing (dashboard/billing/)
+- [ ] Plan card: gradient tło — `from-indigo-600 to-purple-600` gdy aktywny, `from-slate-200 to-slate-300` gdy Trial
+- [ ] Status badge z ikoną: `<CheckCircle />` Aktywna (green), `<Clock />` Trial (amber), `<AlertCircle />` Wygasła (red)
+- [ ] Trial: licznik dni + pasek postępu (progress bar)
+- [ ] Przycisk "Kup plan": gradient + `<ArrowRight />` ikona + hover:scale-105
+- [ ] Cechy planu: lista z `<Check />` ikonami (rozmowy/mies., wsparcie itp.)
+- [ ] "Płatności przez Stripe": logo Stripe SVG (nie tekst)
+
+#### Embed (dashboard/embed/)
+- [ ] WordPress/Wix/Squarespace: SVG logo zamiast emoji (🔵 ⚫ ⬛)
+- [ ] Copy button: `<Copy />` ikona, po kliknięciu → `<CheckCheck />` + toast "Skopiowano!"
+- [ ] Kod: lepszy syntax highlighting (monospace, `text-emerald-400` jak teraz ale z line numbers)
+- [ ] Step-by-step wizard: numerowane kroki (1→2→3) z `<CheckCircle />` gdy ukończony
+
+#### Shared Components do stworzenia
+- [ ] `components/ui/Spinner.tsx` — `<Loader2 className="animate-spin" />` wrapper
+- [ ] `components/ui/EmptyState.tsx` — ikona + tytuł + opis + opcjonalny CTA
+- [ ] `components/ui/StatusBadge.tsx` — lead status z ikoną i kolorem
+- [ ] `components/ui/PageHeader.tsx` — tytuł + opis + opcjonalny badge/akcja
+
+#### Testowanie wizualne
+- [ ] Sprawdź na 1280px (laptop) — najczęstszy rozmiar u klientów
+- [ ] Sprawdź na 375px (iPhone SE) — mobile
+- [ ] Dark mode: nie robimy (za wcześnie) — upewnij się że nie ma `dark:` klas które psują wygląd
+- [ ] Sprawdź animacje: `prefers-reduced-motion` respektowany (dodaj `motion-safe:` prefix)
+
+---
+
+### 1A.5 — Landing Page — Domknięcie
 
 > LP jest już zbudowana (v4), potrzeba kilku rzeczy żeby była gotowa na prawdziwych użytkowników.
 
@@ -193,7 +293,7 @@
 
 ---
 
-### 1A.5 — Manualna QA Checklist (przed deploy)
+### 1A.6 — Manualna QA Checklist (przed deploy)
 
 > Kod vibecoded = nie ufamy że działa bez ręcznego przetestowania każdej ścieżki.
 
@@ -243,7 +343,7 @@
 
 ---
 
-### 1A.6 — Testy Automatyczne (minimum przed deploy)
+### 1A.7 — Testy Automatyczne (minimum przed deploy)
 
 > Nie musimy testować wszystkiego — testujemy to co nie ma szans działać jeśli się posypie.
 
@@ -268,7 +368,7 @@
 
 ---
 
-### 1A.7 — Security Final Check (przed deploy na prod)
+### 1A.8 — Security Final Check (przed deploy na prod)
 
 #### Supabase / baza danych
 - [ ] Uruchomić `supabase/migrations/001_rls_policies.sql` na produkcyjnej bazie Supabase
