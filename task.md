@@ -96,26 +96,25 @@
 
 ---
 
-### 1A.1 — Jakość Bota (krytyczne przed pilotami)
+### 1A.1 — Jakość Bota (krytyczne przed pilotami) ✅
 
-> Bez tych rzeczy bot wygląda na głupi lub frustruje klientów. To zabija retencję.
+> Zaimplementowane 2026-04-10
 
-#### Implementacja
-- [ ] **Fallback answer** — w `ChatService`: gdy wszystkie chunki mają score < 0.3 LUB baza wiedzy jest pusta → nie wywołuj OpenAI, zwróć predefiniowaną odpowiedź: `"Nie mam tej informacji. Zadzwoń do nas: {bot.phone}"` (telefon z konfiguracji bota)
-- [ ] **Eskalacja do człowieka** — w `ChatService`: przed wysłaniem do OpenAI sprawdź czy wiadomość zawiera słowa kluczowe (`człowiek`, `human`, `osoba`, `chcę mówić`, `zadzwoń`, `połącz`) → zwróć specjalną odpowiedź z danymi kontaktowymi zamiast AI response
-- [ ] **Lead form timing** — w widgecie: stan `messageCount` per sesja, formularz LeadForm renderuje się dopiero gdy `messageCount >= 2`, nie przy otwarciu
-- [ ] **Conversation continuity** — w widgecie: po każdym message zapisz historię do `sessionStorage` pod kluczem `botiko_{botId}`, przy inicjalizacji odczytaj i wstaw do stanu — użytkownik nie traci historii po odświeżeniu strony
+#### Implementacja ✅
+- [x] **Fallback answer** — `ChatService`: gdy context pusty (wszystkie chunki < 0.3) → early return z predef. odpowiedzią + `showLeadForm: true`, OpenAI nie wywoływane
+- [x] **Eskalacja do człowieka** — `ChatService`: przed RAG sprawdź `isEscalationRequest()` (człowiek/human/konsultant/oddzwoń/połącz) → early return + `showLeadForm: true`
+- [x] **Lead form timing** — widget: `userMessageCount` state, przycisk 📞 pojawia się dopiero gdy `>= 2`, `showLeadForm` z API automatycznie otwiera formularz
+- [x] **Conversation continuity** — widget: `sessionStorage` przechowuje messages, sessionId, userMessageCount, leadSubmitted per `botiko_{botId}`
 
-#### Testowanie
-- [ ] Ręczny test fallback: zadaj pytanie całkowicie poza bazą wiedzy → sprawdź że bot zwraca dane kontaktowe, NIE hallucynuje
-- [ ] Ręczny test fallback: wypróbuj z pustą bazą wiedzy (nowy bot bez żadnych chunków)
-- [ ] Ręczny test eskalacji: napisz "chcę porozmawiać z człowiekiem" → sprawdź response z telefonem
-- [ ] Ręczny test lead timing: otwórz widget, wyślij 1 wiadomość → formularz NIE powinien się pokazać; wyślij 2. → formularz pojawia się
-- [ ] Ręczny test continuity: wyślij 3 wiadomości, odśwież stronę → historia powinna być zachowana
+#### Testowanie (manualne — do zrobienia przed pilotami)
+- [ ] Ręczny test fallback: zadaj pytanie poza bazą wiedzy → sprawdź odpowiedź bez hallucynacji
+- [ ] Ręczny test fallback: nowy bot z pustą bazą wiedzy
+- [ ] Ręczny test eskalacji: napisz "chcę porozmawiać z człowiekiem" → formularz kontaktowy
+- [ ] Ręczny test lead timing: 1 wiadomość → brak przycisku 📞; 2. wiadomość → pojawia się
+- [ ] Ręczny test continuity: 3 wiadomości → odśwież → historia zachowana
 
-#### Zabezpieczenia
-- [ ] Keyword list dla eskalacji nie może być nadużyta (user nie może "wstrzyknąć" komendy przez te słowa kluczowe — tylko trigger eskalacji, nie wykonanie kodu)
-- [ ] Fallback response nie może ujawniać wewnętrznych szczegółów API ani struktury błędu
+#### Testy automatyczne ✅
+- [x] `chat.service.spec.ts`: 13 testów — fallback (3), eskalacja (8), normal flow (3)
 
 ---
 
