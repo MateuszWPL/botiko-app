@@ -47,9 +47,15 @@ const ESCALATION_KEYWORDS = [
   'real person',
 ];
 
+function removeDiacritics(str: string): string {
+  return str.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+}
+
 function isEscalationRequest(message: string): boolean {
-  const lower = message.toLowerCase();
-  return ESCALATION_KEYWORDS.some((kw) => lower.includes(kw));
+  const normalized = removeDiacritics(message.toLowerCase());
+  return ESCALATION_KEYWORDS.some((kw) =>
+    normalized.includes(removeDiacritics(kw)),
+  );
 }
 
 export interface ChatRequest {

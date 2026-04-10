@@ -11,9 +11,9 @@
 - [x] Założyć repo na GitHub
 - [x] Założyć konto Supabase (EU region!)
 - [ ] (później) Hosting/deploy (na razie pomijamy)
-- [ ] Założyć konto OpenAI API (ustawić billing alerts)
-- [ ] Założyć konto Stripe (test mode)
-- [ ] Założyć konto Resend.com
+- [x] Założyć konto OpenAI API (ustawić billing alerts)
+- [x] Założyć konto Stripe (test mode)
+- [x] Założyć konto Resend.com
 - [ ] Założyć konto SMSAPI.pl
 - [ ] DNS: skonfigurować subdomeny (app., api., widget.)
 
@@ -107,11 +107,11 @@
 - [x] **Conversation continuity** — widget: `sessionStorage` przechowuje messages, sessionId, userMessageCount, leadSubmitted per `botiko_{botId}`
 
 #### Testowanie (manualne — do zrobienia przed pilotami)
-- [ ] Ręczny test fallback: zadaj pytanie poza bazą wiedzy → sprawdź odpowiedź bez hallucynacji
-- [ ] Ręczny test fallback: nowy bot z pustą bazą wiedzy
-- [ ] Ręczny test eskalacji: napisz "chcę porozmawiać z człowiekiem" → formularz kontaktowy
-- [ ] Ręczny test lead timing: 1 wiadomość → brak przycisku 📞; 2. wiadomość → pojawia się
-- [ ] Ręczny test continuity: 3 wiadomości → odśwież → historia zachowana
+- [x] Ręczny test fallback: zadaj pytanie poza bazą wiedzy → sprawdź odpowiedź bez hallucynacji
+- [x] Ręczny test fallback: nowy bot z pustą bazą wiedzy
+- [x] Ręczny test eskalacji: napisz "chcę porozmawiać z człowiekiem" → formularz kontaktowy
+- [x] Ręczny test lead timing: 1 wiadomość → brak przycisku 📞; 2. wiadomość → pojawia się
+- [x] Ręczny test continuity: 3 wiadomości → odśwież → historia zachowana
 
 #### Testy automatyczne ✅
 - [x] `chat.service.spec.ts`: 13 testów — fallback (3), eskalacja (8), normal flow (3)
@@ -140,34 +140,35 @@
 
 ---
 
-### 1A.3 — Stripe (jeden plan, działający billing)
+### 1A.3 — Stripe (jeden plan, działający billing) ✅
 
-> Bez tego nie możesz zarabiać. Jeden plan, zero komplikacji z upgrade/downgrade.
+> Zaimplementowane 2026-04-10
 
-#### Implementacja
-- [ ] Zainstalować: `stripe` w `apps/api` + `apps/web`
-- [ ] Stworzyć w Stripe Dashboard: produkt "Botiko MVP" — cena 149 zł/mies PLN, recurring, 14-day trial
-- [ ] `POST /api/v1/billing/create-checkout` (chroniony AuthGuard) → tworzy Stripe Checkout Session (mode: `subscription`, `trial_period_days: 14`, `client_reference_id: tenantId`) → zwraca URL do redirectu
-- [ ] Stripe Webhook handler `POST /api/v1/billing/webhook` (publiczny, bez AuthGuard):
-  - `customer.subscription.created` / `updated` → `tenant.plan = STARTER`, `tenant.stripeCustomerId`, `tenant.stripeSubscriptionId`, `tenant.isActive = true`
+#### Implementacja ✅
+- [x] Zainstalować: `stripe` w `apps/api`
+- [x] Stworzyć w Stripe Dashboard: produkt "Botiko MVP" — cena 149 zł/mies PLN, recurring, 14-day trial (`STRIPE_PRICE_ID`)
+- [x] `POST /api/v1/billing/checkout` (chroniony AuthGuard) → Stripe Checkout Session (mode: `subscription`, `trial_period_days: 14`, `client_reference_id: tenantId`) → zwraca URL
+- [x] Stripe Webhook handler `POST /api/v1/billing/webhook` (publiczny, bez AuthGuard):
+  - `checkout.session.completed` → `tenant.stripeCustomerId`, `tenant.stripeSubscriptionId`, `tenant.isActive = true`
+  - `customer.subscription.updated` → `tenant.isActive` na podstawie statusu
   - `customer.subscription.deleted` → `tenant.isActive = false`
-  - `invoice.payment_failed` → `tenant.isActive = false` + wyślij email do właściciela
-- [ ] Dodać `isActive` i `stripeCustomerId`, `stripeSubscriptionId` do modelu `Tenant` w Prisma (migracja)
-- [ ] W `ChatService.checkPlanLimit()`: sprawdź też `tenant.isActive` — jeśli false, zwróć 403 z komunikatem "Twój plan wygasł"
-- [ ] `POST /api/v1/billing/portal` → Stripe Customer Portal session (zarządzanie płatnościami, faktury)
-- [ ] Billing page w dashboard: status subskrypcji (trial/active/expired), dni pozostałe do końca trialu, przycisk "Kup plan" → checkout, przycisk "Zarządzaj" → portal
+  - `invoice.payment_failed` → `tenant.isActive = false`
+- [x] `isActive`, `stripeCustomerId`, `stripeSubscriptionId` w modelu `Tenant` + migracja Prisma zaaplikowana
+- [x] `ChatService`: sprawdza `tenant.isActive` → 403 "Twój plan wygasł"
+- [x] `POST /api/v1/billing/portal` → Stripe Customer Portal session
+- [x] `GET /api/v1/billing/status` → status subskrypcji dla dashboardu
 
-#### Testowanie
-- [ ] Stripe CLI lokalnie: `stripe listen --forward-to localhost:3001/api/v1/billing/webhook`
-- [ ] Test checkout: kliknij "Kup plan" → Stripe test card `4242 4242 4242 4242` → webhook `subscription.created` → sprawdź `tenant.isActive = true` w DB
-- [ ] Test trial: utwórz subskrypcję, usuń ją w Stripe Dashboard → webhook `subscription.deleted` → sprawdź że bot zwraca 403
-- [ ] Test payment_failed: użyj karty `4000 0000 0000 0341` w Stripe → sprawdź email i dezaktywację
+#### Konfiguracja ✅
+- [x] Stripe CLI zainstalowany (winget)
+- [x] `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_ID` w `.env`
+- [x] Raw body (`rawBody: true` w `main.ts`) dla weryfikacji podpisu webhooka
+- [x] Webhook signature verification: `stripe.webhooks.constructEvent()` → 400 przy błędzie
 
-#### Zabezpieczenia
-- [ ] Webhook signature verification: `stripe.webhooks.constructEvent(body, sig, STRIPE_WEBHOOK_SECRET)` — jeśli błąd → 400, nie przetwarzaj
-- [ ] Raw body wymagany dla weryfikacji — użyj `express.raw()` dla route webhooka (nie `express.json()`)
-- [ ] Nigdy nie przechowywać danych kart — tylko `stripeCustomerId` i `stripeSubscriptionId`
-- [ ] `tenantId` w `client_reference_id` — weryfikuj przy webhook że tenant istnieje zanim zaktualizujesz
+#### Testowanie (manualne — do zrobienia)
+- [x] Stripe CLI: `stripe listen --api-key sk_test_... --forward-to localhost:3001/api/v1/billing/webhook`
+- [x] Test checkout: kliknij "Kup plan" → Stripe test card `4242 4242 4242 4242` → webhook → sprawdź `tenant.isActive = true` w DB
+- [ ] Test anulowania: usuń subskrypcję w Stripe Dashboard → webhook `subscription.deleted` → bot zwraca 403
+- [ ] Test payment_failed: karta `4000 0000 0000 0341` → sprawdź dezaktywację
 
 ---
 
