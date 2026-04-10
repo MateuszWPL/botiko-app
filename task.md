@@ -172,14 +172,56 @@
 - [x] **Wyciek komunikatów błędów** — `http-exception.filter.ts` — surowy `exception.message` nie jest już zwracany klientowi
 - [x] **Ominięcie domain whitelist** — `domain-whitelist.guard.ts` — brak nagłówka `Origin` blokowany na produkcji
 
-#### Do zrobienia
-~~- [ ] **SQL injection risk (MEDIUM)** — naprawione: `assertValidEmbedding()` waliduje tablicę przed `Prisma.raw()`~~
-~~- [ ] **Słabe wymagania hasła (LOW)** — naprawione: min 12 znaków + 1 wielka + 1 cyfra~~
-~~- [ ] **`status as any` (INFO)** — naprawione: `status as LeadStatus` z importem Prisma enum~~
-
 - [x] **SQL injection risk** — `embedding.service.ts` — `assertValidEmbedding()` waliduje długość (1536) i `isFinite()` każdej wartości
 - [x] **Słabe wymagania hasła** — `register.dto.ts` — min 12 znaków + regex dla wielkiej litery + cyfry
 - [x] **`status as any`** — `lead.service.ts` — `status as LeadStatus` z importem `@prisma/client`
+
+### 1.11 Pakiety — Funkcjonalności per Plan
+
+> Analiza rynku (Chatbase, SiteGPT, Tidio, Botpress, Crisp, Dante AI) — co jest gdzie gated i dlaczego.
+
+#### Starter — 149 zł/mies (target: pierwsza firma, micro)
+- [ ] 300 rozmów/mies (miesięczny reset, tracking per tenant)
+- [ ] 1 bot per konto
+- [ ] Baza wiedzy: tekst ręczny (z onboardingu) — maks. 20 wpisów Q&A
+- [ ] Lead capture (imię + telefon) + email do właściciela
+- [ ] Widget: customizacja koloru i imienia bota
+- [ ] Historia rozmów w dashboardzie: 30 dni
+- [ ] "Powered by Botiko" badge w widgecie (obowiązkowy)
+- [ ] Support: email, odpowiedź do 48h
+
+#### Pro — 249 zł/mies (target: aktywna firma, potrzebuje więcej danych)
+- [ ] 2 000 rozmów/mies
+- [ ] 3 boty per konto
+- [ ] Baza wiedzy: + PDF upload (maks. 5 plików, 5MB każdy), + URL crawl własnej strony www
+- [ ] SMS notyfikacje o nowych leadach (SMSAPI.pl)
+- [ ] Statystyki: liczba rozmów, leady, godziny szczytu, top pytania
+- [ ] Historia rozmów: 90 dni
+- [ ] "Powered by Botiko" badge opcjonalny (można wyłączyć)
+- [ ] Support: email priorytetowy, odpowiedź do 24h
+
+#### Premium — 449 zł/mies (target: firma z pełną automatyzacją)
+- [ ] Unlimited rozmów
+- [ ] 10 botów per konto
+- [ ] Baza wiedzy: + Google Docs sync, + Notion sync, + webhook do własnych danych
+- [ ] API access (klucze w dashboardzie, docs na botiko.pl/api)
+- [ ] Full white-label: brak Botiko badge, custom domena dla widgetu
+- [ ] Automatyczny raport miesięczny PDF (Resend + React PDF)
+- [ ] Webhook: powiadomienie o nowym leadzie do własnego systemu
+- [ ] Support: email + video call onboarding (30 min przy zakupie)
+
+### 1.12 Bot Core — Brakujące Funkcje MVP
+
+> Na podstawie analizy rynku: największe powody, dla których boty zawodzą. Te funkcje są must-have przed pilotami.
+
+- [ ] **Fallback answer** — gdy bot nie zna odpowiedzi (similarity score < 0.3 dla wszystkich chunków), wyślij gotową wiadomość z numerem telefonu lub linkiem do kontaktu zamiast hallucynacji
+- [ ] **Eskalacja do człowieka** — po 3 nieudanych odpowiedziach lub gdy user pisze "człowiek"/"human"/"rozmów z kimś" → bot pokazuje dane kontaktowe z konfiguracji (telefon, WhatsApp link)
+- [ ] **Lead form timing** — formularz pojawia się dopiero po ≥ 2 wymianach wiadomości, nie od razu przy otwarciu widgetu
+- [ ] **Conversation continuity** — sessionStorage w widgecie przechowuje historię przez czas wizyty (nie traci przy odświeżeniu strony)
+- [ ] **Knowledge staleness indicator** — w dashboardzie: "Baza wiedzy ostatnio zaktualizowana: X dni temu" + przycisk "Odśwież"
+- [ ] **Bot confidence display** — gdy bot zwraca odpowiedź z niskim confidence, dodaje automatycznie: "Jeśli masz wątpliwości, zadzwoń: [telefon]"
+- [ ] **Quick reply buttons** — 3-4 gotowe przyciski pod pierwszą wiadomością bota (konfigurowalne w dashboardzie: "Cennik", "Godziny otwarcia", "Zapisz się")
+- [ ] **PDF upload w onboardingu** — step 3 umożliwia wrzucenie cennika/oferty jako PDF (parsowanie text → chunki) zamiast tylko ręcznego wpisywania
 
 ---
 
@@ -283,16 +325,20 @@
 | Metryka | Cel M3 | Cel M6 | Cel M12 |
 |---------|--------|--------|---------|
 | Płacący klienci | 5 | 15-20 | 50+ |
-| MRR | ~845 zł | ~4 386 zł | ~10 800 zł |
+| MRR | ~1 245 zł | ~4 980 zł | ~13 450 zł |
 | Widget bundle | <12KB | <12KB | <12KB |
-| Onboarding time | <15 min | <10 min | <10 min |
+| Onboarding time | <15 min | <10 min | <8 min |
 | Churn monthly | <15% | <10% | <7% |
+| Bot fallback rate | <20% | <15% | <10% |
+| Lead capture rate | >8% rozmów | >12% | >15% |
+
+> Przelicznik MRR: mix 60% Starter (149 zł) + 30% Pro (249 zł) + 10% Premium (449 zł) = ~207 zł ARPU
 
 ---
 
-> 📅 **Ostatnia aktualizacja:** 2026-04-09
+> 📅 **Ostatnia aktualizacja:** 2026-04-10
 >
-> 📊 **Postęp:** Faza 0 ukończona w całości. Faza 1 w dużej mierze gotowa: wszystkie endpointy API, pełny RAG pipeline, widget Preact, onboarding wizard (5 kroków), dashboard (8 stron). Pozostało: 1.6 notyfikacje, 1.7 landing page, 1.8 Stripe, 1.9 testy, drobne braki (CSS var widgetu, PDF upload w onboardingu, rate limiting per plan, PWA).
+> 📊 **Postęp:** Faza 0 ukończona w całości. Faza 1 w dużej mierze gotowa: wszystkie endpointy API, pełny RAG pipeline, widget Preact, onboarding wizard (5 kroków), dashboard (8 stron), landing page (v4). Pozostało: 1.6 notyfikacje, 1.8 Stripe, 1.9 testy, 1.11 pakiety (billing enforcement), 1.12 bot core improvements (fallback, eskalacja, PDF upload).
 
 ---
 
@@ -310,3 +356,74 @@ Poniższe wymagają założenia kont i są poza kodem:
 9. **DNS** — skonfigurować subdomeny: `app.botiko.pl`, `api.botiko.pl`, `widget.botiko.pl`
 10. **GitHub** — (opcjonalnie) ustawić branch protection na `main` (Settings > Branches)
 11. **Env w hosting** — na razie pomijamy
+
+---
+
+## Pomysły
+
+> Surowe pomysły — nie wchodzą do roadmapy bez weryfikacji z klientami. Źródło: analiza Chatbase, SiteGPT, Tidio, Botpress, Crisp, Voiceflow, Dante AI (kwiecień 2026).
+
+### Baza wiedzy — źródła danych
+
+- **URL crawl strony www** — bot automatycznie pobiera treść ze strony klienta (np. usługi, cennik, godziny z ich własnej strony) i buduje z tego baze wiedzy. Eliminuje ręczne wpisywanie. Największy pain point: dane outdatowane po 30 dniach — potrzebny periodic refresh.
+- **Google Docs sync** — klient prowadzi cennik w Google Docs → bot synchronizuje co 24h. Eliminuje PDF upload i ręczną aktualizację.
+- **Notion sync** — jak wyżej, ale Notion. Popularny u bardziej tech-savvy właścicieli.
+- **Webhook własne dane** — dla Premium: klient podaje endpoint, bot odpytuje go per rozmowa (real-time dane np. z własnego CRM).
+- **YouTube transkrypt** — trenerzy, edukacja: bot odpowiada na pytania bazując na treści filmów YouTube.
+- **Google Reviews** — bot może cytować opinie klientów przy pytaniach o jakość usług.
+
+### Widget UX
+
+- **Proaktywny trigger** — po X sekundach na stronie bot sam zagaduje ("Cześć! Masz pytanie o [branża]?"). Konfigurowalny delay i tekst.
+- **Quick reply buttons** — 3-4 clickable przyciski pod pierwszą wiadomością: "Cennik", "Godziny", "Umów wizytę", "Kontakt". Konfigurowane w dashboardzie.
+- **Rich media cards** — bot może zwrócić kartę z zdjęciem usługi, ceną i przyciskiem CTA zamiast czystego tekstu.
+- **Custom avatar** — właściciel wrzuca zdjęcie (twarz asystentki) lub wybiera ilustrację z galerii zamiast inicjału.
+- **Bot personality presets** — "profesjonalny", "przyjazny", "energetyczny" — zmienia ton systemu prompt bez dotykania konfiguracji.
+- **Dark mode widget** — automatyczne dopasowanie do preferencji systemu użytkownika.
+- **Voice input** — przycisk mikrofonu → speech-to-text → wysłanie do bota. Użyteczne na mobile.
+
+### Integracje zewnętrzne
+
+- **Calendly/Acuity link** — gdy klient pyta o rezerwację, bot podaje bezpośredni link do konkretnej usługi w Calendly (konfigurowalny URL per usługa). Nie budujemy własnego systemu rezerwacji — tylko smart redirect.
+- **Booksy deep link** — dla salonów beauty: bot generuje link `booksy.com/...` do konkretnego saloniku klienta.
+- **WhatsApp Business API** — eskalacja z bota wprost do WhatsApp właściciela. Klient klika przycisk → otwiera się WhatsApp z pre-wypełnioną wiadomością.
+- **Zapier/Make webhook** — nowy lead → automatycznie trafia do arkusza Google, CRM (Pipedrive, HubSpot), Notion.
+- **Google Calendar** — bot sprawdza dostępność w Google Calendar właściciela i informuje "w piątek mamy jeszcze wolne miejsca". Read-only, bez tworzenia eventów.
+- **Facebook Messenger** — ten sam bot, inny kanał. Jeden config, wiele miejsc.
+
+### Analityka i AI
+
+- **Top pytania** — dashboard pokazuje najczęściej zadawane pytania. Właściciel od razu widzi co brakuje w bazie wiedzy.
+- **Pytania bez odpowiedzi** — osobna zakładka: "Te pytania bot nie umiał odpowiedzieć" → właściciel dodaje Q&A jednym kliknięciem.
+- **Sentiment analysis** — wykryj sfrustrowanego klienta (negatywny sentiment po 2+ wiadomościach) → automatyczna eskalacja do właściciela przez SMS.
+- **Conversation quality score** — AI ocenia jakość rozmowy 1-5 i flaguje złe rozmowy do review.
+- **A/B testing promptów** — porównaj wariant A (obecny system prompt) vs wariant B (nowy) na 50/50 ruchu.
+- **AI cost per tenant** — dashboard pokazuje koszt tokenów per klient → podstawa do wyceny planów.
+- **Peak hours heatmap** — kiedy użytkownicy piszą najczęściej → właściciel wie kiedy być dostępny na eskalacje.
+
+### Pakiety i monetyzacja
+
+- **Setup fee jednorazowy** — 299 zł setup fee przy pierwszym zakupie (pokrywa koszty konfiguracji i onboardingu osobistego dla Pro/Premium).
+- **Conversation packs** — doładowanie rozmów poza planem: 100 rozmów za 29 zł (dla Starter który przekroczył limit zamiast upgrade).
+- **Annual discount** — 2 miesiące gratis przy płatności rocznej (12 → 10 płatnych mies.).
+- **Agencyjny plan reseller** — agencje webdesign kupują w hurtowo i odsprzedają klientom ze swoją marżą. Dashboard zarządzania wieloma klientami.
+- **White-label per agencja** — własna domena widgetu, własne logo w dashboardzie klienta. Docelowo Faza 3-4.
+- **Pay-per-lead model** — zamiast subskrypcji: 5 zł per lead zebrany przez bota. Model self-service dla firm które nie wierzą w subskrypcje.
+
+### Branże do ekspansji (po MVP)
+
+- **Gabinety stomatologiczne** — appointment + ubezpieczenie + RODO medyczne. Wysokie ARPU (mogą płacić Premium).
+- **Warsztaty samochodowe** — "kiedy auto będzie gotowe?" + wycena usług. Mało konkurencji w AI.
+- **Szkoły tańca/jogi** — harmonogram zajęć, zapisy na próbne, cennik karnetów.
+- **Prywatne kliniki estetyczne** — podobnie jak beauty, ale wyższe ceny usług → wyższe ARPU.
+- **Food delivery lokalne** — menu, godziny, minimalne zamówienie. Alternatywa dla drogich platform.
+
+### Techniczne ulepszenia bota
+
+- **Hybrid search (BM25 + vector)** — dodanie keyword search obok cosine similarity. Poprawia trafność o ~15-20% wg benchmarków. Supabase ma `ts_rank` dla full-text search.
+- **Re-ranking** — po pobraniu top-10 chunków, re-ranking przez lekki cross-encoder przed podaniem do LLM. Poprawia jakość odpowiedzi.
+- **Streaming odpowiedzi** — SSE (Server-Sent Events) zamiast czekania na pełną odpowiedź. Percepcja szybkości radykalnie lepsza.
+- **Conversation memory** — zapamiętanie imienia klienta i poprzednich pytań w trakcie sesji (już częściowo: historia wiadomości w DB). Docelowo: "Jak mówiłem wcześniej, interesuje mnie..."
+- **Fine-tuning na danych polskich firm** — po zebraniu ~1000 rozmów: fine-tune GPT-4o-mini na polskich Q&A z branży beauty/health. Obniży koszty i poprawi jakość.
+- **Cache popularnych pytań** — Redis cache dla najczęstszych pytań (TTL 1h). Oszczędność na OpenAI API.
+- **Multi-modal** — w przyszłości: klient wysyła zdjęcie fryzury → bot rozumie i odpowiada. GPT-4o already supports this.
