@@ -5,7 +5,15 @@ import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
 import helmet from 'helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // pg v8+ on Windows treats sslmode=require as verify-full and fails with
+  // Supabase's pooler certs. Disable strict cert verification in non-production.
+  // In production supply a proper CA cert instead.
+  if (process.env.NODE_ENV !== 'production') {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+  }
+
+  // rawBody: true exposes req.rawBody for Stripe webhook signature verification
+  const app = await NestFactory.create(AppModule, { rawBody: true });
 
   app.use(helmet());
 
@@ -19,6 +27,15 @@ async function bootstrap() {
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ) => {
+      // In development allow any localhost port (useful for local HTML test servers)
+      if (
+        process.env.NODE_ENV !== 'production' &&
+        origin &&
+        /^https?:\/\/localhost:\d+$/.test(origin)
+      ) {
+        callback(null, true);
+        return;
+      }
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
         return;
@@ -36,4 +53,3 @@ async function bootstrap() {
 }
 
 void bootstrap();
-

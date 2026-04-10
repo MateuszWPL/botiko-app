@@ -6,7 +6,9 @@ jest.mock('../knowledge/embedding.service', () => ({
   EmbeddingService: jest.fn(),
 }));
 jest.mock('../../brand-templates', () => ({
-  getBrandTemplate: jest.fn().mockReturnValue({ systemPrompt: 'You are a helpful assistant.' }),
+  getBrandTemplate: jest
+    .fn()
+    .mockReturnValue({ systemPrompt: 'You are a helpful assistant.' }),
 }));
 
 import { Test } from '@nestjs/testing';
@@ -20,7 +22,7 @@ const mockBot = {
   id: 'bot-1',
   name: 'Testowy Bot',
   isActive: true,
-  tenant: { id: 'tenant-1', industry: 'BEAUTY', plan: 'STARTER' },
+  tenant: { id: 'tenant-1', industry: 'BEAUTY', plan: 'STARTER', isActive: true },
 };
 
 const mockConversation = {
@@ -77,7 +79,10 @@ describe('ChatService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockEmbeddingService.findRelevantChunks.mockResolvedValue([]);
-    mockAiService.chat.mockResolvedValue({ content: 'AI answer', tokenUsage: 50 });
+    mockAiService.chat.mockResolvedValue({
+      content: 'AI answer',
+      tokenUsage: 50,
+    });
   });
 
   describe('sendMessage — fallback', () => {
@@ -191,11 +196,17 @@ describe('ChatService', () => {
     });
 
     it('returns NotFoundException when bot not found', async () => {
-      const prisma = buildPrismaMock({ bot: { findFirst: jest.fn().mockResolvedValue(null) } });
+      const prisma = buildPrismaMock({
+        bot: { findFirst: jest.fn().mockResolvedValue(null) },
+      });
       const { service } = await buildService(prisma);
 
       await expect(
-        service.sendMessage({ botId: 'missing', sessionId: 's1', message: 'hi' }),
+        service.sendMessage({
+          botId: 'missing',
+          sessionId: 's1',
+          message: 'hi',
+        }),
       ).rejects.toThrow(NotFoundException);
     });
 

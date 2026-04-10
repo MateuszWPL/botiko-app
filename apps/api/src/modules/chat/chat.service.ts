@@ -79,11 +79,21 @@ export class ChatService {
   async sendMessage(req: ChatRequest): Promise<ChatResponse> {
     const bot = await this.prisma.bot.findFirst({
       where: { id: req.botId, isActive: true },
-      include: { tenant: { select: { id: true, industry: true, plan: true } } },
+      include: {
+        tenant: {
+          select: { id: true, industry: true, plan: true, isActive: true },
+        },
+      },
     });
 
     if (!bot) {
       throw new NotFoundException('Bot not found');
+    }
+
+    if (!bot.tenant.isActive) {
+      throw new ForbiddenException(
+        'Your subscription has expired. Please renew to continue using the bot.',
+      );
     }
 
     await this.checkPlanLimit(bot.tenant.id, bot.tenant.plan);
