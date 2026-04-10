@@ -11,6 +11,7 @@ model Tenant {
   name                 String
   industry             Industry
   plan                 Plan     @default(STARTER)
+  isActive             Boolean  @default(true)
   stripeCustomerId     String?
   stripeSubscriptionId String?
   tokenUsage           Int      @default(0)
