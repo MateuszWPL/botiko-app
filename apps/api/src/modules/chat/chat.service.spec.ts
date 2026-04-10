@@ -22,7 +22,12 @@ const mockBot = {
   id: 'bot-1',
   name: 'Testowy Bot',
   isActive: true,
-  tenant: { id: 'tenant-1', industry: 'BEAUTY', plan: 'STARTER', isActive: true },
+  tenant: {
+    id: 'tenant-1',
+    industry: 'BEAUTY',
+    plan: 'STARTER',
+    isActive: true,
+  },
 };
 
 const mockConversation = {

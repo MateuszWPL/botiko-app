@@ -34,6 +34,10 @@ function bundleSizeCheck(): Plugin {
 
 export default defineConfig({
   plugins: [preact(), bundleSizeCheck()],
+  server: {
+    // Needed when embedding the dev widget script from a different localhost port
+    cors: true,
+  },
   build: {
     lib: {
       entry: resolve(__dirname, 'src/embed.ts'),

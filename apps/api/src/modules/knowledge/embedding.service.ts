@@ -1,4 +1,9 @@
-import { Inject, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AI_SERVICE, type AIService } from '../ai/ai.service.interface';

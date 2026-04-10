@@ -14,7 +14,10 @@ import { registerSchema, type RegisterDto } from './dto/register.dto';
 import { loginSchema, type LoginDto } from './dto/login.dto';
 import { refreshSchema, type RefreshDto } from './dto/refresh.dto';
 import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
-import { AuthGuard, type AuthenticatedRequest } from '../../common/guards/auth.guard';
+import {
+  AuthGuard,
+  type AuthenticatedRequest,
+} from '../../common/guards/auth.guard';
 
 // Stricter rate limit for auth endpoints: 10 requests per minute per IP
 @Throttle({ default: { limit: 10, ttl: 60000 } })
