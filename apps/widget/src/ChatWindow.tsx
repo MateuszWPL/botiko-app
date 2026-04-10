@@ -23,8 +23,53 @@ interface ChatWindowProps {
   apiUrl: string;
 }
 
+interface ApiChatResponse {
+  message?: string;
+  showLeadForm?: boolean;
+}
+
+interface SessionData {
+  sessionId: string;
+  messages: Message[];
+  userMessageCount: number;
+  leadSubmitted: boolean;
+}
+
 function generateSessionId(): string {
   return `s_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
+}
+
+function loadSession(botId: string, welcomeMessage: string): SessionData {
+  try {
+    const raw = sessionStorage.getItem(`botiko_${botId}`);
+    if (raw) {
+      const data = JSON.parse(raw) as Partial<SessionData>;
+      if (data.sessionId && Array.isArray(data.messages) && data.messages.length > 0) {
+        return {
+          sessionId: data.sessionId,
+          messages: data.messages,
+          userMessageCount: data.userMessageCount ?? 0,
+          leadSubmitted: data.leadSubmitted ?? false,
+        };
+      }
+    }
+  } catch {
+    // ignore — use defaults
+  }
+  return {
+    sessionId: generateSessionId(),
+    messages: [{ role: 'assistant', content: welcomeMessage }],
+    userMessageCount: 0,
+    leadSubmitted: false,
+  };
+}
+
+function saveSession(botId: string, data: SessionData): void {
+  try {
+    sessionStorage.setItem(`botiko_${botId}`, JSON.stringify(data));
+  } catch {
+    // sessionStorage unavailable (private mode, quota exceeded) — ignore
+  }
 }
 
 export function ChatWindow({
@@ -35,11 +80,11 @@ export function ChatWindow({
   isOpen,
   apiUrl,
 }: ChatWindowProps) {
-  // Initialized once per component instance — isolated per widget mount
-  const [sessionId] = useState<string>(generateSessionId);
-  const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: welcomeMessage },
-  ]);
+  const initial = loadSession(botId, welcomeMessage);
+
+  const [sessionId] = useState<string>(initial.sessionId);
+  const [messages, setMessages] = useState<Message[]>(initial.messages);
+  const [userMessageCount, setUserMessageCount] = useState<number>(initial.userMessageCount);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [lead, setLead] = useState<LeadFormState>({
@@ -47,11 +92,22 @@ export function ChatWindow({
     name: '',
     phone: '',
     consent: false,
-    submitted: false,
+    submitted: initial.leadSubmitted,
     loading: false,
   });
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+
+  // Persist session on every relevant state change
+  useEffect(() => {
+    saveSession(botId, {
+      sessionId,
+      messages,
+      userMessageCount,
+      leadSubmitted: lead.submitted,
+    });
+  }, [botId, sessionId, messages, userMessageCount, lead.submitted]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -71,7 +127,8 @@ export function ChatWindow({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ botId, sessionId, message: text }),
       });
-      const data = (await res.json()) as { message?: string };
+      const data = (await res.json()) as ApiChatResponse;
+
       setMessages((prev) => [
         ...prev,
         {
@@ -79,6 +136,12 @@ export function ChatWindow({
           content: data.message ?? 'Przepraszam, coś poszło nie tak.',
         },
       ]);
+
+      setUserMessageCount((n) => n + 1);
+
+      if (data.showLeadForm && !lead.submitted) {
+        setLead((s) => ({ ...s, visible: true }));
+      }
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -107,13 +170,12 @@ export function ChatWindow({
           consentGiven: true,
         }),
       });
-      setLead((s) => ({ ...s, submitted: true, loading: false }));
+      setLead((s) => ({ ...s, submitted: true, loading: false, visible: false }));
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          content:
-            'Dziękuję! Twoje dane zostały zapisane. Odezwiemy się wkrótce! 😊',
+          content: 'Dziękuję! Twoje dane zostały zapisane. Odezwiemy się wkrótce!',
         },
       ]);
     } catch {
@@ -208,7 +270,9 @@ export function ChatWindow({
                     ? '14px 14px 4px 14px'
                     : '14px 14px 14px 4px',
                 backgroundColor:
-                  msg.role === 'user' ? `var(--botiko-primary, ${primaryColor})` : '#f1f5f9',
+                  msg.role === 'user'
+                    ? `var(--botiko-primary, ${primaryColor})`
+                    : '#f1f5f9',
                 color: msg.role === 'user' ? '#fff' : '#0f172a',
                 fontSize: '14px',
                 lineHeight: '1.5',
@@ -319,9 +383,7 @@ export function ChatWindow({
             />
             Wyrażam zgodę na przetwarzanie moich danych osobowych w celu odpowiedzi na zapytanie (RODO)
           </label>
-          <div
-            style={{ display: 'flex', gap: '6px', marginTop: '8px' }}
-          >
+          <div style={{ display: 'flex', gap: '6px', marginTop: '8px' }}>
             <button
               onClick={() => void submitLead()}
               disabled={
@@ -373,7 +435,8 @@ export function ChatWindow({
           flexShrink: 0,
         }}
       >
-        {!lead.visible && !lead.submitted && (
+        {/* Lead form button — shown only after 2+ exchanges, before submission */}
+        {!lead.visible && !lead.submitted && userMessageCount >= 2 && (
           <button
             onClick={() => setLead((s) => ({ ...s, visible: true }))}
             title="Zostaw kontakt"

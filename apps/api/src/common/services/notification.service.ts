@@ -1,0 +1,139 @@
+import { Injectable, Logger } from '@nestjs/common';
+import { Resend } from 'resend';
+import { env } from '../../config/env';
+
+export interface NewLeadData {
+  leadId: string;
+  name: string;
+  phone: string;
+  botName: string;
+  toEmail: string;
+}
+
+@Injectable()
+export class NotificationService {
+  private readonly logger = new Logger(NotificationService.name);
+  private readonly resend: Resend | null;
+
+  constructor() {
+    this.resend = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null;
+
+    if (!this.resend) {
+      this.logger.warn('RESEND_API_KEY not set — email notifications disabled');
+    }
+  }
+
+  async sendNewLeadEmail(data: NewLeadData): Promise<void> {
+    if (!this.resend) return;
+
+    const date = new Date().toLocaleString('pl-PL', {
+      timeZone: 'Europe/Warsaw',
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+
+    const dashboardUrl = env.APP_URL;
+
+    try {
+      await this.resend.emails.send({
+        from: `Botiko.pl <${env.RESEND_FROM_EMAIL}>`,
+        to: data.toEmail,
+        subject: `Nowy lead z bota "${data.botName}"`,
+        html: buildLeadEmailHtml({ ...data, date, dashboardUrl }),
+      });
+
+      this.logger.log(
+        `Lead email sent to ${data.toEmail} for lead ${data.leadId}`,
+      );
+    } catch (err: unknown) {
+      // Non-critical — lead is already saved, just log the failure
+      this.logger.error(`Failed to send lead email for ${data.leadId}`, err);
+    }
+  }
+}
+
+interface EmailVars {
+  name: string;
+  phone: string;
+  botName: string;
+  date: string;
+  dashboardUrl: string;
+}
+
+function buildLeadEmailHtml(vars: EmailVars): string {
+  // Phone displayed as plain text — avoid XSS in email clients
+  const safeName = escapeHtml(vars.name);
+  const safePhone = escapeHtml(vars.phone);
+  const safeBotName = escapeHtml(vars.botName);
+  const safeDate = escapeHtml(vars.date);
+
+  return `<!DOCTYPE html>
+<html lang="pl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+
+        <!-- Header -->
+        <tr>
+          <td style="background:#6366F1;border-radius:10px 10px 0 0;padding:24px 28px;">
+            <p style="margin:0;font-size:13px;color:#c7d2fe;letter-spacing:0.05em;text-transform:uppercase;">Botiko.pl</p>
+            <h1 style="margin:6px 0 0;font-size:20px;font-weight:700;color:#fff;">
+              Nowy kontakt od klienta!
+            </h1>
+          </td>
+        </tr>
+
+        <!-- Body -->
+        <tr>
+          <td style="background:#fff;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 10px 10px;padding:28px;">
+
+            <p style="margin:0 0 20px;font-size:15px;color:#475569;">
+              Bot <strong style="color:#0f172a;">${safeBotName}</strong> zebrał nowy kontakt:
+            </p>
+
+            <table width="100%" cellpadding="0" cellspacing="0"
+              style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;font-size:14px;">
+              <tr style="background:#f8fafc;">
+                <td style="padding:12px 16px;color:#64748b;width:90px;border-bottom:1px solid #e2e8f0;">Imię</td>
+                <td style="padding:12px 16px;font-weight:600;color:#0f172a;border-bottom:1px solid #e2e8f0;">${safeName}</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 16px;color:#64748b;border-bottom:1px solid #e2e8f0;">Telefon</td>
+                <td style="padding:12px 16px;font-weight:600;color:#0f172a;border-bottom:1px solid #e2e8f0;font-size:16px;">${safePhone}</td>
+              </tr>
+              <tr style="background:#f8fafc;">
+                <td style="padding:12px 16px;color:#64748b;">Data</td>
+                <td style="padding:12px 16px;color:#475569;">${safeDate}</td>
+              </tr>
+            </table>
+
+            <div style="margin:28px 0;text-align:center;">
+              <a href="${vars.dashboardUrl}/leads"
+                style="display:inline-block;background:#6366F1;color:#fff;text-decoration:none;
+                       padding:13px 28px;border-radius:8px;font-weight:600;font-size:15px;">
+                Zobacz w dashboardzie →
+              </a>
+            </div>
+
+            <p style="margin:0;font-size:13px;color:#94a3b8;text-align:center;border-top:1px solid #f1f5f9;padding-top:20px;">
+              Botiko.pl — bot który odpowiada za Ciebie
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
