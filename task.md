@@ -69,199 +69,341 @@
 
 ---
 
-## Faza 1 — MVP Build (Tydzień 3-8)
+## Faza 1A — Gotowe do Pilotu
 
-### 1.1 Backend API — Core endpoints
+> Cel: działający produkt na produkcji, który można pokazać pierwszym 3-5 klientom.
+> Jeden plan: **149 zł/mies, 14 dni trial**. Zero feature gating na razie — wszyscy mają to samo.
+> Każdy punkt: implementacja → test → zabezpieczenie.
+
+---
+
+### Już zrobione (zbudowane, wymaga weryfikacji)
+
 - [x] `POST /api/v1/auth/register` — rejestracja (Supabase Auth)
-- [x] `POST /api/v1/auth/login` — logowanie
-- [x] `POST /api/v1/auth/logout`
-- [x] `POST /api/v1/auth/refresh`
+- [x] `POST /api/v1/auth/login` / logout / refresh
 - [x] `GET /api/v1/bot/:id/config` — publiczny (widget pobiera config)
-- [x] `POST /api/v1/bot` — tworzenie bota (onboarding)
-- [x] `PATCH /api/v1/bot/:id` — update bota
+- [x] `POST /api/v1/bot` / `PATCH /api/v1/bot/:id`
 - [x] `POST /api/v1/chat` — AI chat (widget → API → OpenAI)
-- [x] `POST /api/v1/leads` — zapis leada z widgetu
-- [x] `GET /api/v1/leads` — lista leadów (dashboard)
-- [x] `PATCH /api/v1/leads/:id/status` — zmiana statusu leada
-- [x] `GET /api/v1/conversations` — lista rozmów
-- [x] `GET /api/v1/conversations/:id` — szczegóły rozmowy
+- [x] `POST /api/v1/leads` / `GET` / `PATCH status`
+- [x] `GET /api/v1/conversations` / `/:id`
+- [x] RAG Pipeline: embed → pgvector search → GPT-4o mini → response
+- [x] System prompt per branża (brand-templates)
+- [x] Widget: launcher, ChatWindow, message bubbles, typing indicator, LeadForm, RODO
+- [x] Onboarding wizard: 5 kroków + auto-save localStorage + generowanie KnowledgeChunks
+- [x] Dashboard: 8 stron (overview, leads, conversations, knowledge base, settings, embed, billing)
+- [x] Landing page v4
+- [x] Security baseline: open redirect fix, error leak fix, domain whitelist, SQL injection guard, hasło min 12 znaków
 
-### 1.2 AI / RAG Pipeline
-- [x] `EmbeddingService` — text-embedding-3-small
-- [x] `KnowledgeService` — CRUD chunków wiedzy
-- [x] Wektoryzacja treści onboardingu → pgvector
-- [x] Cosine similarity search (top 5 chunków, próg 0.3)
-- [x] `ChatService` — orchestracja: retrieve context → GPT-4o mini → response
-- [x] System prompt per branża (z brand-templates)
-- [x] `AIService` interface (abstrakcja providera — swap OpenAI/Anthropic)
-- [x] Token usage tracking per tenant
-- [x] Rate limiting per plan (300/2000/unlimited rozmów) — `checkPlanLimit()` w ChatService, liczy conversations per miesiąc per tenant
+---
 
-### 1.3 Widget (Preact)
-- [x] Launcher button (floating, bottom-right, customizable color)
-- [x] ChatWindow (360×520px desktop, fullscreen mobile)
-- [x] Message bubbles (user + assistant)
-- [x] Typing indicator (animowane dots)
-- [x] LeadForm inline (imię + telefon)
-- [x] RODO consent checkbox
-- [x] "Powered by Botiko" footer
-- [x] CSS variables (`--botiko-primary`) — Shadow DOM `:host` + `host.style.setProperty`, komponenty używają `var(--botiko-primary, fallback)`
-- [x] Embed script: `<script src="widget.botiko.pl/embed.js" data-bot-id="xxx">`
-- [x] Smooth open/close animation (botiko-fadein)
-- [x] Mobile responsive (fullscreen)
-- [x] Bundle size check: **< 12KB gzip** (wymuszane przez Vite plugin)
-- [x] Domain whitelist validation (DomainWhitelistGuard)
+### 1A.1 — Jakość Bota (krytyczne przed pilotami)
 
-### 1.4 Onboarding Wizard (Next.js)
-- [x] Step 1: Wybór branży (karty z ikonami)
-- [x] Step 2: Dane firmy (nazwa, adres, telefon, godziny)
-- [x] Step 3: Oferta/cennik — manual text input + klikalne szablony branżowe (BEAUTY/HEALTH/FOOD/AUTO/OTHER); upload PDF poza scope MVP
-- [x] Step 4: Personalizacja (imię bota, kolor, tekst powitalny)
-- [x] Step 5: Embed code + instrukcja instalacji WordPress
-- [x] Progress bar (OnboardingShell z krokami + pasek %)
-- [x] Auto-save między krokami (localStorage via onboarding-store.ts)
-- [x] Generowanie bazy wiedzy z danych onboardingu → RAG embed (step-5 tworzy KnowledgeChunks)
+> Bez tych rzeczy bot wygląda na głupi lub frustruje klientów. To zabija retencję.
 
-### 1.5 Dashboard (Next.js)
-- [x] Layout: sidebar + main content (Sidebar component)
-- [x] Overview page: stats (rozmowy, leady, konwersje)
-- [x] Leads page: tabela z leadami + status (LeadsTable)
-- [x] Conversations page: lista rozmów + podgląd
-- [x] Knowledge Base page: edytor treści bota (CRUD)
-- [x] Settings page: dane firmy, kolor widgetu, domeny whitelist
-- [x] Embed code page: copy-paste snippet
-- [x] Billing page: aktualny plan (UI — bez integracji Stripe)
-- [x] Mobile responsive (PWA-ready) — manifest.json, bottom nav na mobile, pb-safe na dashboard layout
+#### Implementacja
+- [ ] **Fallback answer** — w `ChatService`: gdy wszystkie chunki mają score < 0.3 LUB baza wiedzy jest pusta → nie wywołuj OpenAI, zwróć predefiniowaną odpowiedź: `"Nie mam tej informacji. Zadzwoń do nas: {bot.phone}"` (telefon z konfiguracji bota)
+- [ ] **Eskalacja do człowieka** — w `ChatService`: przed wysłaniem do OpenAI sprawdź czy wiadomość zawiera słowa kluczowe (`człowiek`, `human`, `osoba`, `chcę mówić`, `zadzwoń`, `połącz`) → zwróć specjalną odpowiedź z danymi kontaktowymi zamiast AI response
+- [ ] **Lead form timing** — w widgecie: stan `messageCount` per sesja, formularz LeadForm renderuje się dopiero gdy `messageCount >= 2`, nie przy otwarciu
+- [ ] **Conversation continuity** — w widgecie: po każdym message zapisz historię do `sessionStorage` pod kluczem `botiko_{botId}`, przy inicjalizacji odczytaj i wstaw do stanu — użytkownik nie traci historii po odświeżeniu strony
 
-### 1.6 Notyfikacje
-- [ ] Email: nowy lead → właściciel (Resend + React Email template)
-- [ ] Email: podsumowanie dzienne (opcjonalne)
-- [ ] SMS: nowy lead → właściciel (SMSAPI.pl) — tylko Pro/Premium
+#### Testowanie
+- [ ] Ręczny test fallback: zadaj pytanie całkowicie poza bazą wiedzy → sprawdź że bot zwraca dane kontaktowe, NIE hallucynuje
+- [ ] Ręczny test fallback: wypróbuj z pustą bazą wiedzy (nowy bot bez żadnych chunków)
+- [ ] Ręczny test eskalacji: napisz "chcę porozmawiać z człowiekiem" → sprawdź response z telefonem
+- [ ] Ręczny test lead timing: otwórz widget, wyślij 1 wiadomość → formularz NIE powinien się pokazać; wyślij 2. → formularz pojawia się
+- [ ] Ręczny test continuity: wyślij 3 wiadomości, odśwież stronę → historia powinna być zachowana
 
-### 1.7 Landing Page (botiko.pl)
-- [ ] Hero section: headline + CTA + widget mockup
-- [ ] Branże grid: 6 kart z ikonami
-- [ ] "Jak to działa" — 3 kroki
-- [ ] Cennik: 3 plany (Starter/Pro/Premium)
-- [ ] Social proof / opinie
-- [ ] FAQ
-- [ ] CTA banner + footer
-- [ ] Demo bot na żywo na LP
-- [ ] Mobile responsive
-- [ ] SEO: meta tags, OG, sitemap
+#### Zabezpieczenia
+- [ ] Keyword list dla eskalacji nie może być nadużyta (user nie może "wstrzyknąć" komendy przez te słowa kluczowe — tylko trigger eskalacji, nie wykonanie kodu)
+- [ ] Fallback response nie może ujawniać wewnętrznych szczegółów API ani struktury błędu
 
-### 1.8 Płatności (Stripe)
-- [ ] Setup Fee (jednorazowa opłata)
-- [ ] Subscription (miesięczna)
-- [ ] Stripe webhook handler
-- [ ] Trial 14 dni
-- [ ] Upgrade/downgrade plan
-- [ ] Billing portal (faktury)
+---
 
-### 1.9 Testy
-- [ ] Unit testy: AI service, RAG pipeline, auth
-- [ ] Integration testy: API endpoints
-- [ ] E2E testy: onboarding flow (Playwright)
-- [ ] Widget bundle size < 12KB automated check
-- [ ] Security audit: RLS, auth flows, input validation
+### 1A.2 — Email Notyfikacje (Resend)
 
-### 1.10 Security — do naprawy
+> Właściciel firmy musi wiedzieć gdy ktoś zostawi lead. To jest główna wartość produktu.
 
-#### Naprawione (2026-04-09)
-- [x] **Open redirect** — `login/page.tsx` — `?redirect=` walidowany do ścieżek relatywnych
-- [x] **Wyciek komunikatów błędów** — `http-exception.filter.ts` — surowy `exception.message` nie jest już zwracany klientowi
-- [x] **Ominięcie domain whitelist** — `domain-whitelist.guard.ts` — brak nagłówka `Origin` blokowany na produkcji
+#### Implementacja
+- [ ] Zainstalować: `resend` w `apps/api`, `@react-email/components` w `apps/api`
+- [ ] Stworzyć `apps/api/src/email/templates/new-lead.tsx` — React Email template: dane leada (imię, telefon), nazwa bota, data, link do dashboardu
+- [ ] Stworzyć `NotificationService` (`apps/api/src/common/services/notification.service.ts`) z metodą `sendNewLeadEmail(lead, bot, tenantEmail)`
+- [ ] W `LeadService.create()`: po zapisaniu leada → wywołaj `NotificationService.sendNewLeadEmail()` (async, nie blokuj response)
+- [ ] Env vars: `RESEND_API_KEY`, `RESEND_FROM_EMAIL=powiadomienia@botiko.pl`
+- [ ] Error handling: jeśli Resend rzuci błąd → zaloguj (nie crashuj request, lead już zapisany)
 
-- [x] **SQL injection risk** — `embedding.service.ts` — `assertValidEmbedding()` waliduje długość (1536) i `isFinite()` każdej wartości
-- [x] **Słabe wymagania hasła** — `register.dto.ts` — min 12 znaków + regex dla wielkiej litery + cyfry
-- [x] **`status as any`** — `lead.service.ts` — `status as LeadStatus` z importem `@prisma/client`
+#### Testowanie
+- [ ] Ręcznie: wypełnij formularz w widgecie → sprawdź email w skrzynce właściciela (test z prawdziwym adresem)
+- [ ] Sprawdź że email nie ląduje w spamie (SPF/DKIM dla botiko.pl skonfigurowane przez Resend)
+- [ ] Test że awaria Resend nie blokuje zapisu leada (mock Resend error w teście)
 
-### 1.11 Pakiety — Funkcjonalności per Plan
+#### Zabezpieczenia
+- [ ] Email do właściciela wysyłany na `tenant.email` z bazy — nie na adres podany przez użytkownika widgetu
+- [ ] Telefon leada w emailu: wyświetlany jako text (nie link `tel:`) żeby uniknąć XSS w klientach pocztowych
+- [ ] Rate limit na endpoint `/leads`: już jest (5 req/min) — zweryfikować że działa
 
-> Analiza rynku (Chatbase, SiteGPT, Tidio, Botpress, Crisp, Dante AI) — co jest gdzie gated i dlaczego.
+---
 
-#### Starter — 149 zł/mies (target: pierwsza firma, micro)
-- [ ] 300 rozmów/mies (miesięczny reset, tracking per tenant)
-- [ ] 1 bot per konto
-- [ ] Baza wiedzy: tekst ręczny (z onboardingu) — maks. 20 wpisów Q&A
-- [ ] Lead capture (imię + telefon) + email do właściciela
-- [ ] Widget: customizacja koloru i imienia bota
-- [ ] Historia rozmów w dashboardzie: 30 dni
-- [ ] "Powered by Botiko" badge w widgecie (obowiązkowy)
-- [ ] Support: email, odpowiedź do 48h
+### 1A.3 — Stripe (jeden plan, działający billing)
 
-#### Pro — 249 zł/mies (target: aktywna firma, potrzebuje więcej danych)
-- [ ] 2 000 rozmów/mies
-- [ ] 3 boty per konto
-- [ ] Baza wiedzy: + PDF upload (maks. 5 plików, 5MB każdy), + URL crawl własnej strony www
-- [ ] SMS notyfikacje o nowych leadach (SMSAPI.pl)
-- [ ] Statystyki: liczba rozmów, leady, godziny szczytu, top pytania
-- [ ] Historia rozmów: 90 dni
-- [ ] "Powered by Botiko" badge opcjonalny (można wyłączyć)
-- [ ] Support: email priorytetowy, odpowiedź do 24h
+> Bez tego nie możesz zarabiać. Jeden plan, zero komplikacji z upgrade/downgrade.
 
-#### Premium — 449 zł/mies (target: firma z pełną automatyzacją)
-- [ ] Unlimited rozmów
-- [ ] 10 botów per konto
-- [ ] Baza wiedzy: + Google Docs sync, + Notion sync, + webhook do własnych danych
-- [ ] API access (klucze w dashboardzie, docs na botiko.pl/api)
-- [ ] Full white-label: brak Botiko badge, custom domena dla widgetu
-- [ ] Automatyczny raport miesięczny PDF (Resend + React PDF)
-- [ ] Webhook: powiadomienie o nowym leadzie do własnego systemu
-- [ ] Support: email + video call onboarding (30 min przy zakupie)
+#### Implementacja
+- [ ] Zainstalować: `stripe` w `apps/api` + `apps/web`
+- [ ] Stworzyć w Stripe Dashboard: produkt "Botiko MVP" — cena 149 zł/mies PLN, recurring, 14-day trial
+- [ ] `POST /api/v1/billing/create-checkout` (chroniony AuthGuard) → tworzy Stripe Checkout Session (mode: `subscription`, `trial_period_days: 14`, `client_reference_id: tenantId`) → zwraca URL do redirectu
+- [ ] Stripe Webhook handler `POST /api/v1/billing/webhook` (publiczny, bez AuthGuard):
+  - `customer.subscription.created` / `updated` → `tenant.plan = STARTER`, `tenant.stripeCustomerId`, `tenant.stripeSubscriptionId`, `tenant.isActive = true`
+  - `customer.subscription.deleted` → `tenant.isActive = false`
+  - `invoice.payment_failed` → `tenant.isActive = false` + wyślij email do właściciela
+- [ ] Dodać `isActive` i `stripeCustomerId`, `stripeSubscriptionId` do modelu `Tenant` w Prisma (migracja)
+- [ ] W `ChatService.checkPlanLimit()`: sprawdź też `tenant.isActive` — jeśli false, zwróć 403 z komunikatem "Twój plan wygasł"
+- [ ] `POST /api/v1/billing/portal` → Stripe Customer Portal session (zarządzanie płatnościami, faktury)
+- [ ] Billing page w dashboard: status subskrypcji (trial/active/expired), dni pozostałe do końca trialu, przycisk "Kup plan" → checkout, przycisk "Zarządzaj" → portal
 
-### 1.12 Bot Core — Brakujące Funkcje MVP
+#### Testowanie
+- [ ] Stripe CLI lokalnie: `stripe listen --forward-to localhost:3001/api/v1/billing/webhook`
+- [ ] Test checkout: kliknij "Kup plan" → Stripe test card `4242 4242 4242 4242` → webhook `subscription.created` → sprawdź `tenant.isActive = true` w DB
+- [ ] Test trial: utwórz subskrypcję, usuń ją w Stripe Dashboard → webhook `subscription.deleted` → sprawdź że bot zwraca 403
+- [ ] Test payment_failed: użyj karty `4000 0000 0000 0341` w Stripe → sprawdź email i dezaktywację
 
-> Na podstawie analizy rynku: największe powody, dla których boty zawodzą. Te funkcje są must-have przed pilotami.
+#### Zabezpieczenia
+- [ ] Webhook signature verification: `stripe.webhooks.constructEvent(body, sig, STRIPE_WEBHOOK_SECRET)` — jeśli błąd → 400, nie przetwarzaj
+- [ ] Raw body wymagany dla weryfikacji — użyj `express.raw()` dla route webhooka (nie `express.json()`)
+- [ ] Nigdy nie przechowywać danych kart — tylko `stripeCustomerId` i `stripeSubscriptionId`
+- [ ] `tenantId` w `client_reference_id` — weryfikuj przy webhook że tenant istnieje zanim zaktualizujesz
 
-- [ ] **Fallback answer** — gdy bot nie zna odpowiedzi (similarity score < 0.3 dla wszystkich chunków), wyślij gotową wiadomość z numerem telefonu lub linkiem do kontaktu zamiast hallucynacji
-- [ ] **Eskalacja do człowieka** — po 3 nieudanych odpowiedziach lub gdy user pisze "człowiek"/"human"/"rozmów z kimś" → bot pokazuje dane kontaktowe z konfiguracji (telefon, WhatsApp link)
-- [ ] **Lead form timing** — formularz pojawia się dopiero po ≥ 2 wymianach wiadomości, nie od razu przy otwarciu widgetu
-- [ ] **Conversation continuity** — sessionStorage w widgecie przechowuje historię przez czas wizyty (nie traci przy odświeżeniu strony)
-- [ ] **Knowledge staleness indicator** — w dashboardzie: "Baza wiedzy ostatnio zaktualizowana: X dni temu" + przycisk "Odśwież"
-- [ ] **Bot confidence display** — gdy bot zwraca odpowiedź z niskim confidence, dodaje automatycznie: "Jeśli masz wątpliwości, zadzwoń: [telefon]"
-- [ ] **Quick reply buttons** — 3-4 gotowe przyciski pod pierwszą wiadomością bota (konfigurowalne w dashboardzie: "Cennik", "Godziny otwarcia", "Zapisz się")
-- [ ] **PDF upload w onboardingu** — step 3 umożliwia wrzucenie cennika/oferty jako PDF (parsowanie text → chunki) zamiast tylko ręcznego wpisywania
+---
+
+### 1A.4 — Landing Page — Domknięcie
+
+> LP jest już zbudowana (v4), potrzeba kilku rzeczy żeby była gotowa na prawdziwych użytkowników.
+
+#### Implementacja
+- [ ] Sekcja cennik: zaktualizuj do jednego planu "149 zł/mies, 14 dni gratis" — bez Starter/Pro/Premium (za wcześnie na tiers), prosty komunikat
+- [ ] Przycisk CTA "Zacznij za darmo" → redirect do `/rejestracja` (onboarding flow)
+- [ ] Demo bot na LP: osadź widżet Botiko z prawdziwym botem demonstracyjnym (branża BEAUTY, pre-skonfigurowany) — klucz testowy, nie produkcyjny
+- [ ] SEO: `<title>`, `<meta description>`, Open Graph (og:title, og:description, og:image) — dla Twittera i Facebooka
+- [ ] `sitemap.xml` — podstawowy, tylko główna strona + `/rejestracja`
+- [ ] Polityka prywatności: prosta strona `/prywatnosc` (wystarczy tekst o RODO, zbieraniu danych kontaktowych, Supabase jako host)
+- [ ] Link do polityki prywatności w widgecie przy checkboxie RODO i w footerze LP
+
+#### Testowanie
+- [ ] Sprawdź LP na mobile (Chrome DevTools → iPhone SE)
+- [ ] Sprawdź że przycisk CTA otwiera onboarding rejestrację
+- [ ] Sprawdź demo bot — zadaj 3-4 pytania, zrób lead, sprawdź czy email dociera
+- [ ] Sprawdź OG preview: wklej URL LP w [opengraph.xyz](https://www.opengraph.xyz/)
+
+---
+
+### 1A.5 — Manualna QA Checklist (przed deploy)
+
+> Kod vibecoded = nie ufamy że działa bez ręcznego przetestowania każdej ścieżki.
+
+#### Auth flow
+- [ ] Rejestracja: nowy email + hasło → redirect do onboardingu
+- [ ] Rejestracja: słabe hasło (<12 znaków) → błąd walidacji widoczny
+- [ ] Rejestracja: istniejący email → czytelny komunikat błędu
+- [ ] Login: poprawne dane → dashboard
+- [ ] Login: złe hasło → komunikat błędu (bez szczegółów technicznych)
+- [ ] Wylogowanie → redirect do login
+- [ ] Dostęp do `/dashboard` bez sesji → redirect do `/login`
+
+#### Onboarding flow
+- [ ] Przejście przez wszystkie 5 kroków bez błędu
+- [ ] Auto-save: wypełnij step 2, odśwież → dane zachowane
+- [ ] Step 3 (oferta): wpisz tekst, przejdź do step 4, wróć → tekst zachowany
+- [ ] Step 5: kod embed wyświetlony, przycisk "Kopiuj" działa
+- [ ] Po ukończeniu onboardingu: bot widoczny w dashboardzie
+- [ ] Po ukończeniu onboardingu: KnowledgeChunks istnieją w DB (sprawdź w Supabase Table Editor)
+
+#### Widget flow
+- [ ] Widget ładuje się na stronie testowej (`localhost` lub testowa domena)
+- [ ] Otwieranie/zamykanie widgetu działa płynnie
+- [ ] Wyślij wiadomość → odpowiedź pojawia się po chwili z typing indicator
+- [ ] Zadaj pytanie z bazy wiedzy → bot odpowiada trafnie
+- [ ] Zadaj pytanie poza bazą → bot zwraca fallback z telefonem (nie hallucynuje)
+- [ ] Po 2 wiadomościach: formularz lead pojawia się
+- [ ] Wypełnij formularz (imię + telefon) + zaznacz RODO → lead zapisany
+- [ ] Email do właściciela dotarł po submicie leada
+- [ ] Odśwież stronę po 3 wiadomościach → historia zachowana
+
+#### Dashboard flow
+- [ ] Overview: liczby się zgadzają z DB
+- [ ] Leads: wszystkie leady widoczne, zmiana statusu działa
+- [ ] Conversations: lista rozmów, kliknięcie → pełna historia
+- [ ] Knowledge base: dodaj wpis → bot go używa (test w widgecie po dodaniu)
+- [ ] Knowledge base: usuń wpis → bot go nie używa
+- [ ] Settings: zmień kolor widgetu → kolor zmieniony w widgecie
+- [ ] Settings: dodaj domenę do whitelist → widget działa tylko na tej domenie
+- [ ] Embed: skopiuj kod → widget działa po wklejeniu na testowej stronie
+
+#### Billing flow
+- [ ] Strona billing: wyświetla "Trial" lub status planu
+- [ ] Kliknięcie "Kup plan" → Stripe Checkout (test mode)
+- [ ] Po udanej płatności: status zmieniony w dashboardzie
+- [ ] Stripe Portal: faktury dostępne
+
+---
+
+### 1A.6 — Testy Automatyczne (minimum przed deploy)
+
+> Nie musimy testować wszystkiego — testujemy to co nie ma szans działać jeśli się posypie.
+
+#### Unit testy API (`apps/api`)
+- [ ] `ChatService`: test fallback gdy brak chunków
+- [ ] `ChatService`: test że `checkPlanLimit()` blokuje gdy `isActive = false`
+- [ ] `LeadService`: test że `create()` wywołuje `NotificationService.sendNewLeadEmail()`
+- [ ] `NotificationService`: test że błąd Resend nie rzuca wyjątku (graceful error)
+- [ ] `BillingWebhookHandler`: test `subscription.deleted` → `isActive = false`
+- [ ] `BillingWebhookHandler`: test że błędna sygnatura webhooka → 400
+
+#### Integration testy API
+- [ ] `POST /api/v1/chat` bez tokenu → 401
+- [ ] `POST /api/v1/chat` z nieaktywnym tenantem (`isActive = false`) → 403
+- [ ] `POST /api/v1/leads` bez `Origin` headera na produkcji → 403
+- [ ] `POST /api/v1/billing/webhook` z błędną sygnaturą → 400
+
+#### CI check
+- [ ] Widget bundle size check działa w CI (już jest w `.github/workflows/ci.yml`)
+- [ ] API lint + test przechodzi w CI
+- [ ] Web lint + typecheck przechodzi w CI
+
+---
+
+### 1A.7 — Security Final Check (przed deploy na prod)
+
+#### Supabase / baza danych
+- [ ] Uruchomić `supabase/migrations/001_rls_policies.sql` na produkcyjnej bazie Supabase
+- [ ] Weryfikacja RLS: zaloguj się jako tenant A, sprawdź że nie widzisz danych tenanta B (przez Supabase Table Editor lub test API)
+- [ ] pgvector extension włączone na prod Supabase
+
+#### API hardening
+- [ ] Throttler rate limits przetestowane: `curl` 21 razy pod rząd na `/api/v1/chat` → 21. powinno zwrócić 429
+- [ ] Helmet headers: sprawdź w DevTools → Network → Response Headers że są `X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security`
+- [ ] CORS: sprawdź że API akceptuje tylko requesty z `app.botiko.pl` i `widget.botiko.pl` (nie `*`)
+- [ ] Env vars nie są w logach: przejrzyj `console.log` w kodzie — żadnego logowania sekretów
+
+#### Widget / RODO
+- [ ] Checkbox RODO widoczny przed submitem formularza — nie można wysłać leada bez zgody
+- [ ] Link do polityki prywatności działa
+- [ ] PII encryption: sprawdź w DB że `lead.name` i `lead.phone` są zaszyfrowane (format `iv:authTag:ciphertext`)
+
+#### Stripe
+- [ ] Webhook secret (`STRIPE_WEBHOOK_SECRET`) w env — nie w kodzie
+- [ ] Signature verification działa (test z Stripe CLI)
+
+---
+
+### 1A.8 — Deploy Produkcyjny
+
+> Rekomendacja: Railway dla API (NestJS + Prisma, auto SSL, zmienne env w panelu), Vercel dla Web + Widget.
+
+#### Konta i DNS (ręcznie)
+- [ ] Założyć konto Railway → deploy `apps/api` → ustawić env vars
+- [ ] Założyć konto Vercel → deploy `apps/web` → ustawić env vars (`NEXT_PUBLIC_*`)
+- [ ] Deploy `apps/widget` → Vercel lub Cloudflare Pages
+- [ ] DNS: `api.botiko.pl` → Railway, `app.botiko.pl` → Vercel, `widget.botiko.pl` → Vercel/CF
+- [ ] SSL certyfikaty: automatyczne (Railway + Vercel)
+- [ ] Monitoring uptime: UptimeRobot (darmowy) → monitor `api.botiko.pl/health` co 5 min, alert na email
+
+#### Weryfikacja post-deploy
+- [ ] Pełny flow na produkcji: rejestracja → onboarding → widget na testowej stronie → lead → email
+- [ ] Stripe webhook URL zaktualizowany do `https://api.botiko.pl/api/v1/billing/webhook`
+- [ ] Resend `From` adres zweryfikowany dla domeny `botiko.pl`
+- [ ] Test Stripe checkout na produkcji (mode test, karta testowa)
+
+---
+
+## Faza 1B — Wzrost po Pilotach
+
+> Wdrożyć dopiero gdy masz minimum 5 płacących klientów i feedback co faktycznie potrzebują.
+> Nie implementować wcześniej — to jest potencjalne marnotrawstwo bez walidacji.
+
+### 1B.1 — Pro Plan (249 zł/mies)
+
+Wdrożyć gdy: klienci pytają o PDF upload, więcej botów lub URL crawl.
+
+- [ ] Drugi produkt w Stripe: "Botiko Pro" 249 zł/mies
+- [ ] Upgrade flow w billing page (zmiana subskrypcji przez Stripe Portal)
+- [ ] **PDF upload** — `apps/api/src/modules/knowledge/pdf.service.ts`: `pdf-parse` lub `pdfjs-dist` → chunki tekstu → embed → KnowledgeChunks. Limit: 5 plików, 5MB każdy. Storage: Supabase Storage.
+- [ ] **URL crawl** — Cheerio/Playwright + cron co 30 dni: pobierz stronę www klienta, wyciągnij tekst, stwórz chunki. Konfigurowany URL w Settings.
+- [ ] Plan enforcement: sprawdź `tenant.plan` w API dla upload/crawl endpoints
+- [ ] "Powered by Botiko" badge — opcjonalne wyłączenie dla Pro
+- [ ] SMS notyfikacje o leadach (SMSAPI.pl) — dodaj do NotificationService
+
+### 1B.2 — Analityka w Dashboardzie
+
+Wdrożyć gdy: klienci pytają "jakie pytania zadają moi klienci?"
+
+- [ ] **Top pytania** — endpoint `GET /api/v1/analytics/top-questions`: grupuj messages po podobieństwie (embedding clustering lub proste keyword count), zwróć top 10
+- [ ] **Pytania bez odpowiedzi** — flaga w Message gdy ChatService użył fallback: `message.usedFallback = true`, dashboard filtruje te wiadomości i pokazuje listę
+- [ ] **Godziny szczytu** — agregacja `conversations.createdAt` per godzina, heatmap w dashboard
+- [ ] Dashboard overview: zaktualizuj stats żeby pokazywały trendy (vs poprzedni miesiąc)
+
+### 1B.3 — Premium Plan (449 zł/mies)
+
+Wdrożyć gdy: klient pyta o Google Docs/Notion sync lub API.
+
+- [ ] Trzeci produkt w Stripe: "Botiko Premium" 449 zł/mies
+- [ ] **Google Docs sync** — Google Drive API OAuth: klient autoryzuje dostęp, webhook na zmiany dokumentu → re-embed chunków
+- [ ] **Notion sync** — Notion API OAuth + webhook na zmiany strony
+- [ ] **API access** — generowanie kluczy API (`apiKey` w Tenant), dokumentacja na `botiko.pl/api`
+- [ ] **Raport miesięczny PDF** — cron 1x/mies → React PDF template → Resend attachment
+- [ ] White-label: pole `tenant.hideBotikoLabel` → widget ukrywa badge gdy true
+
+### 1B.4 — Quick Reply Buttons
+
+- [ ] Pole w bot config: `quickReplies: string[]` (max 4 opcje, konfigurowane w Settings)
+- [ ] Widget: po pierwszej wiadomości bota renderuj przyciski jako clickable chips
+- [ ] Kliknięcie chipa → wyślij tekst jako user message
+
+### 1B.5 — Email Daily Digest
+
+- [ ] Cron job: codziennie o 8:00 → dla każdego aktywnego tenanta wyślij podsumowanie (X rozmów, Y leadów)
+- [ ] Wersja Pro/Premium tylko
+
+---
 
 ---
 
 ## Faza 2 — Walidacja i Pierwsi Klienci (Miesiąc 2-4)
 
-### 2.1 LP branżowe
+> Zaczyna się po deploy produkcyjnym (1A.8) i pierwszych pilotach.
+
+### 2.1 Piloty
+- [ ] Cold outreach: 50 salonów Białystok (email + LinkedIn)
+- [ ] 3 darmowe piloty 30-dniowe — instalacja osobista + pomoc z onboardingiem
+- [ ] Feedback form (Tally.so) po 14 dniach użytkowania
+- [ ] Case studies z pilotów (zapis rozmów, liczby leadów, opinie)
+
+### 2.2 Iteracje po feedbacku
+- [ ] Poprawki UX na podstawie feedbacku pilotów (bug fixes, ux pain points)
+- [ ] Max 2 tygodnie iteracji — potem stop i sprzedaż
+- [ ] Zadecyduj które funkcje z Fazy 1B wdrożyć na podstawie feedbacku
+
+### 2.3 SEO i LP branżowe
 - [ ] `botiko.pl/salony` — LP dla salonów urody
 - [ ] `botiko.pl/gabinety` — LP dla gabinetów kosmetycznych
-- [ ] SEO: zaindeksować w Google, schema markup
+- [ ] Google Search Console: zaindeksuj botiko.pl, dodaj sitemap
+- [ ] Schema markup: LocalBusiness, FAQPage
 
-### 2.2 Deploy produkcyjny
-- [ ] Deploy produkcyjny — na razie pomijamy (wrócimy później)
-- [ ] SSL certyfikaty
-- [ ] Monitoring: uptime + error tracking (Sentry?)
-- [ ] Performance monitoring
-
-### 2.3 Piloty
-- [ ] Cold outreach: 50 salonów Białystok
-- [ ] 3 darmowe piloty — instalacja osobista
-- [ ] Feedback form (Tally.so) po 14 dniach
-- [ ] Case studies z pilotów
-
-### 2.4 Iteracje po feedbacku
-- [ ] Poprawki UX na podstawie feedbacku pilotów
-- [ ] Bug fixes
-- [ ] Max 2 tygodnie iteracji — potem stop
+### 2.4 Monitoring produkcyjny
+- [ ] Sentry: error tracking dla API i Web (darmowy plan wystarcza)
+- [ ] Railway metrics: CPU/memory alerts
+- [ ] UptimeRobot: już skonfigurowany w 1A.8
 
 ### 2.5 Drugi moduł branżowy
-- [ ] `brand-templates/health.ts` LUB `brand-templates/food.ts`
+- [ ] `brand-templates/health.ts` LUB `brand-templates/food.ts` — na podstawie feedbacku z pilotów
 - [ ] LP branżowy dla nowego modułu
 - [ ] Testowanie szablonu z klientem
 
 ### 2.6 Retencja
-- [ ] Automatyczny raport miesięczny PDF (Pro/Premium)
-- [ ] Email-based onboarding drip (7 dni po rejestracji)
-- [ ] Dashboard: wyraźne metryki wartości ("X leadów, Y rozmów")
+- [ ] Email-based onboarding drip (Resend): 3 emaile po rejestracji (dzień 1, 3, 7) — wskazówki jak najlepiej skonfigurować bota
+- [ ] Dashboard overview: czytelna metryka wartości ("Twój bot oszczędza Ci ~X godzin/mies")
 
 ### 2.7 Dodatkowe
-- [ ] Referral program: 100 zł/polecenie, link w dashboardzie
-- [ ] PayU integracja (backup polska bramka)
+- [ ] Referral program: 100 zł zniżki za polecenie, link w dashboardzie
+- [ ] PayU integracja (backup polska bramka — gdy Stripe ma problemy z polskimi kartami)
 
 ---
 
@@ -338,7 +480,9 @@
 
 > 📅 **Ostatnia aktualizacja:** 2026-04-10
 >
-> 📊 **Postęp:** Faza 0 ukończona w całości. Faza 1 w dużej mierze gotowa: wszystkie endpointy API, pełny RAG pipeline, widget Preact, onboarding wizard (5 kroków), dashboard (8 stron), landing page (v4). Pozostało: 1.6 notyfikacje, 1.8 Stripe, 1.9 testy, 1.11 pakiety (billing enforcement), 1.12 bot core improvements (fallback, eskalacja, PDF upload).
+> 📊 **Postęp:** Faza 0 ukończona. Fundamenty Fazy 1A zbudowane (API, RAG, widget, onboarding, dashboard, LP v4). Do zrobienia przed pilotem: 1A.1 jakość bota (fallback, eskalacja), 1A.2 email notyfikacje (Resend), 1A.3 Stripe (jeden plan), 1A.4 LP domknięcie, 1A.5-7 QA + testy + security, 1A.8 deploy.
+>
+> 🎯 **Aktualny focus:** Faza 1A — gotowość pilotowa. Jeden plan 149 zł/mies. Faza 1B (PDF, Pro/Premium, analityka) — dopiero po 5 płacących klientach.
 
 ---
 
