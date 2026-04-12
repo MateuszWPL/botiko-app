@@ -138,6 +138,48 @@ export class KnowledgeService {
     });
   }
 
+  async updateChunk(
+    tenantId: string,
+    chunkId: string,
+    content: string,
+    category?: string,
+  ): Promise<void> {
+    const chunk = await this.prisma.knowledgeChunk.findFirst({
+      where: { id: chunkId, bot: { tenantId } },
+      select: { id: true },
+    });
+
+    if (!chunk) {
+      throw new NotFoundException('Knowledge chunk not found');
+    }
+
+    const cleanContent = sanitizeContent(content);
+
+    if (cleanContent.length < 10) {
+      throw new BadRequestException(
+        'Content is too short after sanitization (min 10 characters)',
+      );
+    }
+
+    if (detectKnowledgeInjection(cleanContent)) {
+      throw new BadRequestException(
+        'Content contains invalid instructions.',
+      );
+    }
+
+    await this.prisma.knowledgeChunk.update({
+      where: { id: chunkId },
+      data: {
+        content: cleanContent,
+        ...(category !== undefined && { category: category || null }),
+      },
+    });
+
+    // Re-embed with updated content
+    await this.embeddingService.generateAndStore(chunkId, cleanContent);
+    this.logger.log(`Knowledge chunk updated + re-embedded: ${chunkId}`);
+  }
+
   async deleteChunk(tenantId: string, chunkId: string): Promise<void> {
     const chunk = await this.prisma.knowledgeChunk.findFirst({
       where: {

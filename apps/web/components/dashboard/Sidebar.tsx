@@ -16,6 +16,7 @@ import {
   Zap,
   PanelLeftClose,
   PanelLeftOpen,
+  Rocket,
 } from 'lucide-react';
 import { createClient } from '../../lib/supabase';
 
@@ -140,6 +141,22 @@ export function Sidebar() {
             );
           })}
         </nav>
+
+        {/* Setup wizard trigger */}
+        <div className="px-3 pb-1">
+          <div className="relative group/tip">
+            <button
+              onClick={() => window.dispatchEvent(new Event('botiko:open-wizard'))}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-all duration-150 ${
+                collapsed ? 'justify-center' : ''
+              }`}
+            >
+              <Rocket className="w-4 h-4 flex-shrink-0" />
+              {!collapsed && <span>Konfiguracja bota</span>}
+            </button>
+            <Tooltip label="Konfiguracja bota" show={collapsed} />
+          </div>
+        </div>
 
         {/* Bottom: Plan badge + Logout */}
         <div className="p-3 border-t border-slate-800/60 space-y-2 flex-shrink-0">

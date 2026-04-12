@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { Toaster } from 'sonner';
 import { Sidebar } from '../../components/dashboard/Sidebar';
+import { SetupWizardProvider } from '../../components/dashboard/SetupWizard';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
@@ -18,6 +19,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           },
         }}
       />
+      {/* Setup wizard — auto-opens for new users, reopenable from sidebar */}
+      <SetupWizardProvider />
     </div>
   );
 }

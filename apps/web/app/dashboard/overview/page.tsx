@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Bot, Users, MessageSquare, Mail, ArrowRight, Code2, BookOpen, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { OpenWizardButton } from './OpenWizardButton';
 import { fetchWithAuth } from '../../../lib/api';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { OverviewCharts } from '../../../components/dashboard/OverviewCharts';
@@ -198,13 +199,7 @@ export default async function OverviewPage() {
           <p className="text-slate-500 text-sm mb-5 max-w-xs mx-auto">
             Utwórz swojego pierwszego bota i zacznij obsługiwać klientów 24/7
           </p>
-          <Link
-            href="/onboarding/step-1"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 text-white text-sm font-medium rounded-xl hover:opacity-90 transition-all hover:-translate-y-0.5 shadow-md shadow-indigo-200"
-          >
-            Utwórz bota
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          <OpenWizardButton />
         </div>
       ) : (
         <div className="mb-8">
