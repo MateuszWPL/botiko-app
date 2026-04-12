@@ -1,10 +1,11 @@
+import type { Server } from 'http';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { createTestApp } from './helpers/create-test-app';
 import { setupTestUser } from './helpers/e2e-auth.helper';
 
 describe('Auth (e2e)', () => {
-  let app: INestApplication;
+  let app: INestApplication<Server>;
 
   beforeAll(async () => {
     app = await createTestApp();
@@ -151,7 +152,7 @@ describe('Auth (e2e)', () => {
     });
 
     it('200 — correct credentials return tokens', async () => {
-      const { email, accessToken, cleanup } = await setupTestUser(app);
+      const { accessToken, cleanup } = await setupTestUser(app);
 
       try {
         expect(accessToken).toBeDefined();

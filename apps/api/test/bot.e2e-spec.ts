@@ -1,10 +1,20 @@
+import type { Server } from 'http';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { createTestApp } from './helpers/create-test-app';
 import { setupTestUser } from './helpers/e2e-auth.helper';
 
+interface BotDetailResponse {
+  id: string;
+  name: string;
+  welcomeMsg: string;
+  primaryColor: string;
+  allowedDomains?: string[];
+  isActive: boolean;
+}
+
 describe('Bot (e2e)', () => {
-  let app: INestApplication;
+  let app: INestApplication<Server>;
   let accessToken: string;
   let cleanup: () => Promise<void>;
 
@@ -38,7 +48,7 @@ describe('Bot (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200)
         .expect((res) => {
-          expect(Array.isArray(res.body)).toBe(true);
+          expect(Array.isArray(res.body as unknown[])).toBe(true);
         });
     });
   });
@@ -105,16 +115,17 @@ describe('Bot (e2e)', () => {
         })
         .expect(201);
 
-      expect(res.body).toMatchObject({
-        id: expect.any(String),
+      const body = res.body as BotDetailResponse;
+
+      expect(body).toMatchObject({
+        id: expect.any(String) as string,
         name: 'MójBot',
         welcomeMsg: 'Witaj w naszym salonie! Jak mogę pomóc?',
         primaryColor: '#6366F1',
         isActive: true,
       });
 
-      // Store botId for subsequent tests
-      botId = res.body.id as string;
+      botId = body.id;
     });
   });
 
@@ -137,7 +148,6 @@ describe('Bot (e2e)', () => {
     });
 
     it('200 — returns bot detail', async () => {
-      // botId is set by the POST test above; skip if that test failed
       if (!botId) return;
 
       const res = await request(app.getHttpServer())
@@ -145,7 +155,10 @@ describe('Bot (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
-      expect(res.body).toMatchObject({ id: botId, name: 'MójBot' });
+      expect(res.body as BotDetailResponse).toMatchObject({
+        id: botId,
+        name: 'MójBot',
+      });
     });
   });
 
@@ -161,7 +174,7 @@ describe('Bot (e2e)', () => {
         .send({ name: 'BotZmieniony', welcomeMsg: 'Nowa wiadomość powitalna!' })
         .expect(200);
 
-      expect(res.body.name).toBe('BotZmieniony');
+      expect((res.body as BotDetailResponse).name).toBe('BotZmieniony');
     });
   });
 
@@ -181,15 +194,17 @@ describe('Bot (e2e)', () => {
         .get(`/api/v1/bot/${botId}/config`)
         .expect(200);
 
-      expect(res.body).toMatchObject({
+      const body = res.body as BotDetailResponse;
+
+      expect(body).toMatchObject({
         id: botId,
-        name: expect.any(String),
-        welcomeMsg: expect.any(String),
-        primaryColor: expect.any(String),
+        name: expect.any(String) as string,
+        welcomeMsg: expect.any(String) as string,
+        primaryColor: expect.any(String) as string,
       });
 
       // Sensitive fields must not be exposed
-      expect(res.body.allowedDomains).toBeUndefined();
+      expect(body.allowedDomains).toBeUndefined();
     });
   });
 });

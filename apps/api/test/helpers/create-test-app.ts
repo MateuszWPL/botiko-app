@@ -1,3 +1,4 @@
+import type { Server } from 'http';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../../src/app.module';
@@ -19,8 +20,10 @@ export const mockAiService = {
 /**
  * Creates a NestJS test application that mirrors main.ts setup.
  * AI_SERVICE is replaced with a jest mock to avoid real OpenAI calls.
+ * Typed as INestApplication<Server> so getHttpServer() returns a concrete type
+ * instead of any, satisfying strict ESLint rules.
  */
-export async function createTestApp(): Promise<INestApplication> {
+export async function createTestApp(): Promise<INestApplication<Server>> {
   const module: TestingModule = await Test.createTestingModule({
     imports: [AppModule],
   })
@@ -28,7 +31,9 @@ export async function createTestApp(): Promise<INestApplication> {
     .useValue(mockAiService)
     .compile();
 
-  const app = module.createNestApplication({ rawBody: true });
+  const app = module.createNestApplication<INestApplication<Server>>({
+    rawBody: true,
+  });
   app.useGlobalFilters(new GlobalExceptionFilter());
   await app.init();
   return app;

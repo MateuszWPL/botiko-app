@@ -1,3 +1,4 @@
+import type { Server } from 'http';
 import { INestApplication } from '@nestjs/common';
 import { createClient } from '@supabase/supabase-js';
 import request from 'supertest';
@@ -9,6 +10,10 @@ export interface TestAuthResult {
   cleanup: () => Promise<void>;
 }
 
+interface LoginResponse {
+  accessToken: string;
+}
+
 /**
  * Registers a unique test user via the real API, logs them in, and returns
  * an access token + a cleanup function that removes all created DB/Supabase records.
@@ -16,7 +21,7 @@ export interface TestAuthResult {
  * Requires auth.service to confirm emails in non-production (email_confirm: NODE_ENV !== 'production').
  */
 export async function setupTestUser(
-  app: INestApplication,
+  app: INestApplication<Server>,
 ): Promise<TestAuthResult> {
   const email = `e2e-${Date.now()}-${Math.random().toString(36).slice(2, 7)}@test.botiko.pl`;
   const password = 'TestPass123!';
@@ -31,7 +36,7 @@ export async function setupTestUser(
     .send({ email, password })
     .expect(200);
 
-  const accessToken = loginRes.body.accessToken as string;
+  const { accessToken } = loginRes.body as LoginResponse;
 
   const supabase = createClient(
     process.env.SUPABASE_URL!,

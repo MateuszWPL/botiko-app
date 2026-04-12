@@ -1,10 +1,26 @@
+import type { Server } from 'http';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { createTestApp } from './helpers/create-test-app';
 import { setupTestUser } from './helpers/e2e-auth.helper';
 
+interface BotCreatedResponse {
+  id: string;
+}
+
+interface ChunkCreatedResponse {
+  id: string;
+}
+
+interface ChunkResponse {
+  id: string;
+  content: string;
+  category: string | null;
+  createdAt: string;
+}
+
 describe('Knowledge (e2e)', () => {
-  let app: INestApplication;
+  let app: INestApplication<Server>;
   let accessToken: string;
   let cleanup: () => Promise<void>;
   let botId: string;
@@ -23,7 +39,7 @@ describe('Knowledge (e2e)', () => {
       })
       .expect(201);
 
-    botId = botRes.body.id as string;
+    botId = (botRes.body as BotCreatedResponse).id;
   });
 
   afterAll(async () => {
@@ -46,8 +62,9 @@ describe('Knowledge (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200)
         .expect((res) => {
-          expect(Array.isArray(res.body)).toBe(true);
-          expect(res.body).toHaveLength(0);
+          const chunks = res.body as ChunkResponse[];
+          expect(Array.isArray(chunks)).toBe(true);
+          expect(chunks).toHaveLength(0);
         });
     });
   });
@@ -99,8 +116,9 @@ describe('Knowledge (e2e)', () => {
         })
         .expect(201);
 
-      expect(res.body).toMatchObject({ id: expect.any(String) });
-      chunkId = res.body.id as string;
+      const body = res.body as ChunkCreatedResponse;
+      expect(body).toMatchObject({ id: expect.any(String) as string });
+      chunkId = body.id;
     });
 
     it('201 — adds chunk without category', () => {
@@ -112,7 +130,7 @@ describe('Knowledge (e2e)', () => {
         })
         .expect(201)
         .expect((res) => {
-          expect(res.body.id).toBeDefined();
+          expect((res.body as ChunkCreatedResponse).id).toBeDefined();
         });
     });
   });
@@ -126,15 +144,16 @@ describe('Knowledge (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
-      expect(res.body.length).toBeGreaterThanOrEqual(2);
+      const chunks = res.body as ChunkResponse[];
+      expect(chunks.length).toBeGreaterThanOrEqual(2);
 
-      const chunk = res.body.find((c: { id: string }) => c.id === chunkId);
+      const chunk = chunks.find((c) => c.id === chunkId);
       if (chunk) {
         expect(chunk).toMatchObject({
           id: chunkId,
-          content: expect.any(String),
+          content: expect.any(String) as string,
           category: 'oferta',
-          createdAt: expect.any(String),
+          createdAt: expect.any(String) as string,
         });
       }
     });

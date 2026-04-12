@@ -1,10 +1,33 @@
+import type { Server } from 'http';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { createTestApp } from './helpers/create-test-app';
 import { setupTestUser } from './helpers/e2e-auth.helper';
 
+interface BotCreatedResponse {
+  id: string;
+}
+
+interface LeadCreatedResponse {
+  id: string;
+}
+
+interface LeadResponse {
+  id: string;
+  name: string;
+  phone: string;
+  message: string | null;
+  status: string;
+  botId: string;
+}
+
+interface LeadStatusResponse {
+  id: string;
+  status: string;
+}
+
 describe('Lead (e2e)', () => {
-  let app: INestApplication;
+  let app: INestApplication<Server>;
   let accessToken: string;
   let cleanup: () => Promise<void>;
   let botId: string;
@@ -24,7 +47,7 @@ describe('Lead (e2e)', () => {
       })
       .expect(201);
 
-    botId = botRes.body.id as string;
+    botId = (botRes.body as BotCreatedResponse).id;
   });
 
   afterAll(async () => {
@@ -131,8 +154,9 @@ describe('Lead (e2e)', () => {
         })
         .expect(201);
 
-      expect(res.body).toMatchObject({ id: expect.any(String) });
-      leadId = res.body.id as string;
+      const body = res.body as LeadCreatedResponse;
+      expect(body).toMatchObject({ id: expect.any(String) as string });
+      leadId = body.id;
     });
 
     it('201 — lead without optional message', () => {
@@ -146,7 +170,7 @@ describe('Lead (e2e)', () => {
         })
         .expect(201)
         .expect((res) => {
-          expect(res.body.id).toBeDefined();
+          expect((res.body as LeadCreatedResponse).id).toBeDefined();
         });
     });
   });
@@ -166,9 +190,10 @@ describe('Lead (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(200);
 
-      expect(Array.isArray(res.body)).toBe(true);
+      const leads = res.body as LeadResponse[];
+      expect(Array.isArray(leads)).toBe(true);
 
-      const lead = res.body.find((l: { id: string }) => l.id === leadId);
+      const lead = leads.find((l) => l.id === leadId);
       if (lead) {
         // PII must be decrypted (not the encrypted hex format)
         expect(lead.name).toBe('Anna Kowalska');
@@ -207,7 +232,10 @@ describe('Lead (e2e)', () => {
         .send({ status: 'CONTACTED' })
         .expect(200);
 
-      expect(res.body).toMatchObject({ id: leadId, status: 'CONTACTED' });
+      expect(res.body as LeadStatusResponse).toMatchObject({
+        id: leadId,
+        status: 'CONTACTED',
+      });
     });
   });
 });

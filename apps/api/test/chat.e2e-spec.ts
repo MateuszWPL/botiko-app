@@ -1,11 +1,22 @@
+import type { Server } from 'http';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { createTestApp, mockAiService } from './helpers/create-test-app';
 import { setupTestUser } from './helpers/e2e-auth.helper';
 
+interface BotCreatedResponse {
+  id: string;
+}
+
+interface ChatResponse {
+  message: string;
+  sessionId: string;
+  showLeadForm?: boolean;
+}
+
 describe('Chat (e2e)', () => {
-  let app: INestApplication;
+  let app: INestApplication<Server>;
   let accessToken: string;
   let cleanup: () => Promise<void>;
   let botId: string;
@@ -25,7 +36,7 @@ describe('Chat (e2e)', () => {
       })
       .expect(201);
 
-    botId = botRes.body.id as string;
+    botId = (botRes.body as BotCreatedResponse).id;
 
     // Activate tenant — chat checks tenant.isActive (default: false)
     const prisma = app.get(PrismaService);
@@ -111,9 +122,10 @@ describe('Chat (e2e)', () => {
         })
         .expect(200);
 
-      expect(res.body.message).toBeDefined();
-      expect(res.body.sessionId).toBe('sess_escalation_001');
-      expect(res.body.showLeadForm).toBe(true);
+      const body = res.body as ChatResponse;
+      expect(body.message).toBeDefined();
+      expect(body.sessionId).toBe('sess_escalation_001');
+      expect(body.showLeadForm).toBe(true);
 
       // No AI call should be made for escalation
       expect(mockAiService.chat).not.toHaveBeenCalled();
@@ -130,9 +142,10 @@ describe('Chat (e2e)', () => {
         })
         .expect(200);
 
-      expect(res.body.message).toBeDefined();
-      expect(res.body.sessionId).toBe('sess_fallback_001');
-      expect(res.body.showLeadForm).toBe(true);
+      const body = res.body as ChatResponse;
+      expect(body.message).toBeDefined();
+      expect(body.sessionId).toBe('sess_fallback_001');
+      expect(body.showLeadForm).toBe(true);
 
       // Embedding was called to search for context, but no chat call (fallback path)
       expect(mockAiService.generateEmbedding).toHaveBeenCalledTimes(1);
@@ -144,14 +157,12 @@ describe('Chat (e2e)', () => {
       await request(app.getHttpServer())
         .post(`/api/v1/knowledge/${botId}`)
         .set('Authorization', `Bearer ${accessToken}`)
-        .send({ content: 'Strzyżenie damskie kosztuje 80 zł, strzyżenie męskie 50 zł.' })
+        .send({
+          content:
+            'Strzyżenie damskie kosztuje 80 zł, strzyżenie męskie 50 zł.',
+        })
         .expect(201);
 
-      // generateEmbedding mock returns a non-zero vector → pgvector will treat this
-      // as having some similarity. The bot now has a chunk stored.
-      // However since the stored embedding is the zero-vector (addChunk stores 0s then
-      // calls generateAndStore which is mocked), similarity may still be low.
-      // We configure mock AI response for this test.
       mockAiService.chat.mockResolvedValueOnce({
         content: 'Strzyżenie damskie kosztuje 80 zł.',
         tokenUsage: 15,
@@ -166,9 +177,10 @@ describe('Chat (e2e)', () => {
         })
         .expect(200);
 
-      expect(res.body.message).toBeDefined();
-      expect(typeof res.body.message).toBe('string');
-      expect(res.body.sessionId).toBe('sess_ai_001');
+      const body = res.body as ChatResponse;
+      expect(body.message).toBeDefined();
+      expect(typeof body.message).toBe('string');
+      expect(body.sessionId).toBe('sess_ai_001');
     });
   });
 });
