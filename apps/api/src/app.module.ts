@@ -16,6 +16,9 @@ import { env } from './config/env';
 @Module({
   imports: [
     ThrottlerModule.forRoot({
+      // Skip rate limiting in test environment to allow full test suites to run
+      // without hitting per-endpoint limits (e.g. auth: 10/min).
+      skipIf: () => env.NODE_ENV === 'test',
       throttlers: [
         {
           name: 'default',

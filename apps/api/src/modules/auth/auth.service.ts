@@ -40,7 +40,7 @@ export class AuthService {
       await this.supabase.auth.admin.createUser({
         email: dto.email,
         password: dto.password,
-        email_confirm: env.NODE_ENV === 'development',
+        email_confirm: env.NODE_ENV !== 'production',
       });
 
     if (authError || !authData.user) {
@@ -90,7 +90,7 @@ export class AuthService {
       this.logger.log(`New tenant registered: ${tenant.id}`);
       return {
         message:
-          env.NODE_ENV === 'development'
+          env.NODE_ENV !== 'production'
             ? 'Account created successfully.'
             : 'Account created. Please check your email to confirm.',
       };
