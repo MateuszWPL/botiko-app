@@ -1,3 +1,5 @@
+'use client';
+
 import ScrollReveal from './ScrollReveal';
 
 const StarIcon = () => (
