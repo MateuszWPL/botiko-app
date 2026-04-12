@@ -17,6 +17,7 @@ export default function DemoWidget() {
     script.dataset.botId = DEMO_BOT_ID;
     script.dataset.botikoDemo = 'true';
     script.async = true;
+    script.crossOrigin = 'anonymous';
     document.body.appendChild(script);
 
     return () => {
