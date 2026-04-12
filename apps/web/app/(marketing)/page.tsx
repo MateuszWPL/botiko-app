@@ -26,7 +26,29 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Botiko.pl — Asystentka AI dla salonu, gabinetu i restauracji',
     description:
-      'Klientki piszą o 22:00. Asystentka odpowiada za Ciebie. 14 dni za darmo.',
+      'Klientki piszą o 22:00. Asystentka odpowiada za Ciebie. 149 zł/mies. 14 dni za darmo.',
+    url: 'https://botiko.pl',
+    siteName: 'Botiko.pl',
+    images: [
+      {
+        url: 'https://botiko.pl/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Botiko.pl — Asystentka AI dla polskich firm usługowych',
+      },
+    ],
+    locale: 'pl_PL',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Botiko.pl — Asystentka AI dla salonu, gabinetu i restauracji',
+    description:
+      'Klientki piszą o 22:00. Asystentka odpowiada za Ciebie. 149 zł/mies. 14 dni za darmo.',
+    images: ['https://botiko.pl/og-image.png'],
+  },
+  alternates: {
+    canonical: 'https://botiko.pl',
   },
 };
 
@@ -55,29 +77,14 @@ const JSON_LD_SOFTWARE = {
   name: 'Botiko',
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
-  offers: [
-    {
-      '@type': 'Offer',
-      name: 'Starter',
-      price: '79',
-      priceCurrency: 'PLN',
-      billingPeriod: 'P1M',
-    },
-    {
-      '@type': 'Offer',
-      name: 'Pro',
-      price: '149',
-      priceCurrency: 'PLN',
-      billingPeriod: 'P1M',
-    },
-    {
-      '@type': 'Offer',
-      name: 'Premium',
-      price: '299',
-      priceCurrency: 'PLN',
-      billingPeriod: 'P1M',
-    },
-  ],
+  offers: {
+    '@type': 'Offer',
+    name: 'Botiko',
+    price: '149',
+    priceCurrency: 'PLN',
+    billingPeriod: 'P1M',
+    description: '14 dni za darmo, bez karty kredytowej',
+  },
   description:
     'Asystentka AI dla polskich firm usługowych — salonów beauty, gabinetów, restauracji i warsztatów. Odpowiada na pytania klientów 24/7, zbiera leady i odsyła do rezerwacji.',
   aggregateRating: {
@@ -113,7 +120,7 @@ const JSON_LD_FAQ = {
       name: 'Ile kosztuje Botiko?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Botiko oferuje trzy plany: Starter (79 zł/mies.), Pro (149 zł/mies.) i Premium (299 zł/mies.). Każdy plan ma 14 dni za darmo bez karty kredytowej.',
+        text: 'Botiko kosztuje 149 zł miesięcznie. Każde konto ma 14 dni za darmo bez karty kredytowej. Brak umowy długoterminowej — możesz anulować kiedy chcesz.',
       },
     },
     {

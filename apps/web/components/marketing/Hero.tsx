@@ -154,7 +154,7 @@ export default function Hero() {
               style={{ animationDelay: '0.3s' }}
             >
               <Link
-                href="/register"
+                href="/rejestracja"
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-white text-brand font-bold text-base shadow-xl hover:shadow-2xl hover:bg-brand-soft transition-all cursor-pointer"
               >
                 Zacznij za darmo — 14 dni
