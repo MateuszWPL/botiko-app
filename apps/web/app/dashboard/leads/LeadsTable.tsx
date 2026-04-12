@@ -1,7 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { toast } from 'sonner';
+import { Loader2 } from 'lucide-react';
 import { createClient } from '../../../lib/supabase';
+import { StatusBadge } from '../../../components/ui/StatusBadge';
 
 interface Lead {
   id: string;
@@ -12,13 +15,6 @@ interface Lead {
   botId: string;
   createdAt: string;
 }
-
-const STATUS_COLORS: Record<string, string> = {
-  NEW: 'bg-blue-100 text-blue-700',
-  CONTACTED: 'bg-amber-100 text-amber-700',
-  CONVERTED: 'bg-emerald-100 text-emerald-700',
-  LOST: 'bg-slate-100 text-slate-600',
-};
 
 const STATUS_LABELS: Record<string, string> = {
   NEW: 'Nowy',
@@ -36,7 +32,9 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
   const updateStatus = async (leadId: string, status: string) => {
     setUpdating(leadId);
     const supabase = createClient();
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     const token = session?.access_token;
 
     try {
@@ -50,50 +48,71 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
       });
 
       if (res.ok) {
-        setLeads((prev) =>
-          prev.map((l) => (l.id === leadId ? { ...l, status } : l)),
-        );
+        setLeads((prev) => prev.map((l) => (l.id === leadId ? { ...l, status } : l)));
+        toast.success('Status zaktualizowany');
+      } else {
+        toast.error('Nie udało się zaktualizować statusu');
       }
+    } catch {
+      toast.error('Błąd połączenia');
     } finally {
       setUpdating(null);
     }
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 overflow-hidden shadow-sm">
       <table className="w-full text-sm">
-        <thead className="bg-slate-50 border-b border-slate-200">
+        <thead className="bg-slate-50/80 border-b border-slate-200/60">
           <tr>
-            <th className="text-left px-4 py-3 text-slate-600 font-medium">Kontakt</th>
-            <th className="text-left px-4 py-3 text-slate-600 font-medium">Telefon</th>
-            <th className="text-left px-4 py-3 text-slate-600 font-medium">Wiadomość</th>
-            <th className="text-left px-4 py-3 text-slate-600 font-medium">Status</th>
-            <th className="text-left px-4 py-3 text-slate-600 font-medium">Data</th>
+            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Kontakt
+            </th>
+            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Telefon
+            </th>
+            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden md:table-cell">
+              Wiadomość
+            </th>
+            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Status
+            </th>
+            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden sm:table-cell">
+              Data
+            </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y divide-slate-100/80">
           {leads.map((lead) => (
-            <tr key={lead.id} className="hover:bg-slate-50">
-              <td className="px-4 py-3 font-medium text-slate-800">{lead.name}</td>
-              <td className="px-4 py-3 text-slate-600">{lead.phone}</td>
-              <td className="px-4 py-3 text-slate-500 max-w-48 truncate">
-                {lead.message ?? '—'}
+            <tr key={lead.id} className="hover:bg-slate-50/60 transition-colors">
+              <td className="px-5 py-4 font-semibold text-slate-800">{lead.name}</td>
+              <td className="px-5 py-4 text-slate-600 font-mono text-xs">{lead.phone}</td>
+              <td className="px-5 py-4 text-slate-500 max-w-48 truncate hidden md:table-cell">
+                {lead.message ?? <span className="text-slate-300">—</span>}
               </td>
-              <td className="px-4 py-3">
-                <select
-                  value={lead.status}
-                  onChange={(e) => void updateStatus(lead.id, e.target.value)}
-                  disabled={updating === lead.id}
-                  className={`text-xs font-medium px-2 py-1 rounded-full border-0 cursor-pointer ${STATUS_COLORS[lead.status] ?? 'bg-slate-100 text-slate-600'}`}
-                >
-                  {Object.entries(STATUS_LABELS).map(([val, label]) => (
-                    <option key={val} value={val}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
+              <td className="px-5 py-4">
+                <div className="relative inline-flex items-center gap-2">
+                  {updating === lead.id ? (
+                    <Loader2 className="w-3.5 h-3.5 text-slate-400 animate-spin" />
+                  ) : (
+                    <StatusBadge status={lead.status} />
+                  )}
+                  <select
+                    value={lead.status}
+                    onChange={(e) => void updateStatus(lead.id, e.target.value)}
+                    disabled={updating === lead.id}
+                    className="absolute inset-0 opacity-0 cursor-pointer w-full disabled:cursor-not-allowed"
+                    aria-label="Zmień status"
+                  >
+                    {Object.entries(STATUS_LABELS).map(([val, label]) => (
+                      <option key={val} value={val}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </td>
-              <td className="px-4 py-3 text-slate-400 text-xs">
+              <td className="px-5 py-4 text-slate-400 text-xs hidden sm:table-cell">
                 {new Date(lead.createdAt).toLocaleDateString('pl-PL')}
               </td>
             </tr>

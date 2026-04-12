@@ -1,4 +1,5 @@
 import { fetchWithAuth } from '../../../lib/api';
+import { PageHeader } from '../../../components/ui/PageHeader';
 import { EmbedCode } from './EmbedCode';
 
 interface Bot {
@@ -16,10 +17,10 @@ export default async function EmbedPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900 mb-2">Instalacja</h1>
-      <p className="text-slate-500 text-sm mb-8">
-        Dodaj asystentkę do swojej strony w kilku krokach
-      </p>
+      <PageHeader
+        title="Instalacja"
+        description="Dodaj bota do swojej strony w kilku krokach"
+      />
       <EmbedCode bots={bots} />
     </div>
   );

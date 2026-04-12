@@ -1,5 +1,8 @@
+import { BookOpen } from 'lucide-react';
 import { fetchWithAuth } from '../../../lib/api';
 import { KnowledgeManager } from './KnowledgeManager';
+import { PageHeader } from '../../../components/ui/PageHeader';
+import { EmptyState } from '../../../components/ui/EmptyState';
 
 interface Bot {
   id: string;
@@ -33,19 +36,19 @@ export default async function KnowledgePage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Baza wiedzy</h1>
-          <p className="text-slate-500 text-sm mt-0.5">
-            Informacje z których korzysta asystentka
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Baza wiedzy"
+        description="Informacje z których korzysta bot"
+        badge={firstBot ? { label: `${chunks.length} wpisów` } : undefined}
+      />
 
       {!firstBot ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-          <p className="text-slate-500">Najpierw utwórz asystentkę</p>
-        </div>
+        <EmptyState
+          icon={BookOpen}
+          title="Najpierw utwórz bota"
+          description="Baza wiedzy jest powiązana z konkretnym botem"
+          action={{ label: 'Utwórz bota', href: '/onboarding/step-1' }}
+        />
       ) : (
         <KnowledgeManager botId={firstBot.id} initialChunks={chunks} />
       )}

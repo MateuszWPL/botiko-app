@@ -1,4 +1,5 @@
 import { fetchWithAuth } from '../../../lib/api';
+import { PageHeader } from '../../../components/ui/PageHeader';
 import BillingClient from './BillingClient';
 
 interface BillingStatus {
@@ -20,8 +21,7 @@ export default async function BillingPage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-bold text-slate-900 mb-1">Płatności</h1>
-      <p className="text-slate-500 mb-8 text-sm">Zarządzaj subskrypcją Botiko</p>
+      <PageHeader title="Płatności" description="Zarządzaj subskrypcją Botiko" />
       <BillingClient status={status} fetchError={fetchError} />
     </div>
   );
