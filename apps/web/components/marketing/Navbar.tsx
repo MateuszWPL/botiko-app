@@ -76,7 +76,7 @@ export default function Navbar() {
               Logowanie
             </Link>
             <Link
-              href="/register"
+              href="/rejestracja"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand text-white text-sm font-semibold shadow-md hover:bg-brand-dark transition-colors cursor-pointer"
             >
               Zacznij za darmo
@@ -170,7 +170,7 @@ export default function Navbar() {
             Logowanie
           </Link>
           <Link
-            href="/register"
+            href="/rejestracja"
             onClick={() => setMenuOpen(false)}
             className="text-center py-3.5 rounded-xl bg-brand text-white font-bold shadow-md hover:bg-brand-dark transition-colors cursor-pointer"
           >

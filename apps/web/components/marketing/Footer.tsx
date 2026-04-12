@@ -13,9 +13,8 @@ const LINKS = {
     { label: 'Kontakt', href: 'mailto:hello@botiko.pl' },
   ],
   Prawo: [
-    { label: 'Polityka prywatności', href: '/privacy' },
-    { label: 'Regulamin', href: '/terms' },
-    { label: 'Polityka cookies', href: '/cookies' },
+    { label: 'Polityka prywatności', href: '/prywatnosc' },
+    { label: 'Regulamin', href: '/regulamin' },
     { label: 'RODO / DPA', href: 'mailto:rodo@botiko.pl' },
   ],
 };

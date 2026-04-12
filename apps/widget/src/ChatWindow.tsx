@@ -381,7 +381,16 @@ export function ChatWindow({
               }
               style={{ marginTop: '2px', flexShrink: 0 }}
             />
-            Wyrażam zgodę na przetwarzanie moich danych osobowych w celu odpowiedzi na zapytanie (RODO)
+            Wyrażam zgodę na przetwarzanie moich danych osobowych w celu odpowiedzi na zapytanie.{' '}
+            <a
+              href="https://botiko.pl/prywatnosc"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: '#6366F1', textDecoration: 'underline' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              Polityka prywatności
+            </a>
           </label>
           <div style={{ display: 'flex', gap: '6px', marginTop: '8px' }}>
             <button

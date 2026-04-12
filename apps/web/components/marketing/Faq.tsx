@@ -30,11 +30,11 @@ const FAQS = [
   },
   {
     q: 'Czy mogę zrezygnować w każdej chwili?',
-    a: 'Tak. Brak umowy długoterminowej — subskrypcja jest miesięczna i możesz anulować kiedy chcesz. Przy planie rocznym zwracamy proporcjonalną część opłaty za pozostałe miesiące.',
+    a: 'Tak. Brak umowy długoterminowej — subskrypcja jest miesięczna i możesz anulować kiedy chcesz. Opłata za bieżący miesiąc nie jest zwracana, ale dostęp pozostaje aktywny do końca okresu rozliczeniowego.',
   },
   {
     q: 'Czy bot działa na Facebooku i Instagramie?',
-    a: 'Widget embeddujemy na stronie WWW. Integracja z Meta Messengerem jest dostępna w planie Pro i wyższych. Instagram Direct — w roadmapie na Q3 2025.',
+    a: 'Aktualnie widget embeddujemy na stronie WWW klienta. Integracja z Meta Messengerem i Instagram Direct jest w roadmapie — daj znać że jesteś zainteresowany przez hello@botiko.pl.',
   },
 ];
 

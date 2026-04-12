@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+const WIDGET_URL = process.env.NEXT_PUBLIC_WIDGET_URL ?? 'https://widget.botiko.pl';
 
 const securityHeaders = [
   // Prevent MIME-type sniffing
@@ -24,7 +25,8 @@ const securityHeaders = [
       // Next.js runtime + Recharts inline SVGs require unsafe-inline for styles
       "style-src 'self' 'unsafe-inline'",
       // Next.js requires unsafe-inline for hydration scripts; nonce approach not used yet
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      // WIDGET_URL: allow loading the embedded widget script from demo bot
+      `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${WIDGET_URL}`,
       // Images: self + data URIs (for inline SVGs/avatars)
       "img-src 'self' data: blob:",
       // Fonts: self
