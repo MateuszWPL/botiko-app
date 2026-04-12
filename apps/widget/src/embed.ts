@@ -42,6 +42,7 @@ function Widget({
       welcomeMessage: config.welcomeMsg,
       isOpen,
       apiUrl,
+      onClose: () => setIsOpen(false),
     }),
     h(Launcher, {
       primaryColor: config.primaryColor,

@@ -93,79 +93,19 @@ export default function Demo() {
             <span className="gradient-text">działa w praktyce</span>
           </h2>
           <p className="mt-4 text-lg text-slate-500 max-w-xl mx-auto">
-            Bot w prawym dolnym rogu tej strony to prawdziwy silnik Botiko — ten sam, który możesz mieć na swojej stronie.
+            Kliknij ikonkę czatu w prawym dolnym rogu strony i porozmawiaj z prawdziwym botem Botiko — dokładnie takim, który możesz mieć na swojej stronie.
           </p>
-        </ScrollReveal>
-
-        {/* Main CTA block */}
-        <ScrollReveal>
-          <div
-            className="relative rounded-3xl overflow-hidden mb-16"
-            style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f0fdf4 100%)' }}
-          >
-            <div className="flex flex-col lg:flex-row items-center gap-10 px-8 py-12 lg:px-16">
-
-              {/* Left — text */}
-              <div className="flex-1 text-center lg:text-left">
-                <h3 className="text-2xl font-extrabold text-text mb-3">
-                  Porozmawiaj z botem teraz
-                </h3>
-                <p className="text-slate-500 text-base leading-relaxed mb-6 max-w-lg">
-                  Zadaj mu pytanie o usługi, cennik lub godziny pracy. Sprawdź jak odpowiada, jak zbiera leady i jak eskaluje do człowieka.
-                </p>
-
-                {DEMO_BOT_ID ? (
-                  <button
-                    onClick={handleOpenBot}
-                    className="inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-brand text-white font-bold text-base shadow-xl hover:bg-brand-dark hover:-translate-y-0.5 transition-all cursor-pointer"
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-                    </svg>
-                    Otwórz demo bota
-                  </button>
-                ) : (
-                  <span className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-slate-100 text-slate-500 text-sm font-medium">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    Demo wkrótce dostępne
-                  </span>
-                )}
-              </div>
-
-              {/* Right — visual hint arrow */}
-              {DEMO_BOT_ID && (
-                <div className="flex-shrink-0 flex flex-col items-center gap-3 text-slate-400">
-                  <p className="text-sm font-medium text-slate-500 text-center max-w-[140px]">
-                    Bot pojawi się w prawym dolnym rogu
-                  </p>
-                  {/* Arrow curving to bottom-right */}
-                  <svg
-                    width="80"
-                    height="80"
-                    viewBox="0 0 80 80"
-                    fill="none"
-                    className="text-brand opacity-60"
-                    style={{ animationName: 'bounce-arrow', animationDuration: '2s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }}
-                  >
-                    <path
-                      d="M10 10 C10 50 60 50 70 70"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeDasharray="5 4"
-                    />
-                    <path
-                      d="M60 65 L70 70 L65 58"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-              )}
-            </div>
-          </div>
+          {DEMO_BOT_ID && (
+            <button
+              onClick={handleOpenBot}
+              className="mt-6 inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-brand text-white font-bold text-base shadow-xl hover:bg-brand-dark hover:-translate-y-0.5 transition-all cursor-pointer"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+              </svg>
+              Wypróbuj demo bota
+            </button>
+          )}
         </ScrollReveal>
 
         {/* Features grid */}

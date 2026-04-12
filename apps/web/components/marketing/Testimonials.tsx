@@ -116,12 +116,23 @@ export default function Testimonials() {
         </ScrollReveal>
       </div>
 
-      {/* Marquee rows — full bleed */}
-      <div className="flex flex-col gap-5 mb-16">
+      {/* Marquee rows — full bleed with gradient fade edges */}
+      <div className="flex flex-col gap-5 mb-16 relative">
+        {/* Left gradient fade */}
+        <div
+          className="absolute left-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
+          style={{ background: 'linear-gradient(to right, #1e1b4b 0%, transparent 100%)' }}
+        />
+        {/* Right gradient fade */}
+        <div
+          className="absolute right-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
+          style={{ background: 'linear-gradient(to left, #1e1b4b 0%, transparent 100%)' }}
+        />
+
         {/* Row 1 — scrolls left */}
         <div
           className="flex marquee-left"
-          style={{ animationDuration: '38s', animationTimingFunction: 'linear', animationIterationCount: 'infinite' }}
+          style={{ animationDuration: '38s' }}
           onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'paused'; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'running'; }}
         >
@@ -131,7 +142,7 @@ export default function Testimonials() {
         {/* Row 2 — scrolls right */}
         <div
           className="flex marquee-right"
-          style={{ animationDuration: '42s', animationTimingFunction: 'linear', animationIterationCount: 'infinite' }}
+          style={{ animationDuration: '42s' }}
           onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'paused'; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'running'; }}
         >

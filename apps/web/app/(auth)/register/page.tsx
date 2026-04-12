@@ -5,12 +5,74 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 const INDUSTRIES = [
-  { value: 'BEAUTY', label: '💅 Salon urody / kosmetyka' },
-  { value: 'HEALTH', label: '🏥 Gabinet medyczny / SPA' },
-  { value: 'FOOD',   label: '🍽️ Restauracja / catering' },
-  { value: 'AUTO',   label: '🔧 Motoryzacja / warsztat' },
-  { value: 'OTHER',  label: '📋 Inna branża' },
-] as const;
+  {
+    value: 'BEAUTY',
+    label: 'Salon urody',
+    color: '#EC4899',
+    bg: '#FDF2F8',
+    border: '#FCE7F3',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 3a1 1 0 0 0-1 1v2a4 4 0 0 0 4 4h2a4 4 0 0 0 4-4V4a1 1 0 0 0-1-1H6z"/>
+        <path d="M8 10v10M16 10v10M8 20h8"/>
+        <path d="M12 3v1"/>
+      </svg>
+    ),
+  },
+  {
+    value: 'HEALTH',
+    label: 'Gabinet / SPA',
+    color: '#06B6D4',
+    bg: '#ECFEFF',
+    border: '#CFFAFE',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+      </svg>
+    ),
+  },
+  {
+    value: 'FOOD',
+    label: 'Restauracja',
+    color: '#F97316',
+    bg: '#FFF7ED',
+    border: '#FED7AA',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+        <path d="M7 2v20"/>
+        <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/>
+      </svg>
+    ),
+  },
+  {
+    value: 'AUTO',
+    label: 'Motoryzacja',
+    color: '#64748B',
+    bg: '#F8FAFC',
+    border: '#E2E8F0',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+      </svg>
+    ),
+  },
+  {
+    value: 'OTHER',
+    label: 'Inna branża',
+    color: '#8B5CF6',
+    bg: '#F5F3FF',
+    border: '#EDE9FE',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/>
+        <rect x="14" y="14" width="7" height="7" rx="1"/>
+      </svg>
+    ),
+  },
+];
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
@@ -23,7 +85,7 @@ const BENEFITS = [
 function AuthLeftPanel() {
   return (
     <div
-      className="hidden lg:flex flex-col justify-between px-12 py-10"
+      className="flex flex-col justify-between px-6 py-8 lg:px-12 lg:py-10 order-2 lg:order-1"
       style={{
         background: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 40%, #4338CA 80%, #6366F1 100%)',
       }}
@@ -87,7 +149,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     companyName: '',
-    industry: 'BEAUTY' as string,
+    industry: 'BEAUTY',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -123,16 +185,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="min-h-screen lg:grid lg:grid-cols-[45%_55%]">
-      <AuthLeftPanel />
-
-      <div className="flex items-center justify-center bg-white">
-        <div className="flex flex-col justify-center w-full max-w-sm mx-auto px-6 lg:px-0 py-12 lg:py-0 min-h-screen lg:min-h-0">
-          {/* Mobile logo */}
-          <Link href="/" className="flex items-center gap-2 mb-8 lg:hidden">
-            <span className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-bold text-sm">B</span>
-            <span className="font-bold text-lg text-slate-900">Botiko<span className="text-brand">.pl</span></span>
-          </Link>
+    <main className="min-h-screen flex flex-col lg:grid lg:grid-cols-[45%_55%]">
+      <div className="flex items-center justify-center bg-white order-1 lg:order-2">
+        <div className="flex flex-col justify-center w-full max-w-sm mx-auto px-6 lg:px-0 py-12 lg:py-0 min-h-0">
 
           <div className="mb-8">
             <h1 className="text-2xl font-extrabold text-slate-900">Utwórz konto</h1>
@@ -155,15 +210,29 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Branża</label>
-              <select
-                value={form.industry}
-                onChange={(e) => setForm((f) => ({ ...f, industry: e.target.value }))}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
-              >
-                {INDUSTRIES.map((i) => (
-                  <option key={i.value} value={i.value}>{i.label}</option>
-                ))}
-              </select>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {INDUSTRIES.map((ind) => {
+                  const selected = form.industry === ind.value;
+                  return (
+                    <button
+                      key={ind.value}
+                      type="button"
+                      onClick={() => setForm((f) => ({ ...f, industry: ind.value }))}
+                      className="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl border-2 text-xs font-semibold transition-all cursor-pointer"
+                      style={
+                        selected
+                          ? { background: ind.bg, borderColor: ind.color, color: ind.color }
+                          : { background: '#F8FAFC', borderColor: '#E2E8F0', color: '#475569' }
+                      }
+                    >
+                      <span style={{ color: selected ? ind.color : '#94A3B8' }}>
+                        {ind.icon}
+                      </span>
+                      {ind.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <div>
@@ -239,6 +308,7 @@ export default function RegisterPage() {
           </p>
         </div>
       </div>
+      <AuthLeftPanel />
     </main>
   );
 }

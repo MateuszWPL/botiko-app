@@ -14,7 +14,7 @@ const BENEFITS = [
 function AuthLeftPanel({ headline, sub }: { headline: string; sub: string }) {
   return (
     <div
-      className="hidden lg:flex flex-col justify-between px-12 py-10"
+      className="flex flex-col justify-between px-6 py-8 lg:px-12 lg:py-10 order-2 lg:order-1"
       style={{
         background: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 40%, #4338CA 80%, #6366F1 100%)',
       }}
@@ -193,12 +193,8 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen lg:grid lg:grid-cols-[45%_55%]">
-      <AuthLeftPanel
-        headline="Witaj z powrotem"
-        sub="Zaloguj się i sprawdź co dziś przyniósł Twój bot."
-      />
-      <div className="flex items-center justify-center bg-white">
+    <main className="min-h-screen flex flex-col lg:grid lg:grid-cols-[45%_55%]">
+      <div className="flex items-center justify-center bg-white order-1 lg:order-2">
         <Suspense fallback={
           <div className="w-full max-w-sm mx-auto px-6 space-y-4">
             {[1,2,3].map(i => <div key={i} className="h-12 bg-slate-100 rounded-xl animate-pulse"/>)}
@@ -207,6 +203,10 @@ export default function LoginPage() {
           <LoginForm />
         </Suspense>
       </div>
+      <AuthLeftPanel
+        headline="Witaj z powrotem"
+        sub="Zaloguj się i sprawdź co dziś przyniósł Twój bot."
+      />
     </main>
   );
 }

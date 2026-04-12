@@ -128,6 +128,14 @@ body {
   from { transform: translateX(-50%); }
   to   { transform: translateX(0); }
 }
+.marquee-left {
+  animation: marquee-left linear infinite;
+  will-change: transform;
+}
+.marquee-right {
+  animation: marquee-right linear infinite;
+  will-change: transform;
+}
 @media (prefers-reduced-motion: reduce) {
   .marquee-left,
   .marquee-right {

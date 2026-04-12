@@ -113,7 +113,7 @@ export default function Pricing() {
                     <label className="text-sm font-semibold text-text">
                       Nowi klienci przez bota / miesiąc
                     </label>
-                    <span className="text-lg font-extrabold text-brand">{clientsPerMonth}</span>
+                    <span className="text-lg font-extrabold text-brand whitespace-nowrap">{clientsPerMonth}</span>
                   </div>
                   <input
                     type="range"
@@ -133,7 +133,7 @@ export default function Pricing() {
                     <label className="text-sm font-semibold text-text">
                       Średnia wartość wizyty / zamówienia
                     </label>
-                    <span className="text-lg font-extrabold text-brand">{avgValue} zł</span>
+                    <span className="text-lg font-extrabold text-brand whitespace-nowrap">{avgValue} zł</span>
                   </div>
                   <input
                     type="range"
@@ -159,17 +159,17 @@ export default function Pricing() {
                 </div>
 
                 <div className="rounded-2xl p-4 bg-accent/8 border border-accent/15 text-center">
-                  <p className="text-2xl font-extrabold text-accent">{monthlyRevenue} zł</p>
+                  <p className="text-2xl font-extrabold text-accent whitespace-nowrap">{monthlyRevenue} zł</p>
                   <p className="text-xs text-slate-500 mt-1">Przychód z bota / mies.</p>
                 </div>
 
                 <div className="rounded-2xl p-4 bg-slate-50 border border-slate-100 text-center">
-                  <p className="text-2xl font-extrabold text-text">{planCost} zł</p>
+                  <p className="text-2xl font-extrabold text-text whitespace-nowrap">{planCost} zł</p>
                   <p className="text-xs text-slate-500 mt-1">Koszt planu / mies.</p>
                 </div>
 
                 <div className="col-span-2 rounded-2xl p-4 bg-slate-50 border border-slate-100 text-center">
-                  <p className={`text-2xl font-extrabold ${netProfit >= 0 ? 'text-accent' : 'text-red-500'}`}>
+                  <p className={`text-2xl font-extrabold whitespace-nowrap ${netProfit >= 0 ? 'text-accent' : 'text-red-500'}`}>
                     {netProfit >= 0 ? '+' : ''}{netProfit} zł
                   </p>
                   <p className="text-xs text-slate-500 mt-1">Zysk netto / miesiąc</p>
