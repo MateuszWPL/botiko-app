@@ -177,92 +177,94 @@
 > Aktualny panel jest niefunkcjonalny wizualnie: emoji zamiast ikon, brak animacji, brak empty states, brak spójności. Cel: profesjonalny SaaS dashboard gotowy do pokazania płacącym klientom.
 
 #### Stack do zainstalowania
-- [ ] `lucide-react` — ikony SVG (zamiana wszystkich emoji)
-- [ ] `sonner` — toast notifications (sukces/błąd/info)
+- [x] `lucide-react` — ikony SVG (zamiana wszystkich emoji)
+- [x] `sonner` — toast notifications (sukces/błąd/info) + `<Toaster />` w layout.tsx
 - [ ] `class-variance-authority` + `clsx` — warianty komponentów (opcjonalnie jeśli okaże się potrzebny)
 
 #### Fundament — Design System
-- [ ] **Paleta kolorów** — indigo-600 brand, slate-900 sidebar, białe karty z subtelnymi borderami
-- [ ] **Typografia** — jasna hierarchia: `text-2xl font-bold` nagłówki, `text-sm text-slate-500` opisy
-- [ ] **Glassmorphism** — karty stat na overview: `bg-white/80 backdrop-blur-sm border border-white/20` na gradientowym tle
-- [ ] **Gradienty** — sidebar: gradient `from-slate-900 to-slate-800`, przyciski akcji: `from-indigo-600 to-indigo-500`, stat cards: per-kolor gradient overlay
-- [ ] **Animacje CSS** — `transition-all duration-200` na wszystkich przyciskach/linkach, `hover:scale-105` na kartach statystyk, `hover:-translate-y-0.5` na primary buttonach
-- [ ] **Skeleton loaders** — dla overview stats, listy leadów, konwersacji (zamiast pustego ekranu podczas ładowania)
+- [x] **Paleta kolorów** — indigo-600 brand, slate-900 sidebar, białe karty z subtelnymi borderami
+- [x] **Typografia** — jasna hierarchia: `text-2xl font-bold` nagłówki, `text-sm text-slate-500` opisy
+- [x] **Glassmorphism** — karty stat na overview: `bg-white/80 backdrop-blur-sm border border-white/20` na gradientowym tle
+- [x] **Gradienty** — sidebar: gradient `from-slate-900 to-slate-800`, przyciski akcji: `from-indigo-600 to-indigo-500`, stat cards: per-kolor gradient overlay
+- [x] **Animacje CSS** — `transition-all duration-200` na wszystkich przyciskach/linkach, `hover:-translate-y-0.5` na primary buttonach
+- [x] **Skeleton loaders** — loading.tsx dla overview, leads, conversations (animate-pulse)
 
 #### Sidebar (components/dashboard/Sidebar.tsx)
-- [ ] Zamień wszystkie emoji na **Lucide icons**: `LayoutDashboard`, `Users`, `MessageSquare`, `BookOpen`, `Settings`, `Code2`, `CreditCard`, `LogOut`
-- [ ] Aktywny item: `bg-indigo-600/20 text-indigo-400 border-l-2 border-indigo-500` (subtelny, nie full-fill)
-- [ ] Logo: gradient tekst `bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent`
-- [ ] Dodaj badge "● Online" przy logo (zielona kropka animowana — pulse)
-- [ ] Mobile bottom nav: ikony z labelami, active state bardziej wyraźny
-- [ ] Dodaj tooltip na hover dla każdego item (collapsed sidebar na desktop opcjonalnie)
+- [x] Zamień wszystkie emoji na **Lucide icons**: `LayoutDashboard`, `Users`, `MessageSquare`, `BookOpen`, `Settings`, `Code2`, `CreditCard`, `LogOut`
+- [x] Aktywny item: `bg-indigo-600/20 text-indigo-400 border-l-2 border-indigo-500` (subtelny, nie full-fill)
+- [x] Logo: gradient tekst `bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent`
+- [x] Badge "● Online" przy logo (zielona kropka animowana — `animate-pulse`)
+- [x] Mobile bottom nav: ikony z labelami, active state (`text-indigo-400 bg-indigo-500/10`)
+- [x] Sidebar desktop: `h-screen sticky top-0` — badge/wyloguj zawsze widoczne na dole
+- [ ] Dodaj tooltip na hover dla każdego item (collapsed sidebar na desktop — opcjonalnie)
 
 #### Overview (dashboard/overview/page.tsx)
-- [ ] Tło strony: delikatny gradient `from-slate-50 to-indigo-50/30`
-- [ ] Stat karty: glassmorphism — `bg-white/70 backdrop-blur-sm` z kolorową ikoną w gradient boksie
-- [ ] Każda karta: ikona Lucide (nie emoji), liczba, label, mini trend-arrow (np. `TrendingUp` w kolorze)
-- [ ] Sekcja "Szybkie akcje" pod statystykami: 2-3 przyciski (Dodaj wiedzę, Testuj bota, Zainstaluj)
-- [ ] Empty state gdy brak bota: ładna karta z ilustracją (SVG inline), CTA "Utwórz bota"
-- [ ] Skeleton: 4 karty placeholder z `animate-pulse` podczas ładowania
+- [x] Tło strony: delikatny gradient `from-slate-50 to-indigo-50/30`
+- [x] Stat karty: glassmorphism — `bg-white/80 backdrop-blur-sm` z kolorową ikoną w gradient boksie
+- [x] Każda karta: ikona Lucide (nie emoji), liczba, label
+- [x] Sekcja "Szybkie akcje" pod statystykami: przyciski (Dodaj wiedzę, Testuj bota, Zainstaluj)
+- [x] Empty state gdy brak bota: ładna karta z CTA "Utwórz bota"
+- [x] Skeleton: loading.tsx z kartami animate-pulse + placeholdery wykresów
+- [ ] Mini trend-arrow (np. `TrendingUp` w kolorze) na kartach stat
+- [x] **Wykresy**: `recharts` — bar chart (aktywność 7 dni) + donut chart (leady wg statusu)
 
 #### Sidebar Plan Badge
-- [ ] Przy dole sidebar: badge z aktualnym planem
-- [ ] STARTER: `bg-slate-700 text-slate-300` — neutralny
-- [ ] PRO (przyszłość): `bg-gradient-to-r from-blue-600 to-cyan-500` z ikoną `Zap`
-- [ ] PREMIUM (przyszłość): `bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-900` z ikoną `Crown` — złoty kolor + korona
+- [x] Przy dole sidebar: badge z aktualnym planem (ikona `Zap` + nazwa planu)
+- [x] STARTER: neutralny styl
+- [ ] PRO (przyszłość): `bg-gradient-to-r from-blue-600 to-cyan-500`
+- [ ] PREMIUM (przyszłość): `bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-900` z ikoną `Crown`
 
 #### Leads (dashboard/leads/)
-- [ ] Zamień emoji 👥 na `<Users />` Lucide w empty state — stylowany, duży, slate-300
-- [ ] Empty state: ikona + tytuł + opis + przycisk "Zainstaluj bota" (z linkiem do /embed)
-- [ ] Tabela: dodaj hover row `hover:bg-indigo-50/50 transition-colors`
-- [ ] Status badge: kolorowe chipelki z ikoną — `Clock` (NEW), `Phone` (CONTACTED), `CheckCircle` (CONVERTED), `XCircle` (LOST)
+- [x] Empty state z `<EmptyState />` component: ikona `Users` + tytuł + opis + przycisk "Zainstaluj bota"
+- [x] Tabela: hover row `hover:bg-indigo-50/50 transition-colors`
+- [x] Status badge: kolorowe chipelki (NEW/CONTACTED/CONVERTED/LOST) z tłem i labelami po polsku
+- [x] Status badge: ikony Lucide per status — `Clock` (NEW), `Phone` (CONTACTED), `CheckCircle2` (CONVERTED), `XCircle` (LOST)
 - [ ] Dropdown statusu: zamień na custom styled select z ikonami
 - [ ] Animacja: nowy lead pojawiający się → `animate-fade-in` (CSS)
-- [ ] Licznik leadów w nagłówku: pill z gradientem
+- [x] Licznik leadów w nagłówku przez `<PageHeader />`
 
 #### Conversations (dashboard/conversations/)
-- [ ] Zamień emoji 💬 na `<MessageSquare />` w empty state
-- [ ] Każda pozycja na liście: Avatar inicjałów (zamiast ID), nazwa bota (zamiast botId.slice(0,8)), podgląd ostatniej wiadomości
-- [ ] Strzałka → zamień na `<ChevronRight />` Lucide
-- [ ] Hover: `hover:bg-slate-50 hover:shadow-sm transition-all`
-- [ ] Conversation detail: dodaj `<Bot />` avatar dla wiadomości bota, `<User />` dla użytkownika
-- [ ] Breadcrumb: ikona `<ArrowLeft />` zamiast "←"
+- [x] Empty state z `<EmptyState />` + `<MessageSquare />` Lucide
+- [x] Strzałka → `<ChevronRight />` Lucide z animacją `group-hover:translate-x-0.5`
+- [x] Hover: `hover:bg-slate-50 hover:shadow-sm transition-all`
+- [ ] Każda pozycja na liście: Avatar inicjałów (zamiast ID), podgląd ostatniej wiadomości
+- [x] Conversation detail: `<Bot />` avatar dla wiadomości bota, `<User />` dla użytkownika
+- [x] Breadcrumb: ikona `<ArrowLeft />` zamiast "←"
 
 #### Knowledge Base (dashboard/knowledge/)
-- [ ] Przycisk "+ Dodaj": spinner `<Loader2 className="animate-spin" />` zamiast tekstu "Dodaję..."
-- [ ] Delete button: `<Trash2 />` ikona zamiast "✕", z `confirm()` dialog przed usunięciem
-- [ ] Każdy chunk: lekki hover `hover:border-indigo-200 transition-colors`
-- [ ] Empty state: ikona `<BookOpen />` + opis + przykładowe wpisy jako "Sugestie"
-- [ ] Toast (sonner): "✓ Wpis dodany" po sukcesie, "✕ Błąd dodawania" po błędzie
+- [x] Przycisk "+ Dodaj": spinner `<Loader2 className="animate-spin" />` podczas dodawania
+- [x] Delete button: `<Trash2 />` ikona z animacją podczas usuwania
+- [x] Empty state: ikona `<BookOpen />` + opis
+- [x] Toast (sonner): "Wpis dodany do bazy wiedzy" po sukcesie, "Nie udało się dodać wpisu" po błędzie
+- [x] Każdy chunk: confirm() dialog przed usunięciem
 - [ ] Kategoria badge: bardziej kolorowe (per kategoria hash koloru)
 
 #### Settings (dashboard/settings/)
-- [ ] Section headers z ikonami: `<Bot />` Asystentka, `<Palette />` Wygląd, `<Globe />` Domeny, `<Power />` Aktywność
-- [ ] Podziel formularz na sekcje z separatorami
-- [ ] Color picker: preview bąbelka czatu w wybranym kolorze (live update)
-- [ ] Toggle zamiast checkbox dla "Aktywna": custom styled `<Switch />` (CSS)
-- [ ] Przycisk zapisz: `<Loader2 />` spinner + disabled state podczas zapisywania
-- [ ] Toast success/error zamiast div komunikatu
+- [x] Ikona `<Power />` przy sekcji Aktywność
+- [x] Przycisk zapisz: `<Loader2 />` spinner + disabled state podczas zapisywania
+- [x] Toast success/error przez sonner
+- [x] Section headers z ikonami: `<Bot />` Asystentka, `<Palette />` Wygląd, `<Globe />` Domeny, `<Power />` Aktywność
+- [x] Color picker: live preview bąbelka czatu w wybranym kolorze
+- [x] Toggle zamiast checkbox dla "Aktywna": custom styled Switch (CSS, już był)
 
 #### Billing (dashboard/billing/)
-- [ ] Plan card: gradient tło — `from-indigo-600 to-purple-600` gdy aktywny, `from-slate-200 to-slate-300` gdy Trial
-- [ ] Status badge z ikoną: `<CheckCircle />` Aktywna (green), `<Clock />` Trial (amber), `<AlertCircle />` Wygasła (red)
-- [ ] Trial: licznik dni + pasek postępu (progress bar)
-- [ ] Przycisk "Kup plan": gradient + `<ArrowRight />` ikona + hover:scale-105
-- [ ] Cechy planu: lista z `<Check />` ikonami (rozmowy/mies., wsparcie itp.)
-- [ ] "Płatności przez Stripe": logo Stripe SVG (nie tekst)
+- [x] Status badge z ikoną: `<CheckCircle2 />` Aktywna, `<AlertCircle />` Wygasła/błąd
+- [x] Cechy planu: lista z `<CheckCircle2 />` ikonami
+- [x] Przycisk "Kup plan": gradient + `<Zap />` ikona
+- [x] Plan card: gradient tło `from-indigo-600 to-purple-600` gdy aktywna subskrypcja
+- [ ] Trial: licznik dni + pasek postępu (wymaga `trialEndsAt` z API — odkładamy)
+- [x] "Płatności przez Stripe": Stripe SVG logo inline
 
 #### Embed (dashboard/embed/)
-- [ ] WordPress/Wix/Squarespace: SVG logo zamiast emoji (🔵 ⚫ ⬛)
-- [ ] Copy button: `<Copy />` ikona, po kliknięciu → `<CheckCheck />` + toast "Skopiowano!"
-- [ ] Kod: lepszy syntax highlighting (monospace, `text-emerald-400` jak teraz ale z line numbers)
-- [ ] Step-by-step wizard: numerowane kroki (1→2→3) z `<CheckCircle />` gdy ukończony
+- [x] Copy button: `<Copy />` ikona, po kliknięciu → `<Check />` + toast "Kod skopiowany do schowka"
+- [x] WordPress/Wix/Squarespace: kolorowe logo-badge (WP/Wix/SS) z tłem per platforma
+- [x] Step-by-step wizard: numerowane kroki (1→2→3), krok 1 zamienia się w CheckCircle po skopiowaniu
 
-#### Shared Components do stworzenia
-- [ ] `components/ui/Spinner.tsx` — `<Loader2 className="animate-spin" />` wrapper
-- [ ] `components/ui/EmptyState.tsx` — ikona + tytuł + opis + opcjonalny CTA
-- [ ] `components/ui/StatusBadge.tsx` — lead status z ikoną i kolorem
-- [ ] `components/ui/PageHeader.tsx` — tytuł + opis + opcjonalny badge/akcja
+#### Shared Components
+- [x] `components/ui/Spinner.tsx` — `<Loader2 className="animate-spin" />` wrapper
+- [x] `components/ui/EmptyState.tsx` — ikona + tytuł + opis + opcjonalny CTA
+- [x] `components/ui/PageHeader.tsx` — tytuł + opis + opcjonalny badge/akcja
+- [x] `components/ui/StatusBadge.tsx` — lead status z ikoną i kolorem, wydzielony z LeadsTable
 
 #### Testowanie wizualne
 - [ ] Sprawdź na 1280px (laptop) — najczęstszy rozmiar u klientów

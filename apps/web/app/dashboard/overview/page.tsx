@@ -2,15 +2,18 @@ import Link from 'next/link';
 import { Bot, Users, MessageSquare, Mail, ArrowRight, Code2, BookOpen } from 'lucide-react';
 import { fetchWithAuth } from '../../../lib/api';
 import { PageHeader } from '../../../components/ui/PageHeader';
+import { OverviewCharts } from '../../../components/dashboard/OverviewCharts';
 
 interface Lead {
   id: string;
   status: string;
+  createdAt: string;
 }
 
 interface Conversation {
   id: string;
   messageCount: number;
+  createdAt: string;
 }
 
 interface BotData {
@@ -32,8 +35,51 @@ async function getStats() {
   }
 }
 
+function buildChartData(conversations: Conversation[], leads: Lead[]) {
+  // Last 7 days labels
+  const days: { key: string; label: string }[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push({
+      key: d.toISOString().slice(0, 10),
+      label: d.toLocaleDateString('pl-PL', { weekday: 'short', day: 'numeric' }),
+    });
+  }
+
+  const conversationsByDay = days.map(({ key, label }) => {
+    const dayConvs = conversations.filter((c) => c.createdAt.slice(0, 10) === key);
+    return {
+      day: label,
+      rozmowy: dayConvs.length,
+      wiadomosci: dayConvs.reduce((s, c) => s + c.messageCount, 0),
+    };
+  });
+
+  const statusColors: Record<string, string> = {
+    NEW: '#6366f1',
+    CONTACTED: '#f59e0b',
+    CONVERTED: '#10b981',
+    LOST: '#94a3b8',
+  };
+  const statusLabels: Record<string, string> = {
+    NEW: 'Nowi',
+    CONTACTED: 'Skontaktowani',
+    CONVERTED: 'Klienci',
+    LOST: 'Utraceni',
+  };
+  const leadsByStatus = Object.entries(statusLabels).map(([key, name]) => ({
+    name,
+    value: leads.filter((l) => l.status === key).length,
+    color: statusColors[key],
+  }));
+
+  return { conversationsByDay, leadsByStatus };
+}
+
 export default async function OverviewPage() {
   const { leads, conversations, bots } = await getStats();
+  const { conversationsByDay, leadsByStatus } = buildChartData(conversations, leads);
 
   const newLeads = leads.filter((l) => l.status === 'NEW').length;
   const totalMessages = conversations.reduce((sum, c) => sum + c.messageCount, 0);
@@ -166,6 +212,11 @@ export default async function OverviewPage() {
           </div>
         </div>
       )}
+
+      <OverviewCharts
+        conversationsByDay={conversationsByDay}
+        leadsByStatus={leadsByStatus}
+      />
     </div>
   );
 }

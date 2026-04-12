@@ -36,6 +36,16 @@ export default function OverviewLoading() {
           </div>
         ))}
       </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        {[...Array(2)].map((_, i) => (
+          <div key={i} className="bg-white rounded-2xl border border-slate-200/60 p-6 shadow-sm">
+            <div className="h-4 w-40 bg-slate-200 rounded mb-1.5" />
+            <div className="h-3 w-32 bg-slate-100 rounded mb-5" />
+            <div className="h-44 bg-slate-100 rounded-xl" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

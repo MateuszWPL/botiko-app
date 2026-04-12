@@ -40,7 +40,7 @@ export function Sidebar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-64 flex-col min-h-screen flex-shrink-0 bg-gradient-to-b from-slate-950 to-slate-900 border-r border-slate-800/50">
+      <aside className="hidden md:flex w-64 flex-col h-screen sticky top-0 flex-shrink-0 bg-gradient-to-b from-slate-950 to-slate-900 border-r border-slate-800/50 overflow-hidden">
         {/* Logo */}
         <div className="p-6 border-b border-slate-800/60">
           <div className="flex items-center gap-3">
@@ -60,7 +60,7 @@ export function Sidebar() {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 p-3 space-y-0.5">
+        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname.startsWith(item.href);
             const Icon = item.icon;
