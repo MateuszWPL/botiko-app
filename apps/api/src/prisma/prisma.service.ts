@@ -17,12 +17,14 @@ export class PrismaService
   private readonly logger = new Logger(PrismaService.name);
 
   constructor() {
-    // Supabase pooler (and many managed Postgres providers) use certificates
-    // that pg v8+ rejects by default because it treats sslmode=require as
-    // verify-full. We pass ssl config explicitly via a Pool instance.
-    // In production with a known CA, set rejectUnauthorized: true and supply the cert.
+    // pg v8.20+ changed sslmode=require to behave like verify-full, causing
+    // certificate failures with Supabase's self-signed pooler certs. We strip
+    // sslmode from the URL and control TLS exclusively via the explicit ssl option.
+    // In production, replace rejectUnauthorized: false with true + supply a CA cert.
+    const urlWithoutSslMode = new URL(env.DATABASE_URL);
+    urlWithoutSslMode.searchParams.delete('sslmode');
     const pool = new Pool({
-      connectionString: env.DATABASE_URL,
+      connectionString: urlWithoutSslMode.toString(),
       ssl: {
         rejectUnauthorized: false,
       },
