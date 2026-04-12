@@ -45,8 +45,12 @@ const TOOLTIP_STYLE = {
 
 function EmptyChart({ label }: { label: string }) {
   return (
-    <div className="flex flex-col items-center justify-center h-40 text-slate-300">
-      <div className="text-4xl mb-2">📊</div>
+    <div className="flex flex-col items-center justify-center h-40">
+      <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center mb-2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />
+        </svg>
+      </div>
       <p className="text-sm text-slate-400">{label}</p>
     </div>
   );

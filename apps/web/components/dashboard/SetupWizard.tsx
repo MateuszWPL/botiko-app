@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { X, ChevronRight, ChevronLeft, Check, Bot, Copy, Loader2 } from 'lucide-react';
 import { createClient } from '../../lib/supabase';
-import { INDUSTRY_SERVICE_TEMPLATES, type Industry } from '../../lib/industry-templates';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 const WIDGET_URL = process.env.NEXT_PUBLIC_WIDGET_URL ?? 'https://cdn.botiko.pl';
@@ -32,7 +31,7 @@ const DEFAULTS: WizardData = {
   address: '',
   hours: '',
   services: '',
-  botName: 'Asystentka',
+  botName: 'Botiko.pl',
   primaryColor: '#6366F1',
   welcomeMsg: 'Dzień dobry! W czym mogę pomóc?',
   industry: 'BEAUTY',
@@ -164,47 +163,24 @@ function StepServices({
   data: WizardData;
   onChange: (d: Partial<WizardData>) => void;
 }) {
-  const templates =
-    INDUSTRY_SERVICE_TEMPLATES[(data.industry as Industry) ?? 'OTHER'] ??
-    INDUSTRY_SERVICE_TEMPLATES.OTHER;
-
-  const append = (content: string) => {
-    onChange({
-      services: data.services.trim() ? `${data.services}\n\n${content}` : content,
-    });
-  };
-
   return (
     <div className="space-y-4">
       <p className="text-sm text-slate-500">
         Opisz swoje usługi i ceny. Im więcej szczegółów, tym trafniejsze odpowiedzi bota.
+        Możesz też pominąć ten krok i dodać szczegóły później w Bazie wiedzy.
       </p>
-
-      <div>
-        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
-          Szablony — kliknij aby dodać
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {templates.map((tpl) => (
-            <button
-              key={tpl.label}
-              type="button"
-              onClick={() => append(tpl.content)}
-              className="px-3 py-1.5 text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-full transition-colors"
-            >
-              + {tpl.label}
-            </button>
-          ))}
-        </div>
-      </div>
 
       <textarea
         value={data.services}
         onChange={(e) => onChange({ services: e.target.value })}
-        rows={9}
-        placeholder={`Przykład:\n\nManicure klasyczny — 60 zł, 45 min\nManicure hybrydowy — 90 zł, 75 min\n\nPromocje:\n- Środa dla studentek: -20%`}
+        rows={10}
+        placeholder={`Przykład:\n\nUsługa A — 100 zł, czas ok. 60 min\nUsługa B — 150 zł, czas ok. 90 min\n\nCennik:\n- Wariant podstawowy: 80 zł\n- Wariant rozszerzony: 120 zł\n\nGodziny: pon–pt 9:00–18:00, sob 10:00–15:00`}
         className={`${inputClass} resize-none`}
       />
+
+      <p className="text-xs text-slate-400">
+        Każdy akapit (oddzielony pustą linią) trafi jako osobny wpis do bazy wiedzy bota.
+      </p>
     </div>
   );
 }
