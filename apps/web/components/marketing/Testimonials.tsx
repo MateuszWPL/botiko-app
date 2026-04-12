@@ -117,17 +117,13 @@ export default function Testimonials() {
       </div>
 
       {/* Marquee rows — full bleed with gradient fade edges */}
-      <div className="flex flex-col gap-5 mb-16 relative">
-        {/* Left gradient fade */}
-        <div
-          className="absolute left-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to right, #1e1b4b 0%, transparent 100%)' }}
-        />
-        {/* Right gradient fade */}
-        <div
-          className="absolute right-0 top-0 bottom-0 w-32 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to left, #1e1b4b 0%, transparent 100%)' }}
-        />
+      <div
+        className="flex flex-col gap-5 mb-16"
+        style={{
+          maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
+        }}
+      >
 
         {/* Row 1 — scrolls left */}
         <div
