@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { Launcher } from './Launcher';
 import { ChatWindow } from './ChatWindow';
 
@@ -20,6 +20,19 @@ function Widget({
   apiUrl: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Expose global API so the host page can open/close/toggle the widget programmatically.
+  // Example: window.BotikoWidget.open() — used by the LP demo section scroll trigger.
+  useEffect(() => {
+    (window as unknown as Record<string, unknown>)['BotikoWidget'] = {
+      open:   () => setIsOpen(true),
+      close:  () => setIsOpen(false),
+      toggle: () => setIsOpen((prev: boolean) => !prev),
+    };
+    return () => {
+      delete (window as unknown as Record<string, unknown>)['BotikoWidget'];
+    };
+  }, []);
 
   return h('div', { id: 'botiko-widget-root' }, [
     h(ChatWindow, {

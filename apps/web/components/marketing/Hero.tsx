@@ -11,12 +11,12 @@ const CHAT_SEQUENCE: Array<{
   typingMs?: number;
   pauseAfterMs?: number;
 }> = [
-  { role: 'user', text: 'Hej, czy jest wolny termin na manicure hybrydowy w piątek?', pauseAfterMs: 400 },
-  { role: 'bot', text: 'Cześć! Tak, w piątek mamy wolne miejsca 🎉\n\nDostępne terminy:\n📅 Piątek 10:00 — Karolina\n📅 Piątek 14:30 — Marta\n\nKtóry preferujesz?', typingMs: 1400, pauseAfterMs: 900 },
-  { role: 'user', text: '14:30 poproszę!', pauseAfterMs: 400 },
-  { role: 'bot', text: 'Świetnie! Zarezerwowałam:\n✅ Piątek 14:30 — Marta\n💅 Manicure hybrydowy\n\nPodaj imię i telefon do potwierdzenia?', typingMs: 1200, pauseAfterMs: 900 },
-  { role: 'user', text: 'Anna Kowalska, 601 234 567', pauseAfterMs: 400 },
-  { role: 'bot', text: 'Gotowe, Anno! Widzę Cię w kalendarzu 👋\nWyślę SMS-przypomnienie dzień wcześniej.\nDo zobaczenia w piątek!', typingMs: 1100, pauseAfterMs: 4500 },
+  { role: 'user', text: 'Hej, jakie macie godziny otwarcia i cennik?', pauseAfterMs: 400 },
+  { role: 'bot', text: 'Cześć! Chętnie pomogę 😊\n\nGodziny otwarcia:\n🕘 Pon–Pt: 9:00–19:00\n🕙 Sobota: 9:00–15:00\n\nCennik dostępny na naszej stronie lub mogę podać konkretne usługi — co Cię interesuje?', typingMs: 1400, pauseAfterMs: 900 },
+  { role: 'user', text: 'Ile kosztuje podstawowa usługa?', pauseAfterMs: 400 },
+  { role: 'bot', text: 'Podstawowa usługa to 80–120 zł ✨\n\nMamy też pakiety:\n💼 Pakiet Standard — 150 zł\n💼 Pakiet Premium — 250 zł\n\nChcesz umówić wizytę? Mam wolne terminy już od jutra!', typingMs: 1200, pauseAfterMs: 900 },
+  { role: 'user', text: 'Tak, poproszę termin na jutro.', pauseAfterMs: 400 },
+  { role: 'bot', text: 'Świetnie! Zapisuję Cię 👋\nPodaj imię i numer telefonu — oddzwonimy w ciągu godziny.\n\nDziałamy 24/7, więc zawsze możesz napisać!', typingMs: 1100, pauseAfterMs: 4500 },
 ];
 
 const TRUST_STATS = [
@@ -124,7 +124,7 @@ export default function Hero() {
               style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', color: '#a5b4fc' }}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-              Bot AI dla polskich firm usługowych
+              Bot AI dla Twojej firmy
             </div>
 
             <h1
@@ -144,7 +144,7 @@ export default function Hero() {
               className="animate-fade-in-up text-lg text-indigo-200 leading-relaxed mb-8 max-w-lg"
               style={{ animationDelay: '0.2s' }}
             >
-              Gotowy bot dla salonu, gabinetu, restauracji i warsztatu — odpowiada na pytania,
+              Gotowy bot dla każdej firmy usługowej — odpowiada na pytania klientów,
               zbiera leady i odsyła do rezerwacji.{' '}
               <strong className="text-white">Bez programowania. Bez umowy.</strong>
             </p>
@@ -201,7 +201,7 @@ export default function Hero() {
                       <span className="text-brand text-xs font-bold">B</span>
                     </div>
                     <div>
-                      <p className="text-white text-xs font-semibold">Salon Glamour · Botiko</p>
+                      <p className="text-white text-xs font-semibold">Firma XYZ · Botiko</p>
                       <p className="text-green-400 text-[10px] flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block animate-pulse" />
                         Online 24/7
