@@ -33,6 +33,21 @@ export default function BillingClient({ status, fetchError }: Props) {
   const [actionError, setActionError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  function safeStripeRedirect(url: string) {
+    // Defense-in-depth: only redirect to Stripe domains
+    const allowed = ['checkout.stripe.com', 'billing.stripe.com'];
+    try {
+      const { hostname } = new URL(url);
+      if (allowed.includes(hostname)) {
+        window.location.href = url;
+      } else {
+        setActionError('Nieoczekiwany adres przekierowania.');
+      }
+    } catch {
+      setActionError('Nieprawidłowy adres przekierowania.');
+    }
+  }
+
   function handleCheckout() {
     setActionError(null);
     startTransition(async () => {
@@ -40,7 +55,7 @@ export default function BillingClient({ status, fetchError }: Props) {
       if (result.error) {
         setActionError(result.error);
       } else if (result.url) {
-        window.location.href = result.url;
+        safeStripeRedirect(result.url);
       }
     });
   }
@@ -52,7 +67,7 @@ export default function BillingClient({ status, fetchError }: Props) {
       if (result.error) {
         setActionError(result.error);
       } else if (result.url) {
-        window.location.href = result.url;
+        safeStripeRedirect(result.url);
       }
     });
   }

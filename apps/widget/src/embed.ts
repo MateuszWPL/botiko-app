@@ -47,10 +47,8 @@ async function init() {
     return;
   }
 
-  const apiUrl =
-    scriptEl?.getAttribute('data-api-url') ||
-    (window as unknown as Record<string, string>).__BOTIKO_API_URL__ ||
-    'https://api.botiko.pl';
+  // API URL is fixed at build time — no runtime override to prevent PII exfiltration
+  const apiUrl = (import.meta.env.VITE_API_URL as string | undefined) ?? 'https://api.botiko.pl';
 
   let config: BotConfig = {
     id: botId,

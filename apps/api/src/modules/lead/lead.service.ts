@@ -52,7 +52,7 @@ export class LeadService {
 
     const id = randomUUID();
 
-    // PII encrypted at rest — RODO compliance
+    // PII encrypted at rest — RODO compliance (name, phone, message)
     await this.prisma.lead.create({
       data: {
         id,
@@ -60,7 +60,7 @@ export class LeadService {
         botId: dto.botId,
         name: this.encryption.encrypt(dto.name),
         phone: this.encryption.encrypt(dto.phone),
-        message: dto.message ?? null,
+        message: dto.message ? this.encryption.encrypt(dto.message) : null,
         status: 'NEW',
       },
     });
@@ -106,6 +106,7 @@ export class LeadService {
       // Decrypt PII for authorized tenant access
       name: this.safeDecrypt(lead.name),
       phone: this.safeDecrypt(lead.phone),
+      message: lead.message ? this.safeDecrypt(lead.message) : null,
     }));
   }
 

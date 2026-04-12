@@ -1,24 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import {
-  createCipheriv,
-  createDecipheriv,
-  randomBytes,
-  scryptSync,
-} from 'crypto';
+import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
 import { env } from '../../config/env';
 
 const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 16;
 const AUTH_TAG_LENGTH = 16;
-const KEY_LENGTH = 32;
 
 @Injectable()
 export class EncryptionService {
   private readonly key: Buffer;
 
   constructor() {
-    // Derive a fixed 32-byte key from the ENCRYPTION_KEY env var
-    this.key = scryptSync(env.ENCRYPTION_KEY, 'botiko-salt-v1', KEY_LENGTH);
+    // ENCRYPTION_KEY must be a 64-char hex string (32 bytes = 256-bit AES key).
+    // Use: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+    this.key = Buffer.from(env.ENCRYPTION_KEY, 'hex');
+    if (this.key.length !== 32) {
+      throw new Error(
+        'ENCRYPTION_KEY must be a valid 64-character hex string (32 bytes)',
+      );
+    }
   }
 
   encrypt(plaintext: string): string {

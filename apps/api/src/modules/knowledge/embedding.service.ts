@@ -56,7 +56,7 @@ export class EmbeddingService {
 
     await this.prisma.$executeRaw`
       UPDATE "KnowledgeChunk"
-      SET embedding = ${Prisma.raw(`'${vectorLiteral}'::vector(1536)`)}
+      SET embedding = ${vectorLiteral}::vector(1536)
       WHERE id = ${chunkId}
     `;
 
@@ -77,12 +77,12 @@ export class EmbeddingService {
       SELECT
         content,
         category,
-        1 - (embedding <=> ${Prisma.raw(`'${vectorLiteral}'::vector(1536)`)}) AS similarity
+        1 - (embedding <=> ${vectorLiteral}::vector(1536)) AS similarity
       FROM "KnowledgeChunk"
       WHERE "botId" = ${botId}
-        AND embedding != ${Prisma.raw(`array_fill(0::float4, ARRAY[1536])::vector(1536)`)}
-      ORDER BY embedding <=> ${Prisma.raw(`'${vectorLiteral}'::vector(1536)`)}
-      LIMIT ${Prisma.raw(String(topK))}
+        AND embedding IS DISTINCT FROM ${Prisma.raw(`array_fill(0::float4, ARRAY[1536])::vector(1536)`)}
+      ORDER BY embedding <=> ${vectorLiteral}::vector(1536)
+      LIMIT ${topK}
     `;
 
     return rows;

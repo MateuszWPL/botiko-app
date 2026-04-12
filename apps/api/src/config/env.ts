@@ -16,7 +16,14 @@ const envSchema = z.object({
 
   // Security
   JWT_SECRET: z.string().min(32),
-  ENCRYPTION_KEY: z.string().min(32),
+  // Must be exactly 64 hex chars (32 bytes) — generate with:
+  // node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+  ENCRYPTION_KEY: z
+    .string()
+    .regex(
+      /^[0-9a-fA-F]{64}$/,
+      'ENCRYPTION_KEY must be a 64-character hex string (32 bytes)',
+    ),
 
   // Rate limiting
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(60000),
