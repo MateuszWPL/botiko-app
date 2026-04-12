@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import {
   BotService,
   type BotDetail,
@@ -28,6 +29,7 @@ export class BotController {
 
   // Public endpoint — widget fetches bot config (no auth required)
   @Get(':id/config')
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   getConfig(@Param('id') id: string): Promise<BotPublicConfig> {
     return this.botService.getPublicConfig(id);
   }
