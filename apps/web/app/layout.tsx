@@ -29,9 +29,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.APP_URL ?? 'https://botiko.pl'),
   manifest: '/manifest.json',
   appleWebApp: {
-    capable: true,
     statusBarStyle: 'default',
     title: 'Botiko',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
   },
   openGraph: {
     type: 'website',
@@ -83,7 +85,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pl">
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
         {children}
       </body>
     </html>
