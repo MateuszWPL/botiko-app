@@ -120,8 +120,8 @@ export default function Testimonials() {
       <div className="flex flex-col gap-5 mb-16">
         {/* Row 1 — scrolls left */}
         <div
-          className="flex"
-          style={{ animation: 'marquee-left 38s linear infinite' }}
+          className="flex marquee-left"
+          style={{ animationDuration: '38s', animationTimingFunction: 'linear', animationIterationCount: 'infinite' }}
           onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'paused'; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'running'; }}
         >
@@ -130,8 +130,8 @@ export default function Testimonials() {
 
         {/* Row 2 — scrolls right */}
         <div
-          className="flex"
-          style={{ animation: 'marquee-right 42s linear infinite' }}
+          className="flex marquee-right"
+          style={{ animationDuration: '42s', animationTimingFunction: 'linear', animationIterationCount: 'infinite' }}
           onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'paused'; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'running'; }}
         >
@@ -155,22 +155,6 @@ export default function Testimonials() {
         </div>
       </div>
 
-      {/* Keyframes injected inline */}
-      <style>{`
-        @keyframes marquee-left {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-        @keyframes marquee-right {
-          from { transform: translateX(-50%); }
-          to   { transform: translateX(0); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          [style*="marquee-left"], [style*="marquee-right"] {
-            animation: none !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }

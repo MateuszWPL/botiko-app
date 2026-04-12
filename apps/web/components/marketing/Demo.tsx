@@ -145,7 +145,7 @@ export default function Demo() {
                     viewBox="0 0 80 80"
                     fill="none"
                     className="text-brand opacity-60"
-                    style={{ animation: 'bounce-arrow 2s ease-in-out infinite' }}
+                    style={{ animationName: 'bounce-arrow', animationDuration: '2s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }}
                   >
                     <path
                       d="M10 10 C10 50 60 50 70 70"
@@ -184,12 +184,6 @@ export default function Demo() {
         </div>
       </div>
 
-      <style>{`
-        @keyframes bounce-arrow {
-          0%, 100% { transform: translate(0, 0); }
-          50%       { transform: translate(6px, 6px); }
-        }
-      `}</style>
     </section>
   );
 }
