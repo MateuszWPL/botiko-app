@@ -82,7 +82,7 @@ export function OverviewCharts({ conversationsByDay, leadsByStatus }: Props) {
               />
               <Tooltip
                 {...TOOLTIP_STYLE}
-                formatter={(value: number, name: string) => [value, name]}
+                formatter={(value) => [value ?? 0]}
               />
               <Bar dataKey="rozmowy" fill="#6366f1" radius={[6, 6, 0, 0]} maxBarSize={32} />
               <Bar dataKey="wiadomosci" fill="#a5b4fc" radius={[6, 6, 0, 0]} maxBarSize={32} />
@@ -117,7 +117,7 @@ export function OverviewCharts({ conversationsByDay, leadsByStatus }: Props) {
               </Pie>
               <Tooltip
                 contentStyle={TOOLTIP_STYLE.contentStyle}
-                formatter={(value: number, name: string) => [value, name]}
+                formatter={(value) => [value ?? 0]}
               />
               <Legend
                 iconType="circle"
