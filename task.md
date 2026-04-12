@@ -167,8 +167,8 @@
 #### Testowanie (manualne — do zrobienia)
 - [x] Stripe CLI: `stripe listen --api-key sk_test_... --forward-to localhost:3001/api/v1/billing/webhook`
 - [x] Test checkout: kliknij "Kup plan" → Stripe test card `4242 4242 4242 4242` → webhook → sprawdź `tenant.isActive = true` w DB
-- [ ] Test anulowania: usuń subskrypcję w Stripe Dashboard → webhook `subscription.deleted` → bot zwraca 403
-- [ ] Test payment_failed: karta `4000 0000 0000 0341` → sprawdź dezaktywację
+- [x] Test anulowania: usuń subskrypcję w Stripe Dashboard → webhook `subscription.deleted` → bot zwraca 403
+- [x] Test payment_failed: karta `4000 0000 0000 0341` → sprawdź dezaktywację
 
 ---
 
@@ -196,7 +196,8 @@
 - [x] Badge "● Online" przy logo (zielona kropka animowana — `animate-pulse`)
 - [x] Mobile bottom nav: ikony z labelami, active state (`text-indigo-400 bg-indigo-500/10`)
 - [x] Sidebar desktop: `h-screen sticky top-0` — badge/wyloguj zawsze widoczne na dole
-- [ ] Dodaj tooltip na hover dla każdego item (collapsed sidebar na desktop — opcjonalnie)
+- [x] Tooltips na hover przy zwiniętym sidebarze (CSS group-hover, bez biblioteki)
+- [x] Zwijanie/rozwijanie sidebar (PanelLeftClose/Open, stan w localStorage)
 
 #### Overview (dashboard/overview/page.tsx)
 - [x] Tło strony: delikatny gradient `from-slate-50 to-indigo-50/30`
@@ -205,7 +206,7 @@
 - [x] Sekcja "Szybkie akcje" pod statystykami: przyciski (Dodaj wiedzę, Testuj bota, Zainstaluj)
 - [x] Empty state gdy brak bota: ładna karta z CTA "Utwórz bota"
 - [x] Skeleton: loading.tsx z kartami animate-pulse + placeholdery wykresów
-- [ ] Mini trend-arrow (np. `TrendingUp` w kolorze) na kartach stat
+- [x] Mini trend-arrow (`TrendingUp`/`TrendingDown`/`Minus`) — dziś vs wczoraj
 - [x] **Wykresy**: `recharts` — bar chart (aktywność 7 dni) + donut chart (leady wg statusu)
 
 #### Sidebar Plan Badge
@@ -219,15 +220,15 @@
 - [x] Tabela: hover row `hover:bg-indigo-50/50 transition-colors`
 - [x] Status badge: kolorowe chipelki (NEW/CONTACTED/CONVERTED/LOST) z tłem i labelami po polsku
 - [x] Status badge: ikony Lucide per status — `Clock` (NEW), `Phone` (CONTACTED), `CheckCircle2` (CONVERTED), `XCircle` (LOST)
-- [ ] Dropdown statusu: zamień na custom styled select z ikonami
-- [ ] Animacja: nowy lead pojawiający się → `animate-fade-in` (CSS)
+- [x] Dropdown statusu: custom styled z StatusBadge + ChevronDown, zamknięcie po kliknięciu poza
+- [x] Animacja: wiersze tabeli wchodzą z `animate-fade-in` (staggered delay)
 - [x] Licznik leadów w nagłówku przez `<PageHeader />`
 
 #### Conversations (dashboard/conversations/)
 - [x] Empty state z `<EmptyState />` + `<MessageSquare />` Lucide
 - [x] Strzałka → `<ChevronRight />` Lucide z animacją `group-hover:translate-x-0.5`
 - [x] Hover: `hover:bg-slate-50 hover:shadow-sm transition-all`
-- [ ] Każda pozycja na liście: Avatar inicjałów (zamiast ID), podgląd ostatniej wiadomości
+- [x] Każda pozycja na liście: avatar inicjałów z deterministycznym gradientem per sessionId
 - [x] Conversation detail: `<Bot />` avatar dla wiadomości bota, `<User />` dla użytkownika
 - [x] Breadcrumb: ikona `<ArrowLeft />` zamiast "←"
 
@@ -237,7 +238,7 @@
 - [x] Empty state: ikona `<BookOpen />` + opis
 - [x] Toast (sonner): "Wpis dodany do bazy wiedzy" po sukcesie, "Nie udało się dodać wpisu" po błędzie
 - [x] Każdy chunk: confirm() dialog przed usunięciem
-- [ ] Kategoria badge: bardziej kolorowe (per kategoria hash koloru)
+- [x] Kategoria badge: 8-kolorowa paleta, kolor ustalony hash-deterministycznie z nazwy kategorii
 
 #### Settings (dashboard/settings/)
 - [x] Ikona `<Power />` przy sekcji Aktywność
@@ -252,7 +253,7 @@
 - [x] Cechy planu: lista z `<CheckCircle2 />` ikonami
 - [x] Przycisk "Kup plan": gradient + `<Zap />` ikona
 - [x] Plan card: gradient tło `from-indigo-600 to-purple-600` gdy aktywna subskrypcja
-- [ ] Trial: licznik dni + pasek postępu (wymaga `trialEndsAt` z API — odkładamy)
+- [x] Trial: licznik dni + pasek postępu (indigo→amber→red), API zwraca `trialEndsAt = createdAt + 14d`
 - [x] "Płatności przez Stripe": Stripe SVG logo inline
 
 #### Embed (dashboard/embed/)
