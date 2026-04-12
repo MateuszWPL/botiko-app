@@ -11,7 +11,9 @@ export class ZodValidationPipe implements PipeTransform {
   constructor(private readonly schema: ZodSchema) {}
 
   transform(value: unknown, metadata: ArgumentMetadata): unknown {
-    void metadata;
+    if (metadata.type !== 'body') {
+      return value;
+    }
     const result = this.schema.safeParse(value);
     if (!result.success) {
       const formatted = this.formatErrors(result.error);
@@ -23,7 +25,11 @@ export class ZodValidationPipe implements PipeTransform {
     return result.data;
   }
 
-  private formatErrors(error: ZodError): Record<string, string[]> {
-    return error.flatten().fieldErrors as Record<string, string[]>;
+  private formatErrors(error: ZodError): Record<string, unknown> {
+    const flat = error.flatten();
+    return {
+      ...(flat.formErrors.length > 0 && { _root: flat.formErrors }),
+      ...(flat.fieldErrors as Record<string, string[]>),
+    };
   }
 }

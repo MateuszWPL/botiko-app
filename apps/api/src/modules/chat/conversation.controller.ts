@@ -14,9 +14,7 @@ export class ConversationController {
   constructor(private readonly conversationService: ConversationService) {}
 
   @Get()
-  findAll(
-    @CurrentTenant() tenantId: string,
-  ): Promise<ConversationSummary[]> {
+  findAll(@CurrentTenant() tenantId: string): Promise<ConversationSummary[]> {
     return this.conversationService.findAll(tenantId);
   }
 

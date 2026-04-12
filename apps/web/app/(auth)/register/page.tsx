@@ -123,9 +123,9 @@ export default function RegisterPage() {
                 value={form.password}
                 onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
                 required
-                minLength={8}
+                minLength={12}
                 autoComplete="new-password"
-                placeholder="min. 8 znaków"
+                placeholder="min. 12 znaków, wielka litera, cyfra"
                 className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </div>

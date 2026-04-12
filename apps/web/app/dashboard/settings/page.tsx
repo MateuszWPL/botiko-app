@@ -1,5 +1,8 @@
+import { Settings } from 'lucide-react';
 import { fetchWithAuth } from '../../../lib/api';
 import { SettingsForm } from './SettingsForm';
+import { PageHeader } from '../../../components/ui/PageHeader';
+import { EmptyState } from '../../../components/ui/EmptyState';
 
 interface Bot {
   id: string;
@@ -20,28 +23,20 @@ export default async function SettingsPage() {
 
   const bot = bots[0];
 
-  if (!bot) {
-    return (
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 mb-6">Ustawienia</h1>
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-          <p className="text-slate-500">Nie masz jeszcze żadnego bota</p>
-          <a
-            href="/onboarding/step-1"
-            className="mt-4 inline-block px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700"
-          >
-            Utwórz asystentkę →
-          </a>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900 mb-2">Ustawienia</h1>
-      <p className="text-slate-500 text-sm mb-8">Zarządzaj konfiguracją asystentki</p>
-      <SettingsForm bot={bot} />
+      <PageHeader title="Ustawienia" description="Zarządzaj konfiguracją bota" />
+
+      {!bot ? (
+        <EmptyState
+          icon={Settings}
+          title="Nie masz jeszcze żadnego bota"
+          description="Utwórz bota aby skonfigurować jego ustawienia"
+          action={{ label: 'Utwórz bota', href: '/onboarding/step-1' }}
+        />
+      ) : (
+        <SettingsForm bot={bot} />
+      )}
     </div>
   );
 }

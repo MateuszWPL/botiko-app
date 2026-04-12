@@ -10,12 +10,15 @@ export const createBotSchema = z.object({
     .trim(),
   welcomeMsg: z
     .string()
-    .min(10, 'Welcome message must be at least 10 characters')
+    .min(2, 'Welcome message must be at least 2 characters')
     .max(500, 'Welcome message is too long')
     .trim(),
   primaryColor: z
     .string()
-    .regex(hexColorRegex, 'Primary color must be a valid hex color (e.g. #6366F1)')
+    .regex(
+      hexColorRegex,
+      'Primary color must be a valid hex color (e.g. #6366F1)',
+    )
     .default('#6366F1'),
   allowedDomains: z
     .array(z.string().url('Each domain must be a valid URL'))

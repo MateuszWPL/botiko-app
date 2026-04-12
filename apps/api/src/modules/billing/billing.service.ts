@@ -14,6 +14,7 @@ export interface BillingStatus {
   isActive: boolean;
   hasSubscription: boolean;
   stripeCustomerId: string | null;
+  trialEndsAt: string | null;
 }
 
 // Stripe v22 + nodenext CJS: StripeLib is StripeConstructor (callable)
@@ -69,16 +70,26 @@ export class BillingService {
         isActive: true,
         stripeCustomerId: true,
         stripeSubscriptionId: true,
+        createdAt: true,
       },
     });
 
     if (!tenant) throw new NotFoundException('Tenant not found');
+
+    const trialEndsAt = tenant.stripeSubscriptionId
+      ? null
+      : (() => {
+          const d = new Date(tenant.createdAt);
+          d.setDate(d.getDate() + 14);
+          return d.toISOString();
+        })();
 
     return {
       plan: tenant.plan,
       isActive: tenant.isActive,
       hasSubscription: !!tenant.stripeSubscriptionId,
       stripeCustomerId: tenant.stripeCustomerId,
+      trialEndsAt,
     };
   }
 

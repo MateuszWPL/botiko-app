@@ -36,9 +36,12 @@ export class DomainWhitelistGuard implements CanActivate {
       return true;
     }
 
-    // No origin header means server-to-server request (e.g. curl) — allow in dev
+    // No origin header — allow in dev only; block in production to prevent whitelist bypass
     if (!origin) {
-      return true;
+      if (process.env.NODE_ENV !== 'production') {
+        return true;
+      }
+      throw new ForbiddenException('Origin header is required');
     }
 
     const isAllowed = bot.allowedDomains.some((domain) => {

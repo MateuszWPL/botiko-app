@@ -45,7 +45,9 @@ export class AuthService {
 
     if (authError || !authData.user) {
       if (authError?.message?.toLowerCase().includes('already registered')) {
-        throw new ConflictException('An account with this email already exists');
+        throw new ConflictException(
+          'An account with this email already exists',
+        );
       }
       this.logger.error('Supabase user creation failed', authError?.message);
       throw new InternalServerErrorException('Registration failed');
@@ -94,14 +96,14 @@ export class AuthService {
       };
     } catch (error) {
       // Rollback Supabase user if Prisma transaction failed
-      await this.supabase.auth.admin.deleteUser(supabaseUserId).catch(
-        (e: unknown) => {
+      await this.supabase.auth.admin
+        .deleteUser(supabaseUserId)
+        .catch((e: unknown) => {
           this.logger.error(
             'Failed to cleanup Supabase user after registration error',
             e,
           );
-        },
-      );
+        });
       this.logger.error('Registration transaction failed', error);
       throw new InternalServerErrorException('Registration failed');
     }

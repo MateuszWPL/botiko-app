@@ -10,7 +10,11 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { BotService, type BotDetail, type BotPublicConfig } from './bot.service';
+import {
+  BotService,
+  type BotDetail,
+  type BotPublicConfig,
+} from './bot.service';
 import { createBotSchema, type CreateBotDto } from './dto/create-bot.dto';
 import { updateBotSchema, type UpdateBotDto } from './dto/update-bot.dto';
 import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';

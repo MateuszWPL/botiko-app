@@ -46,3 +46,6 @@ test-results/
 
 # Misc
 *.pem
+
+# MCP config (może zawierać tokeny)
+.mcp.json

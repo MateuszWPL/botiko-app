@@ -35,7 +35,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         details = resp.details;
       }
     } else if (exception instanceof Error) {
-      message = exception.message;
+      // Log internally but never expose raw error messages to clients
+      // (they can contain DB schema details, file paths, etc.)
       this.logger.error(
         `Unhandled error: ${exception.message}`,
         exception.stack,
