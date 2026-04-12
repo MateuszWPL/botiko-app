@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import ScrollReveal from './ScrollReveal';
 
 const StarIcon = () => (
@@ -117,9 +117,9 @@ export default function Testimonials() {
   const len = TESTIMONIALS.length;
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  function goTo(next: number) {
+  const goTo = useCallback((next: number) => {
     setCurrent(((next % len) + len) % len);
-  }
+  }, [len]);
 
   useEffect(() => {
     if (isHovered) {
@@ -128,7 +128,7 @@ export default function Testimonials() {
     }
     intervalRef.current = setInterval(() => goTo(current + 1), 5500);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [current, isHovered]);
+  }, [current, isHovered, goTo]);
 
   const prev = (current - 1 + len) % len;
   const next = (current + 1) % len;

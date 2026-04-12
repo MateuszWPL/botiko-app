@@ -96,7 +96,7 @@ export default function PrywatnoScPage() {
             <ul className="text-slate-600 text-sm leading-relaxed list-disc pl-5 space-y-1">
               <li>Prawo dostępu do swoich danych i ich kopii.</li>
               <li>Prawo sprostowania nieprawidłowych danych.</li>
-              <li>Prawo usunięcia danych („prawo do bycia zapomnianym").</li>
+              <li>Prawo usunięcia danych (&bdquo;prawo do bycia zapomnianym&rdquo;).</li>
               <li>Prawo ograniczenia przetwarzania.</li>
               <li>Prawo przenoszenia danych.</li>
               <li>Prawo sprzeciwu wobec przetwarzania opartego na uzasadnionym interesie.</li>
