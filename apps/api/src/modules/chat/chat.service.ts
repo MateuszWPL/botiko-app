@@ -15,11 +15,9 @@ import {
 } from '../ai/ai.service.interface';
 import { getBrandTemplate } from '../../brand-templates';
 
-/** Monthly conversation limits per plan. null = unlimited. */
+/** Monthly conversation limit — flat 1000/month on STARTER plan. */
 const PLAN_CONVERSATION_LIMITS: Record<string, number | null> = {
-  STARTER: 300,
-  PRO: 2000,
-  PREMIUM: null,
+  STARTER: 1000,
 };
 
 const FALLBACK_RESPONSE =

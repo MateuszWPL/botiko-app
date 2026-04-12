@@ -46,9 +46,12 @@ export class DomainWhitelistGuard implements CanActivate {
 
     const isAllowed = bot.allowedDomains.some((domain) => {
       try {
-        const allowed = new URL(domain);
-        const incoming = new URL(origin);
-        return allowed.hostname === incoming.hostname;
+        const allowedHost = new URL(domain).hostname;
+        const incomingHost = new URL(origin).hostname;
+        // Treat www and non-www as the same domain so clients don't need to
+        // register both variants (e.g. example.pl ↔ www.example.pl).
+        const normalize = (h: string) => h.replace(/^www\./, '');
+        return normalize(allowedHost) === normalize(incomingHost);
       } catch {
         return false;
       }

@@ -53,7 +53,11 @@ function Widget({
 }
 
 async function init() {
-  const scriptEl = document.currentScript as HTMLScriptElement | null;
+  // document.currentScript is null when loaded via GTM, async, or defer.
+  // Fall back to querySelector so the widget works on WordPress + GTM setups.
+  const scriptEl =
+    (document.currentScript as HTMLScriptElement | null) ??
+    (document.querySelector('script[data-bot-id]') as HTMLScriptElement | null);
   const botId = scriptEl?.getAttribute('data-bot-id');
 
   if (!botId) {

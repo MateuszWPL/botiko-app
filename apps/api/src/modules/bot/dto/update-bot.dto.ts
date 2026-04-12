@@ -21,7 +21,7 @@ export const updateBotSchema = z.object({
     .optional(),
   allowedDomains: z
     .array(z.string().url('Each domain must be a valid URL'))
-    .max(10, 'Maximum 10 allowed domains')
+    .max(1, 'Only one domain allowed per bot')
     .optional(),
   isActive: z.boolean().optional(),
 });

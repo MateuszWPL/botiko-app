@@ -24,7 +24,7 @@ export function SettingsForm({ bot }: { bot: Bot }) {
     name: bot.name,
     welcomeMsg: bot.welcomeMsg,
     primaryColor: bot.primaryColor,
-    allowedDomains: bot.allowedDomains.join('\n'),
+    allowedDomain: bot.allowedDomains[0] ?? '',
     isActive: bot.isActive,
   });
   const [saving, setSaving] = useState(false);
@@ -48,10 +48,7 @@ export function SettingsForm({ bot }: { bot: Bot }) {
           name: form.name,
           welcomeMsg: form.welcomeMsg,
           primaryColor: form.primaryColor,
-          allowedDomains: form.allowedDomains
-            .split('\n')
-            .map((d) => d.trim())
-            .filter(Boolean),
+          allowedDomains: form.allowedDomain.trim() ? [form.allowedDomain.trim()] : [],
           isActive: form.isActive,
         }),
       });
@@ -148,24 +145,25 @@ export function SettingsForm({ bot }: { bot: Bot }) {
         </div>
       </div>
 
-      {/* Section: Domeny */}
+      {/* Section: Domena */}
       <div>
         <div className="flex items-center gap-2 mb-5 pb-3 border-b border-slate-100">
           <div className="w-7 h-7 rounded-lg bg-sky-100 flex items-center justify-center">
             <Globe className="w-3.5 h-3.5 text-sky-600" />
           </div>
-          <h3 className="text-sm font-semibold text-slate-700">Dozwolone domeny</h3>
+          <h3 className="text-sm font-semibold text-slate-700">Domena strony</h3>
         </div>
         <div>
-          <textarea
-            value={form.allowedDomains}
-            onChange={(e) => setForm((f) => ({ ...f, allowedDomains: e.target.value }))}
-            rows={4}
-            placeholder={'https://twoja-strona.pl\nhttps://www.twoja-strona.pl'}
-            className={`${inputClass} resize-none`}
+          <input
+            type="url"
+            value={form.allowedDomain}
+            onChange={(e) => setForm((f) => ({ ...f, allowedDomain: e.target.value }))}
+            placeholder="https://twoja-strona.pl"
+            className={inputClass}
           />
           <p className="text-xs text-slate-400 mt-1.5">
-            Jedna domena per linia. Pozostaw puste aby zezwolić na wszystkie (tylko na czas testów).
+            Adres strony, na której działa bot. www i bez www są traktowane tak samo.
+            Pozostaw puste tylko na czas testów lokalnych.
           </p>
         </div>
       </div>
