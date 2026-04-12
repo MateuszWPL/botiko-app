@@ -2,6 +2,8 @@
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 const WIDGET_URL = process.env.NEXT_PUBLIC_WIDGET_URL ?? 'https://widget.botiko.pl';
+// Widget may call the production API regardless of API_URL (its own VITE_API_URL default)
+const PROD_API_URL = 'https://api.botiko.pl';
 
 const securityHeaders = [
   // Prevent MIME-type sniffing
@@ -32,7 +34,7 @@ const securityHeaders = [
       // Fonts: self
       "font-src 'self'",
       // API calls (configured at build time)
-      `connect-src 'self' ${API_URL} https://*.supabase.co wss://*.supabase.co`,
+      `connect-src 'self' ${API_URL} ${PROD_API_URL} https://*.supabase.co wss://*.supabase.co`,
       // Frames: Stripe billing portal
       "frame-src 'self' https://billing.stripe.com https://checkout.stripe.com",
       // Strict object/media

@@ -21,6 +21,7 @@ interface ChatWindowProps {
   welcomeMessage: string;
   isOpen: boolean;
   apiUrl: string;
+  onClose: () => void;
 }
 
 interface ApiChatResponse {
@@ -79,6 +80,7 @@ export function ChatWindow({
   welcomeMessage,
   isOpen,
   apiUrl,
+  onClose,
 }: ChatWindowProps) {
   const initial = loadSession(botId, welcomeMessage);
 
@@ -240,6 +242,30 @@ export function ChatWindow({
           }}
         />
         {botName}
+        {isMobile && (
+          <button
+            onClick={onClose}
+            aria-label="Zamknij"
+            style={{
+              marginLeft: 'auto',
+              background: 'rgba(255,255,255,0.15)',
+              border: 'none',
+              borderRadius: '8px',
+              color: '#fff',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '32px',
+              height: '32px',
+              flexShrink: 0,
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Messages */}

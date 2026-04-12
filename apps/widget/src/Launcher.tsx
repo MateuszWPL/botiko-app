@@ -5,6 +5,9 @@ interface LauncherProps {
 }
 
 export function Launcher({ primaryColor, isOpen, onClick }: LauncherProps) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+  if (isMobile && isOpen) return null;
+
   return (
     <button
       onClick={onClick}
@@ -42,8 +45,8 @@ export function Launcher({ primaryColor, isOpen, onClick }: LauncherProps) {
           <path
             d="M15 5L5 15M5 5l10 10"
             stroke="white"
-            stroke-width="2"
-            stroke-linecap="round"
+            strokeWidth="2"
+            strokeLinecap="round"
           />
         </svg>
       ) : (
@@ -51,9 +54,9 @@ export function Launcher({ primaryColor, isOpen, onClick }: LauncherProps) {
           <path
             d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
             stroke="white"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       )}

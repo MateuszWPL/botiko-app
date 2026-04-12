@@ -35,8 +35,16 @@ function bundleSizeCheck(): Plugin {
 export default defineConfig({
   plugins: [preact(), bundleSizeCheck()],
   server: {
-    // Needed when embedding the dev widget script from a different localhost port
     cors: true,
+  },
+  // preview serves dist/ — used locally instead of `pnpm dev` to get embed.js at /embed.js
+  preview: {
+    port: 5173,
+    strictPort: true,
+    cors: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
   },
   build: {
     lib: {

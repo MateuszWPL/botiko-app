@@ -1,55 +1,137 @@
+import Link from 'next/link';
 import ScrollReveal from './ScrollReveal';
+
+/* ─── Step visual mockups ──────────────────────────────────── */
+
+function MockupBranch() {
+  const INDUSTRIES = [
+    { label: 'Salon beauty', color: '#EC4899', icon: '💅' },
+    { label: 'Gabinet / SPA', color: '#06B6D4', icon: '🏥' },
+    { label: 'Restauracja', color: '#F97316', icon: '🍽️' },
+    { label: 'Warsztat', color: '#64748B', icon: '🔧' },
+    { label: 'Inna branża', color: '#8B5CF6', icon: '📋' },
+  ];
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Wybierz branżę</p>
+      <div className="flex flex-col gap-2">
+        {INDUSTRIES.map((ind, i) => (
+          <div
+            key={ind.label}
+            className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-colors text-sm font-medium"
+            style={
+              i === 0
+                ? { background: '#EEF2FF', color: '#4338CA', border: '1.5px solid #6366F1' }
+                : { background: '#F8FAFC', color: '#475569', border: '1px solid #E2E8F0' }
+            }
+          >
+            <span>{ind.icon}</span>
+            <span>{ind.label}</span>
+            {i === 0 && (
+              <svg className="ml-auto" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MockupKnowledge() {
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Baza wiedzy</p>
+      <div className="flex flex-col gap-2.5">
+        {[
+          { label: 'Cennik usług', preview: 'Manicure hybrydowy — 90 zł, Pedicure — 80 zł...', color: '#6366F1' },
+          { label: 'Godziny otwarcia', preview: 'Pon–Pt 9:00–19:00, Sob 9:00–15:00...', color: '#10B981' },
+          { label: 'FAQ', preview: 'Czy przyjmujecie bez rezerwacji? Tak, jeśli...', color: '#F59E0B' },
+        ].map((item) => (
+          <div key={item.label} className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-100">
+            <span
+              className="w-2 h-2 rounded-full mt-1.5 shrink-0"
+              style={{ background: item.color }}
+            />
+            <div>
+              <p className="text-xs font-semibold text-slate-700">{item.label}</p>
+              <p className="text-xs text-slate-400 mt-0.5 leading-relaxed truncate max-w-[180px]">{item.preview}</p>
+            </div>
+          </div>
+        ))}
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-dashed border-brand/40 text-brand text-xs font-medium cursor-pointer hover:bg-brand-soft transition-colors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Dodaj kolejny wpis
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MockupChat() {
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="flex items-center gap-2.5 px-4 py-3 border-b border-slate-100">
+        <div className="w-7 h-7 rounded-full bg-brand-soft flex items-center justify-center">
+          <span className="text-brand text-xs font-bold">B</span>
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-slate-700">Bot Twojej firmy</p>
+          <p className="text-[10px] text-accent flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent inline-block animate-pulse"/>
+            Online 24/7
+          </p>
+        </div>
+      </div>
+      <div className="p-4 flex flex-col gap-2.5">
+        <div className="flex justify-start">
+          <div className="rounded-2xl rounded-bl-sm px-3.5 py-2.5 bg-slate-100 text-slate-700 text-xs max-w-[85%] leading-relaxed">
+            Dzień dobry! W czym mogę dziś pomóc? 😊
+          </div>
+        </div>
+        <div className="flex justify-end">
+          <div className="rounded-2xl rounded-br-sm px-3.5 py-2.5 bg-brand text-white text-xs max-w-[85%] leading-relaxed">
+            Ile kosztuje manicure hybrydowy?
+          </div>
+        </div>
+        <div className="flex justify-start">
+          <div className="rounded-2xl rounded-bl-sm px-3.5 py-2.5 bg-slate-100 text-slate-700 text-xs max-w-[85%] leading-relaxed">
+            Manicure hybrydowy to 90 zł ✨<br/>Mam wolny termin jutro o 14:30 — zainteresowana?
+          </div>
+        </div>
+        <div className="mt-1 flex items-center gap-1.5 px-3 py-2 rounded-full bg-slate-50 border border-slate-200">
+          <span className="text-xs text-slate-400 flex-1">Napisz wiadomość...</span>
+          <div className="w-5 h-5 rounded-full bg-brand flex items-center justify-center shrink-0">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Steps data ──────────────────────────────────────────── */
 
 const STEPS = [
   {
-    step: '01',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-        <path d="M8 12h8M12 8v8" strokeLinecap="round"/>
-      </svg>
-    ),
+    num: '01',
     title: 'Wybierz branżę',
-    description:
-      'Salon beauty, gabinet medyczny, restauracja, warsztat — wybierasz jeden szablon. Bot dostaje gotową wiedzę o Twojej branży.',
-    detail: 'Gotowe szablony dla 5 branż',
+    desc: 'Salon beauty, gabinet, restauracja, warsztat — wybierasz jeden szablon. Bot dostaje gotową wiedzę o Twojej branży od razu.',
+    badge: 'Gotowe szablony dla 5 branż',
+    Mockup: MockupBranch,
   },
   {
-    step: '02',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="3" y="3" width="18" height="18" rx="3"/>
-        <path d="M8 12h8M8 8h8M8 16h5" strokeLinecap="round"/>
-      </svg>
-    ),
+    num: '02',
     title: 'Dodaj wiedzę o firmie',
-    description:
-      'Wklej cennik, godziny pracy, odpowiedzi na najczęstsze pytania. Bot uczy się w 5 minut — bez programowania.',
-    detail: 'Wdrożenie w ~15 minut',
+    desc: 'Wklej cennik, godziny pracy, odpowiedzi na najczęstsze pytania. Bot uczy się w kilka minut — bez programowania.',
+    badge: 'Wdrożenie w ~15 minut',
+    Mockup: MockupKnowledge,
   },
   {
-    step: '03',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    title: 'Wklej jeden kod',
-    description:
-      'Jedna linia HTML na Twojej stronie, profilu lub landing page. Widget pojawia się natychmiast — gotowy do rozmów.',
-    detail: '1 linia kodu — to wszystko',
-  },
-  {
-    step: '04',
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013 7.18a2 2 0 012-2.18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.91 12a16 16 0 006.06 6.06l.22-.22a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
-      </svg>
-    ),
-    title: 'Asystentka pracuje za Ciebie',
-    description:
-      'Odpowiada na pytania, zbiera dane klientów, odsyła do rezerwacji. Ty dostajesz powiadomienie — klientka już czeka.',
-    detail: 'Leady w panelu od razu',
+    num: '03',
+    title: 'Bot pracuje za Ciebie',
+    desc: 'Jeden fragment kodu HTML na Twojej stronie. Bot odpowiada na pytania, zbiera leady i odsyła do rezerwacji 24/7.',
+    badge: 'Leady w panelu od razu',
+    Mockup: MockupChat,
   },
 ];
 
@@ -60,47 +142,58 @@ export default function HowItWorks() {
         <ScrollReveal className="text-center mb-16">
           <p className="text-sm font-semibold text-brand uppercase tracking-widest mb-3">Jak to działa</p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text">
-            Gotowa asystentka w{' '}
-            <span className="gradient-text">15 minut</span>
+            Gotowy bot w{' '}
+            <span className="gradient-text">3 krokach</span>
           </h2>
           <p className="mt-4 text-lg text-slate-500 max-w-2xl mx-auto">
             Bez programisty. Bez agencji. Bez umowy na rok.
           </p>
         </ScrollReveal>
 
-        {/* Steps grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-          {/* Connector line (desktop) */}
-          <div
-            className="hidden lg:block absolute top-10 left-[12.5%] right-[12.5%] h-px"
-            style={{ background: 'linear-gradient(90deg, #6366F1 0%, #10B981 100%)', opacity: 0.2 }}
-          />
-
+        <div className="grid lg:grid-cols-3 gap-8">
           {STEPS.map((step, i) => (
-            <ScrollReveal key={step.step} delay={(i + 1) as 1 | 2 | 3 | 4} className="relative">
-              <div className="flex flex-col items-center text-center">
-                {/* Circle icon */}
-                <div className="relative mb-5 z-10">
-                  <div className="w-20 h-20 rounded-full flex items-center justify-center bg-brand-soft text-brand shadow-sm">
-                    {step.icon}
-                  </div>
-                  <span
-                    className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-brand text-white text-[11px] font-bold flex items-center justify-center shadow"
-                  >
-                    {step.step.replace('0', '')}
-                  </span>
+            <ScrollReveal key={step.num} delay={(i + 1) as 1 | 2 | 3}>
+              <div className="flex flex-col h-full">
+                {/* Visual mockup */}
+                <div className="mb-6 rounded-2xl overflow-hidden bg-slate-50 p-5 border border-slate-100">
+                  <step.Mockup />
                 </div>
 
-                <h3 className="text-lg font-bold text-text mb-2">{step.title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed mb-4">{step.description}</p>
+                {/* Step info */}
+                <div className="flex items-center gap-3 mb-3">
+                  <span
+                    className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-extrabold shrink-0"
+                    style={{ background: 'linear-gradient(135deg, #6366F1, #4338CA)' }}
+                  >
+                    {step.num}
+                  </span>
+                  <h3 className="text-lg font-bold text-text">{step.title}</h3>
+                </div>
 
-                <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold text-accent bg-green-50 border border-green-100">
-                  ✓ {step.detail}
+                <p className="text-sm text-slate-500 leading-relaxed flex-1 mb-4">{step.desc}</p>
+
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-accent bg-green-50 border border-green-100 self-start">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                  {step.badge}
                 </span>
               </div>
             </ScrollReveal>
           ))}
         </div>
+
+        {/* CTA */}
+        <ScrollReveal className="text-center mt-14">
+          <Link
+            href="/rejestracja"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-brand text-white font-bold text-base shadow-lg hover:bg-brand-dark hover:-translate-y-0.5 transition-all"
+          >
+            Zacznij za darmo — 14 dni
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </Link>
+          <p className="text-slate-400 text-sm mt-3">Bez karty kredytowej · Cancel kiedy chcesz</p>
+        </ScrollReveal>
       </div>
     </section>
   );
