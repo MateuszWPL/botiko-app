@@ -9,6 +9,7 @@ interface BillingStatus {
   isActive: boolean;
   hasSubscription: boolean;
   stripeCustomerId: string | null;
+  trialEndsAt: string | null;
 }
 
 interface Props {
@@ -119,16 +120,19 @@ export default function BillingClient({ status, fetchError }: Props) {
         </div>
       </div>
 
-      {/* Trial info */}
+      {/* Trial info + countdown */}
       {!status.hasSubscription && (
-        <div className="flex items-start gap-3 rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-50 to-purple-50 p-4">
-          <CheckCircle2 className="w-4 h-4 text-indigo-500 flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm font-semibold text-indigo-900 mb-0.5">14-dniowy okres próbny</p>
-            <p className="text-xs text-indigo-700">
-              Przetestuj Botiko za darmo. Karta kredytowa wymagana dopiero po zakończeniu trialu.
-            </p>
+        <div className="rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-50 to-purple-50 p-5">
+          <div className="flex items-start gap-3 mb-4">
+            <CheckCircle2 className="w-4 h-4 text-indigo-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-indigo-900 mb-0.5">14-dniowy okres próbny</p>
+              <p className="text-xs text-indigo-700">
+                Przetestuj Botiko za darmo. Karta kredytowa wymagana dopiero po zakończeniu trialu.
+              </p>
+            </div>
           </div>
+          {status.trialEndsAt && <TrialCountdown trialEndsAt={status.trialEndsAt} />}
         </div>
       )}
 
@@ -184,6 +188,39 @@ export default function BillingClient({ status, fetchError }: Props) {
         </span>
         <span>— Botiko nie przechowuje danych karty.</span>
       </div>
+    </div>
+  );
+}
+
+function TrialCountdown({ trialEndsAt }: { trialEndsAt: string }) {
+  const TOTAL_DAYS = 14;
+  const end = new Date(trialEndsAt);
+  const now = new Date();
+  const msLeft = end.getTime() - now.getTime();
+  const daysLeft = Math.max(0, Math.ceil(msLeft / (1000 * 60 * 60 * 24)));
+  const elapsed = TOTAL_DAYS - daysLeft;
+  const progress = Math.min(100, Math.max(0, (elapsed / TOTAL_DAYS) * 100));
+
+  const barColor =
+    daysLeft <= 2 ? 'bg-red-400' : daysLeft <= 5 ? 'bg-amber-400' : 'bg-indigo-400';
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="text-xs font-medium text-indigo-700">Postęp trialu</span>
+        <span className={`text-xs font-bold ${daysLeft <= 2 ? 'text-red-600' : 'text-indigo-700'}`}>
+          {daysLeft === 0 ? 'Ostatni dzień!' : `${daysLeft} ${daysLeft === 1 ? 'dzień' : 'dni'} pozostało`}
+        </span>
+      </div>
+      <div className="h-2 bg-indigo-200/50 rounded-full overflow-hidden">
+        <div
+          className={`h-full ${barColor} rounded-full transition-all duration-500`}
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+      <p className="text-xs text-indigo-600/70 mt-1">
+        Trial kończy się {end.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long' })}
+      </p>
     </div>
   );
 }

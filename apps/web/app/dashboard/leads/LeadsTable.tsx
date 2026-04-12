@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ChevronDown } from 'lucide-react';
 import { createClient } from '../../../lib/supabase';
 import { StatusBadge } from '../../../components/ui/StatusBadge';
 
@@ -16,14 +16,75 @@ interface Lead {
   createdAt: string;
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  NEW: 'Nowy',
-  CONTACTED: 'Skontaktowany',
-  CONVERTED: 'Klient',
-  LOST: 'Utracony',
-};
+const STATUS_KEYS = ['NEW', 'CONTACTED', 'CONVERTED', 'LOST'] as const;
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+
+function StatusDropdown({
+  leadId,
+  current,
+  onUpdate,
+  updating,
+}: {
+  leadId: string;
+  current: string;
+  onUpdate: (id: string, status: string) => void;
+  updating: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative inline-block">
+      <button
+        onClick={() => !updating && setOpen((o) => !o)}
+        disabled={updating}
+        className="inline-flex items-center gap-1.5 group disabled:opacity-60"
+        aria-label="Zmień status"
+      >
+        {updating ? (
+          <Loader2 className="w-3.5 h-3.5 text-slate-400 animate-spin" />
+        ) : (
+          <>
+            <StatusBadge status={current} />
+            <ChevronDown
+              className={`w-3 h-3 text-slate-400 transition-transform duration-150 ${open ? 'rotate-180' : ''}`}
+            />
+          </>
+        )}
+      </button>
+
+      {open && (
+        <div className="absolute left-0 top-full mt-1.5 z-30 bg-white rounded-xl border border-slate-200 shadow-xl shadow-slate-200/60 p-1.5 min-w-[170px] animate-fade-in">
+          {STATUS_KEYS.map((key) => (
+            <button
+              key={key}
+              onClick={() => {
+                setOpen(false);
+                if (key !== current) onUpdate(leadId, key);
+              }}
+              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left transition-colors hover:bg-slate-50 ${key === current ? 'bg-slate-50' : ''}`}
+            >
+              <StatusBadge status={key} />
+              {key === current && (
+                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400" />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
   const [leads, setLeads] = useState(initialLeads);
@@ -83,34 +144,24 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100/80">
-          {leads.map((lead) => (
-            <tr key={lead.id} className="hover:bg-slate-50/60 transition-colors">
+          {leads.map((lead, idx) => (
+            <tr
+              key={lead.id}
+              className="hover:bg-indigo-50/30 transition-colors animate-fade-in"
+              style={{ animationDelay: `${idx * 40}ms` }}
+            >
               <td className="px-5 py-4 font-semibold text-slate-800">{lead.name}</td>
               <td className="px-5 py-4 text-slate-600 font-mono text-xs">{lead.phone}</td>
               <td className="px-5 py-4 text-slate-500 max-w-48 truncate hidden md:table-cell">
                 {lead.message ?? <span className="text-slate-300">—</span>}
               </td>
               <td className="px-5 py-4">
-                <div className="relative inline-flex items-center gap-2">
-                  {updating === lead.id ? (
-                    <Loader2 className="w-3.5 h-3.5 text-slate-400 animate-spin" />
-                  ) : (
-                    <StatusBadge status={lead.status} />
-                  )}
-                  <select
-                    value={lead.status}
-                    onChange={(e) => void updateStatus(lead.id, e.target.value)}
-                    disabled={updating === lead.id}
-                    className="absolute inset-0 opacity-0 cursor-pointer w-full disabled:cursor-not-allowed"
-                    aria-label="Zmień status"
-                  >
-                    {Object.entries(STATUS_LABELS).map(([val, label]) => (
-                      <option key={val} value={val}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <StatusDropdown
+                  leadId={lead.id}
+                  current={lead.status}
+                  onUpdate={(id, status) => void updateStatus(id, status)}
+                  updating={updating === lead.id}
+                />
               </td>
               <td className="px-5 py-4 text-slate-400 text-xs hidden sm:table-cell">
                 {new Date(lead.createdAt).toLocaleDateString('pl-PL')}

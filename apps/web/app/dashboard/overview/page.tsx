@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Bot, Users, MessageSquare, Mail, ArrowRight, Code2, BookOpen } from 'lucide-react';
+import { Bot, Users, MessageSquare, Mail, ArrowRight, Code2, BookOpen, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { fetchWithAuth } from '../../../lib/api';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { OverviewCharts } from '../../../components/dashboard/OverviewCharts';
@@ -85,38 +85,56 @@ export default async function OverviewPage() {
   const totalMessages = conversations.reduce((sum, c) => sum + c.messageCount, 0);
   const activeBots = bots.filter((b) => b.isActive).length;
 
+  // Trend: today vs yesterday
+  const today = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+  const todayConvs = conversations.filter((c) => c.createdAt.slice(0, 10) === today).length;
+  const yestConvs = conversations.filter((c) => c.createdAt.slice(0, 10) === yesterday).length;
+  const todayLeads = leads.filter((l) => l.createdAt.slice(0, 10) === today).length;
+  const yestLeads = leads.filter((l) => l.createdAt.slice(0, 10) === yesterday).length;
+  const todayMsgs = conversations
+    .filter((c) => c.createdAt.slice(0, 10) === today)
+    .reduce((s, c) => s + c.messageCount, 0);
+  const yestMsgs = conversations
+    .filter((c) => c.createdAt.slice(0, 10) === yesterday)
+    .reduce((s, c) => s + c.messageCount, 0);
+
+  type Trend = 'up' | 'down' | 'neutral';
+  const trend = (a: number, b: number): Trend =>
+    a > b ? 'up' : a < b ? 'down' : 'neutral';
+
   const stats = [
     {
       label: 'Aktywne boty',
       value: activeBots,
       Icon: Bot,
       gradient: 'from-indigo-500 to-purple-600',
-      bg: 'bg-indigo-50',
       shadow: 'shadow-indigo-200/60',
+      trend: 'neutral' as const,
     },
     {
       label: 'Nowe leady',
       value: newLeads,
       Icon: Users,
       gradient: 'from-emerald-500 to-teal-600',
-      bg: 'bg-emerald-50',
       shadow: 'shadow-emerald-200/60',
+      trend: trend(todayLeads, yestLeads),
     },
     {
       label: 'Rozmowy',
       value: conversations.length,
       Icon: MessageSquare,
       gradient: 'from-sky-500 to-cyan-600',
-      bg: 'bg-sky-50',
       shadow: 'shadow-sky-200/60',
+      trend: trend(todayConvs, yestConvs),
     },
     {
       label: 'Wiadomości',
       value: totalMessages,
       Icon: Mail,
       gradient: 'from-amber-500 to-orange-600',
-      bg: 'bg-amber-50',
       shadow: 'shadow-amber-200/60',
+      trend: trend(todayMsgs, yestMsgs),
     },
   ];
 
@@ -157,10 +175,13 @@ export default async function OverviewPage() {
             key={s.label}
             className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 p-5 shadow-sm hover:-translate-y-0.5 transition-all duration-200"
           >
-            <div
-              className={`inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br ${s.gradient} shadow-md ${s.shadow} mb-3`}
-            >
-              <s.Icon className="w-5 h-5 text-white" />
+            <div className="flex items-start justify-between mb-3">
+              <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br ${s.gradient} shadow-md ${s.shadow}`}>
+                <s.Icon className="w-5 h-5 text-white" />
+              </div>
+              {s.trend === 'up' && <TrendingUp className="w-4 h-4 text-emerald-500" />}
+              {s.trend === 'down' && <TrendingDown className="w-4 h-4 text-red-400" />}
+              {s.trend === 'neutral' && <Minus className="w-4 h-4 text-slate-300" />}
             </div>
             <div className="text-2xl font-bold text-slate-900">{s.value}</div>
             <div className="text-sm text-slate-500 mt-0.5">{s.label}</div>

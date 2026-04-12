@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   LayoutDashboard,
   Users,
@@ -13,6 +14,8 @@ import {
   LogOut,
   Bot,
   Zap,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { createClient } from '../../lib/supabase';
 
@@ -26,9 +29,33 @@ const NAV_ITEMS = [
   { href: '/dashboard/billing', label: 'Płatności', icon: CreditCard },
 ];
 
+function Tooltip({ label, show }: { label: string; show: boolean }) {
+  if (!show) return null;
+  return (
+    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded-lg opacity-0 group-hover/tip:opacity-100 transition-opacity duration-150 pointer-events-none whitespace-nowrap z-[100] shadow-lg border border-slate-700/50">
+      {label}
+      <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-800" />
+    </div>
+  );
+}
+
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [collapsed, setCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('sidebar-collapsed');
+    if (saved === 'true') setCollapsed(true);
+    setMounted(true);
+  }, []);
+
+  const toggleCollapse = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    localStorage.setItem('sidebar-collapsed', String(next));
+  };
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -37,26 +64,44 @@ export function Sidebar() {
     router.refresh();
   };
 
+  // Avoid width flash on hydration
+  const sidebarWidth = !mounted ? 'w-64' : collapsed ? 'w-16' : 'w-64';
+
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-64 flex-col h-screen sticky top-0 flex-shrink-0 bg-gradient-to-b from-slate-950 to-slate-900 border-r border-slate-800/50 overflow-hidden">
+      <aside
+        className={`hidden md:flex flex-col h-screen sticky top-0 flex-shrink-0 bg-gradient-to-b from-slate-950 to-slate-900 border-r border-slate-800/50 overflow-hidden transition-[width] duration-300 ease-in-out ${sidebarWidth}`}
+      >
         {/* Logo */}
-        <div className="p-6 border-b border-slate-800/60">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+        <div className="flex items-center justify-between p-4 border-b border-slate-800/60 flex-shrink-0">
+          <div className={`flex items-center gap-3 min-w-0 ${collapsed ? 'w-8' : ''}`}>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/25 flex-shrink-0">
               <Bot className="w-4 h-4 text-white" />
             </div>
-            <div>
-              <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                Botiko.pl
-              </span>
-              <div className="flex items-center gap-1 mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs text-slate-500">Panel zarządzania</span>
+            {!collapsed && (
+              <div className="min-w-0">
+                <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent block">
+                  Botiko.pl
+                </span>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-xs text-slate-500">Panel zarządzania</span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
+          <button
+            onClick={toggleCollapse}
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-all flex-shrink-0"
+            title={collapsed ? 'Rozwiń sidebar' : 'Zwiń sidebar'}
+          >
+            {collapsed ? (
+              <PanelLeftOpen className="w-4 h-4" />
+            ) : (
+              <PanelLeftClose className="w-4 h-4" />
+            )}
+          </button>
         </div>
 
         {/* Nav */}
@@ -65,53 +110,69 @@ export function Sidebar() {
             const isActive = pathname.startsWith(item.href);
             const Icon = item.icon;
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group ${
-                  isActive
-                    ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/20'
-                    : 'text-slate-500 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent'
-                }`}
-              >
-                <Icon
-                  className={`w-4 h-4 flex-shrink-0 transition-colors ${
-                    isActive ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'
+              <div key={item.href} className="relative group/tip">
+                <Link
+                  href={item.href}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group ${
+                    collapsed ? 'justify-center' : ''
+                  } ${
+                    isActive
+                      ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/20'
+                      : 'text-slate-500 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent'
                   }`}
-                />
-                {item.label}
-                {isActive && (
-                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400" />
-                )}
-              </Link>
+                >
+                  <Icon
+                    className={`w-4 h-4 flex-shrink-0 transition-colors ${
+                      isActive ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'
+                    }`}
+                  />
+                  {!collapsed && (
+                    <>
+                      <span className="truncate">{item.label}</span>
+                      {isActive && (
+                        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0" />
+                      )}
+                    </>
+                  )}
+                </Link>
+                <Tooltip label={item.label} show={collapsed} />
+              </div>
             );
           })}
         </nav>
 
         {/* Bottom: Plan badge + Logout */}
-        <div className="p-3 border-t border-slate-800/60 space-y-2">
-          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800/40 border border-slate-700/40">
-            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+        <div className="p-3 border-t border-slate-800/60 space-y-2 flex-shrink-0">
+          <div className={`relative group/tip flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800/40 border border-slate-700/40 ${collapsed ? 'justify-center' : ''}`}>
+            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
               <Zap className="w-3 h-3 text-white" />
             </div>
-            <div className="min-w-0">
-              <p className="text-xs font-semibold text-slate-300">Starter</p>
-              <p className="text-xs text-slate-500 truncate">149 zł / mies.</p>
-            </div>
+            {!collapsed && (
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-slate-300">Starter</p>
+                <p className="text-xs text-slate-500 truncate">149 zł / mies.</p>
+              </div>
+            )}
+            <Tooltip label="Plan Starter · 149 zł/mies." show={collapsed} />
           </div>
 
-          <button
-            onClick={() => void handleLogout()}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/10 border border-transparent transition-all duration-150 group"
-          >
-            <LogOut className="w-4 h-4 flex-shrink-0" />
-            Wyloguj się
-          </button>
+          <div className="relative group/tip">
+            <button
+              onClick={() => void handleLogout()}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/10 border border-transparent transition-all duration-150 group ${
+                collapsed ? 'justify-center' : ''
+              }`}
+            >
+              <LogOut className="w-4 h-4 flex-shrink-0" />
+              {!collapsed && <span>Wyloguj się</span>}
+            </button>
+            <Tooltip label="Wyloguj się" show={collapsed} />
+          </div>
         </div>
       </aside>
 
       {/* Mobile bottom navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950/95 backdrop-blur-sm border-t border-slate-800/60 flex items-center justify-around px-1 py-2 safe-area-pb">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950/95 backdrop-blur-sm border-t border-slate-800/60 flex items-center justify-around px-1 py-2">
         {NAV_ITEMS.slice(0, 5).map((item) => {
           const isActive = pathname.startsWith(item.href);
           const Icon = item.icon;

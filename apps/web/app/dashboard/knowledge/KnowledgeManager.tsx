@@ -15,6 +15,25 @@ interface Chunk {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
+const CATEGORY_PALETTE = [
+  'bg-indigo-100 text-indigo-700',
+  'bg-emerald-100 text-emerald-700',
+  'bg-amber-100 text-amber-700',
+  'bg-rose-100 text-rose-700',
+  'bg-sky-100 text-sky-700',
+  'bg-purple-100 text-purple-700',
+  'bg-teal-100 text-teal-700',
+  'bg-orange-100 text-orange-700',
+];
+
+function categoryStyle(category: string): string {
+  let hash = 0;
+  for (let i = 0; i < category.length; i++) {
+    hash = (hash * 31 + category.charCodeAt(i)) & 0xff;
+  }
+  return CATEGORY_PALETTE[hash % CATEGORY_PALETTE.length];
+}
+
 export function KnowledgeManager({
   botId,
   initialChunks,
@@ -153,7 +172,7 @@ export function KnowledgeManager({
             >
               <div className="flex-1 min-w-0">
                 {chunk.category && (
-                  <span className="inline-block bg-indigo-100 text-indigo-700 text-xs font-medium px-2.5 py-0.5 rounded-full mb-2">
+                  <span className={`inline-block text-xs font-medium px-2.5 py-0.5 rounded-full mb-2 ${categoryStyle(chunk.category)}`}>
                     {chunk.category}
                   </span>
                 )}
