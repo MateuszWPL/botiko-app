@@ -61,6 +61,12 @@ function Widget({
 }
 
 async function init() {
+  // Guard against double-init (React Strict Mode runs effects twice in dev,
+  // GTM may inject the script multiple times, or the snippet is pasted twice).
+  if (document.getElementById('botiko-host')) {
+    return;
+  }
+
   // document.currentScript is null when loaded via GTM, async, or defer.
   // Fall back to querySelector so the widget works on WordPress + GTM setups.
   const scriptEl =

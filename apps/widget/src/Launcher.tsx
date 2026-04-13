@@ -10,7 +10,8 @@ interface LauncherProps {
 export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: LauncherProps) {
   const [bubbleVisible, setBubbleVisible] = useState(false);
   const [bubbleDismissed, setBubbleDismissed] = useState(false);
-  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+  const isMobile =
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
 
   // Show bubble once after 5s — only if chat never opened
   useEffect(() => {

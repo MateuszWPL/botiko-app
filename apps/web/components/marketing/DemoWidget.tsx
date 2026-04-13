@@ -24,6 +24,8 @@ export default function DemoWidget() {
 
     return () => {
       script.remove();
+      // Also remove the widget host so a remount (React Strict Mode) gets a clean slate
+      document.getElementById('botiko-host')?.remove();
     };
   }, []);
 

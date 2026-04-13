@@ -125,7 +125,8 @@ export function ChatWindow({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+  const isMobile =
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
 
   // Show quick suggestions only before first user message
   const showSuggestions = userMessageCount === 0 && !isOffline;
