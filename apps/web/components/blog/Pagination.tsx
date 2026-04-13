@@ -44,7 +44,10 @@ export default function Pagination({
   }
 
   return (
-    <nav aria-label="Paginacja" className="flex items-center justify-center gap-1.5 mt-12">
+    <nav
+      aria-label="Paginacja"
+      className="flex min-w-0 flex-wrap items-center justify-center gap-1.5 mt-12"
+    >
       {/* Prev */}
       {currentPage > 1 ? (
         <Link

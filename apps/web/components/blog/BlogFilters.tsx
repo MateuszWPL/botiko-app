@@ -38,9 +38,11 @@ export default function BlogFilters({
   ];
 
   return (
-    <div className={`transition-opacity ${isPending ? 'opacity-60 pointer-events-none' : ''}`}>
-      {/* Category tabs */}
-      <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none">
+    <div
+      className={`w-full min-w-0 max-w-full transition-opacity ${isPending ? 'opacity-60 pointer-events-none' : ''}`}
+    >
+      {/* Category tabs — scroll inside padded width only (no -mx-* → no document overflow) */}
+      <div className="flex gap-2 overflow-x-auto overscroll-x-contain pb-2 scrollbar-none">
         <button
           onClick={() => updateParam('kategoria', null)}
           className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${

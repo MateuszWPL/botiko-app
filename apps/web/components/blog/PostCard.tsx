@@ -22,7 +22,7 @@ export default function PostCard({
     return (
       <Link
         href={`/blog/${post.slug}`}
-        className="group block rounded-2xl overflow-hidden bg-white border border-slate-200 hover:border-indigo-200 hover:shadow-xl transition-all duration-300"
+        className="group block min-w-0 max-w-full rounded-2xl overflow-hidden bg-white border border-slate-200 hover:border-indigo-200 hover:shadow-xl transition-all duration-300"
       >
         {/* Hero image */}
         <div className="relative w-full aspect-[16/7] overflow-hidden" style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #4338CA 60%, #6366F1 100%)' }}>
@@ -83,7 +83,7 @@ export default function PostCard({
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group flex flex-col rounded-2xl overflow-hidden bg-white border border-slate-200 hover:border-indigo-200 hover:shadow-lg transition-all duration-300"
+      className="group flex min-w-0 max-w-full flex-col rounded-2xl overflow-hidden bg-white border border-slate-200 hover:border-indigo-200 hover:shadow-lg transition-all duration-300"
     >
       {/* Thumbnail */}
       <div className="relative w-full aspect-video overflow-hidden" style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #4338CA 60%, #6366F1 100%)' }}>
@@ -110,7 +110,7 @@ export default function PostCard({
           <span>{post.readingTime} min</span>
         </div>
 
-        <h3 className="text-base font-bold text-slate-900 mb-2 group-hover:text-indigo-700 transition-colors leading-snug line-clamp-2">
+        <h3 className="text-base font-bold text-slate-900 mb-2 group-hover:text-indigo-700 transition-colors leading-snug line-clamp-2 break-words">
           {post.title}
         </h3>
 

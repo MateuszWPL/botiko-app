@@ -48,11 +48,25 @@ export default async function CategoryPage({
   const allTags = getAllTags();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white overflow-x-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white py-14 px-4">
-        <div className="max-w-5xl mx-auto">
+      <div
+        className="relative overflow-hidden text-white pt-32 pb-24 px-4"
+        style={{
+          background:
+            'linear-gradient(135deg, #1e1b4b 0%, #312e81 35%, #4338CA 65%, #6366F1 100%)',
+        }}
+      >
+        <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage:
+              'linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+          }}
+        />
+        <div className="relative max-w-5xl mx-auto">
           <Breadcrumbs
+            variant="dark"
             items={[
               { label: 'Strona główna', href: '/' },
               { label: 'Blog', href: '/blog' },
@@ -66,11 +80,11 @@ export default async function CategoryPage({
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-        <div className="lg:grid lg:grid-cols-[1fr_280px] lg:gap-10">
-          <div>
+      <div className="max-w-6xl mx-auto w-full min-w-0 px-4 sm:px-6 py-12">
+        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-10">
+          <div className="min-w-0">
             {pagePosts.length > 0 ? (
-              <div className="grid sm:grid-cols-2 gap-6">
+              <div className="grid sm:grid-cols-2 gap-6 min-w-0 w-full">
                 {pagePosts.map((post) => (
                   <PostCard key={post.slug} post={post} />
                 ))}
@@ -93,7 +107,7 @@ export default async function CategoryPage({
             />
           </div>
 
-          <aside className="hidden lg:block space-y-6">
+          <aside className="hidden lg:block min-w-0 space-y-6 lg:w-[280px] lg:shrink-0">
             <div className="rounded-xl border border-slate-200 bg-white p-5">
               <TagCloud tags={allTags} />
             </div>

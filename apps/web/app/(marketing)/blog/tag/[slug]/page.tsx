@@ -48,7 +48,7 @@ export default async function TagPage({
   const categories = getAllCategories();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white overflow-x-hidden">
       <div className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white py-14 px-4">
         <div className="max-w-5xl mx-auto">
           <Breadcrumbs
@@ -65,11 +65,11 @@ export default async function TagPage({
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-        <div className="lg:grid lg:grid-cols-[1fr_280px] lg:gap-10">
-          <div>
+      <div className="max-w-6xl mx-auto w-full min-w-0 px-4 sm:px-6 py-12">
+        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-10">
+          <div className="min-w-0">
             {pagePosts.length > 0 ? (
-              <div className="grid sm:grid-cols-2 gap-6">
+              <div className="grid sm:grid-cols-2 gap-6 min-w-0 w-full">
                 {pagePosts.map((post) => (
                   <PostCard key={post.slug} post={post} />
                 ))}
@@ -89,7 +89,7 @@ export default async function TagPage({
             />
           </div>
 
-          <aside className="hidden lg:block space-y-6">
+          <aside className="hidden lg:block min-w-0 space-y-6 lg:w-[280px] lg:shrink-0">
             <div className="rounded-xl border border-slate-200 bg-white p-5">
               <TagCloud tags={allTags} activeTag={params.slug} />
             </div>
