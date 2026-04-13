@@ -5,15 +5,15 @@ import ScrollReveal from './ScrollReveal';
 import Link from 'next/link';
 
 const FEATURES = [
-  '1 bot AI na Twojej stronie www',
-  'Nieograniczone rozmowy z klientami',
-  'Gotowy szablon branżowy (beauty, health, food, auto)',
-  'Własna baza wiedzy — cennik, FAQ, godziny pracy',
-  'Automatyczne zbieranie leadów (imię + telefon)',
-  'Email powiadomienie o każdym nowym leadzie',
-  'Dashboard z historią rozmów i leadów',
-  'Kolorowy widget dopasowany do Twojej marki',
-  'Wsparcie e-mail',
+  { text: '1 bot AI odpowiadający 24/7 na Twojej stronie', strong: true },
+  { text: 'Nieograniczone rozmowy z klientami', strong: false },
+  { text: 'Gotowy szablon branżowy — beauty, health, food, auto', strong: false },
+  { text: 'Własna baza wiedzy: cennik, FAQ, godziny pracy', strong: false },
+  { text: 'Automatyczne zbieranie leadów (imię + telefon)', strong: true },
+  { text: 'Email powiadomienie o każdym nowym leadzie', strong: false },
+  { text: 'Dashboard z historią rozmów i leadów', strong: false },
+  { text: 'Kolorowy widget dopasowany do Twojej marki', strong: false },
+  { text: 'Wsparcie e-mail — odpowiadamy w 24h', strong: false },
 ];
 
 const CheckIcon = () => (
@@ -36,11 +36,11 @@ export default function Pricing() {
         <ScrollReveal className="text-center mb-14">
           <p className="text-sm font-semibold text-brand uppercase tracking-widest mb-3">Cennik</p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text">
-            Prosty cennik.{' '}
-            <span className="gradient-text">Żadnych niespodzianek.</span>
+            149 zł miesięcznie.{' '}
+            <span className="gradient-text">Wszystko w środku.</span>
           </h2>
           <p className="mt-4 text-lg text-slate-500">
-            Jeden plan. Wszystko w środku. 14 dni za darmo — bez karty kredytowej.
+            Jeden plan bez ukrytych kosztów. 14 dni za darmo — bez karty kredytowej.
           </p>
         </ScrollReveal>
 
@@ -51,31 +51,41 @@ export default function Pricing() {
               className="relative rounded-3xl overflow-hidden shadow-2xl shadow-brand/25"
               style={{ background: 'linear-gradient(135deg, #4338CA 0%, #6366F1 100%)' }}
             >
-              {/* Badge */}
               <div className="text-center pt-8 pb-2 px-8">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white mb-5">
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                   </svg>
-                  Jeden plan — wszystko w środku
+                  14 dni za darmo · bez karty kredytowej
                 </span>
-                <h3 className="text-5xl font-extrabold text-white mb-1">
+
+                {/* Price — primary SEO anchor */}
+                <h3 className="text-6xl font-extrabold text-white mb-1">
                   149 zł
                 </h3>
-                <p className="text-indigo-200 text-base mb-1">miesięcznie · bez umowy</p>
-                <p className="text-white/90 text-sm font-semibold">
-                  ✓ 14 dni za darmo, bez karty kredytowej
-                </p>
+                <p className="text-indigo-200 text-sm mb-1">miesięcznie · bez umowy · cancel kiedy chcesz</p>
+
+                {/* Price reframe */}
+                <div className="mt-3 mb-2 inline-block bg-white/15 rounded-xl px-4 py-2">
+                  <p className="text-white text-sm font-semibold">
+                    = 4,97 zł dziennie
+                  </p>
+                  <p className="text-indigo-200 text-xs">
+                    1 klientka w miesiącu zwraca cały koszt
+                  </p>
+                </div>
               </div>
 
               <div className="px-8 pt-6 pb-8">
                 <ul className="flex flex-col gap-3 mb-8">
                   {FEATURES.map((feat) => (
-                    <li key={feat} className="flex items-start gap-3 text-sm">
+                    <li key={feat.text} className="flex items-start gap-3 text-sm">
                       <span className="mt-0.5 shrink-0 w-4 h-4 flex items-center justify-center text-indigo-200">
                         <CheckIcon />
                       </span>
-                      <span className="text-indigo-100">{feat}</span>
+                      <span className={feat.strong ? 'text-white font-semibold' : 'text-indigo-100'}>
+                        {feat.text}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -84,12 +94,28 @@ export default function Pricing() {
                   href="/rejestracja"
                   className="block text-center py-4 rounded-full bg-white text-brand font-bold text-base shadow-xl hover:bg-brand-soft hover:-translate-y-0.5 transition-all"
                 >
-                  Zacznij za darmo — 14 dni
+                  Zacznij za darmo — 14 dni bez karty
                 </Link>
                 <p className="text-center text-indigo-300 text-xs mt-3">
-                  Bez karty · Cancel kiedy chcesz · Konfiguracja w 15 min
+                  Konfiguracja w 15 minut · Bez umowy · Anulujesz kiedy chcesz
                 </p>
               </div>
+            </div>
+
+            {/* Trust nudge below card */}
+            <div className="mt-5 flex items-center justify-center gap-6 text-xs text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Dane szyfrowane AES-256
+              </span>
+              <span className="flex items-center gap-1.5">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Serwery w UE · RODO
+              </span>
+              <span className="flex items-center gap-1.5">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
+                Bez karty kredytowej
+              </span>
             </div>
           </div>
         </ScrollReveal>
@@ -100,7 +126,7 @@ export default function Pricing() {
             <div className="text-center mb-8">
               <p className="text-sm font-semibold text-brand uppercase tracking-widest mb-2">Kalkulator ROI</p>
               <h3 className="text-2xl font-bold text-text">
-                Ile zarobisz dzięki botowi?
+                Czy 149 zł się zwróci?
               </h3>
               <p className="text-slate-500 text-sm mt-1">Przeciągnij suwaki i sprawdź swój zwrot z inwestycji</p>
             </div>
@@ -165,7 +191,7 @@ export default function Pricing() {
 
                 <div className="rounded-2xl p-4 bg-slate-50 border border-slate-100 text-center">
                   <p className="text-2xl font-extrabold text-text whitespace-nowrap">{planCost} zł</p>
-                  <p className="text-xs text-slate-500 mt-1">Koszt planu / mies.</p>
+                  <p className="text-xs text-slate-500 mt-1">Koszt Botiko / mies.</p>
                 </div>
 
                 <div className="col-span-2 rounded-2xl p-4 bg-slate-50 border border-slate-100 text-center">
@@ -178,7 +204,7 @@ export default function Pricing() {
             </div>
 
             <p className="mt-6 text-center text-xs text-slate-400">
-              * Szacunki oparte na podanych danych. Rzeczywiste wyniki zależą od branży i jakości ruchu.
+              * Szacunki orientacyjne. Rzeczywiste wyniki zależą od branży i jakości ruchu na stronie.
             </p>
           </div>
         </ScrollReveal>
