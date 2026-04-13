@@ -25,15 +25,17 @@ export default function PostCard({
         className="group block rounded-2xl overflow-hidden bg-white border border-slate-200 hover:border-indigo-200 hover:shadow-xl transition-all duration-300"
       >
         {/* Hero image */}
-        <div className="relative w-full aspect-[16/7] bg-slate-100 overflow-hidden">
-          <Image
-            src={post.image}
-            alt={post.imageAlt}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 768px) 100vw, 1200px"
-            priority
-          />
+        <div className="relative w-full aspect-[16/7] overflow-hidden" style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #4338CA 60%, #6366F1 100%)' }}>
+          {post.image && (
+            <Image
+              src={post.image}
+              alt={post.imageAlt ?? ''}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              sizes="(max-width: 768px) 100vw, 1200px"
+              priority
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
           <div className="absolute bottom-4 left-4">
             <span className="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-semibold">
@@ -84,14 +86,16 @@ export default function PostCard({
       className="group flex flex-col rounded-2xl overflow-hidden bg-white border border-slate-200 hover:border-indigo-200 hover:shadow-lg transition-all duration-300"
     >
       {/* Thumbnail */}
-      <div className="relative w-full aspect-video bg-slate-100 overflow-hidden">
-        <Image
-          src={post.image}
-          alt={post.imageAlt}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
-        />
+      <div className="relative w-full aspect-video overflow-hidden" style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #4338CA 60%, #6366F1 100%)' }}>
+        {post.image && (
+          <Image
+            src={post.image}
+            alt={post.imageAlt ?? ''}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
+          />
+        )}
         <div className="absolute top-3 left-3">
           <span className="px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-indigo-700 text-xs font-semibold border border-indigo-100">
             {post.category}

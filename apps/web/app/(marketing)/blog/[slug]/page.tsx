@@ -42,20 +42,22 @@ export async function generateMetadata({
       modifiedTime: post.updatedAt ?? post.date,
       authors: [post.author],
       tags: post.tags,
-      images: [
-        {
-          url: `https://botiko.pl${post.image}`,
-          alt: post.imageAlt,
-          width: 1200,
-          height: 630,
-        },
-      ],
+      ...(post.image && {
+        images: [
+          {
+            url: `https://botiko.pl${post.image}`,
+            alt: post.imageAlt ?? post.title,
+            width: 1200,
+            height: 630,
+          },
+        ],
+      }),
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.excerpt,
-      images: [`https://botiko.pl${post.image}`],
+      ...(post.image && { images: [`https://botiko.pl${post.image}`] }),
     },
   };
 }
@@ -85,7 +87,7 @@ export default async function BlogPostPage({
     '@type': 'Article',
     headline: post.title,
     description: post.excerpt,
-    image: `https://botiko.pl${post.image}`,
+    ...(post.image && { image: `https://botiko.pl${post.image}` }),
     datePublished: post.date,
     dateModified: post.updatedAt ?? post.date,
     author: {
@@ -117,15 +119,17 @@ export default async function BlogPostPage({
 
       <article>
         {/* Hero */}
-        <div className="relative w-full h-72 sm:h-96 bg-slate-900 overflow-hidden">
-          <Image
-            src={post.image}
-            alt={post.imageAlt}
-            fill
-            className="object-cover opacity-60"
-            sizes="100vw"
-            priority
-          />
+        <div className="relative w-full h-72 sm:h-96 overflow-hidden" style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338CA 100%)' }}>
+          {post.image && (
+            <Image
+              src={post.image}
+              alt={post.imageAlt ?? ''}
+              fill
+              className="object-cover opacity-60"
+              sizes="100vw"
+              priority
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent" />
 
           <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 max-w-4xl mx-auto">

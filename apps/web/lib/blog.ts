@@ -1,3 +1,5 @@
+import 'server-only';
+
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -21,14 +23,16 @@ export type PostFrontmatter = {
   tags: string[];
   author: string;
   authorTitle?: string;
-  image: string;
-  imageAlt: string;
+  image?: string;
+  imageAlt?: string;
   featured?: boolean;
 };
 
-export type PostMeta = PostFrontmatter & {
+export type PostMeta = Omit<PostFrontmatter, 'image' | 'imageAlt'> & {
   slug: string;
   readingTime: number;
+  image?: string;
+  imageAlt?: string;
 };
 
 export type Post = PostMeta & {
@@ -57,7 +61,11 @@ export function slugify(str: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+let postsCache: PostMeta[] | null = null;
+
 export function getAllPosts(): PostMeta[] {
+  if (postsCache) return postsCache;
+
   const dir = getContentDir();
   if (!fs.existsSync(dir)) return [];
 
@@ -81,9 +89,10 @@ export function getAllPosts(): PostMeta[] {
     };
   });
 
-  return posts.sort(
+  postsCache = posts.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
+  return postsCache;
 }
 
 export function getPostBySlug(slug: string): Post | null {
