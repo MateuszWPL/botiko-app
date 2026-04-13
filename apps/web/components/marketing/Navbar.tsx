@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { label: 'Branże', href: '#branze' },
   { label: 'Cennik', href: '#cennik' },
   { label: 'FAQ', href: '#faq' },
+  { label: 'Blog', href: '/blog' },
 ];
 
 export default function Navbar() {
@@ -16,8 +17,13 @@ export default function Navbar() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
+    onScroll(); // set correct state on initial render / refresh
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener('pageshow', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('pageshow', onScroll);
+    };
   }, []);
 
   // Lock body scroll when menu open

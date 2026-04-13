@@ -35,8 +35,8 @@ const securityHeaders = [
       "font-src 'self'",
       // API calls (configured at build time)
       `connect-src 'self' ${API_URL} ${PROD_API_URL} https://*.supabase.co wss://*.supabase.co`,
-      // Frames: Stripe billing portal
-      "frame-src 'self' https://billing.stripe.com https://checkout.stripe.com",
+      // Frames: Stripe billing portal + YouTube/Vimeo for blog video embeds
+      "frame-src 'self' https://billing.stripe.com https://checkout.stripe.com https://www.youtube.com https://player.vimeo.com",
       // Strict object/media
       "object-src 'none'",
       "base-uri 'self'",
