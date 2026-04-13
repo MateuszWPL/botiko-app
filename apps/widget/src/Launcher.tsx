@@ -12,29 +12,26 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
   const [bubbleDismissed, setBubbleDismissed] = useState(false);
   const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
 
-  // Show bubble once after 5s — but only if chat hasn't been opened yet
+  // Show bubble once after 5s — only if chat never opened
   useEffect(() => {
     if (bubbleDismissed || isOpen) return;
     const t = setTimeout(() => setBubbleVisible(true), 5000);
     return () => clearTimeout(t);
   }, [bubbleDismissed, isOpen]);
 
-  // On mobile when chat is open, hide the whole launcher
+  // Permanently dismiss bubble the moment chat opens (any trigger — FAB or bubble click)
+  useEffect(() => {
+    if (isOpen) {
+      setBubbleVisible(false);
+      setBubbleDismissed(true);
+    }
+  }, [isOpen]);
+
+  // On mobile with chat open: hide entire launcher
   if (isMobile && isOpen) return null;
 
-  const bubbleText = welcomeMsg.length > 60 ? welcomeMsg.slice(0, 58) + '\u2026' : welcomeMsg;
-
-  const handleBubbleClick = () => {
-    setBubbleVisible(false);
-    setBubbleDismissed(true);
-    onClick();
-  };
-
-  const handleDismiss = (e: MouseEvent) => {
-    e.stopPropagation();
-    setBubbleVisible(false);
-    setBubbleDismissed(true);
-  };
+  const bubbleText =
+    welcomeMsg.length > 60 ? welcomeMsg.slice(0, 58) + '\u2026' : welcomeMsg;
 
   return (
     <div
@@ -49,29 +46,43 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
         gap: '8px',
       }}
     >
-      {/* Proactive bubble — never shown when chat is open */}
+      {/* ── Proactive bubble ──────────────────────────────────────────────────── */}
       {bubbleVisible && !isOpen && (
-        <div
-          onClick={handleBubbleClick}
-          style={{
-            backgroundColor: '#fff',
-            borderRadius: '12px 12px 4px 12px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-            padding: '11px 15px',
-            maxWidth: '230px',
-            fontSize: '13px',
-            lineHeight: '1.5',
-            color: '#0f172a',
-            cursor: 'pointer',
-            position: 'relative',
-            animation: 'botiko-fadein 0.3s ease',
-            userSelect: 'none',
-          }}
-        >
-          {bubbleText}
-          {/* Dismiss X */}
-          <span
-            onClick={handleDismiss}
+        /*
+         * STRUCTURE: outer wrapper (position: relative) contains:
+         *   1. The clickable text div
+         *   2. The dismiss button — SIBLING, not child of 1
+         *
+         * This means clicking X never bubbles into the text div's onClick.
+         * No stopPropagation needed → no shadow-DOM / Preact event issues.
+         */
+        <div style={{ position: 'relative' }}>
+          {/* Clickable text area */}
+          <div
+            onClick={onClick}
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: '12px 12px 4px 12px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+              padding: '11px 15px',
+              maxWidth: '230px',
+              fontSize: '13px',
+              lineHeight: '1.5',
+              color: '#0f172a',
+              cursor: 'pointer',
+              userSelect: 'none',
+              animation: 'botiko-fadein 0.3s ease',
+            }}
+          >
+            {bubbleText}
+          </div>
+
+          {/* Dismiss button — sibling of text div, positioned in top-right corner */}
+          <div
+            onClick={() => {
+              setBubbleVisible(false);
+              setBubbleDismissed(true);
+            }}
             role="button"
             aria-label="Zamknij"
             style={{
@@ -81,23 +92,23 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
               width: '20px',
               height: '20px',
               borderRadius: '50%',
-              backgroundColor: '#94a3b8',
+              backgroundColor: '#64748b',
               color: '#fff',
               fontSize: '11px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              lineHeight: 1,
               userSelect: 'none',
+              zIndex: 1,
             }}
           >
             &#x2715;
-          </span>
+          </div>
         </div>
       )}
 
-      {/* FAB button with smooth icon transition */}
+      {/* ── FAB button ────────────────────────────────────────────────────────── */}
       <button
         onClick={onClick}
         aria-label={isOpen ? 'Zamknij czat' : 'Otwórz czat'}
@@ -118,21 +129,25 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
         }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.1)';
-          (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 16px rgba(0,0,0,0.3)';
+          (e.currentTarget as HTMLButtonElement).style.boxShadow =
+            '0 6px 16px rgba(0,0,0,0.3)';
         }}
         onMouseLeave={(e) => {
           (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
-          (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
+          (e.currentTarget as HTMLButtonElement).style.boxShadow =
+            '0 4px 12px rgba(0,0,0,0.25)';
         }}
       >
-        {/* Chat icon */}
-        <span style={{
-          position: 'absolute',
-          display: 'flex',
-          transition: 'opacity 0.2s ease, transform 0.2s ease',
-          opacity: isOpen ? 0 : 1,
-          transform: isOpen ? 'rotate(90deg) scale(0.5)' : 'rotate(0deg) scale(1)',
-        }}>
+        {/* Chat icon — fades out when open */}
+        <span
+          style={{
+            position: 'absolute',
+            display: 'flex',
+            transition: 'opacity 0.2s ease, transform 0.2s ease',
+            opacity: isOpen ? 0 : 1,
+            transform: isOpen ? 'rotate(90deg) scale(0.4)' : 'rotate(0deg) scale(1)',
+          }}
+        >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
             <path
               d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
@@ -144,16 +159,23 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
           </svg>
         </span>
 
-        {/* X icon */}
-        <span style={{
-          position: 'absolute',
-          display: 'flex',
-          transition: 'opacity 0.2s ease, transform 0.2s ease',
-          opacity: isOpen ? 1 : 0,
-          transform: isOpen ? 'rotate(0deg) scale(1)' : 'rotate(-90deg) scale(0.5)',
-        }}>
+        {/* X icon — fades in when open */}
+        <span
+          style={{
+            position: 'absolute',
+            display: 'flex',
+            transition: 'opacity 0.2s ease, transform 0.2s ease',
+            opacity: isOpen ? 1 : 0,
+            transform: isOpen ? 'rotate(0deg) scale(1)' : 'rotate(-90deg) scale(0.4)',
+          }}
+        >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M15 5L5 15M5 5l10 10" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            <path
+              d="M15 5L5 15M5 5l10 10"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
           </svg>
         </span>
       </button>
