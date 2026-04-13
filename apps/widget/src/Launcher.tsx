@@ -12,19 +12,29 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
   const [bubbleDismissed, setBubbleDismissed] = useState(false);
   const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
 
+  // Show bubble once after 5s — but only if chat hasn't been opened yet
   useEffect(() => {
-    if (isOpen || bubbleDismissed) return;
+    if (bubbleDismissed || isOpen) return;
     const t = setTimeout(() => setBubbleVisible(true), 5000);
     return () => clearTimeout(t);
-  }, [isOpen, bubbleDismissed]);
+  }, [bubbleDismissed, isOpen]);
 
-  useEffect(() => {
-    if (isOpen) setBubbleVisible(false);
-  }, [isOpen]);
-
+  // On mobile when chat is open, hide the whole launcher
   if (isMobile && isOpen) return null;
 
   const bubbleText = welcomeMsg.length > 60 ? welcomeMsg.slice(0, 58) + '\u2026' : welcomeMsg;
+
+  const handleBubbleClick = () => {
+    setBubbleVisible(false);
+    setBubbleDismissed(true);
+    onClick();
+  };
+
+  const handleDismiss = (e: MouseEvent) => {
+    e.stopPropagation();
+    setBubbleVisible(false);
+    setBubbleDismissed(true);
+  };
 
   return (
     <div
@@ -39,57 +49,55 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
         gap: '8px',
       }}
     >
-      {/* Proactive bubble */}
+      {/* Proactive bubble — never shown when chat is open */}
       {bubbleVisible && !isOpen && (
         <div
-          onClick={() => { setBubbleVisible(false); onClick(); }}
+          onClick={handleBubbleClick}
           style={{
             backgroundColor: '#fff',
             borderRadius: '12px 12px 4px 12px',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
-            padding: '10px 14px',
-            maxWidth: '220px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            padding: '11px 15px',
+            maxWidth: '230px',
             fontSize: '13px',
-            lineHeight: '1.45',
+            lineHeight: '1.5',
             color: '#0f172a',
             cursor: 'pointer',
             position: 'relative',
             animation: 'botiko-fadein 0.3s ease',
+            userSelect: 'none',
           }}
         >
           {bubbleText}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setBubbleVisible(false);
-              setBubbleDismissed(true);
-            }}
+          {/* Dismiss X */}
+          <span
+            onClick={handleDismiss}
+            role="button"
             aria-label="Zamknij"
             style={{
               position: 'absolute',
-              top: '-8px',
-              right: '-8px',
-              width: '18px',
-              height: '18px',
+              top: '-9px',
+              right: '-9px',
+              width: '20px',
+              height: '20px',
               borderRadius: '50%',
-              border: 'none',
               backgroundColor: '#94a3b8',
               color: '#fff',
-              fontSize: '10px',
+              fontSize: '11px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: 0,
               lineHeight: 1,
+              userSelect: 'none',
             }}
           >
             &#x2715;
-          </button>
+          </span>
         </div>
       )}
 
-      {/* FAB button */}
+      {/* FAB button with smooth icon transition */}
       <button
         onClick={onClick}
         aria-label={isOpen ? 'Zamknij czat' : 'Otwórz czat'}
@@ -105,6 +113,8 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
           justifyContent: 'center',
           boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
           transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+          position: 'relative',
+          overflow: 'hidden',
         }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.1)';
@@ -115,16 +125,14 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
           (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
         }}
       >
-        {isOpen ? (
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M15 5L5 15M5 5l10 10"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        ) : (
+        {/* Chat icon */}
+        <span style={{
+          position: 'absolute',
+          display: 'flex',
+          transition: 'opacity 0.2s ease, transform 0.2s ease',
+          opacity: isOpen ? 0 : 1,
+          transform: isOpen ? 'rotate(90deg) scale(0.5)' : 'rotate(0deg) scale(1)',
+        }}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
             <path
               d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
@@ -134,7 +142,20 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
               strokeLinejoin="round"
             />
           </svg>
-        )}
+        </span>
+
+        {/* X icon */}
+        <span style={{
+          position: 'absolute',
+          display: 'flex',
+          transition: 'opacity 0.2s ease, transform 0.2s ease',
+          opacity: isOpen ? 1 : 0,
+          transform: isOpen ? 'rotate(0deg) scale(1)' : 'rotate(-90deg) scale(0.5)',
+        }}>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M15 5L5 15M5 5l10 10" stroke="white" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </span>
       </button>
     </div>
   );

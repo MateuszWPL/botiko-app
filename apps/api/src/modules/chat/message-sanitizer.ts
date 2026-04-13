@@ -97,9 +97,22 @@ const PROFANITY_PATTERNS: RegExp[] = [
  * We match start+end to avoid "hej, ile kosztuje manicure?" being caught.
  */
 const GREETING_ONLY_PATTERNS: RegExp[] = [
-  /^(hej|hej hej|cześć|czesc|siema|yo|elo|elo elo|hej elo|witaj|witajcie)[\s!.,?😊]*$/i,
+  /^(hej|hej hej|cześć|czesc|siema|siemka|siemanko|siemaneczko|yo|elo|elo elo|hej elo|witaj|witajcie|no hej|no cześć|no czesc)[\s!.,?😊]*$/i,
   /^(dzień dobry|dzien dobry|dobry wieczór|dobry wieczor|dobry ranek|dobranoc)[\s!.,?😊]*$/i,
   /^(good\s+morning|good\s+evening|good\s+night|good\s+afternoon|hello|hi+|hey+|greetings)[\s!.,?😊]*$/i,
+];
+
+/**
+ * Casual acknowledgments — conversational continuers that need no RAG lookup.
+ * "okej fajnie", "dzięki", "super" etc. → let AI respond naturally in-character.
+ */
+const ACKNOWLEDGMENT_PATTERNS: RegExp[] = [
+  /^(ok|oki|oke|okej|okay|okey)[\s!.,?😊]*$/i,
+  /^(okej\s+(fajnie|super|spoko|dzięki|dzieki|cool|git|ekstra)|ok\s+(dzięki|dzieki|spoko)|okay\s+cool)[\s!.,?😊]*$/i,
+  /^(dzięki|dzieki|dziękuję|dziekuje|thx|thanks|thank\s+you)[\s!.,?😊]*$/i,
+  /^(super|fajnie|ekstra|świetnie|swietnie|spoko|git|cool|nice|bomba|rewelacja)[\s!.,?😊]*$/i,
+  /^(rozumiem|jasne|no\s+tak|no\s+jasne|aha+|mhm+|uhm|yep|yup|tak|no)[\s!.,?😊]*$/i,
+  /^(rozumiem\s+dzięki|jasne\s+dzięki|ok\s+rozumiem|super\s+dzięki|fajnie\s+dzięki)[\s!.,?😊]*$/i,
 ];
 
 const FAREWELL_ONLY_PATTERNS: RegExp[] = [
@@ -201,7 +214,12 @@ export function preprocessMessage(raw: string): PreprocessResult {
     return { action: 'no-rag', text: trimmed };
   }
 
-  // 8. Strip URLs and proceed through the normal pipeline
+  // 8. Casual acknowledgment — conversational continuer, skip RAG
+  if (matches(trimmed, ACKNOWLEDGMENT_PATTERNS)) {
+    return { action: 'no-rag', text: trimmed };
+  }
+
+  // 9. Strip URLs and proceed through the normal pipeline
   const clean = stripUrls(trimmed);
   if (!clean) {
     return { action: 'respond', response: RESPONSE_GIBBERISH };
