@@ -8,6 +8,10 @@ interface BotConfig {
   name: string;
   welcomeMsg: string;
   primaryColor: string;
+  offlineMessage: string | null;
+  businessHoursStart: number | null;
+  businessHoursEnd: number | null;
+  businessDays: number[];
 }
 
 function Widget({
@@ -22,7 +26,6 @@ function Widget({
   const [isOpen, setIsOpen] = useState(false);
 
   // Expose global API so the host page can open/close/toggle the widget programmatically.
-  // Example: window.BotikoWidget.open() — used by the LP demo section scroll trigger.
   useEffect(() => {
     (window as unknown as Record<string, unknown>)['BotikoWidget'] = {
       open:   () => setIsOpen(true),
@@ -43,10 +46,15 @@ function Widget({
       isOpen,
       apiUrl,
       onClose: () => setIsOpen(false),
+      offlineMessage: config.offlineMessage,
+      businessHoursStart: config.businessHoursStart,
+      businessHoursEnd: config.businessHoursEnd,
+      businessDays: config.businessDays,
     }),
     h(Launcher, {
       primaryColor: config.primaryColor,
       isOpen,
+      welcomeMsg: config.welcomeMsg,
       onClick: () => setIsOpen((prev) => !prev),
     }),
   ]);
@@ -70,9 +78,13 @@ async function init() {
 
   let config: BotConfig = {
     id: botId,
-    name: 'Asystentka',
+    name: 'Botiko',
     welcomeMsg: 'Dzień dobry! W czym mogę pomóc?',
     primaryColor: '#6366F1',
+    offlineMessage: null,
+    businessHoursStart: null,
+    businessHoursEnd: null,
+    businessDays: [],
   };
 
   try {

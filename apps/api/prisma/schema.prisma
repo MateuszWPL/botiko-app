@@ -30,16 +30,20 @@ model User {
 }
 
 model Bot {
-  id             String   @id @default(cuid())
-  tenantId       String
-  tenant         Tenant   @relation(fields: [tenantId], references: [id])
-  name           String
-  welcomeMsg     String
-  primaryColor   String   @default("#6366F1")
-  allowedDomains String[]
-  isActive       Boolean  @default(true)
-  conversations  Conversation[]
-  knowledge      KnowledgeChunk[]
+  id                 String         @id @default(cuid())
+  tenantId           String
+  tenant             Tenant         @relation(fields: [tenantId], references: [id])
+  name               String
+  welcomeMsg         String
+  primaryColor       String         @default("#6366F1")
+  allowedDomains     String[]
+  isActive           Boolean        @default(true)
+  offlineMessage     String?
+  businessHoursStart Int?
+  businessHoursEnd   Int?
+  businessDays       Int[]          @default([])
+  conversations      Conversation[]
+  knowledge          KnowledgeChunk[]
 }
 
 model KnowledgeChunk {

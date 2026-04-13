@@ -3,7 +3,9 @@
 import { useEffect } from 'react';
 
 const DEMO_BOT_ID = process.env.NEXT_PUBLIC_DEMO_BOT_ID;
-const WIDGET_URL = process.env.NEXT_PUBLIC_WIDGET_URL ?? 'https://widget.botiko.pl';
+const WIDGET_URL =
+  process.env.NEXT_PUBLIC_WIDGET_URL ??
+  (process.env.NODE_ENV === 'development' ? 'http://localhost:5173' : 'https://widget.botiko.pl');
 
 export default function DemoWidget() {
   useEffect(() => {

@@ -22,6 +22,19 @@ interface ChatWindowProps {
   isOpen: boolean;
   apiUrl: string;
   onClose: () => void;
+  offlineMessage: string | null;
+  businessHoursStart: number | null;
+  businessHoursEnd: number | null;
+  businessDays: number[];
+}
+
+function checkIsOffline(start: number | null, end: number | null, days: number[]): boolean {
+  if (start === null || end === null || days.length === 0) return false;
+  const now = new Date();
+  const day = now.getDay(); // 0=Sun, 6=Sat
+  const hour = now.getHours();
+  if (!days.includes(day)) return true;
+  return hour < start || hour >= end;
 }
 
 interface ApiChatResponse {
@@ -81,7 +94,12 @@ export function ChatWindow({
   isOpen,
   apiUrl,
   onClose,
+  offlineMessage,
+  businessHoursStart,
+  businessHoursEnd,
+  businessDays,
 }: ChatWindowProps) {
+  const isOffline = checkIsOffline(businessHoursStart, businessHoursEnd, businessDays);
   const initial = loadSession(botId, welcomeMessage);
 
   const [sessionId] = useState<string>(initial.sessionId);
@@ -267,6 +285,23 @@ export function ChatWindow({
           </button>
         )}
       </div>
+
+      {/* Offline banner */}
+      {isOffline && offlineMessage && (
+        <div
+          style={{
+            backgroundColor: '#fef9c3',
+            borderBottom: '1px solid #fde047',
+            padding: '8px 14px',
+            fontSize: '12px',
+            color: '#854d0e',
+            lineHeight: '1.4',
+            flexShrink: 0,
+          }}
+        >
+          {offlineMessage}
+        </div>
+      )}
 
       {/* Messages */}
       <div
@@ -494,21 +529,22 @@ export function ChatWindow({
           value={input}
           onInput={(e) => setInput((e.target as HTMLInputElement).value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
+            if (e.key === 'Enter' && !e.shiftKey && !isOffline) {
               e.preventDefault();
               void sendMessage();
             }
           }}
-          placeholder="Napisz wiadomość..."
+          placeholder={isOffline ? 'Poza godzinami pracy…' : 'Napisz wiadomość...'}
           maxLength={1000}
-          style={{ ...inputStyle, flex: 1 }}
+          disabled={isOffline}
+          style={{ ...inputStyle, flex: 1, opacity: isOffline ? 0.5 : 1 }}
         />
         <button
           onClick={() => void sendMessage()}
-          disabled={isLoading || !input.trim()}
+          disabled={isLoading || !input.trim() || isOffline}
           style={{
             ...btnStyle(primaryColor),
-            opacity: isLoading || !input.trim() ? 0.6 : 1,
+            opacity: isLoading || !input.trim() || isOffline ? 0.6 : 1,
             flexShrink: 0,
           }}
         >

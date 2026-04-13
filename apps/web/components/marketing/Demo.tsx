@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import ScrollReveal from './ScrollReveal';
 
 const DEMO_BOT_ID = process.env.NEXT_PUBLIC_DEMO_BOT_ID;
@@ -52,30 +52,6 @@ declare global {
 
 export default function Demo() {
   const sectionRef = useRef<HTMLElement>(null);
-  const openedRef = useRef(false);
-
-  // Auto-open bot when scrolling into this section (once per page load)
-  useEffect(() => {
-    if (!DEMO_BOT_ID) return;
-
-    const el = sectionRef.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !openedRef.current) {
-          openedRef.current = true;
-          setTimeout(() => {
-            window.BotikoWidget?.open();
-          }, 1500);
-        }
-      },
-      { threshold: 0.4 },
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
 
   function handleOpenBot() {
     window.BotikoWidget?.open();

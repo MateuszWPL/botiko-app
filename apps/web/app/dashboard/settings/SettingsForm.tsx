@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader2, Save, Power, Bot, Palette, Globe } from 'lucide-react';
+import { Loader2, Save, Power, Bot, Palette, Globe, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '../../../lib/supabase';
 
@@ -12,7 +12,13 @@ interface Bot {
   primaryColor: string;
   allowedDomains: string[];
   isActive: boolean;
+  offlineMessage: string | null;
+  businessHoursStart: number | null;
+  businessHoursEnd: number | null;
+  businessDays: number[];
 }
+
+const DAY_LABELS = ['Nd', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob'];
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
@@ -26,6 +32,11 @@ export function SettingsForm({ bot }: { bot: Bot }) {
     primaryColor: bot.primaryColor,
     allowedDomain: bot.allowedDomains[0] ?? '',
     isActive: bot.isActive,
+    hoursEnabled: bot.businessHoursStart !== null,
+    businessHoursStart: bot.businessHoursStart ?? 9,
+    businessHoursEnd: bot.businessHoursEnd ?? 18,
+    businessDays: bot.businessDays.length > 0 ? bot.businessDays : [1, 2, 3, 4, 5],
+    offlineMessage: bot.offlineMessage ?? '',
   });
   const [saving, setSaving] = useState(false);
 
@@ -50,6 +61,10 @@ export function SettingsForm({ bot }: { bot: Bot }) {
           primaryColor: form.primaryColor,
           allowedDomains: form.allowedDomain.trim() ? [form.allowedDomain.trim()] : [],
           isActive: form.isActive,
+          offlineMessage: form.hoursEnabled && form.offlineMessage.trim() ? form.offlineMessage.trim() : null,
+          businessHoursStart: form.hoursEnabled ? form.businessHoursStart : null,
+          businessHoursEnd: form.hoursEnabled ? form.businessHoursEnd : null,
+          businessDays: form.hoursEnabled ? form.businessDays : [],
         }),
       });
 
@@ -198,6 +213,113 @@ export function SettingsForm({ bot }: { bot: Bot }) {
             />
           </button>
         </div>
+      </div>
+
+      {/* Section: Godziny pracy */}
+      <div>
+        <div className="flex items-center gap-2 mb-5 pb-3 border-b border-slate-100">
+          <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center">
+            <Clock className="w-3.5 h-3.5 text-amber-600" />
+          </div>
+          <h3 className="text-sm font-semibold text-slate-700">Godziny pracy</h3>
+        </div>
+
+        <div className="flex items-center justify-between p-4 bg-slate-50/80 rounded-xl border border-slate-200/60 mb-4">
+          <div>
+            <p className="text-sm font-semibold text-slate-700">Tryb poza godzinami</p>
+            <p className="text-xs text-slate-400">Bot blokuje rozmowę i pokazuje wiadomość</p>
+          </div>
+          <button
+            role="switch"
+            aria-checked={form.hoursEnabled}
+            onClick={() => setForm((f) => ({ ...f, hoursEnabled: !f.hoursEnabled }))}
+            className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 ${
+              form.hoursEnabled ? 'bg-amber-500' : 'bg-slate-200'
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${
+                form.hoursEnabled ? 'translate-x-5' : 'translate-x-0'
+              }`}
+            />
+          </button>
+        </div>
+
+        {form.hoursEnabled && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Od (godz.)</label>
+                <input
+                  type="number"
+                  min={0}
+                  max={23}
+                  value={form.businessHoursStart}
+                  onChange={(e) => setForm((f) => ({ ...f, businessHoursStart: Number(e.target.value) }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Do (godz.)</label>
+                <input
+                  type="number"
+                  min={0}
+                  max={23}
+                  value={form.businessHoursEnd}
+                  onChange={(e) => setForm((f) => ({ ...f, businessHoursEnd: Number(e.target.value) }))}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-2">Dni robocze</label>
+              <div className="flex gap-1.5 flex-wrap">
+                {DAY_LABELS.map((label, idx) => {
+                  const active = form.businessDays.includes(idx);
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() =>
+                        setForm((f) => ({
+                          ...f,
+                          businessDays: active
+                            ? f.businessDays.filter((d) => d !== idx)
+                            : [...f.businessDays, idx],
+                        }))
+                      }
+                      className={`w-10 h-9 rounded-lg text-xs font-semibold transition-colors ${
+                        active
+                          ? 'bg-amber-500 text-white'
+                          : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-1">
+                Wiadomość poza godzinami
+              </label>
+              <input
+                type="text"
+                value={form.offlineMessage}
+                onChange={(e) => setForm((f) => ({ ...f, offlineMessage: e.target.value }))}
+                placeholder="Jesteśmy zamknięci. Napisz a oddzwonimy rano!"
+                maxLength={300}
+                className={inputClass}
+              />
+              <p className="text-xs text-slate-400 mt-1">
+                Pojawi się jako żółty baner na górze czatu
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       <button

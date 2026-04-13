@@ -24,6 +24,10 @@ export const updateBotSchema = z.object({
     .max(1, 'Only one domain allowed per bot')
     .optional(),
   isActive: z.boolean().optional(),
+  offlineMessage: z.string().max(300).nullable().optional(),
+  businessHoursStart: z.number().int().min(0).max(23).nullable().optional(),
+  businessHoursEnd: z.number().int().min(0).max(23).nullable().optional(),
+  businessDays: z.array(z.number().int().min(0).max(6)).optional(),
 });
 
 export type UpdateBotDto = z.infer<typeof updateBotSchema>;

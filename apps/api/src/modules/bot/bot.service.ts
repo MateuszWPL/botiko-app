@@ -13,6 +13,10 @@ export interface BotPublicConfig {
   name: string;
   welcomeMsg: string;
   primaryColor: string;
+  offlineMessage: string | null;
+  businessHoursStart: number | null;
+  businessHoursEnd: number | null;
+  businessDays: number[];
 }
 
 export interface BotDetail {
@@ -62,6 +66,10 @@ export class BotService {
         name: true,
         welcomeMsg: true,
         primaryColor: true,
+        offlineMessage: true,
+        businessHoursStart: true,
+        businessHoursEnd: true,
+        businessDays: true,
       },
     });
 
@@ -126,13 +134,13 @@ export class BotService {
       data: {
         ...(dto.name !== undefined && { name: dto.name }),
         ...(dto.welcomeMsg !== undefined && { welcomeMsg: dto.welcomeMsg }),
-        ...(dto.primaryColor !== undefined && {
-          primaryColor: dto.primaryColor,
-        }),
-        ...(dto.allowedDomains !== undefined && {
-          allowedDomains: dto.allowedDomains,
-        }),
+        ...(dto.primaryColor !== undefined && { primaryColor: dto.primaryColor }),
+        ...(dto.allowedDomains !== undefined && { allowedDomains: dto.allowedDomains }),
         ...(dto.isActive !== undefined && { isActive: dto.isActive }),
+        ...(dto.offlineMessage !== undefined && { offlineMessage: dto.offlineMessage }),
+        ...(dto.businessHoursStart !== undefined && { businessHoursStart: dto.businessHoursStart }),
+        ...(dto.businessHoursEnd !== undefined && { businessHoursEnd: dto.businessHoursEnd }),
+        ...(dto.businessDays !== undefined && { businessDays: dto.businessDays }),
       },
       select: {
         id: true,

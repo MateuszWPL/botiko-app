@@ -10,7 +10,9 @@ interface Bot {
   name: string;
 }
 
-const WIDGET_URL = process.env.NEXT_PUBLIC_WIDGET_URL ?? 'https://widget.botiko.pl';
+const WIDGET_URL =
+  process.env.NEXT_PUBLIC_WIDGET_URL ??
+  (process.env.NODE_ENV === 'development' ? 'http://localhost:5173' : 'https://widget.botiko.pl');
 
 const INSTALL_STEPS = [
   {
