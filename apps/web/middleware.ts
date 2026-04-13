@@ -3,8 +3,25 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { webEnv } from './lib/env';
 
 const PROTECTED_PATHS = ['/dashboard', '/onboarding'];
+const AUTH_PATHS = ['/login', '/register', '/forgot-password'];
+
+// Supabase session cookies always start with 'sb-'
+function hasSessionCookie(request: NextRequest): boolean {
+  return request.cookies.getAll().some(({ name }) => name.startsWith('sb-'));
+}
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  const isProtected = PROTECTED_PATHS.some((p) => pathname.startsWith(p));
+  const isAuthPage = AUTH_PATHS.some((p) => pathname === p);
+
+  // Fast path for public routes with no session cookie.
+  // No session = nothing to refresh, no redirect needed → skip Supabase entirely.
+  if (!isProtected && !isAuthPage && !hasSessionCookie(request)) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -28,14 +45,15 @@ export async function middleware(request: NextRequest) {
     },
   );
 
+  // getSession() reads and decodes the JWT locally — no network round-trip unless
+  // the access token is expired and needs a refresh. Much faster than getUser()
+  // which always hits the Supabase auth API. Full re-validation happens in
+  // server components via getUser() for actual data access.
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  const { pathname } = request.nextUrl;
-  const isProtected = PROTECTED_PATHS.some((path) =>
-    pathname.startsWith(path),
-  );
+  const user = session?.user ?? null;
 
   if (isProtected && !user) {
     const loginUrl = request.nextUrl.clone();
@@ -44,12 +62,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (
-    user &&
-    (pathname === '/login' ||
-      pathname === '/register' ||
-      pathname === '/forgot-password')
-  ) {
+  if (isAuthPage && user) {
     const dashboardUrl = request.nextUrl.clone();
     dashboardUrl.pathname = '/dashboard/overview';
     return NextResponse.redirect(dashboardUrl);

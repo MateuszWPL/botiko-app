@@ -38,7 +38,7 @@ export default function Hero() {
               style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', color: '#a5b4fc' }}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-              Bot AI dla Twojej firmy
+              Bot obsługi klienta 24/7
             </div>
 
             <h1
