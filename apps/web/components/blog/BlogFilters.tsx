@@ -41,11 +41,12 @@ export default function BlogFilters({
     <div
       className={`w-full min-w-0 max-w-full transition-opacity ${isPending ? 'opacity-60 pointer-events-none' : ''}`}
     >
-      {/* Category tabs — scroll inside padded width only (no -mx-* → no document overflow) */}
-      <div className="flex gap-2 overflow-x-auto overscroll-x-contain pb-2 scrollbar-none">
+      {/* Category pills — wrap on narrow screens, no horizontal page scroll */}
+      <div className="flex flex-wrap gap-2">
         <button
+          type="button"
           onClick={() => updateParam('kategoria', null)}
-          className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
             !activeCategory
               ? 'bg-indigo-600 text-white shadow-sm'
               : 'bg-white border border-slate-200 text-slate-600 hover:border-indigo-200 hover:text-indigo-600'
@@ -55,6 +56,7 @@ export default function BlogFilters({
         </button>
         {categories.map((cat) => (
           <button
+            type="button"
             key={cat.slug}
             onClick={() =>
               updateParam(
@@ -62,7 +64,7 @@ export default function BlogFilters({
                 activeCategory === cat.slug ? null : cat.slug
               )
             }
-            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
               activeCategory === cat.slug
                 ? 'bg-indigo-600 text-white shadow-sm'
                 : 'bg-white border border-slate-200 text-slate-600 hover:border-indigo-200 hover:text-indigo-600'
@@ -80,6 +82,7 @@ export default function BlogFilters({
         <div className="flex gap-2">
           {sortOptions.map((opt) => (
             <button
+              type="button"
               key={opt.value}
               onClick={() =>
                 updateParam(
