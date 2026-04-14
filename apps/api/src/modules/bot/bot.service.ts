@@ -38,6 +38,13 @@ export class BotService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(tenantId: string, dto: CreateBotDto): Promise<BotDetail> {
+    const existing = await this.prisma.bot.count({ where: { tenantId } });
+    if (existing >= 1) {
+      throw new ForbiddenException(
+        'Plan STARTER allows only 1 bot per account. Update your bot instead.',
+      );
+    }
+
     const bot = await this.prisma.bot.create({
       data: {
         tenantId,

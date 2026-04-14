@@ -50,6 +50,19 @@ export default function Step5Page() {
         Authorization: `Bearer ${token}`,
       };
 
+      // Check if bot already exists (STARTER limit: 1 bot)
+      const existingRes = await fetch(`${API_URL}/api/v1/bot`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (existingRes.ok) {
+        const existing = (await existingRes.json()) as { id: string }[];
+        if (existing.length > 0) {
+          saveOnboarding({ botId: existing[0].id });
+          setSetup({ status: 'done', botId: existing[0].id });
+          return;
+        }
+      }
+
       // 1. Create bot
       const botRes = await fetch(`${API_URL}/api/v1/bot`, {
         method: 'POST',
