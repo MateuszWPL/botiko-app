@@ -35,7 +35,7 @@ export function SettingsForm({ bot }: { bot: Bot }) {
     hoursEnabled: bot.businessHoursStart !== null,
     businessHoursStart: bot.businessHoursStart ?? 9,
     businessHoursEnd: bot.businessHoursEnd ?? 18,
-    businessDays: bot.businessDays.length > 0 ? bot.businessDays : [1, 2, 3, 4, 5],
+    businessDays: (bot.businessDays ?? []).length > 0 ? bot.businessDays : [1, 2, 3, 4, 5],
     offlineMessage: bot.offlineMessage ?? '',
   });
   const [saving, setSaving] = useState(false);
