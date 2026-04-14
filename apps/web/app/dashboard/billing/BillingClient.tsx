@@ -24,7 +24,7 @@ const PLAN_LABELS: Record<string, string> = {
 };
 
 const PLAN_LIMITS: Record<string, string> = {
-  STARTER: '300 rozmów / mies.',
+  STARTER: '1 000 rozmów / mies.',
   PRO: '2 000 rozmów / mies.',
   PREMIUM: 'Bez limitu',
 };
