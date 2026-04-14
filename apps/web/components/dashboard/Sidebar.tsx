@@ -45,10 +45,13 @@ export function Sidebar() {
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [setupDone, setSetupDone] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
     if (saved === 'true') setCollapsed(true);
+    const done = localStorage.getItem('botiko_setup_done') === 'true';
+    setSetupDone(done);
     setMounted(true);
   }, []);
 
@@ -75,7 +78,7 @@ export function Sidebar() {
         className={`hidden md:flex flex-col h-screen sticky top-0 flex-shrink-0 bg-gradient-to-b from-slate-950 to-slate-900 border-r border-slate-800/50 overflow-hidden transition-[width] duration-300 ease-in-out ${sidebarWidth}`}
       >
         {/* Logo */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-800/60 flex-shrink-0">
+        <div className="flex items-center justify-between gap-2 p-4 border-b border-slate-800/60 flex-shrink-0">
           <div className={`flex items-center gap-3 min-w-0 ${collapsed ? 'w-8' : ''}`}>
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/25 flex-shrink-0">
               <Bot className="w-4 h-4 text-white" />
@@ -94,7 +97,7 @@ export function Sidebar() {
           </div>
           <button
             onClick={toggleCollapse}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-all flex-shrink-0"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-all flex-shrink-0 cursor-pointer"
             title={collapsed ? 'Rozwiń sidebar' : 'Zwiń sidebar'}
           >
             {collapsed ? (
@@ -142,21 +145,23 @@ export function Sidebar() {
           })}
         </nav>
 
-        {/* Setup wizard trigger */}
-        <div className="px-3 pb-1">
-          <div className="relative group/tip">
-            <button
-              onClick={() => window.dispatchEvent(new Event('botiko:open-wizard'))}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-all duration-150 ${
-                collapsed ? 'justify-center' : ''
-              }`}
-            >
-              <Rocket className="w-4 h-4 flex-shrink-0" />
-              {!collapsed && <span>Konfiguracja bota</span>}
-            </button>
-            <Tooltip label="Konfiguracja bota" show={collapsed} />
+        {/* Setup wizard trigger — shown only if setup not done */}
+        {!setupDone && (
+          <div className="px-3 pb-3">
+            <div className="relative group/tip">
+              <button
+                onClick={() => window.dispatchEvent(new Event('botiko:open-wizard'))}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-all duration-150 cursor-pointer ${
+                  collapsed ? 'justify-center' : ''
+                }`}
+              >
+                <Rocket className="w-4 h-4 flex-shrink-0" />
+                {!collapsed && <span>Konfiguracja bota</span>}
+              </button>
+              <Tooltip label="Konfiguracja bota" show={collapsed} />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Bottom: Plan badge + Logout */}
         <div className="p-3 border-t border-slate-800/60 space-y-2 flex-shrink-0">
@@ -176,7 +181,7 @@ export function Sidebar() {
           <div className="relative group/tip">
             <button
               onClick={() => void handleLogout()}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/10 border border-transparent transition-all duration-150 group ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/10 border border-transparent transition-all duration-150 group cursor-pointer ${
                 collapsed ? 'justify-center' : ''
               }`}
             >

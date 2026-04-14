@@ -177,7 +177,7 @@ export default function BillingClient({ status, fetchError }: Props) {
           <button
             onClick={handleCheckout}
             disabled={isPending}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-60 transition-all hover:-translate-y-0.5 shadow-sm shadow-indigo-200 disabled:hover:translate-y-0"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-60 transition-all hover:-translate-y-0.5 shadow-sm shadow-indigo-200 disabled:hover:translate-y-0 cursor-pointer"
           >
             {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             {isPending ? 'Przekierowywanie…' : 'Rozpocznij subskrypcję — 149 zł/mies.'}
@@ -186,7 +186,7 @@ export default function BillingClient({ status, fetchError }: Props) {
           <button
             onClick={handlePortal}
             disabled={isPending}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-60 transition-all hover:-translate-y-0.5 shadow-sm shadow-indigo-200 disabled:hover:translate-y-0"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-60 transition-all hover:-translate-y-0.5 shadow-sm shadow-indigo-200 disabled:hover:translate-y-0 cursor-pointer"
           >
             {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             {isPending ? 'Przekierowywanie…' : 'Zarządzaj subskrypcją'}

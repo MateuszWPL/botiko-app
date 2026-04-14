@@ -47,71 +47,6 @@ function WebflowLogo() {
   );
 }
 
-function GtmLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-4H7l5-8v4h4l-5 8z" />
-    </svg>
-  );
-}
-
-const PLATFORMS = [
-  {
-    id: 'wordpress',
-    label: 'WordPress',
-    bg: 'bg-blue-600',
-    Logo: WordPressLogo,
-    steps: [
-      'Wygląd → Edytor motywu → footer.php',
-      'Wklej kod przed </body>',
-      'Zapisz zmiany i odśwież stronę',
-    ],
-  },
-  {
-    id: 'wix',
-    label: 'Wix',
-    bg: 'bg-slate-900',
-    Logo: WixLogo,
-    steps: [
-      'Ustawienia → Zaawansowane → Śledzenie',
-      'Nowe narzędzie → Niestandardowy kod',
-      'Wklej kod, ustaw „Przed </body>"',
-    ],
-  },
-  {
-    id: 'squarespace',
-    label: 'Squarespace',
-    bg: 'bg-slate-800',
-    Logo: SquarespaceLogo,
-    steps: [
-      'Ustawienia → Zaawansowane → Wstrzyknięcie kodu',
-      'Wklej kod w sekcji Stopka',
-      'Zapisz i opublikuj zmiany',
-    ],
-  },
-  {
-    id: 'webflow',
-    label: 'Webflow',
-    bg: 'bg-indigo-600',
-    Logo: WebflowLogo,
-    steps: [
-      'Project Settings → Custom Code',
-      'Wklej kod w „Footer Code"',
-      'Publish → zmiany live',
-    ],
-  },
-  {
-    id: 'gtm',
-    label: 'Google Tag Manager',
-    bg: 'bg-sky-500',
-    Logo: GtmLogo,
-    steps: [
-      'Nowy tag → Niestandardowy HTML',
-      'Wklej kod, wyzwalacz: All Pages',
-      'Opublikuj kontener',
-    ],
-  },
-];
 
 const STEPS = [
   { n: 1, title: 'Skopiuj kod', desc: 'Kliknij przycisk Kopiuj' },
@@ -234,52 +169,6 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
         </div>
       </div>
 
-      {/* === Blok 3: Platformy === */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 overflow-hidden shadow-sm">
-        <div className="px-5 py-3.5 border-b border-slate-100">
-          <span className="text-sm font-semibold text-slate-800">Instrukcja per platforma</span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
-          {PLATFORMS.map((p) => {
-            const isOpen = openPlatform === p.id;
-            return (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setOpenPlatform(isOpen ? null : p.id)}
-                className="text-left px-5 py-4 hover:bg-slate-50/60 transition-colors focus:outline-none group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-xl ${p.bg} flex items-center justify-center flex-shrink-0 shadow-sm`}>
-                    <p.Logo />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-slate-800">{p.label}</p>
-                    {isOpen ? (
-                      <ol className="mt-2 space-y-1 text-left">
-                        {p.steps.map((step, i) => (
-                          <li key={i} className="text-xs text-slate-500 flex gap-1.5">
-                            <span className="text-indigo-400 font-bold flex-shrink-0">{i + 1}.</span>
-                            {step}
-                          </li>
-                        ))}
-                      </ol>
-                    ) : (
-                      <p className="text-xs text-slate-400 mt-0.5 truncate">{p.steps[0]}</p>
-                    )}
-                  </div>
-                  <span className={`text-slate-400 transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="6 9 12 15 18 9" />
-                    </svg>
-                  </span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
 
     </div>
   );
