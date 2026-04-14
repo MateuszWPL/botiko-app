@@ -41,7 +41,8 @@ interface SessionData {
   leadSubmitted: boolean;
 }
 
-function checkIsOffline(start: number | null, end: number | null, days: number[]): boolean {
+/** Returns true when the salon is physically closed — bot still works, used only for the info banner. */
+function isSalonClosed(start: number | null, end: number | null, days: number[]): boolean {
   if (start === null || end === null || days.length === 0) return false;
   const now = new Date();
   const day = now.getDay();
@@ -87,6 +88,29 @@ function saveSession(botId: string, data: SessionData): void {
   }
 }
 
+/**
+ * Maps an HTTP status code from /api/v1/chat to a user-friendly message.
+ *
+ * 400 — Zod validation failed (e.g. message too long, invalid botId)
+ * 403 — plan limit reached OR domain not on whitelist
+ * 429 — rate limit (20 req/min per IP)
+ * 5xx — server error (OpenAI down, API key expired, unhandled exception)
+ */
+function errorMessageForStatus(status: number, showLeadFormCallback: () => void): string {
+  if (status === 400) {
+    return 'Nie mogę przetworzyć tej wiadomości. Spróbuj sformułować pytanie inaczej.';
+  }
+  if (status === 403) {
+    // Plan limit exhausted — klientka nie powinna widzieć szczegółów
+    showLeadFormCallback();
+    return 'Dziękuję za rozmowę! Zostaw swój numer — odezwiemy się i odpowiemy na wszystkie pytania.';
+  }
+  if (status === 429) {
+    return 'Zbyt wiele wiadomości z rzędu. Odczekaj chwilę i spróbuj ponownie.';
+  }
+  // 500, 502, 503, 504 — OpenAI down, API key wygasł, błąd serwera
+  return 'Mamy chwilową przerwę techniczną. Spróbuj za moment — zwykle trwa to kilka sekund.';
+}
 
 const CHAT_TIMEOUT_MS = 30_000;
 
@@ -104,7 +128,8 @@ export function ChatWindow({
   businessDays,
   suggestedQuestions,
 }: ChatWindowProps) {
-  const isOffline = checkIsOffline(businessHoursStart, businessHoursEnd, businessDays);
+  // salonClosed: informational only — bot zawsze odpowiada 24/7
+  const salonClosed = isSalonClosed(businessHoursStart, businessHoursEnd, businessDays);
   const initial = loadSession(botId, welcomeMessage);
 
   const [sessionId] = useState<string>(initial.sessionId);
@@ -127,7 +152,7 @@ export function ChatWindow({
     typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
 
   // Show quick suggestions only before first user message
-  const showSuggestions = userMessageCount === 0 && !isOffline;
+  const showSuggestions = userMessageCount === 0;
 
   useEffect(() => {
     saveSession(botId, {
@@ -151,7 +176,7 @@ export function ChatWindow({
 
   const sendMessage = async (text?: string) => {
     const content = (text ?? input).trim();
-    if (!content || isLoading || isOffline) return;
+    if (!content || isLoading) return;
 
     setInput('');
     setMessages((prev) => [...prev, { role: 'user', content }]);
@@ -171,22 +196,37 @@ export function ChatWindow({
       } finally {
         clearTimeout(timeoutId);
       }
+
+      if (!res.ok) {
+        const errMsg = errorMessageForStatus(res.status, () => {
+          if (!lead.submitted) setLead((s) => ({ ...s, visible: true }));
+        });
+        setMessages((prev) => [...prev, { role: 'assistant', content: errMsg }]);
+        setUserMessageCount((n) => n + 1);
+        return;
+      }
+
       const data = (await res.json()) as ApiChatResponse;
 
       setMessages((prev) => [
         ...prev,
         { role: 'assistant', content: data.message ?? 'Przepraszam, coś poszło nie tak.' },
       ]);
-
       setUserMessageCount((n) => n + 1);
 
       if (data.showLeadForm && !lead.submitted) {
         setLead((s) => ({ ...s, visible: true }));
       }
-    } catch {
+    } catch (err) {
+      const isTimeout = err instanceof Error && err.name === 'AbortError';
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: 'Przepraszam, wystąpił błąd połączenia. Spróbuj ponownie.' },
+        {
+          role: 'assistant',
+          content: isTimeout
+            ? 'Odpowiedź trwa za długo. Spróbuj ponownie lub napisz krótsze pytanie.'
+            : 'Przepraszam, wystąpił błąd połączenia. Sprawdź internet i spróbuj ponownie.',
+        },
       ]);
     } finally {
       setIsLoading(false);
@@ -270,7 +310,7 @@ export function ChatWindow({
           {avatarLetter}
         </div>
 
-        {/* Name + status */}
+        {/* Name + status — bot jest zawsze online */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 700, fontSize: '14px', lineHeight: 1.2 }}>{botName}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '2px' }}>
@@ -278,17 +318,17 @@ export function ChatWindow({
               width: '7px',
               height: '7px',
               borderRadius: '50%',
-              backgroundColor: isOffline ? '#fbbf24' : '#4ade80',
+              backgroundColor: '#4ade80',
               flexShrink: 0,
-              animation: isOffline ? 'none' : 'botiko-pulse 2s ease infinite',
+              animation: 'botiko-pulse 2s ease infinite',
             }} />
             <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)' }}>
-              {isOffline ? 'Poza godzinami pracy' : 'Online · odpowiada błyskawicznie'}
+              Online · odpowiada błyskawicznie
             </span>
           </div>
         </div>
 
-        {/* Close button (mobile) or minimize (desktop) */}
+        {/* Close button */}
         <button
           onClick={onClose}
           aria-label="Zamknij"
@@ -312,8 +352,8 @@ export function ChatWindow({
         </button>
       </div>
 
-      {/* ── Offline banner ── */}
-      {isOffline && offlineMessage && (
+      {/* ── Informacyjny banner gdy salon fizycznie zamknięty ── */}
+      {salonClosed && offlineMessage && (
         <div style={{
           backgroundColor: '#fef9c3',
           borderBottom: '1px solid #fde047',
@@ -538,22 +578,21 @@ export function ChatWindow({
           value={input}
           onInput={(e) => setInput((e.target as HTMLInputElement).value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey && !isOffline) {
+            if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
               void sendMessage();
             }
           }}
-          placeholder={isOffline ? 'Poza godzinami pracy…' : 'Napisz wiadomość...'}
+          placeholder="Napisz wiadomość..."
           maxLength={1000}
-          disabled={isOffline}
-          style={{ ...inputStyle, flex: 1, opacity: isOffline ? 0.5 : 1 }}
+          style={{ ...inputStyle, flex: 1 }}
         />
         <button
           onClick={() => void sendMessage()}
-          disabled={isLoading || !input.trim() || isOffline}
+          disabled={isLoading || !input.trim()}
           style={{
             ...btnStyle(primaryColor),
-            opacity: isLoading || !input.trim() || isOffline ? 0.6 : 1,
+            opacity: isLoading || !input.trim() ? 0.6 : 1,
             flexShrink: 0,
             width: '36px',
             height: '36px',
