@@ -44,13 +44,20 @@ export class AuthService {
       });
 
     if (authError || !authData.user) {
-      if (authError?.message?.toLowerCase().includes('already registered')) {
+      const errorMsg = authError?.message?.toLowerCase() ?? '';
+      // Supabase returns various messages for duplicate emails
+      if (
+        errorMsg.includes('already registered') ||
+        errorMsg.includes('already exists') ||
+        errorMsg.includes('duplicate') ||
+        errorMsg.includes('email address has already been registered')
+      ) {
         throw new ConflictException(
-          'An account with this email already exists',
+          'Użytkownik z tym emailem już istnieje',
         );
       }
       this.logger.error('Supabase user creation failed', authError?.message);
-      throw new InternalServerErrorException('Registration failed');
+      throw new InternalServerErrorException('Rejestracja nie powiodła się');
     }
 
     const supabaseUserId = authData.user.id;
