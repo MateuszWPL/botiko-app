@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Bot, Users, MessageSquare, Mail, ArrowRight, Code2, BookOpen, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { Bot, Users, MessageSquare, Mail, ArrowRight, Code2, BookOpen, TrendingUp, TrendingDown, Minus, Zap, AlertTriangle, XCircle } from 'lucide-react';
 import { OpenWizardButton } from './OpenWizardButton';
 import { fetchWithAuth } from '../../../lib/api';
 import { PageHeader } from '../../../components/ui/PageHeader';
@@ -23,16 +23,23 @@ interface BotData {
   isActive: boolean;
 }
 
+interface BillingStatus {
+  isActive: boolean;
+  hasSubscription: boolean;
+  trialEndsAt: string | null;
+}
+
 async function getStats() {
   try {
-    const [leads, conversations, bots] = await Promise.all([
+    const [leads, conversations, bots, billing] = await Promise.all([
       fetchWithAuth<Lead[]>('/api/v1/leads'),
       fetchWithAuth<Conversation[]>('/api/v1/conversations'),
       fetchWithAuth<BotData[]>('/api/v1/bot'),
+      fetchWithAuth<BillingStatus>('/api/v1/billing/status').catch(() => null),
     ]);
-    return { leads, conversations, bots };
+    return { leads, conversations, bots, billing };
   } catch {
-    return { leads: [], conversations: [], bots: [] };
+    return { leads: [], conversations: [], bots: [], billing: null };
   }
 }
 
@@ -79,7 +86,7 @@ function buildChartData(conversations: Conversation[], leads: Lead[]) {
 }
 
 export default async function OverviewPage() {
-  const { leads, conversations, bots } = await getStats();
+  const { leads, conversations, bots, billing } = await getStats();
   const { conversationsByDay, leadsByStatus } = buildChartData(conversations, leads);
 
   const newLeads = leads.filter((l) => l.status === 'NEW').length;
@@ -163,12 +170,67 @@ export default async function OverviewPage() {
     },
   ];
 
+  // Billing alert card logic
+  const showBillingCard = billing && !billing.hasSubscription;
+  const trialDaysLeft = billing?.trialEndsAt
+    ? Math.max(0, Math.ceil((new Date(billing.trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : 0;
+  const trialExpired = showBillingCard && !billing?.isActive;
+
   return (
     <div>
       <PageHeader
         title="Przegląd"
         description="Statystyki Twojego bota w pigułce"
       />
+
+      {/* Billing card — trial ending or expired */}
+      {showBillingCard && (trialExpired || trialDaysLeft <= 5) && (
+        <div className={`mb-6 rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap ${
+          trialExpired
+            ? 'bg-red-50 border border-red-200'
+            : trialDaysLeft <= 2
+            ? 'bg-orange-50 border border-orange-200'
+            : 'bg-amber-50 border border-amber-200'
+        }`}>
+          <div className="flex items-center gap-3 min-w-0">
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
+              trialExpired ? 'bg-red-100' : trialDaysLeft <= 2 ? 'bg-orange-100' : 'bg-amber-100'
+            }`}>
+              {trialExpired
+                ? <XCircle className="w-4.5 h-4.5 text-red-600" />
+                : <AlertTriangle className="w-4.5 h-4.5 text-amber-600" />}
+            </div>
+            <div>
+              <p className={`text-sm font-semibold ${
+                trialExpired ? 'text-red-900' : 'text-amber-900'
+              }`}>
+                {trialExpired
+                  ? 'Trial wygasł — bot jest nieaktywny'
+                  : `Zostało ${trialDaysLeft} ${trialDaysLeft === 1 ? 'dzień' : 'dni'} trialu`}
+              </p>
+              <p className={`text-xs mt-0.5 ${
+                trialExpired ? 'text-red-700' : 'text-amber-700'
+              }`}>
+                {trialExpired
+                  ? 'Aktywuj plan aby bot zaczął odpowiadać klientom'
+                  : 'Po zakończeniu trialu bot przestanie odpowiadać'}
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/dashboard/billing"
+            className={`flex-shrink-0 inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-xl transition-colors ${
+              trialExpired
+                ? 'bg-red-600 text-white hover:bg-red-700'
+                : 'bg-indigo-600 text-white hover:bg-indigo-700'
+            }`}
+          >
+            <Zap className="w-3.5 h-3.5" />
+            Aktywuj plan
+          </Link>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {stats.map((s) => (
