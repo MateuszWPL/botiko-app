@@ -12,6 +12,7 @@ interface BotConfig {
   businessHoursStart: number | null;
   businessHoursEnd: number | null;
   businessDays: number[];
+  suggestedQuestions: string[];
 }
 
 function Widget({
@@ -50,6 +51,7 @@ function Widget({
       businessHoursStart: config.businessHoursStart,
       businessHoursEnd: config.businessHoursEnd,
       businessDays: config.businessDays,
+      suggestedQuestions: config.suggestedQuestions,
     }),
     h(Launcher, {
       primaryColor: config.primaryColor,
@@ -91,6 +93,7 @@ async function init() {
     businessHoursStart: null,
     businessHoursEnd: null,
     businessDays: [],
+    suggestedQuestions: ['Czym możesz mi pomóc?', 'Jakie są godziny pracy?', 'Jak się skontaktować?'],
   };
 
   try {

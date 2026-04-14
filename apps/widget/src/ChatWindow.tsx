@@ -26,6 +26,7 @@ interface ChatWindowProps {
   businessHoursStart: number | null;
   businessHoursEnd: number | null;
   businessDays: number[];
+  suggestedQuestions: string[];
 }
 
 interface ApiChatResponse {
@@ -86,12 +87,8 @@ function saveSession(botId: string, data: SessionData): void {
   }
 }
 
-// Generic quick suggestions — work for any service business bot
-const QUICK_SUGGESTIONS = [
-  'Czym możesz mi pomóc?',
-  'Jakie są godziny pracy?',
-  'Jak się skontaktować?',
-];
+
+const CHAT_TIMEOUT_MS = 30_000;
 
 export function ChatWindow({
   botId,
@@ -105,6 +102,7 @@ export function ChatWindow({
   businessHoursStart,
   businessHoursEnd,
   businessDays,
+  suggestedQuestions,
 }: ChatWindowProps) {
   const isOffline = checkIsOffline(businessHoursStart, businessHoursEnd, businessDays);
   const initial = loadSession(botId, welcomeMessage);
@@ -160,11 +158,19 @@ export function ChatWindow({
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${apiUrl}/api/v1/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ botId, sessionId, message: content }),
-      });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), CHAT_TIMEOUT_MS);
+      let res: Response;
+      try {
+        res = await fetch(`${apiUrl}/api/v1/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ botId, sessionId, message: content }),
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
       const data = (await res.json()) as ApiChatResponse;
 
       setMessages((prev) => [
@@ -407,7 +413,7 @@ export function ChatWindow({
         {/* Quick suggestions — show before first message */}
         {showSuggestions && !isLoading && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginTop: '4px' }}>
-            {QUICK_SUGGESTIONS.map((s) => (
+            {suggestedQuestions.map((s) => (
               <button
                 key={s}
                 onClick={() => void sendMessage(s)}

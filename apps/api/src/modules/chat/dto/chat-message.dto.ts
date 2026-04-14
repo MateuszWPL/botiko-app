@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const chatMessageSchema = z.object({
-  botId: z.string().min(1, 'botId is required'),
+  botId: z.string().uuid('botId must be a valid UUID'),
   // Widget generates: s_{base36_timestamp}_{random} — alphanumeric + underscores only
   sessionId: z
     .string()

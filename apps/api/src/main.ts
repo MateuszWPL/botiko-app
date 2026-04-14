@@ -17,30 +17,16 @@ async function bootstrap() {
 
   app.use(helmet());
 
-  const allowedOrigins = [
-    process.env.APP_URL ?? 'http://localhost:3000',
-    process.env.WIDGET_URL ?? 'http://localhost:5173',
-  ];
-
+  // Widget is embedded on arbitrary client websites — any origin must be allowed at
+  // the CORS level. The real per-bot domain gate is DomainWhitelistGuard which checks
+  // bot.allowedDomains against the Origin header on every public widget endpoint.
+  // The API uses JWT Bearer tokens (not cookies), so CORS is not a security boundary.
   app.enableCors({
     origin: (
-      origin: string | undefined,
+      _origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ) => {
-      // In development allow any localhost port (useful for local HTML test servers)
-      if (
-        process.env.NODE_ENV !== 'production' &&
-        origin &&
-        /^https?:\/\/localhost:\d+$/.test(origin)
-      ) {
-        callback(null, true);
-        return;
-      }
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-        return;
-      }
-      callback(new Error('Not allowed by CORS'));
+      callback(null, true);
     },
     credentials: true,
   });

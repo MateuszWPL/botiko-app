@@ -5,6 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { getBrandTemplate } from '../../brand-templates';
 import type { CreateBotDto } from './dto/create-bot.dto';
 import type { UpdateBotDto } from './dto/update-bot.dto';
 
@@ -17,6 +18,7 @@ export interface BotPublicConfig {
   businessHoursStart: number | null;
   businessHoursEnd: number | null;
   businessDays: number[];
+  suggestedQuestions: string[];
 }
 
 export interface BotDetail {
@@ -70,6 +72,7 @@ export class BotService {
         businessHoursStart: true,
         businessHoursEnd: true,
         businessDays: true,
+        tenant: { select: { industry: true } },
       },
     });
 
@@ -77,7 +80,10 @@ export class BotService {
       throw new NotFoundException('Bot not found');
     }
 
-    return bot;
+    const { tenant, ...rest } = bot;
+    const template = getBrandTemplate(tenant.industry);
+
+    return { ...rest, suggestedQuestions: template.suggestedResponses };
   }
 
   async findById(tenantId: string, botId: string): Promise<BotDetail> {
@@ -134,13 +140,25 @@ export class BotService {
       data: {
         ...(dto.name !== undefined && { name: dto.name }),
         ...(dto.welcomeMsg !== undefined && { welcomeMsg: dto.welcomeMsg }),
-        ...(dto.primaryColor !== undefined && { primaryColor: dto.primaryColor }),
-        ...(dto.allowedDomains !== undefined && { allowedDomains: dto.allowedDomains }),
+        ...(dto.primaryColor !== undefined && {
+          primaryColor: dto.primaryColor,
+        }),
+        ...(dto.allowedDomains !== undefined && {
+          allowedDomains: dto.allowedDomains,
+        }),
         ...(dto.isActive !== undefined && { isActive: dto.isActive }),
-        ...(dto.offlineMessage !== undefined && { offlineMessage: dto.offlineMessage }),
-        ...(dto.businessHoursStart !== undefined && { businessHoursStart: dto.businessHoursStart }),
-        ...(dto.businessHoursEnd !== undefined && { businessHoursEnd: dto.businessHoursEnd }),
-        ...(dto.businessDays !== undefined && { businessDays: dto.businessDays }),
+        ...(dto.offlineMessage !== undefined && {
+          offlineMessage: dto.offlineMessage,
+        }),
+        ...(dto.businessHoursStart !== undefined && {
+          businessHoursStart: dto.businessHoursStart,
+        }),
+        ...(dto.businessHoursEnd !== undefined && {
+          businessHoursEnd: dto.businessHoursEnd,
+        }),
+        ...(dto.businessDays !== undefined && {
+          businessDays: dto.businessDays,
+        }),
       },
       select: {
         id: true,
