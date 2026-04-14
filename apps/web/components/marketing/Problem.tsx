@@ -31,8 +31,8 @@ const PAINS = [
     title: 'Tracisz klientów o 22:00',
     description:
       'Wiadomość na Messengerze o 22:14 — bez odpowiedzi do rana. Klient zapisuje się do konkurencji, która odpowiedziała w 30 sekund.',
-    stat: '67%',
-    statLabel: 'klientów rezygnuje po braku odpowiedzi w ciągu godziny',
+    stat: 'Minuty',
+    statLabel: 'tyle wystarczy, żeby klient poszedł do konkurencji',
     color: '#EC4899',
     bg: '#FDF2F8',
     border: '#FCE7F3',
@@ -42,8 +42,8 @@ const PAINS = [
     title: 'Odbierasz zamiast pracować',
     description:
       'Telefon podczas zabiegu, podczas spotkania, w niedzielę. Pytania o cennik i terminy, które bot może obsługiwać zamiast Ciebie.',
-    stat: '3h',
-    statLabel: 'dziennie traci właściciel na powtarzające się pytania klientów',
+    stat: 'Godziny',
+    statLabel: 'tyle potrafią kosztować powtarzalne pytania w skali tygodnia',
     color: '#06B6D4',
     bg: '#ECFEFF',
     border: '#CFFAFE',

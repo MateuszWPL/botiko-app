@@ -51,7 +51,7 @@ function AuthLeftPanel({ headline, sub }: { headline: string; sub: string }) {
       {/* Trust bar */}
       <div className="flex items-center gap-6 pt-8 border-t border-white/10">
         {[
-          { val: '200+', label: 'firm korzysta' },
+          { val: 'Pilot', label: 'pierwsze wdrożenia' },
           { val: '24/7', label: 'dostępny bot' },
           { val: '< 15 min', label: 'wdrożenie' },
         ].map((s) => (

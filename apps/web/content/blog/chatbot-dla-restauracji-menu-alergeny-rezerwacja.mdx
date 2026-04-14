@@ -1,0 +1,147 @@
+---
+title: "Chatbot dla restauracji — menu, alergeny i droga do rezerwacji (bez chaosu w kuchni)"
+excerpt: "Pełny przewodnik: jak obsłużyć gościa na stronie www, co włożyć do bazy wiedzy, jak unikać błędów przy alergenach i jak łączyć bota z rezerwacją i SEO lokalnym."
+date: "2026-04-16"
+category: "AI dla gastronomii"
+categorySlug: "ai-dla-gastronomii"
+tags: ["restauracja", "chatbot", "menu", "alergeny", "rezerwacja", "gastronomia"]
+author: "Mateusz W"
+authorTitle: "Założyciel Botiko.pl"
+image: "/blog/salon-beauty-24-7/hero.png"
+imageAlt: "Restauracja — obsługa zapytań gości przez bota na stronie"
+featured: false
+---
+
+Restauracja to **wysokie tempo**: kelnerzy w sali, kuchnia pod presją, a równolegle **telefon, Instagram i strona www** z pytaniami o menu, alergie, godziny otwarcia i stoliki na weekend. **Chatbot na stronie** nie zastąpi kelnera ani smaku potraw, ale może **odebrać powtarzalny front zapytań**, które inaczej kończą się na „nie odpisaliśmy na czas”.
+
+Ten artykuł jest **satelitą** w klastrze treści o automatyzacji — łączy się z [chatbotem na stronę dla małej firmy](/blog/chatbot-na-strone-www-mala-firma), [bazą wiedzy i RAG](/blog/baza-wiedzy-rag-co-to-jest-dla-firmy) oraz [zbieraniem leadów ze strony](/blog/jak-zbierac-leady-ze-strony-internetowej-firma-uslugowa).
+
+## Jakie pytania najczęściej trafiają do restauracji po godzinach
+
+Z doświadczeń z branży gastronomicznej i z rozmów z właścicielami lokali, powtarzają się motywy:
+
+- „Czy macie coś **bez glutenu** / wege / dla dzieci?”
+- „**Do której** serwujecie śniadania / obiady dnia?”
+- „Czy jest **miejsce na grupę** w piątek wieczorem?”
+- „Czy robicie **dowóz** / catering?”
+- „Czy można **zarezerwować stolik** online?”
+
+To są treści, które **da się przygotować raz** w bazie wiedzy i aktualizować według ustalonego rytmu (np. codziennie przed otwarciem w przypadku menu sezonowego).
+
+## Co bot powinien robić w gastronomii — rozwinięcie checklisty
+
+### 1. Odpowiadać na podstawie ustalonego menu
+
+Nawet jeśli menu masz w PDF, w bazie wiedzy potrzebujesz **wersji tekstowej** lub **jasnego podsumowania** (kategorie, bestsellery, alergeny). Spójność z kuchnią jest krytyczna — gość, który przeczyta co innego na stronie niż w lokalu, **nie wraca** i zostawia negatywny komentarz.
+
+### 2. Komunikować alergeny bez zgadywania
+
+Jeśli nie masz pewności co do składu dania, bot **nie powinien obiecywać** „100% bez orzechów”. Bezpieczniejszy schemat: **„w kwestii alergii poproś obsługę w lokalu”** albo **„zostaw kontakt — kucharz potwierdzi”** — zgodnie z tym, co realnie możecie zapewnić.
+
+### 3. Kierować do rezerwacji jednym kanałem
+
+Wybierz **jeden** główny system (telefon, Booksy, inna platforma) i **nie rozszczepiaj** komunikatu. Więcej o ścieżce konwersji w [jak zbierać leady ze strony](/blog/jak-zbierac-leady-ze-strony-internetowej-firma-uslugowa).
+
+### 4. Zbierać lead na event firmowy
+
+Imię, termin, liczba osób, budżet orientacyjny — to pola, które możesz zebrać w jednym flow zamiast piętnastu maili.
+
+## Tabela: kanał kontaktu vs obciążenie zespołu
+
+| Kanał | Typowy problem | Jak bot na www pomaga |
+| --- | --- | --- |
+| Telefon w godzinach lunchu | Nikt nie odbiera | Odpowiedź na FAQ + zbieranie numeru do oddzwonienia |
+| Instagram DM | Rozproszenie uwagi | Strona kieruje na **jedną** ścieżkę rezerwacji / kontaktu |
+| Mail „czy macie wolne?” | Odpowiedź po 24h | Natychmiastowa informacja o zasadach + następny krok |
+| Google Maps | Pytania o menu | Spójność treści: strona + baza wiedzy bota |
+
+## SEO lokalne dla restauracji — krótko
+
+Działają **podstrony** pod frazy typu „restauracja [kuchnia] [miasto]”, „obiady dnia [dzielnica]”, „restauracja z ogródkiem [miasto]”. W treściach i w bazie wiedzy **powtarzaj te same nazwy dań** — to pomaga Google i ogranicza halucynacje modelu (patrz [RAG](/blog/baza-wiedzy-rag-co-to-jest-dla-firmy)).
+
+## RODO i dane gościa
+
+Zbierając telefon przez bota, pamiętaj o **informacji dla użytkownika** — opisujemy to w [RODO a chatbot na stronie](/blog/rodo-chatbot-na-stronie-zgody-przetwarzanie-danych).
+
+## Menu dnia, sezon i napoje — jak utrzymać jedno źródło prawdy
+
+Lokale z dynamicznym menu potrzebują **procedury**, nie „raz na zawsze” wpisanego PDF-a. W praktyce sprawdza się:
+
+- **Jeden blok w bazie wiedzy** aktualizowany codziennie przed pierwszym serwisem (kto za to odpowiada — szef kuchni, manager sali).
+- **Krótki disclaimer**: „Menu dnia ważne do wyczerpania zapasów / do godziny X” — jeśli tak działacie.
+- **Spójność z Google Business Profile**: jeśli promujecie danie w social media, ten sam opis powinien znaleźć się w bazie bota, inaczej gość poczuje się oszukany.
+
+To dokładnie ta sama logika co w [RAG dla firmy](/blog/baza-wiedzy-rag-co-to-jest-dla-firmy): model nie zastąpi dyscypliny w aktualizacji treści.
+
+## Grupy, eventy, catering — osobna ścieżka leadu
+
+Inny jest lead „stolik na dwie osoby w piątek” i inny „komunia na 40 osób za trzy miesiące”. Warto rozdzielić to w treściach:
+
+| Scenariusz | Co zbiera bot | Kiedy przejąć człowiek |
+| --- | --- | --- |
+| Para / mała grupa | Godzina, preferencje miejsca, alergie znane | Gdy macie pełny house i trzeba alternatyw |
+| Event firmowy | Data, liczba osób, budżet, typ kuchni | Zawsze — bo wymaga kalendarza i umowy |
+| Catering / dowóz | Adres, okno czasowe, zakres menu | Gdy logistyka wykracza poza standard |
+
+Więcej o polu lead generation znajdziesz w [jak zbierać leady ze strony internetowej](/blog/jak-zbierac-leady-ze-strony-internetowej-firma-uslugowa).
+
+<InfoBox type="warning">
+Jeśli menu zmienia się codziennie — ustal **jedno miejsce prawdy** (aktualizacja w panelu / na stronie). Różnice między stroną a botem to najczęstsze źródło frustracji gości i negatywnych opinii.
+</InfoBox>
+
+## Najczęstsze pytania o chatbota w restauracji
+
+### Czy bot zastąpi obsługę kelnerską?
+
+Nie. Bot **odpowiada na pytania informacyjne i zbiera leady**; obsługa w lokalu buduje doświadczenie i relację.
+
+### Czy muszę integrować bota z systemem POS?
+
+Na start **nie** — w MVP wystarczy **aktualne menu + FAQ + link do rezerwacji**. Integracje są etapem późniejszym.
+
+### Jak unikać błędów przy alergenach?
+
+**Nie zgaduj.** Albo masz twardą wiedzę w bazie, albo **eskalujesz** do człowieka — zgodnie z sekcją o alergenach powyżej.
+
+### Czy chatbot pomoże na frazy „restauracja [miasto]”?
+
+Sam widget **nie zastąpi** treści na stronie i profilu Google, ale **wspiera konwersję** z ruchu, który już masz — tak jak opisujemy w [lead generation ze strony](/blog/jak-zbierac-leady-ze-strony-internetowej-firma-uslugowa).
+
+### Ile to kosztuje w skali miesiąca?
+
+Orientacyjnie subskrypcja narzędzia to rząd **149 zł/mies.** — pełniejszy rachunek znajdziesz w [ROI bota dla małej firmy](/blog/roi-bota-ai-mala-firma-uslugowa).
+
+### Czy warto umieszczać w bazie pełne składy dań?
+
+Tylko jeśli **macie je zweryfikowane** i aktualne. W przeciwnym razie bezpieczniejszy jest komunikat kierujący do obsługi w lokalu — szczególnie przy alergiach krzyżowych i śladzie alergenów w kuchni. Lepiej **uczciwy limit wiedzy** niż obietnica „pełnej pewności” na czacie.
+
+### Jak pogodzić bota z rezerwacją przez telefon i Booksy jednocześnie?
+
+Wybieracie **jedną preferowaną ścieżkę** w komunikacie bota, a pozostałe podajecie jako alternatywę: „najszybciej przez link; jeśli nie działa — zadzwoń”. Rozszczepenie bez hierarchii powoduje, że gość **kończy w trzech kanałach naraz** i żaden nie dostaje potwierdzenia.
+
+### Czy warto umieszczać w bazie informację o parkingu i dojeździe komunikacją?
+
+Tak — to część **doświadczenia przed wizytą** i redukuje no-show. Adres z Google Maps, info o płatnym parkingu, miejsce dla rodzin z wózkami — krótkie fakty, które nie zmieniają się codziennie, ale budują komfort. Spójnie z tym, jak opisujemy [konwersję na stronie](/blog/jak-zbierac-leady-ze-strony-internetowej-firma-uslugowa): im mniej tarcia przed wizytą, tym wyższa skuteczność rezerwacji.
+
+### Jak komunikować zmianę karty menu w trakcie sezonu?
+
+Najpierw aktualizujesz **źródło prawdy** (strona / PDF / panel bota), potem dopiero social media. Kolejność ma znaczenie: gość, który widzi post z nowym daniem, musi znaleźć to samo w [bazie wiedzy i RAG](/blog/baza-wiedzy-rag-co-to-jest-dla-firmy), inaczej poczuje się zaskoczony w lokalu.
+
+### Czy chatbot zastąpi mi pracownika przy obsłudze reklamacji?
+
+Nie — reklamacje żywnościowe i jakościowe wymagają procedury i często dokumentacji. Bot może **zebrać opis sytuacji i kontakt**, ale decyzję podejmuje manager zgodnie z regulaminem. To ta sama logika granic co w [RODO i zbieraniu danych](/blog/rodo-chatbot-na-stronie-zgody-przetwarzanie-danych): przejrzystość celu i minimalizacja danych.
+
+### Czy warto opisywać w bazie dostępność dań wegetariańskich i wegańskich osobno?
+
+Tak — to osobne intencje gościa i osobne oczekiwania co do kuchni. Krótki akapit z rozróżnieniem redukuje dopytywanie kelnera i skraca rozmowę w czacie. Przy okazji ułatwiasz modelowi trafienie we właściwy fragment wiedzy, o czym piszemy szerzej w [artykule o RAG](/blog/baza-wiedzy-rag-co-to-jest-dla-firmy).
+
+<CallToAction
+  title="Bot dla restauracji — start od bazy wiedzy"
+  description="Szablon branżowy, widget na stronę, leady w panelu. 14 dni za darmo."
+  href="/rejestracja"
+  buttonText="Uruchom test"
+/>
+
+---
+
+[Chatbot na stronę www](/blog/chatbot-na-strone-www-mala-firma) · [kontakt@botiko.pl](mailto:kontakt@botiko.pl)

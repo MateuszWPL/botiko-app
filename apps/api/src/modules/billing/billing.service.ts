@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import StripeLib from 'stripe';
 import { PrismaService } from '../../prisma/prisma.service';
+import { NotificationService } from '../../common/services/notification.service';
 import { env } from '../../config/env';
 
 export interface BillingStatus {
@@ -48,7 +49,10 @@ export class BillingService {
   private readonly logger = new Logger(BillingService.name);
   private readonly stripe: StripeInstance | null;
 
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notification: NotificationService,
+  ) {
     this.stripe = env.STRIPE_SECRET_KEY
       ? new StripeLib(env.STRIPE_SECRET_KEY, {
           apiVersion: '2026-03-25.dahlia',
@@ -84,6 +88,27 @@ export class BillingService {
           return d.toISOString();
         })();
 
+    // Auto-deactivate if trial expired and no subscription
+    if (
+      tenant.isActive &&
+      !tenant.stripeSubscriptionId &&
+      trialEndsAt &&
+      new Date(trialEndsAt) < new Date()
+    ) {
+      await this.prisma.tenant.update({
+        where: { id: tenantId },
+        data: { isActive: false },
+      });
+      this.logger.log(`Trial expired — auto-deactivated tenant: ${tenantId}`);
+      return {
+        plan: tenant.plan,
+        isActive: false,
+        hasSubscription: false,
+        stripeCustomerId: tenant.stripeCustomerId,
+        trialEndsAt,
+      };
+    }
+
     return {
       plan: tenant.plan,
       isActive: tenant.isActive,
@@ -91,6 +116,58 @@ export class BillingService {
       stripeCustomerId: tenant.stripeCustomerId,
       trialEndsAt,
     };
+  }
+
+  /**
+   * Called by external cron (e.g. Vercel Cron, Railway CRON, Upstash).
+   * Sends trial reminder emails and deactivates expired trials.
+   * Idempotent: emails only sent on exact trial day (day 11 = 3 days left, day 13 = 1 day left, day 14+ = expired).
+   */
+  async runTrialNotifications(): Promise<{ processed: number; emails: number }> {
+    const tenants = await this.prisma.tenant.findMany({
+      where: { stripeSubscriptionId: null },
+      select: {
+        id: true,
+        name: true,
+        isActive: true,
+        createdAt: true,
+        users: { select: { email: true }, take: 1 },
+      },
+    });
+
+    const now = new Date();
+    let emails = 0;
+
+    for (const tenant of tenants) {
+      const trialEnd = new Date(tenant.createdAt);
+      trialEnd.setDate(trialEnd.getDate() + 14);
+
+      const msLeft = trialEnd.getTime() - now.getTime();
+      const daysLeft = Math.ceil(msLeft / (1000 * 60 * 60 * 24));
+      const ownerEmail = tenant.users[0]?.email;
+
+      // Auto-deactivate expired trials
+      if (daysLeft <= 0 && tenant.isActive) {
+        await this.prisma.tenant.update({
+          where: { id: tenant.id },
+          data: { isActive: false },
+        });
+        this.logger.log(`Cron: trial expired — deactivated tenant: ${tenant.id}`);
+      }
+
+      // Send emails only on specific days (idempotent — cron runs once daily)
+      if (ownerEmail && [3, 1, 0].includes(daysLeft)) {
+        await this.notification.sendTrialNotificationEmail({
+          toEmail: ownerEmail,
+          tenantName: tenant.name,
+          daysLeft: Math.max(0, daysLeft),
+        });
+        emails++;
+      }
+    }
+
+    this.logger.log(`Trial cron: processed ${tenants.length} tenants, sent ${emails} emails`);
+    return { processed: tenants.length, emails };
   }
 
   async createCheckoutSession(

@@ -11,6 +11,10 @@ interface Bot {
   primaryColor: string;
   allowedDomains: string[];
   isActive: boolean;
+  offlineMessage: string | null;
+  businessHoursStart: number | null;
+  businessHoursEnd: number | null;
+  businessDays: number[];
 }
 
 export default async function SettingsPage() {

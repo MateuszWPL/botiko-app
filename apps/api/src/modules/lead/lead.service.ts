@@ -133,6 +133,20 @@ export class LeadService {
     return updated;
   }
 
+  async delete(tenantId: string, leadId: string): Promise<void> {
+    const lead = await this.prisma.lead.findFirst({
+      where: { id: leadId, tenantId },
+      select: { id: true },
+    });
+
+    if (!lead) {
+      throw new ForbiddenException('Lead not found or access denied');
+    }
+
+    await this.prisma.lead.delete({ where: { id: leadId } });
+    this.logger.log(`Lead deleted: ${leadId} by tenant: ${tenantId}`);
+  }
+
   private safeDecrypt(value: string): string {
     try {
       return this.encryption.decrypt(value);

@@ -212,8 +212,7 @@
 #### Sidebar Plan Badge
 - [x] Przy dole sidebar: badge z aktualnym planem (ikona `Zap` + nazwa planu)
 - [x] STARTER: neutralny styl
-- [ ] PRO (przyszłość): `bg-gradient-to-r from-blue-600 to-cyan-500`
-- [ ] PREMIUM (przyszłość): `bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-900` z ikoną `Crown`
+
 
 #### Leads (dashboard/leads/)
 - [x] Empty state z `<EmptyState />` component: ikona `Users` + tytuł + opis + przycisk "Zainstaluj bota"
@@ -275,24 +274,129 @@
 
 ---
 
-### 1A.5 — Landing Page — Domknięcie
+### 1A.5 — Landing Page — Domknięcie ✅
 
-> LP jest już zbudowana (v4), potrzeba kilku rzeczy żeby była gotowa na prawdziwych użytkowników.
+> Zaimplementowane 2026-04-12
 
-#### Implementacja
-- [ ] Sekcja cennik: zaktualizuj do jednego planu "149 zł/mies, 14 dni gratis" — bez Starter/Pro/Premium (za wcześnie na tiers), prosty komunikat
-- [ ] Przycisk CTA "Zacznij za darmo" → redirect do `/rejestracja` (onboarding flow)
-- [ ] Demo bot na LP: osadź widżet Botiko z prawdziwym botem demonstracyjnym (branża BEAUTY, pre-skonfigurowany) — klucz testowy, nie produkcyjny
-- [ ] SEO: `<title>`, `<meta description>`, Open Graph (og:title, og:description, og:image) — dla Twittera i Facebooka
-- [ ] `sitemap.xml` — podstawowy, tylko główna strona + `/rejestracja`
-- [ ] Polityka prywatności: prosta strona `/prywatnosc` (wystarczy tekst o RODO, zbieraniu danych kontaktowych, Supabase jako host)
-- [ ] Link do polityki prywatności w widgecie przy checkboxie RODO i w footerze LP
+#### Implementacja ✅
+- [x] Sekcja cennik: jeden plan "149 zł/mies, 14 dni gratis" — karta gradientowa, lista 9 funkcji, kalkulator ROI
+- [x] Przycisk CTA "Zacznij za darmo" → `/rejestracja` (nowa strona z server-side redirect na `/register`)
+- [x] Demo bot na LP: `DemoWidget.tsx` ładuje widget przez `useEffect` — aktywuje się gdy ustawiony `NEXT_PUBLIC_DEMO_BOT_ID`
+- [x] SEO: `og:image`, `twitter:card`, `canonical` URL, zaktualizowany JSON-LD (jeden plan), sitemap `/rejestracja` + `/prywatnosc`
+- [x] `sitemap.ts` — Next.js sitemap API: `/`, `/rejestracja`, `/prywatnosc`
+- [x] Polityka prywatności: strona `/prywatnosc` — 10 sekcji RODO (administrator, dane, podstawy prawne, podwykonawcy, prawa, DPA)
+- [x] Link do polityki prywatności w widgecie przy checkboxie RODO i w footerze LP
 
-#### Testowanie
+#### Testowanie (manualne — do zrobienia przed pilotem)
 - [ ] Sprawdź LP na mobile (Chrome DevTools → iPhone SE)
 - [ ] Sprawdź że przycisk CTA otwiera onboarding rejestrację
-- [ ] Sprawdź demo bot — zadaj 3-4 pytania, zrób lead, sprawdź czy email dociera
+- [ ] Sprawdź demo bot — ustaw `NEXT_PUBLIC_DEMO_BOT_ID`, zadaj 3-4 pytania, zrób lead, sprawdź czy email dociera
 - [ ] Sprawdź OG preview: wklej URL LP w [opengraph.xyz](https://www.opengraph.xyz/)
+
+---
+
+### 1A.5b — Blog z SEO ✅
+
+> Zaimplementowane 2026-04-13
+
+#### Stack
+- **Treść**: pliki MDX w `content/blog/` (repo root) — edytowalne bez wiedzy technicznej
+- **Rendering**: `next-mdx-remote/rsc` — React Server Components, statycznie generowane (`generateStaticParams`)
+- **Frontmatter**: `gray-matter` — tytuł, excerpt, data, kategoria, tagi, autor, obrazek, `featured`
+- **Markdown plugins**: `remark-gfm` (tabele/strikethrough), `rehype-slug` + `rehype-autolink-headings` (anchor IDs dla ToC)
+- **SEO**: `generateMetadata` per post (title, OG, Twitter), Article JSON-LD schema, BreadcrumbList JSON-LD, `sitemap.ts` dynamicznie dodaje posty/kategorie/tagi
+
+#### Funkcje listingu (`/blog`) ✅
+- [x] Hero sekcja gradientowa z opisem bloga
+- [x] **Wyróżniony post** (first `featured: true`) — duża karta hero ponad gridem
+- [x] **Filtry kategorii** — scrollowalne taby z licznikami, URL params (`?kategoria=`)
+- [x] **Sortowanie** — najnowsze/najstarsze, URL params (`?sortuj=`)
+- [x] **Paginacja** — 6 postów/stronę, zakres stron z ellipsis, URL params (`?strona=`)
+- [x] Sidebar: TagCloud, lista kategorii z licznikami, sticky CTA box
+- [x] Empty state gdy brak wyników w danej kategorii
+
+#### Funkcje postu (`/blog/[slug]`) ✅
+- [x] Hero image na pełną szerokość z gradientem i nazwą kategorii
+- [x] **Breadcrumbs** z BreadcrumbList JSON-LD schema
+- [x] Meta bar: autor, data, czas czytania (auto-liczony, ~200 słów/min)
+- [x] **Table of Contents** — sticky sidebar, auto-generowany z H2/H3, aktywny heading podświetlony (IntersectionObserver)
+- [x] **MDX custom components**:
+  - `<InfoBox type="info|tip|warning|danger|stat">` — kolorowe ramki informacyjne
+  - `<ImageGallery images={[...]} caption="..." />` — slider z thumbnailami i nawigacją strzałkami
+  - `<VideoEmbed url="..." title="..." />` — YouTube/Vimeo iframe (lazy loaded)
+  - `<CallToAction title href buttonText />` — gradient banner CTA
+- [x] Styled MDX elements: tabele, blockquote, code, pre, listy z dot-markerem indigo
+- [x] Tagi na dole posta → link do `/blog/tag/[slug]`
+- [x] Social share: Facebook, LinkedIn
+- [x] Related posts (ta sama kategoria, max 3)
+- [x] Sticky CTA sidebar (desktop) + bottom CTA (mobile)
+
+#### Strony kategorii i tagów ✅
+- [x] `/blog/kategoria/[slug]` — grid postów z danej kategorii + sidebar + paginacja
+- [x] `/blog/tag/[slug]` — grid postów z danym tagiem + sidebar + paginacja
+- [x] `generateStaticParams` dla wszystkich kategorii i tagów — statycznie generowane
+
+#### Treść startowa ✅
+- [x] 3 artykuły w `content/blog/` (MDX, po polsku, SEO-ready):
+  1. `chatbot-ai-salon-beauty-obsługa-klientek-24-7.mdx` — featured, ~1600 słów
+  2. `roi-bota-ai-mala-firma-usługowa.mdx` — kalkulator ROI, tabele, ~1200 słów
+  3. `automatyzacja-obslugi-klienta-gabinet-kosmetyczny.mdx` — poradnik, ~1400 słów
+- [x] 3 kategorie: "AI dla beauty", "Biznes i ROI", "Automatyzacja"
+- [x] 10+ tagów: salon beauty, chatbot AI, ROI, automatyzacja, gabinet kosmetyczny, itd.
+
+#### SEO i technalia ✅
+- [x] `sitemap.ts` — dynamicznie dodaje wszystkie posty, kategorie, tagi
+- [x] `next.config.mjs` CSP — dodano YouTube + Vimeo do `frame-src` dla VideoEmbed
+- [x] Navbar — dodano link "Blog" do nawigacji
+- [x] Footer — link "Blog" już był
+- [x] Canonical URLs per post/kategoria/tag
+- [x] Stary placeholder `/app/blog/page.tsx` zastąpiony pełnoprawną implementacją w `(marketing)`
+
+#### Jak dodawać nowe posty
+Utwórz plik `content/blog/moj-nowy-post.mdx` z frontmatter:
+```yaml
+---
+title: "Tytuł artykułu"
+excerpt: "Krótki opis (meta description)"
+date: "2026-04-13"
+category: "Nazwa kategorii"
+categorySlug: "nazwa-kategorii"
+tags: ["tag1", "tag2"]
+author: "Imię Nazwisko"
+image: "/blog/obrazek.jpg"      # umieść w apps/web/public/blog/
+imageAlt: "Opis obrazka dla SEO"
+featured: false                 # true = wyróżniony post na górze listingu
+---
+```
+Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<ImageGallery>`, `<VideoEmbed>`, `<CallToAction>`.
+
+#### Testowanie (manualne)
+- [ ] Sprawdź `/blog` — listing, filtry kategorii, paginacja
+- [ ] Kliknij w post → sprawdź breadcrumbs, ToC, rich content
+- [ ] Sprawdź `/blog/kategoria/ai-dla-beauty` i `/blog/tag/salon-beauty`
+- [ ] Sprawdź `sitemap.xml` — widać posty bloga
+- [ ] Walidacja struktury danych: wklej URL posta w [schema.org/validator](https://validator.schema.org/) — Article + BreadcrumbList ✓
+- [ ] Sprawdź na mobile (375px) — hero, karty, ToC ukryty
+- [ ] Dodaj nowy post MDX → sprawdź że pojawia się na listingu
+
+---
+
+### 1A.5c — Security Hardening + Bot Reliability ✅
+
+> Zaimplementowane 2026-04-14
+
+#### Bezpieczeństwo ✅
+- [x] **CORS otwarty dla widgetu** — widget musi działać na dowolnej domenie klienta. `DomainWhitelistGuard` jest rzeczywistą warstwą (sprawdza `bot.allowedDomains` per request). Wcześniej każdy request z `https://salonklienta.pl` kończył się CORS error — widget był martwy na prod.
+- [x] **`botId` walidowany jako UUID** — DTO chatu i leadów: `z.string().uuid()`. Wcześniej `z.string().min(1)` — niepotrzebne DB queries na śmieciowe inputy.
+- [x] **`website` w formularzu kontaktowym** — `z.string().url()`. Wcześniej dowolny string — ryzyko phishingu przez `javascript:` w emailu do admina.
+- [x] **`escapeHtml` pokrywa `'`** — wcześniej brakowało `&#39;`, ryzyko attribute injection w email templateach.
+
+#### Niezawodność bota ✅
+- [x] **Obsługa błędów HTTP per status code w widgecie** — wcześniej każdy `!res.ok` → "błąd połączenia". Teraz: 400 (zła wiadomość), 403 (limit planu → automatycznie otwiera lead form), 429 (rate limit), 5xx (awaria techniczna), AbortError (timeout).
+- [x] **Fetch timeout 30s** — `AbortController` na każdym request do `/api/v1/chat`. Wcześniej spinner kręcił się w nieskończoność przy zawieszonym OpenAI.
+- [x] **Bot odpowiada 24/7** — usunięte blokowanie inputu/przycisku/enter przez `isOffline`. Offline banner przy ustawionych godzinach pracy jest tylko informacyjny. Bot zawsze odpowiada.
+- [x] **`suggestedQuestions` z brand template** — `GET /api/v1/bot/:id/config` teraz zwraca branżowe sugestie (wcześniej hardcoded genericze w widgecie). Widget używa propsa zamiast stałej.
+- [x] **Formularz kontaktowy LP** — graceful degradation: `handleSubmit` poprawnie propaguje błędy do `catch` (wcześniej `finally` połykał wyjątki, fallback `mailto:` nigdy się nie uruchamiał).
 
 ---
 
@@ -381,7 +485,7 @@
 #### API hardening
 - [ ] Throttler rate limits przetestowane: `curl` 21 razy pod rząd na `/api/v1/chat` → 21. powinno zwrócić 429
 - [ ] Helmet headers: sprawdź w DevTools → Network → Response Headers że są `X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security`
-- [ ] CORS: sprawdź że API akceptuje tylko requesty z `app.botiko.pl` i `widget.botiko.pl` (nie `*`)
+- [ ] CORS: otwarty dla wszystkich originów (widgetowy design) — weryfikacja że `DomainWhitelistGuard` blokuje requesty z domen spoza `bot.allowedDomains`: wyślij POST `/api/v1/chat` z `Origin: https://obcadomena.pl` dla bota z wypełnionym `allowedDomains` → powinno zwrócić 403
 - [ ] Env vars nie są w logach: przejrzyj `console.log` w kodzie — żadnego logowania sekretów
 
 #### Widget / RODO
@@ -579,11 +683,11 @@ Wdrożyć gdy: klient pyta o Google Docs/Notion sync lub API.
 
 ---
 
-> 📅 **Ostatnia aktualizacja:** 2026-04-10
+> 📅 **Ostatnia aktualizacja:** 2026-04-12
 >
-> 📊 **Postęp:** Faza 0 ukończona. Fundamenty Fazy 1A zbudowane (API, RAG, widget, onboarding, dashboard, LP v4). Do zrobienia przed pilotem: 1A.1 jakość bota (fallback, eskalacja), 1A.2 email notyfikacje (Resend), 1A.3 Stripe (jeden plan), 1A.4 LP domknięcie, 1A.5-7 QA + testy + security, 1A.8 deploy.
+> 📊 **Postęp:** Faza 0 ukończona. Faza 1A: 1A.1 ✅ 1A.2 ✅ 1A.3 ✅ 1A.4 ✅ 1A.5 ✅. Do zrobienia przed pilotem: 1A.6 manualna QA, 1A.7 testy automatyczne, 1A.8 security check + deploy produkcyjny.
 >
-> 🎯 **Aktualny focus:** Faza 1A — gotowość pilotowa. Jeden plan 149 zł/mies. Faza 1B (PDF, Pro/Premium, analityka) — dopiero po 5 płacących klientach.
+> 🎯 **Aktualny focus:** 1A.6 — QA checklist (auth, onboarding, widget, dashboard, billing). Następnie 1A.7 testy automatyczne i 1A.8 deploy.
 
 ---
 

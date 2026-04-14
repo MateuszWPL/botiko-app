@@ -110,7 +110,7 @@ function AuthLeftPanel() {
           Zacznij zbierać leady
         </h2>
         <p className="text-indigo-200 text-base mb-10">
-          Dołącz do ponad 200 firm, które nie tracą klientów po godzinach.
+          Dołącz do programu pilotażowego i zacznij zbierać leady po godzinach.
         </p>
 
         <ul className="flex flex-col gap-4">
@@ -129,7 +129,7 @@ function AuthLeftPanel() {
 
       <div className="flex items-center gap-6 pt-8 border-t border-white/10">
         {[
-          { val: '200+', label: 'firm korzysta' },
+          { val: 'Pilot', label: 'pierwsze wdrożenia' },
           { val: '24/7', label: 'dostępny bot' },
           { val: '< 15 min', label: 'wdrożenie' },
         ].map((s) => (

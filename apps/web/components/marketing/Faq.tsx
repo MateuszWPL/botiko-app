@@ -10,7 +10,7 @@ const FAQS = [
   },
   {
     q: 'Jak długo trwa wdrożenie?',
-    a: 'Większość klientów ma gotowego bota w 15–20 minut. Wybierasz branżę, uzupełniasz dane o firmie, dostosowujesz kolory widgetu i gotowe. Nie potrzebujesz agencji ani programisty.',
+    a: 'W wielu przypadkach da się uruchomić bota w 15–20 minut: wybierasz branżę, uzupełniasz dane o firmie, wklejasz cennik/FAQ i gotowe. Nie potrzebujesz agencji ani programisty.',
   },
   {
     q: 'Czy bot zastąpi mnie lub moich pracowników?',
@@ -34,7 +34,7 @@ const FAQS = [
   },
   {
     q: 'Czy bot działa na Facebooku i Instagramie?',
-    a: 'Aktualnie widget embeddujemy na stronie WWW klienta. Integracja z Meta Messengerem i Instagram Direct jest w roadmapie — daj znać że jesteś zainteresowany przez hello@botiko.pl.',
+    a: 'Aktualnie widget embeddujemy na stronie WWW klienta. Integracja z Meta Messengerem i Instagram Direct jest w roadmapie — daj znać że jesteś zainteresowany przez kontakt@botiko.pl.',
   },
 ];
 
@@ -99,7 +99,7 @@ export default function Faq() {
         <ScrollReveal className="mt-10 text-center">
           <p className="text-slate-500 text-sm">
             Nie znalazłeś odpowiedzi?{' '}
-            <a href="mailto:hello@botiko.pl" className="text-brand font-semibold hover:underline cursor-pointer">
+            <a href="mailto:kontakt@botiko.pl" className="text-brand font-semibold hover:underline cursor-pointer">
               Napisz do nas →
             </a>
           </p>

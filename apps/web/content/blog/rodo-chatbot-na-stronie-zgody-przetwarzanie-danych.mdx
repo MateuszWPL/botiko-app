@@ -1,0 +1,141 @@
+---
+title: "RODO a chatbot na stronie — zgody, leady i co komunikować klientowi"
+excerpt: "Rozbudowany przewodnik dla właściciela firmy: cele przetwarzania, informacja dla użytkownika, zgody marketingowe, baza wiedzy bota i dobrowolność danych. Z linkami do praktycznych wpisów Botiko."
+date: "2026-04-17"
+category: "RODO i bezpieczeństwo"
+categorySlug: "rodo-i-bezpieczenstwo"
+tags: ["RODO", "chatbot", "zgody marketingowe", "dane osobowe", "polityka prywatności"]
+author: "Mateusz W"
+authorTitle: "Założyciel Botiko.pl"
+image: "/blog/automatyzacja/hero.webp"
+imageAlt: "Ochrona danych — RODO i chatbot na stronie firmy"
+featured: false
+---
+
+**Uwaga:** ten artykuł ma charakter **edukacyjny** i **nie zastępuje indywidualnej porady prawnej**. Jeśli prowadzisz gabinet medyczny, przetwarzasz dane wrażliwe szczególne lub masz złożoną strukturę grupy spółek — **skonsultuj się z prawnikiem** specjalizującym się w ochronie danych osobowych.
+
+Celem tekstu jest **praktyczne poukładanie** tematu dla typowej **małej firmy usługowej**, która zbiera leady przez [chatbota na stronie www](/blog/chatbot-na-strone-www-mala-firma) i przechowuje je w panelu (np. Botiko).
+
+## Jakie dane zbiera typowy bot B2B i dlaczego to są dane osobowe
+
+W scenariuszu Botiko najczęściej zbierasz:
+
+- **imię** (lub pseudonim),
+- **numer telefonu**,
+- **treść pytania** lub kontekst rozmowy,
+- **metadane techniczne** potrzebne do działania widgetu (np. identyfikator sesji, informacje o przeglądarce w zakresie niezbędnym do bezpieczeństwa).
+
+**Numer telefonu i imię** to dane osobowe. **Treść pytania** często też — bo może zawierać informacje o zdrowiu, preferencjach, stanie pojazdu itd. Stąd **minimalizacja danych** („zbieraj tylko to, co potrzebujesz do kontaktu”) jest nie tylko zgodna z ideą RODO, ale też **podnosi jakość leadu** — opisujemy to szerzej w [jak zbierać leady ze strony internetowej](/blog/jak-zbierac-leady-ze-strony-internetowej-firma-uslugowa).
+
+## Informacja dla użytkownika — co powinno być widoczne przy bocie
+
+Niezależnie od tego, czy masz osobną podstronę „Polityka prywatności”, czy link w stopce, przy zbieraniu danych przez widget warto, żeby użytkownik rozumiał:
+
+- **kto jest administratorem** danych (Twoja firma — pełna nazwa i kontakt),
+- **w jakim celu** prosisz o telefon (np. kontakt w sprawie rezerwacji / wyceny),
+- **jak długo** zamierzasz przechowywać dane (jeśli to ustalaisz polityką retencji),
+- **komu** możesz powierzyć dane (hosting, dostawca narzędzia chatu) — w zakresie niezbędnym.
+
+Materiały edukacyjne publikuje m.in. [UODO](https://uodo.gov.pl/) oraz portal [gov.pl — RODO](https://www.gov.pl/web/cyberbezpieczenstwo/rodo).
+
+## Zgody marketingowe vs kontakt w odpowiedzi na zapytanie
+
+**Kontakt zwrotny do klienta**, który sam zostawił numer w sprawie usługi, to **inny kontekst** niż **zapis na newsletter** czy **profilowanie pod reklamy remarketingowe**. W praktyce UX warto:
+
+- **nie mieszać** w jednym checkboxie pięciu różnych celów,
+- rozdzielić **treść informacyjną** (jak używasz danych) od **zgody marketingowej** (jeśli ją faktycznie zbierasz).
+
+To nie jest „sztuczka prawna”, tylko **czytelność** — mniej frustracji po stronie klienta i mniej ryzyka nieporozumień.
+
+## Tabela: typowe cele przetwarzania przy leadzie z bota (uproszczenie)
+
+| Sytuacja | Typowy cel | Co komunikować |
+| --- | --- | --- |
+| Klient zostawia telefon po pytaniu o usługę | Kontakt w sprawie obsługi / umówienia | Krótki opis przy polu: „Oddzwonimy w sprawie zapytania” |
+| Chcesz wysyłać newsletter | Marketing bezpośredni | Osobna zgoda / checkbox (jeśli wymagana w Twoim przypadku) |
+| Nagrywanie czatu „dla jakości” | Doskonalenie usługi | Informacja w polityce + ewentualnie komunikat w produkcie |
+
+**Uwaga:** powyższa tabela **nie zastępuje** analizy prawnej Twojego konkretnego przypadku.
+
+## Słownik praktyczny: co oznaczają podstawy przetwarzania w codziennej obsłudze
+
+Poniżej **uproszczenie edukacyjne** — w realnym wdrożeniu potwierdzasz wybór podstaw z doradcą.
+
+| Sytuacja biznesowa | Co zwykle robisz z danymi | O czym pamiętać w komunikacie |
+| --- | --- | --- |
+| Klient dzwoni lub pisze w sprawie usługi | Kontakt zwrotny, umówienie wizyty | Informacja, że numer służy do tego kontaktu, nie do newslettera „w ciemno” |
+| Chcesz wysłać przypomnienie SMS o wizycie | Powiadomienie transakcyjne | Inny charakter niż newsletter promocyjny — nie mieszaj celów w jednym zdaniu |
+| Zapisujesz historię czatu „dla jakości” | Analiza rozmów w zespole | Transparentność w polityce + minimalizacja — nie zbieraj więcej niż potrzeba |
+
+Unikaj **zbędnych pól** w chacie: im mniej danych wrażliwych w treści wiadomości, tym mniej ryzyka i prostsza ochrona. Jeśli temat dotyczy zdrowia, rozważ **przekierowanie do bezpiecznego kanału** — spójnie z [automatyzacją obsługi w gabinecie](/blog/automatyzacja-obslugi-klienta-gabinet-kosmetyczny).
+
+## Dane w chmurze i dostawcy z USA — co warto wiedzieć jako administrator
+
+Wiele narzędzi AI ma infrastrukturę globalną. Jako administrator danych **weryfikujesz umowy powierzenia** i lokalizację przetwarzania w zakresie wymaganym przepisami. Dla Czytelnika-końcowego na stronie ważniejsza jest **jasna informacja**: kto jest administratorem (Twoja firma), a kto podwykonawcą narzędzia. Szczegóły procesów opisujemy w [polityce prywatności](/prywatnosc); ogólne wytyczne publikuje [UODO](https://uodo.gov.pl/).
+
+## Co ustawić w treści bota i w bazie wiedzy
+
+- **Krótka informacja przy zbieraniu telefonu** — po co dzwonisz i w jakich godzinach (jeśli oddzwaniasz).
+- **Procedura eskalacji** — gdy klient pisze o przeciwwskazaniach zdrowotnych: zgodnie z [automatyzacją obsługi w gabinecie](/blog/automatyzacja-obslugi-klienta-gabinet-kosmetyczny) bot nie zastępuje konsultacji medycznej.
+- **Spójność z polityką prywatności** — link do [polityki prywatności Botiko](/prywatnosc) na stronie oraz Twojej własnej polityki jako administratora.
+
+Technicznie: w Botiko dane wrażliwe są **szyfrowane w spoczynku** — szczegóły znajdziesz w dokumentacji produktu. Ty odpowiadasz za **legalny cel** zbierania leadów i **treść komunikatów** widocznych dla użytkownika końcowego.
+
+## Powiązanie z innymi artykułami (linkowanie wewnętrzne)
+
+- [Jak zbierać leady ze strony internetowej](/blog/jak-zbierac-leady-ze-strony-internetowej-firma-uslugowa)
+- [Chatbot na stronę dla małej firmy](/blog/chatbot-na-strone-www-mala-firma)
+- [Baza wiedzy i RAG](/blog/baza-wiedzy-rag-co-to-jest-dla-firmy)
+
+<InfoBox type="tip">
+Polityka prywatności powinna być **krótka i zrozumiała**: co zbierasz, po co, jak długo, komu powierzasz przetwarzanie (np. hosting, dostawca bota), jakie ma prawa osoba, której dane dotyczą.
+</InfoBox>
+
+## Najczęstsze pytania o RODO i chatbota
+
+### Czy muszę mieć pełną dokumentację RODO zanim włączę bota?
+
+Powinieneś mieć **podstawy** przetwarzania i **informację dla osób**, których dane dotyczą. Zakres dokumentacji zależy od skali i rodzaju danych — przy typowym leadzie kontaktowym wiele firm zaczyna od **polityki prywatności + umów powierzenia** z podwykonawcami.
+
+### Czy mogę wysyłać newsletter każdemu, kto napisał do bota?
+
+Nie „automatycznie”. Newsletter to zwykle **osobny cel** i wymaga **odpowiedniej podstawy** oraz **przejrzystej informacji** — dokładnie jak przy każdym innym kanale zbierania maili.
+
+### Czy bot może prosić o PESEL lub dane zdrowotne?
+
+Unikaj zbierania **więcej**, niż potrzebujesz. Dane o zdrowiu to **szczególna kategoria** — często lepiej **nie zbierać ich w chacie**, tylko skierować do bezpiecznego kanału zgodnego z Twoją branżą.
+
+### Gdzie opisane jest przetwarzanie po stronie Botiko?
+
+Na stronie [Polityka prywatności](/prywatnosc) oraz w materiałach dla klientów.
+
+### Czy ten artykuł wystarczy jako „zgodność z RODO”?
+
+Nie — to **edukacja**. Decyzje prawne podejmujesz Ty z doradcą.
+
+### Czy muszę informować o plikach cookies osobno od chatu?
+
+Tak — to **inne narzędzia i często inne cele**. Cookie banner dotyczy przeglądarki i analityki; widget chatu dotyczy kontaktu i ewentualnie treści rozmowy. Nie mieszaj obu tematów w jednym zdaniu „zgadzasz się na wszystko”, bo obniża to czytelność i zaufanie — a zaufanie jest warunkiem dobrego leada opisanego w [jak zbierać leady ze strony](/blog/jak-zbierac-leady-ze-strony-internetowej-firma-uslugowa).
+
+### Co zrobić, gdy klient chce usunąć swoje dane z leada?
+
+Przygotuj **procedurę**: kto w firmie odpowiada na takie wnioski, w jakim czasie odpowiadasz, jak potwierdzasz tożsamość. Nawet prosty szablon odpowiedzi wewnętrznej zmniejsza chaos. Technicznie lead może być w panelu narzędzia — upewnij się, że wiesz, jak działa usuwanie lub anonimizacja u dostawcy.
+
+### Czy muszę informować klienta o każdym podwykonawcy technicznym?
+
+Nie chodzi o wypisywanie w czacie całej listy dostawców hostingu, tylko o **przejrzystość w polityce prywatności** i o to, by użytkownik wiedział, że korzystasz z narzędzia do obsługi wiadomości. Im mniej żargonu, tym większe prawdopodobieństwo, że lead **dokończy zostawienie numeru** — a to jest Twój cel biznesowy opisany również w [jak zbierać leady ze strony](/blog/jak-zbierac-leady-ze-strony-internetowej-firma-uslugowa).
+
+### Czy nagranie rozmowy w celach szkoleniowych wymaga osobnej zgody?
+
+To zależy od kontekstu i zakresu — często decyduje **transparentność** i **minimalizacja**. Jeśli nagrywasz czat, użytkownik powinien to zrozumieć z krótkiego komunikatu lub polityki. W razie wątpliwości skonsultuj zapis z prawnikiem; ten artykuł pozostaje materiałem edukacyjnym, nie poradą prawną.
+
+<CallToAction
+  title="Bot z przejrzystą konfiguracją treści"
+  description="Ustalasz, co bot mówi, kiedy zbiera kontakt i kiedy przekazuje do człowieka. Test 14 dni."
+  href="/rejestracja"
+  buttonText="Zobacz Botiko"
+/>
+
+---
+
+Pytania: [kontakt@botiko.pl](mailto:kontakt@botiko.pl) · [Polityka prywatności](/prywatnosc)

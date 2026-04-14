@@ -8,6 +8,11 @@ interface BotConfig {
   name: string;
   welcomeMsg: string;
   primaryColor: string;
+  offlineMessage: string | null;
+  businessHoursStart: number | null;
+  businessHoursEnd: number | null;
+  businessDays: number[];
+  suggestedQuestions: string[];
 }
 
 function Widget({
@@ -22,7 +27,6 @@ function Widget({
   const [isOpen, setIsOpen] = useState(false);
 
   // Expose global API so the host page can open/close/toggle the widget programmatically.
-  // Example: window.BotikoWidget.open() — used by the LP demo section scroll trigger.
   useEffect(() => {
     (window as unknown as Record<string, unknown>)['BotikoWidget'] = {
       open:   () => setIsOpen(true),
@@ -43,17 +47,33 @@ function Widget({
       isOpen,
       apiUrl,
       onClose: () => setIsOpen(false),
+      offlineMessage: config.offlineMessage,
+      businessHoursStart: config.businessHoursStart,
+      businessHoursEnd: config.businessHoursEnd,
+      businessDays: config.businessDays,
+      suggestedQuestions: config.suggestedQuestions,
     }),
     h(Launcher, {
       primaryColor: config.primaryColor,
       isOpen,
+      welcomeMsg: config.welcomeMsg,
       onClick: () => setIsOpen((prev) => !prev),
     }),
   ]);
 }
 
 async function init() {
-  const scriptEl = document.currentScript as HTMLScriptElement | null;
+  // Guard against double-init (React Strict Mode runs effects twice in dev,
+  // GTM may inject the script multiple times, or the snippet is pasted twice).
+  if (document.getElementById('botiko-host')) {
+    return;
+  }
+
+  // document.currentScript is null when loaded via GTM, async, or defer.
+  // Fall back to querySelector so the widget works on WordPress + GTM setups.
+  const scriptEl =
+    (document.currentScript as HTMLScriptElement | null) ??
+    (document.querySelector('script[data-bot-id]') as HTMLScriptElement | null);
   const botId = scriptEl?.getAttribute('data-bot-id');
 
   if (!botId) {
@@ -66,9 +86,14 @@ async function init() {
 
   let config: BotConfig = {
     id: botId,
-    name: 'Asystentka',
+    name: 'Botiko',
     welcomeMsg: 'Dzień dobry! W czym mogę pomóc?',
     primaryColor: '#6366F1',
+    offlineMessage: null,
+    businessHoursStart: null,
+    businessHoursEnd: null,
+    businessDays: [],
+    suggestedQuestions: ['Czym możesz mi pomóc?', 'Jakie są godziny pracy?', 'Jak się skontaktować?'],
   };
 
   try {

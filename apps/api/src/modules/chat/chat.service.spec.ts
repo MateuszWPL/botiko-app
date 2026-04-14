@@ -220,7 +220,7 @@ describe('ChatService', () => {
         conversation: {
           findFirst: jest.fn().mockResolvedValue(null),
           create: jest.fn().mockResolvedValue(mockConversation),
-          count: jest.fn().mockResolvedValue(300), // at STARTER limit
+          count: jest.fn().mockResolvedValue(1000), // at STARTER limit (1000/month)
         },
       });
       const { service } = await buildService(prisma);

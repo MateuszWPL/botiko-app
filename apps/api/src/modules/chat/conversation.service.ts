@@ -6,6 +6,7 @@ export interface ConversationSummary {
   botId: string;
   sessionId: string;
   messageCount: number;
+  firstMessage: string | null;
   createdAt: Date;
 }
 
@@ -35,6 +36,12 @@ export class ConversationService {
         sessionId: true,
         createdAt: true,
         _count: { select: { messages: true } },
+        messages: {
+          where: { role: 'USER' },
+          select: { content: true },
+          orderBy: { createdAt: 'asc' },
+          take: 1,
+        },
       },
       orderBy: { createdAt: 'desc' },
       take: 100,
@@ -45,6 +52,7 @@ export class ConversationService {
       botId: c.botId,
       sessionId: c.sessionId,
       messageCount: c._count.messages,
+      firstMessage: c.messages[0]?.content ?? null,
       createdAt: c.createdAt,
     }));
   }

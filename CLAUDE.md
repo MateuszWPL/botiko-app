@@ -92,12 +92,23 @@ Każda tabela ma `tenant_id`. Supabase RLS policies wymuszają izolację wierszy
 
 ### Chat / RAG Pipeline
 `POST /api/v1/chat` → ChatService:
-1. Załaduj config bota
-2. Embed zapytania użytkownika (OpenAI `text-embedding-3-small`, 1536-dim)
-3. pgvector similarity search na tabeli `KnowledgeChunk` (próg 0.3)
-4. Zbuduj system prompt z szablonu branżowego (BEAUTY/HEALTH/FOOD/AUTO/OTHER) + pobrane chunki
-5. Wyślij do OpenAI `gpt-4o-mini` z historią rozmowy
-6. Zapisz parę wiadomości, zwróć odpowiedź
+1. **Pre-processing** (`message-sanitizer.ts`) — zanim cokolwiek trafi do DB lub OpenAI:
+   - Script/HTML injection → canned response
+   - Prompt injection (PL + EN patterns) → canned response
+   - Image/binary data → canned response
+   - Profanity (PL + EN) → canned response
+   - Gibberish (<25% liter) → canned response
+   - Pożegnanie → canned response
+   - Powitanie / acknowledgment → skip RAG, AI in-character (`action: 'no-rag'`)
+2. Sprawdź tenant.isActive (403 jeśli wygasł plan)
+3. Sprawdź plan limit (STARTER: 1000 konwersacji/mies.)
+4. Eskalacja do człowieka (`isEscalationRequest`) → canned + showLeadForm
+5. Embed zapytania (OpenAI `text-embedding-3-small`, 1536-dim)
+6. pgvector similarity search na tabeli `KnowledgeChunk` (próg 0.3)
+7. Fallback gdy context pusty → canned + showLeadForm (OpenAI nie wywoływane)
+8. Zbuduj system prompt z szablonu branżowego + pobrane chunki + hard-coded guardrails
+9. Wyślij do OpenAI `gpt-4o-mini` z historią rozmowy (max 10 wiadomości)
+10. Zapisz parę wiadomości, zwróć odpowiedź
 
 ### Data Security
 - **PII encryption**: imię i telefon leada — AES-256-GCM at-rest
@@ -107,22 +118,46 @@ Każda tabela ma `tenant_id`. Supabase RLS policies wymuszają izolację wierszy
 ### API Middleware Stack (kolejność ma znaczenie)
 Helmet → CORS → Throttler → GlobalExceptionFilter → ZodValidationPipe → AuthGuard → TenantGuard
 
+### CORS
+CORS jest **otwarty dla wszystkich originów** — widget musi działać na dowolnej domenie klienta (salonbeauty.pl, restauracja.pl itd.). `DomainWhitelistGuard` jest rzeczywistą warstwą bezpieczeństwa dla publicznych endpointów widgetu — sprawdza `bot.allowedDomains` vs `Origin` header. API używa JWT Bearer tokenów (nie cookies), więc CORS nie jest tu warstwą auth.
+
 ### Rate Limits (per IP)
 - Default: 100 req/min
 - Auth endpoints: 10 req/min
 - Chat: 20 req/min
 - Leads: 5 req/min (antyspam)
+- Contact form: 10 req/min
 
 ### Widget Constraints
 - **Hard limit**: <12KB gzip — wymuszany przez plugin Vite w `vite.config.ts`
 - Shadow DOM izoluje style od strony hosta
 - Preact (nie React) — dla rozmiaru bundle
-- Konfigurowany przez `data-bot-id` na tagu `<script>`, opcjonalnie `data-api-url`
+- Konfigurowany przez `data-bot-id` na tagu `<script>`
+- `document.currentScript` fallback na `querySelector('[data-bot-id]')` — działa z GTM
+- Guard against double-init (GTM, React Strict Mode, snippet wklejony 2x)
+- `BotikoWidget.open/close/toggle` — globalne API dla strony hosta
+- Session persistence: `sessionStorage` per `botiko_{botId}` (historia ginie po zamknięciu zakładki — celowo, prywatność)
+- **Bot odpowiada 24/7** — `businessHours` config jest czysto informacyjny (banner), nigdy nie blokuje chatu
+- Fetch timeout 30s via `AbortController` — spinner nie kręci się w nieskończoność
+- Obsługa HTTP error codes: 400 / 403 (plan limit → lead form) / 429 / 5xx / AbortError — każdy ma osobny komunikat PL
+- `suggestedQuestions` z `GET /api/v1/bot/:id/config` — branżowe, nie hardcoded
 
 ### Database Schema (Prisma — `apps/api/prisma/schema.prisma`)
 Główne modele: `Tenant`, `User`, `Bot`, `KnowledgeChunk` (pgvector), `Lead` (PII encrypted), `Conversation`, `Message`
 
-Enums: `Industry` (BEAUTY/HEALTH/FOOD/AUTO/OTHER), `Plan` (STARTER/PRO/PREMIUM), `LeadStatus` (NEW/CONTACTED/CONVERTED/LOST), `MsgRole` (USER/ASSISTANT)
+Enums: `Industry` (BEAUTY/HEALTH/FOOD/AUTO/OTHER), `Plan` (STARTER/PRO/PREMIUM — w MVP używamy tylko STARTER), `LeadStatus` (NEW/CONTACTED/CONVERTED/LOST), `MsgRole` (USER/ASSISTANT)
+
+### Moduły API (`apps/api/src/modules/`)
+| Moduł | Endpointy | Auth |
+|---|---|---|
+| `auth` | `/api/v1/auth/*` | publiczne |
+| `bot` | `/api/v1/bot/*` | GET config: publiczny; reszta: AuthGuard+TenantGuard |
+| `chat` | `POST /api/v1/chat` | publiczny + DomainWhitelistGuard |
+| `lead` | `POST /api/v1/leads` (publiczny), `GET/PATCH` (auth) | DomainWhitelistGuard na POST |
+| `knowledge` | `/api/v1/knowledge/*` | AuthGuard+TenantGuard |
+| `contact` | `POST /api/v1/contact` | publiczny, rate limit 10/min |
+| `billing` | `/api/v1/billing/*` | AuthGuard (checkout/portal/status); webhook publiczny |
+| `tenant` | `/api/v1/tenant/*` | AuthGuard+TenantGuard |
 
 ---
 
@@ -211,6 +246,23 @@ text: '#0F172A'     bg: '#F8FAFC'
 
 ## Język marketingowy
 
-NIE mów "chatbot AI". Mów **"asystentka która odpowiada za Ciebie"**.
+NIE mów "chatbot AI". Mów **"asystentka która odpowiada za Ciebie"** lub po prostu **"bot"** — "asystentka" kojarzy się tylko z branżą beauty.
 - Ból: "tracisz klientki o 22:00 bo nie odbierasz"
 - ROI: "1 klientka = 150-300 zł. Bot = 149 zł/mies."
+
+## Aktualny stan projektu (2026-04-14)
+
+**Faza:** 1A — Gotowe do pilotu. Brakuje: deploy infra.
+
+**Co działa:**
+- Core bot (RAG + OpenAI) z pełnym pre-processingiem wiadomości
+- Widget embedded (<12KB, Shadow DOM, działa na WordPress/Shopify/Squarespace/Webflow/GTM)
+- Dashboard (8 stron: overview, leads, conversations, knowledge, settings, embed, billing)
+- Stripe billing (STARTER 149 zł/mies., 14 dni trial, webhooks)
+- Landing page + blog SEO + formularz kontaktowy
+- Security hardening (CORS, UUID validation, HTML escaping, HTTP error handling)
+
+**Co zostało przed deployem:**
+- Railway/Vercel infra setup + DNS + env vars
+- Ręczna QA (checklist w TASK.md § 1A.6)
+- Weryfikacja Wix HTML Embed compatibility (czy `querySelector` działa w sandboxed iframe)

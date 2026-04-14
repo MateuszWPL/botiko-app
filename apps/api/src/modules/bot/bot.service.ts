@@ -5,6 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { getBrandTemplate } from '../../brand-templates';
 import type { CreateBotDto } from './dto/create-bot.dto';
 import type { UpdateBotDto } from './dto/update-bot.dto';
 
@@ -13,6 +14,11 @@ export interface BotPublicConfig {
   name: string;
   welcomeMsg: string;
   primaryColor: string;
+  offlineMessage: string | null;
+  businessHoursStart: number | null;
+  businessHoursEnd: number | null;
+  businessDays: number[];
+  suggestedQuestions: string[];
 }
 
 export interface BotDetail {
@@ -32,6 +38,13 @@ export class BotService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(tenantId: string, dto: CreateBotDto): Promise<BotDetail> {
+    const existing = await this.prisma.bot.count({ where: { tenantId } });
+    if (existing >= 1) {
+      throw new ForbiddenException(
+        'Plan STARTER allows only 1 bot per account. Update your bot instead.',
+      );
+    }
+
     const bot = await this.prisma.bot.create({
       data: {
         tenantId,
@@ -62,6 +75,11 @@ export class BotService {
         name: true,
         welcomeMsg: true,
         primaryColor: true,
+        offlineMessage: true,
+        businessHoursStart: true,
+        businessHoursEnd: true,
+        businessDays: true,
+        tenant: { select: { industry: true } },
       },
     });
 
@@ -69,7 +87,10 @@ export class BotService {
       throw new NotFoundException('Bot not found');
     }
 
-    return bot;
+    const { tenant, ...rest } = bot;
+    const template = getBrandTemplate(tenant.industry);
+
+    return { ...rest, suggestedQuestions: template.suggestedResponses };
   }
 
   async findById(tenantId: string, botId: string): Promise<BotDetail> {
@@ -133,6 +154,18 @@ export class BotService {
           allowedDomains: dto.allowedDomains,
         }),
         ...(dto.isActive !== undefined && { isActive: dto.isActive }),
+        ...(dto.offlineMessage !== undefined && {
+          offlineMessage: dto.offlineMessage,
+        }),
+        ...(dto.businessHoursStart !== undefined && {
+          businessHoursStart: dto.businessHoursStart,
+        }),
+        ...(dto.businessHoursEnd !== undefined && {
+          businessHoursEnd: dto.businessHoursEnd,
+        }),
+        ...(dto.businessDays !== undefined && {
+          businessDays: dto.businessDays,
+        }),
       },
       select: {
         id: true,

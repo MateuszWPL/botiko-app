@@ -6,8 +6,10 @@ import {
   HttpStatus,
   Post,
   RawBody,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { env } from '../../config/env';
 import { Throttle } from '@nestjs/throttler';
 import {
   AuthGuard,
@@ -46,6 +48,24 @@ export class BillingController {
   @UseGuards(AuthGuard, TenantGuard)
   createPortal(@CurrentTenant() tenantId: string): Promise<{ url: string }> {
     return this.billingService.createPortalSession(tenantId);
+  }
+
+  /**
+   * Internal cron endpoint — called by Vercel Cron / Railway / Upstash once daily.
+   * Sends trial reminder emails and deactivates expired trials.
+   * Protected by Authorization: Bearer <CRON_SECRET>.
+   */
+  @Post('cron/trial-notifications')
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  async runTrialNotifications(
+    @Headers('authorization') auth: string,
+  ): Promise<{ processed: number; emails: number }> {
+    const secret = env.CRON_SECRET;
+    if (!secret || auth !== `Bearer ${secret}`) {
+      throw new UnauthorizedException('Invalid cron secret');
+    }
+    return this.billingService.runTrialNotifications();
   }
 
   /**
