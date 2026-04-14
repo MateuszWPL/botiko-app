@@ -3,30 +3,53 @@
 Pełny kontekst projektu w `CLAUDE.md`. Poniżej kluczowe zasady dla codziennej pracy.
 
 ## Projekt w skrócie
-SaaS AI chatbot dla polskich mikrofirm usługowych. Widget na stronie klienta → asystentka AI odpowiada na pytania, zbiera leady. Dashboard dla właściciela. 3 osobne apps (web, api, widget) — każda z własnym `pnpm install`.
+SaaS AI chatbot dla polskich mikrofirm usługowych. Widget na stronie klienta → bot AI odpowiada na pytania, zbiera leady. Dashboard dla właściciela. 3 osobne apps (web, api, widget) — każda z własnym `pnpm install`.
+
+**Stan (2026-04-14):** Faza 1A — kod gotowy, brakuje deploy infra (Railway/Vercel).
 
 ## Stack
-- **web**: Next.js 14 App Router + Tailwind v4 + Supabase Auth
-- **api**: NestJS + Prisma + Supabase PostgreSQL + pgvector + OpenAI
+- **web**: Next.js 14 App Router + Tailwind v4 + Supabase Auth SSR
+- **api**: NestJS + Prisma + Supabase PostgreSQL + pgvector + OpenAI + Stripe + Resend
 - **widget**: Preact + Vite — HARD LIMIT <12KB gzip, NIE używaj React
+
+## Co jest gotowe (nie ruszaj bez potrzeby)
+- RAG pipeline: embed → pgvector → gpt-4o-mini + pełny pre-processing wiadomości
+- Widget: Shadow DOM, SessionStorage, lead form, GTM fallback, BotikoWidget global API
+- Dashboard: 8 stron + Stripe billing + Lucide icons + recharts
+- Landing page + blog MDX + formularz kontaktowy
+- Security: CORS open (DomainWhitelistGuard jako gatekeeper), UUID validation, rate limits
 
 ## Zasady których pilnujemy
 - TypeScript strict, zero `any`, zero `ts-ignore`
 - Zod na WSZYSTKICH inputach API (nie class-validator)
 - `tenant_id` w każdej operacji bazodanowej — izolacja multi-tenant
-- Widget: każdy dodany import/zależność = sprawdź rozmiar bundle
-- PII (imię, telefon leada) zawsze przez `EncryptionService` — nigdy plaintext
-- Env variables tylko przez `config/env.ts` (Zod validated)
+- Widget: każdy dodany import = sprawdź rozmiar bundle (`pnpm build` w apps/widget)
+- PII (imię, telefon leada) zawsze przez `EncryptionService` — nigdy plaintext w DB
+- Env variables tylko przez `src/config/env.ts` (Zod validated, process exits przy błędzie)
+- `botId` w DTO: `z.string().uuid()` — nie `z.string().min(1)`
+- `website` w formularzu: `z.string().url()` — nie `z.string()`
 
 ## Czego NIE robimy w MVP
 - Rezerwacje, płatności za usługi klientów, native apka, korporacje
 - Osobne domeny per branża — jedna platforma Botiko.pl
 - Turborepo/workspace — 3 osobne apps
+- Plany PRO/PREMIUM — tylko STARTER (149 zł/mies., 14 dni trial)
+
+## Kluczowe decyzje architektoniczne
+| Decyzja | Dlaczego |
+|---|---|
+| CORS otwarty dla wszystkich originów | Widget musi działać na domenie klienta; DomainWhitelistGuard to właściwa brama |
+| Bot odpowiada 24/7 | Główny value prop — offline banner jest tylko informacyjny, NIE blokuje chatu |
+| sessionStorage (nie localStorage) | Prywatność — historia ginie po zamknięciu zakładki |
+| Fetch timeout 30s + AbortController | OpenAI może się zawiesić — spinner nie może kręcić się w nieskończoność |
+| suggestedQuestions z API, nie hardcoded | Każda branża ma inne pytania startowe |
 
 ## Brand
-`brand: #6366F1` | `accent: #10B981` | `beauty: #EC4899` | `health: #06B6D4` | `food: #F97316`
+`brand: #6366F1` | `brandDark: #4338CA` | `accent: #10B981`
+`beauty: #EC4899` | `health: #06B6D4` | `food: #F97316` | `auto: #64748B`
+`text: #0F172A` | `bg: #F8FAFC`
 
-Mów: **"asystentka która odpowiada za Ciebie"** — nie "chatbot AI".
+Mów: **"bot"** lub **"asystentka która odpowiada za Ciebie"** — NIE "chatbot AI".
 
 ---
 
@@ -39,7 +62,7 @@ Mów: **"asystentka która odpowiada za Ciebie"** — nie "chatbot AI".
 1. Przed pracą → sprawdź branch. Jeśli `main` → utwórz nowy branch
 2. Podczas pracy → `git commit` + `git push` po każdym działającym etapie
 3. Po skończeniu zadania → `gh pr create` i podaj użytkownikowi link do PR
-4. Poinformuj co zrobiłeś — ale nie pytaj o pozwolenie na każdy krok
+4. Poinformuj co zrobiłeś — nie pytaj o pozwolenie na każdy krok
 
 ### Kiedy commitować
 | Zdarzenie | Akcja |
@@ -58,14 +81,13 @@ refactor/<opis>  docs/<opis>
 
 ### Format commitów (Conventional Commits — commitlint blokuje inne)
 ```
-feat: dodaj endpoint /api/v1/bots
-fix: napraw błąd walidacji leada
+feat(widget): dodaj obsługę błędów HTTP per status
+fix(api): CORS blokował widget na domenach klientów
 chore: zaktualizuj zależności
-refactor: wydziel ChatService
-docs: opisz RAG pipeline
+refactor(chat): wydziel pre-processing do osobnego pliku
 test: dodaj testy EncryptionService
-ci: dodaj job size check
 ```
+Scope opcjonalny: `feat(api):`, `fix(web):`, `chore(widget):`
 
 ### Staging — zawsze konkretne pliki
 ```bash
@@ -76,5 +98,4 @@ git add apps/api/src/modules/...   # nigdy git add -A bez sprawdzenia
 `.env`, `node_modules/`, `.next/`, `dist/`, sekrety, klucze API
 
 ### Merge — robi użytkownik na GitHub
-Agent NIE merguje. Merge = nieodwracalna decyzja po stronie użytkownika.
-Agent informuje: "PR gotowy: [link] — CI przeszło/nie przeszło, możesz mergować."
+Agent NIE merguje. Agent informuje: "PR gotowy: [link] — możesz mergować."
