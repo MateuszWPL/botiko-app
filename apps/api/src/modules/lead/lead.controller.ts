@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Body,
   Param,
   UseGuards,
@@ -55,5 +56,16 @@ export class LeadController {
     @CurrentTenant() tenantId: string,
   ): Promise<{ id: string; status: string }> {
     return this.leadService.updateStatus(tenantId, id, dto.status);
+  }
+
+  // Protected endpoint — delete lead (RODO: right to erasure)
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AuthGuard, TenantGuard)
+  deleteLead(
+    @Param('id') id: string,
+    @CurrentTenant() tenantId: string,
+  ): Promise<void> {
+    return this.leadService.delete(tenantId, id);
   }
 }

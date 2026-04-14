@@ -1,4 +1,78 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { createClient } from '@supabase/supabase-js';
+import { PrismaService } from '../../prisma/prisma.service';
+import { env } from '../../config/env';
 
 @Injectable()
-export class TenantService {}
+export class TenantService {
+  private readonly logger = new Logger(TenantService.name);
+  private readonly supabase = createClient(
+    env.SUPABASE_URL,
+    env.SUPABASE_SERVICE_ROLE_KEY,
+  );
+
+  constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * Permanently deletes all tenant data (RODO: right to erasure).
+   * Order matters — FK constraints require child records deleted first.
+   */
+  async deleteAccount(tenantId: string, userId: string): Promise<void> {
+    // Collect all bot IDs for this tenant (needed to delete conversations)
+    const bots = await this.prisma.bot.findMany({
+      where: { tenantId },
+      select: { id: true },
+    });
+    const botIds = bots.map((b) => b.id);
+
+    await this.prisma.$transaction(async (tx) => {
+      // 1. Messages (child of Conversation)
+      if (botIds.length > 0) {
+        const conversations = await tx.conversation.findMany({
+          where: { botId: { in: botIds } },
+          select: { id: true },
+        });
+        const conversationIds = conversations.map((c) => c.id);
+
+        if (conversationIds.length > 0) {
+          await tx.message.deleteMany({
+            where: { conversationId: { in: conversationIds } },
+          });
+        }
+
+        // 2. Conversations
+        await tx.conversation.deleteMany({ where: { botId: { in: botIds } } });
+
+        // 3. KnowledgeChunks
+        await tx.knowledgeChunk.deleteMany({ where: { botId: { in: botIds } } });
+      }
+
+      // 4. Leads
+      await tx.lead.deleteMany({ where: { tenantId } });
+
+      // 5. Bots
+      await tx.bot.deleteMany({ where: { tenantId } });
+
+      // 6. Users (Prisma record)
+      await tx.user.deleteMany({ where: { tenantId } });
+
+      // 7. Tenant
+      await tx.tenant.delete({ where: { id: tenantId } });
+    });
+
+    this.logger.log(`Tenant deleted: ${tenantId}`);
+
+    // Delete Supabase Auth user — non-blocking, failure logged but not thrown
+    // (Prisma data is already gone, Auth cleanup is best-effort)
+    this.supabase.auth.admin
+      .deleteUser(userId)
+      .then(({ error }) => {
+        if (error) {
+          this.logger.error(`Supabase auth user delete failed for ${userId}`, error);
+        }
+      })
+      .catch((err: unknown) => {
+        this.logger.error(`Unexpected error deleting auth user ${userId}`, err);
+      });
+  }
+}
