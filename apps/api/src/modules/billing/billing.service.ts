@@ -184,7 +184,6 @@ export class BillingService {
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: env.STRIPE_PRICE_ID, quantity: 1 }],
-      subscription_data: { trial_period_days: 14 },
       customer_email: userEmail,
       client_reference_id: tenantId,
       success_url: `${env.APP_URL}/dashboard/billing?success=true`,
