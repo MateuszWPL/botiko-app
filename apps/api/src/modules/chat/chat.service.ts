@@ -152,7 +152,11 @@ export class ChatService {
 
     // ── Step 3: greeting path — skip RAG, call AI in-character ────────────────
     if (preprocessed.action === 'no-rag') {
-      const greetingPrompt = buildSystemPrompt(bot.name, template.systemPrompt, '');
+      const greetingPrompt = buildSystemPrompt(
+        bot.name,
+        template.systemPrompt,
+        '',
+      );
       const conversationId = await this.getOrCreateConversationId(
         req.botId,
         req.sessionId,
@@ -160,11 +164,18 @@ export class ChatService {
       const greetingResult = await this.aiService.chat(
         [
           { role: 'system', content: greetingPrompt },
-          { role: 'user', content: `<user_message>${cleanMessage}</user_message>` },
+          {
+            role: 'user',
+            content: `<user_message>${cleanMessage}</user_message>`,
+          },
         ],
         150,
       );
-      await this.persistMessages(conversationId, req.message, greetingResult.content);
+      await this.persistMessages(
+        conversationId,
+        req.message,
+        greetingResult.content,
+      );
       return { message: greetingResult.content, sessionId: req.sessionId };
     }
 

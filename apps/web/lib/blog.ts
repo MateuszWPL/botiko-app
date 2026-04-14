@@ -3,6 +3,7 @@ import 'server-only';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { cache } from 'react';
 
 // Fallback for when process.cwd() is already repo root (e.g. CI)
 function getContentDir(): string {
@@ -61,11 +62,7 @@ export function slugify(str: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-let postsCache: PostMeta[] | null = null;
-
-export function getAllPosts(): PostMeta[] {
-  if (postsCache) return postsCache;
-
+function _getAllPosts(): PostMeta[] {
   const dir = getContentDir();
   if (!fs.existsSync(dir)) return [];
 
@@ -89,26 +86,22 @@ export function getAllPosts(): PostMeta[] {
     };
   });
 
-  postsCache = posts.sort(
+  return posts.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
-  return postsCache;
 }
 
-export function getPostBySlug(slug: string): Post | null {
+function _getPostBySlug(slug: string): Post | null {
   const dir = getContentDir();
   const mdxPath = path.join(dir, `${slug}.mdx`);
   const mdPath = path.join(dir, `${slug}.md`);
 
-  const actualPath = fs.existsSync(mdxPath)
-    ? mdxPath
-    : fs.existsSync(mdPath)
-      ? mdPath
-      : null;
+  let filePath: string | null = null;
+  if (fs.existsSync(mdxPath)) filePath = mdxPath;
+  else if (fs.existsSync(mdPath)) filePath = mdPath;
+  if (!filePath) return null;
 
-  if (!actualPath) return null;
-
-  const raw = fs.readFileSync(actualPath, 'utf-8');
+  const raw = fs.readFileSync(filePath, 'utf-8');
   const { data, content } = matter(raw);
   const fm = data as PostFrontmatter;
 
@@ -121,6 +114,13 @@ export function getPostBySlug(slug: string): Post | null {
     tags: fm.tags ?? [],
   };
 }
+
+const shouldMemoize = process.env.NODE_ENV !== 'development';
+
+export const getAllPosts = shouldMemoize ? cache(_getAllPosts) : _getAllPosts;
+export const getPostBySlug = shouldMemoize
+  ? cache(_getPostBySlug)
+  : _getPostBySlug;
 
 export function getAllCategories(): Array<{
   name: string;

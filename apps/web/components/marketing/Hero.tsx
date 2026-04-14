@@ -3,10 +3,10 @@
 import Link from 'next/link';
 
 const TRUST_STATS = [
-  { value: '200+', label: 'firm korzysta' },
+  { value: 'Pilot', label: 'pierwsze wdrożenia' },
   { value: '24/7', label: 'dostępny bot' },
-  { value: '< 3s', label: 'czas odpowiedzi' },
-  { value: '4.9★', label: 'średnia ocena' },
+  { value: 'Sekundy', label: 'czas odpowiedzi' },
+  { value: '15 min', label: 'wdrożenie bota' },
 ];
 
 export default function Hero() {
@@ -159,7 +159,7 @@ export default function Hero() {
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2.5">
                     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                   </svg>
-                  Odpowiedź w 1.2s
+                  Odpowiedź w kilka sekund
                 </p>
                 <p className="text-[11px] text-slate-500 mt-0.5">Ty śpisz spokojnie</p>
               </div>
@@ -170,7 +170,7 @@ export default function Hero() {
                   </svg>
                   Lead zapisany
                 </p>
-                <p className="text-[11px] text-slate-500 mt-0.5">Anna K. · Piątek 14:30</p>
+                <p className="text-[11px] text-slate-500 mt-0.5">Demo leada · Piątek 14:30</p>
               </div>
             </div>
           </div>

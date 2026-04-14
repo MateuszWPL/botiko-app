@@ -10,31 +10,31 @@ import Faq from '@/components/marketing/Faq';
 import CtaBanner from '@/components/marketing/CtaBanner';
 
 export const metadata: Metadata = {
-  title: 'Botiko.pl — Asystentka AI dla salonu, gabinetu i restauracji',
+  title: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych',
   description:
-    'Bot który odpowiada na pytania klientów 24/7. Gotowy szablon dla beauty, health, food i auto. Zbiera leady, odsyła do rezerwacji. 14 dni za darmo, bez umowy.',
+    'Bot, który odpowiada na pytania klientów 24/7. Gotowe szablony branżowe, baza wiedzy i leady w panelu. Wklejasz kod na stronę i działa. 14 dni za darmo, bez umowy.',
   keywords: [
-    'chatbot dla salonu beauty',
-    'asystentka AI dla gabinetu',
+    'bot obsługi klienta',
+    'bot na stronę internetową',
     'bot do odpowiadania na wiadomości',
     'automatyczne odpowiedzi klientom',
-    'chatbot dla małej firmy Polska',
-    'bot rezerwacje salon',
-    'asystentka AI restauracja',
+    'bot dla małej firmy Polska',
+    'bot do rezerwacji (link)',
+    'bot dla firmy usługowej',
     'Botiko',
   ],
   openGraph: {
-    title: 'Botiko.pl — Asystentka AI dla salonu, gabinetu i restauracji',
+    title: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych',
     description:
-      'Klientki piszą o 22:00. Asystentka odpowiada za Ciebie. 149 zł/mies. 14 dni za darmo.',
+      'Klienci piszą o 22:00. Bot odpowiada za Ciebie. 149 zł/mies. 14 dni za darmo.',
     url: 'https://botiko.pl',
     siteName: 'Botiko.pl',
     images: [
       {
-        url: 'https://botiko.pl/og-image.png',
+        url: 'https://botiko.pl/opengraph-image',
         width: 1200,
         height: 630,
-        alt: 'Botiko.pl — Asystentka AI dla polskich firm usługowych',
+        alt: 'Botiko.pl — Bot obsługi klienta 24/7',
       },
     ],
     locale: 'pl_PL',
@@ -42,10 +42,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Botiko.pl — Asystentka AI dla salonu, gabinetu i restauracji',
+    title: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych',
     description:
-      'Klientki piszą o 22:00. Asystentka odpowiada za Ciebie. 149 zł/mies. 14 dni za darmo.',
-    images: ['https://botiko.pl/og-image.png'],
+      'Klienci piszą o 22:00. Bot odpowiada za Ciebie. 149 zł/mies. 14 dni za darmo.',
+    images: ['https://botiko.pl/twitter-image'],
   },
   alternates: {
     canonical: 'https://botiko.pl',
@@ -60,7 +60,7 @@ const JSON_LD_ORGANIZATION = {
   logo: 'https://botiko.pl/logo.png',
   contactPoint: {
     '@type': 'ContactPoint',
-    email: 'hello@botiko.pl',
+    email: 'kontakt@botiko.pl',
     contactType: 'customer service',
     availableLanguage: 'Polish',
   },
@@ -82,17 +82,10 @@ const JSON_LD_SOFTWARE = {
     name: 'Botiko',
     price: '149',
     priceCurrency: 'PLN',
-    billingPeriod: 'P1M',
     description: '14 dni za darmo, bez karty kredytowej',
   },
   description:
-    'Asystentka AI dla polskich firm usługowych — salonów beauty, gabinetów, restauracji i warsztatów. Odpowiada na pytania klientów 24/7, zbiera leady i odsyła do rezerwacji.',
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.9',
-    reviewCount: '47',
-    bestRating: '5',
-  },
+    'Bot obsługi klienta dla polskich firm usługowych. Odpowiada na pytania klientów 24/7, zbiera leady i odsyła do rezerwacji.',
 };
 
 const JSON_LD_FAQ = {
@@ -112,7 +105,7 @@ const JSON_LD_FAQ = {
       name: 'Jak długo trwa wdrożenie Botiko?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Większość klientów ma gotowego bota w 15–20 minut. Wybierasz branżę, uzupełniasz dane o firmie i gotowe.',
+        text: 'W wielu przypadkach da się uruchomić bota w 15–20 minut: wybierasz branżę, uzupełniasz dane o firmie i gotowe.',
       },
     },
     {

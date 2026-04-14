@@ -9,17 +9,17 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Botiko.pl — Asystentka AI dla Twojej firmy',
+    default: 'Botiko.pl — Bot obsługi klienta 24/7',
     template: '%s | Botiko.pl',
   },
   description:
-    'Botiko to asystentka AI, która odpowiada na pytania Twoich klientów 24/7. Zbiera leady, zanim zdążysz odebrać telefon. Dla salonów urody, gabinetów, restauracji i więcej.',
+    'Botiko to bot obsługi klienta, który odpowiada na pytania 24/7, zbiera leady i odsyła do rezerwacji. Dla firm usługowych w Polsce — z gotowymi szablonami branżowymi.',
   keywords: [
-    'chatbot AI',
-    'asystentka AI',
-    'bot dla salonu',
+    'bot obsługi klienta',
+    'bot na stronę internetową',
     'automatyzacja obsługi klienta',
-    'chatbot Polska',
+    'automatyzacja obsługi klienta',
+    'bot Polska',
     'lead generation',
     'Botiko',
   ],
@@ -40,24 +40,24 @@ export const metadata: Metadata = {
     locale: 'pl_PL',
     url: '/',
     siteName: 'Botiko.pl',
-    title: 'Botiko.pl — Asystentka AI dla Twojej firmy',
+    title: 'Botiko.pl — Bot obsługi klienta 24/7',
     description:
-      'Asystentka która odpowiada za Ciebie gdy robisz zabieg. 1 klientka = 150-300 zł. Bot = 149 zł/mies.',
+      'Klienci piszą po godzinach. Bot odpowiada za Ciebie. 1 klient = 150–300 zł. Bot = 149 zł/mies.',
     images: [
       {
-        url: '/og-image.png',
+        url: '/opengraph-image',
         width: 1200,
         height: 630,
-        alt: 'Botiko.pl — Asystentka AI',
+        alt: 'Botiko.pl — Bot obsługi klienta 24/7',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Botiko.pl — Asystentka AI dla Twojej firmy',
+    title: 'Botiko.pl — Bot obsługi klienta 24/7',
     description:
-      'Asystentka która odpowiada za Ciebie gdy robisz zabieg. Nie tracisz klientek o 22:00.',
-    images: ['/og-image.png'],
+      'Klienci piszą o 22:00. Bot odpowiada za Ciebie.',
+    images: ['/twitter-image'],
   },
   robots: {
     index: true,

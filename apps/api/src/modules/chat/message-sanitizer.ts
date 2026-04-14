@@ -32,7 +32,7 @@ const SCRIPT_PATTERNS: RegExp[] = [
   /document\s*\.\s*write\s*\(/i,
   /window\s*\.\s*location/i,
   /eval\s*\(/i,
-  /expression\s*\(/i,  // CSS expression injection
+  /expression\s*\(/i, // CSS expression injection
 ];
 
 /**
@@ -52,15 +52,15 @@ const PROMPT_INJECTION_PATTERNS: RegExp[] = [
   /act\s+as\s+(?!an?\s+assistant|a\s+helpful)/i, // "act as [not assistant]"
   /pretend\s+(to\s+be|you\s+are)/i,
   /roleplay\s+as/i,
-  /jeste[sś]\s+teraz\s+(?!asystentem)/i,    // "jesteś teraz [nie asystentem]"
+  /jeste[sś]\s+teraz\s+(?!asystentem)/i, // "jesteś teraz [nie asystentem]"
   /zapomnij\s+(wszystko|instrukcje|poprzednie)/i,
   /ignoruj\s+(poprzednie\s+)?instrukcje/i,
   /nowe\s+instrukcje\s*:/i,
   /zmień\s+(swoje\s+)?zachowanie/i,
-  /\[INST\]/i,      // Llama/Mistral prompt injection
+  /\[INST\]/i, // Llama/Mistral prompt injection
   /\[SYSTEM\]/i,
-  /<<<|>>>/,        // delimiter injection
-  /<\|.*?\|>/,      // special token injection
+  /<<<|>>>/, // delimiter injection
+  /<\|.*?\|>/, // special token injection
   /###\s*(?:instruction|system|human|assistant)/i,
 ];
 
@@ -97,9 +97,9 @@ const PROFANITY_PATTERNS: RegExp[] = [
  * We match start+end to avoid "hej, ile kosztuje manicure?" being caught.
  */
 const GREETING_ONLY_PATTERNS: RegExp[] = [
-  /^(hej|hej hej|cześć|czesc|siema|siemka|siemanko|siemaneczko|yo|elo|elo elo|hej elo|witaj|witajcie|no hej|no cześć|no czesc)[\s!.,?😊]*$/i,
-  /^(dzień dobry|dzien dobry|dobry wieczór|dobry wieczor|dobry ranek|dobranoc)[\s!.,?😊]*$/i,
-  /^(good\s+morning|good\s+evening|good\s+night|good\s+afternoon|hello|hi+|hey+|greetings)[\s!.,?😊]*$/i,
+  /^(hej|hej hej|cześć|czesc|siema|siemka|siemanko|siemaneczko|yo|elo|elo elo|hej elo|witaj|witajcie|no hej|no cześć|no czesc)[\s!.,?😊]*$/iu,
+  /^(dzień dobry|dzien dobry|dobry wieczór|dobry wieczor|dobry ranek|dobranoc)[\s!.,?😊]*$/iu,
+  /^(good\s+morning|good\s+evening|good\s+night|good\s+afternoon|hello|hi+|hey+|greetings)[\s!.,?😊]*$/iu,
 ];
 
 /**
@@ -107,17 +107,17 @@ const GREETING_ONLY_PATTERNS: RegExp[] = [
  * "okej fajnie", "dzięki", "super" etc. → let AI respond naturally in-character.
  */
 const ACKNOWLEDGMENT_PATTERNS: RegExp[] = [
-  /^(ok|oki|oke|okej|okay|okey)[\s!.,?😊]*$/i,
-  /^(okej\s+(fajnie|super|spoko|dzięki|dzieki|cool|git|ekstra)|ok\s+(dzięki|dzieki|spoko)|okay\s+cool)[\s!.,?😊]*$/i,
-  /^(dzięki|dzieki|dziękuję|dziekuje|thx|thanks|thank\s+you)[\s!.,?😊]*$/i,
-  /^(super|fajnie|ekstra|świetnie|swietnie|spoko|git|cool|nice|bomba|rewelacja)[\s!.,?😊]*$/i,
-  /^(rozumiem|jasne|no\s+tak|no\s+jasne|aha+|mhm+|uhm|yep|yup|tak|no)[\s!.,?😊]*$/i,
-  /^(rozumiem\s+dzięki|jasne\s+dzięki|ok\s+rozumiem|super\s+dzięki|fajnie\s+dzięki)[\s!.,?😊]*$/i,
+  /^(ok|oki|oke|okej|okay|okey)[\s!.,?😊]*$/iu,
+  /^(okej\s+(fajnie|super|spoko|dzięki|dzieki|cool|git|ekstra)|ok\s+(dzięki|dzieki|spoko)|okay\s+cool)[\s!.,?😊]*$/iu,
+  /^(dzięki|dzieki|dziękuję|dziekuje|thx|thanks|thank\s+you)[\s!.,?😊]*$/iu,
+  /^(super|fajnie|ekstra|świetnie|swietnie|spoko|git|cool|nice|bomba|rewelacja)[\s!.,?😊]*$/iu,
+  /^(rozumiem|jasne|no\s+tak|no\s+jasne|aha+|mhm+|uhm|yep|yup|tak|no)[\s!.,?😊]*$/iu,
+  /^(rozumiem\s+dzięki|jasne\s+dzięki|ok\s+rozumiem|super\s+dzięki|fajnie\s+dzięki)[\s!.,?😊]*$/iu,
 ];
 
 const FAREWELL_ONLY_PATTERNS: RegExp[] = [
-  /^(pa|pa pa|papa|do widzenia|do zobaczenia|żegnaj|zegnaj|na razie|nara|trzymaj się|trzymaj sie)[\s!.,?😊]*$/i,
-  /^(bye+|goodbye|see you|ciao|later|take care)[\s!.,?😊]*$/i,
+  /^(pa|pa pa|papa|do widzenia|do zobaczenia|żegnaj|zegnaj|na razie|nara|trzymaj się|trzymaj sie)[\s!.,?😊]*$/iu,
+  /^(bye+|goodbye|see you|ciao|later|take care)[\s!.,?😊]*$/iu,
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -128,9 +128,7 @@ const FAREWELL_ONLY_PATTERNS: RegExp[] = [
  */
 function isGibberish(text: string): boolean {
   if (text.length < 9) return false;
-  const letters = (
-    text.match(/[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/g) ?? []
-  ).length;
+  const letters = (text.match(/[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/g) ?? []).length;
   return letters / text.length < 0.25;
 }
 

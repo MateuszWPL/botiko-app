@@ -127,7 +127,6 @@ export default async function BlogPostPage({
               fill
               className="object-cover opacity-60"
               sizes="100vw"
-              priority
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent" />
@@ -263,24 +262,26 @@ export default async function BlogPostPage({
             </div>
 
             {/* Sidebar */}
-            <aside className="hidden lg:block space-y-6 mt-0">
-              {/* ToC */}
-              <TableOfContents items={toc} />
+            <aside className="hidden lg:block mt-0">
+              <div className="sticky top-24 space-y-6">
+                {/* ToC */}
+                <TableOfContents items={toc} />
 
-              {/* Sticky CTA */}
-              <div className="sticky top-24 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 p-5 text-white">
-                <p className="font-bold text-sm mb-1">
-                  Chcesz bot dla swojej firmy?
-                </p>
-                <p className="text-indigo-100 text-xs mb-4 leading-relaxed">
-                  14 dni za darmo. Konfiguracja w 30 minut. Bez programowania.
-                </p>
-                <a
-                  href="/rejestracja"
-                  className="block text-center py-2.5 rounded-lg bg-white text-indigo-700 font-bold text-sm hover:shadow-lg transition-shadow"
-                >
-                  Zacznij za darmo →
-                </a>
+                {/* CTA */}
+                <div className="rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 p-5 text-white">
+                  <p className="font-bold text-sm mb-1">
+                    Chcesz bot dla swojej firmy?
+                  </p>
+                  <p className="text-indigo-100 text-xs mb-4 leading-relaxed">
+                    14 dni za darmo. Konfiguracja w 30 minut. Bez programowania.
+                  </p>
+                  <a
+                    href="/rejestracja"
+                    className="block text-center py-2.5 rounded-lg bg-white text-indigo-700 font-bold text-sm hover:shadow-lg transition-shadow"
+                  >
+                    Zacznij za darmo →
+                  </a>
+                </div>
               </div>
             </aside>
           </div>

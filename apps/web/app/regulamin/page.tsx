@@ -43,8 +43,8 @@ export default function TermsPage() {
                 internetowej firmy.
               </li>
               <li>
-                Usługodawcą jest <strong>[IMIĘ NAZWISKO]</strong>, prowadzący działalność pod adresem{' '}
-                <strong>[ADRES]</strong>, kontakt:{' '}
+                Usługodawcą jest <strong>Mateusz Woronowicz</strong>, prowadzący działalność pod adresem{' '}
+                <strong>Białystok, Polska</strong>, kontakt:{' '}
                 <a href="mailto:kontakt@botiko.pl" className="text-brand hover:underline">kontakt@botiko.pl</a>{' '}
                 (dalej: <strong>Botiko.pl</strong> lub <strong>Usługodawca</strong>).
               </li>

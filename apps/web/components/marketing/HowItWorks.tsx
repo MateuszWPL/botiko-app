@@ -4,12 +4,48 @@ import ScrollReveal from './ScrollReveal';
 /* ─── Step visual mockups ──────────────────────────────────── */
 
 function MockupBranch() {
+  const IconScissors = ({ color }: { color: string }) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="6" r="3" />
+      <circle cx="6" cy="18" r="3" />
+      <line x1="20" y1="4" x2="8.12" y2="15.88" />
+      <line x1="14.47" y1="14.48" x2="20" y2="20" />
+      <line x1="8.12" y1="8.12" x2="12" y2="12" />
+    </svg>
+  );
+  const IconStethoscope = ({ color }: { color: string }) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3" />
+      <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4" />
+      <circle cx="20" cy="10" r="2" />
+    </svg>
+  );
+  const IconUtensils = ({ color }: { color: string }) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
+      <path d="M7 2v20" />
+      <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7" />
+    </svg>
+  );
+  const IconWrench = ({ color }: { color: string }) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+    </svg>
+  );
+  const IconClipboard = ({ color }: { color: string }) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+      <path d="M9 12h6M9 16h6" />
+    </svg>
+  );
+
   const INDUSTRIES = [
-    { label: 'Salon beauty', color: '#EC4899', icon: '💅' },
-    { label: 'Gabinet / SPA', color: '#06B6D4', icon: '🏥' },
-    { label: 'Restauracja', color: '#F97316', icon: '🍽️' },
-    { label: 'Warsztat', color: '#64748B', icon: '🔧' },
-    { label: 'Inna branża', color: '#8B5CF6', icon: '📋' },
+    { label: 'Salon beauty', color: '#EC4899', Icon: IconScissors },
+    { label: 'Gabinet / SPA', color: '#06B6D4', Icon: IconStethoscope },
+    { label: 'Restauracja', color: '#F97316', Icon: IconUtensils },
+    { label: 'Warsztat', color: '#64748B', Icon: IconWrench },
+    { label: 'Inna branża', color: '#8B5CF6', Icon: IconClipboard },
   ];
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
@@ -25,7 +61,9 @@ function MockupBranch() {
                 : { background: '#F8FAFC', color: '#475569', border: '1px solid #E2E8F0' }
             }
           >
-            <span>{ind.icon}</span>
+            <span className="w-4 h-4 flex items-center justify-center" aria-hidden>
+              <ind.Icon color={ind.color} />
+            </span>
             <span>{ind.label}</span>
             {i === 0 && (
               <svg className="ml-auto" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>

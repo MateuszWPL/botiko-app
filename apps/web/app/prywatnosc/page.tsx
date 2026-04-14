@@ -33,7 +33,7 @@ export default function PrywatnoScPage() {
           <section className="mb-8">
             <h2 className="text-xl font-bold text-slate-900 mb-3">1. Administrator danych osobowych</h2>
             <p className="text-slate-600 text-sm leading-relaxed">
-              Administratorem danych osobowych jest <strong>Botiko.pl</strong> (kontakt: hello@botiko.pl).
+              Administratorem danych osobowych jest <strong>Botiko.pl</strong> (kontakt: kontakt@botiko.pl).
               W sprawach dotyczących ochrony danych osobowych możesz skontaktować się z nami pod adresem:{' '}
               <a href="mailto:rodo@botiko.pl" className="text-brand hover:underline">rodo@botiko.pl</a>.
             </p>

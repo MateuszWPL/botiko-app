@@ -32,7 +32,7 @@ export default function CtaBanner() {
                 <span style={{ color: '#a5b4fc' }}>nawet kiedy śpisz.</span>
               </h2>
               <p className="text-indigo-200 text-lg mb-8 max-w-2xl mx-auto">
-                Dołącz do 200+ firm, które nie tracą klientów po godzinach.
+                Dołącz do programu pilotażowego i zacznij zbierać leady, gdy inni śpią.
                 14 dni za darmo, bez karty kredytowej, bez umowy.
               </p>
 
@@ -47,7 +47,7 @@ export default function CtaBanner() {
                   </svg>
                 </Link>
                 <a
-                  href="mailto:hello@botiko.pl"
+                  href="mailto:kontakt@botiko.pl"
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-base text-white transition-all hover:bg-white/10"
                   style={{ border: '1.5px solid rgba(255,255,255,0.3)' }}
                 >

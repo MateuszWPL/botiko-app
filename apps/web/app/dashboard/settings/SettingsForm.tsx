@@ -142,10 +142,12 @@ export function SettingsForm({ bot }: { bot: Bot }) {
   };
 
   return (
-    <div className="space-y-4 max-w-4xl">
+    <div className="max-w-4xl">
 
-      {/* Sticky save bar */}
-      <div className={`sticky top-0 z-10 transition-all duration-200 ${isDirty ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+      {/* Sticky save bar — collapsed when no unsaved changes */}
+      <div className={`sticky top-0 z-10 overflow-hidden transition-all duration-200 ${
+        isDirty ? 'max-h-24 opacity-100 mb-4' : 'max-h-0 opacity-0 pointer-events-none'
+      }`}>
         <div className="bg-white/95 backdrop-blur-sm border border-amber-200 rounded-2xl px-5 py-3 flex items-center justify-between shadow-sm shadow-amber-100">
           <p className="text-sm text-amber-700 font-medium">Masz niezapisane zmiany</p>
           <button
@@ -159,8 +161,10 @@ export function SettingsForm({ bot }: { bot: Bot }) {
         </div>
       </div>
 
-      {/* Potwierdzenie zapisu */}
-      <div className={`transition-all duration-300 ${saved ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+      {/* Potwierdzenie zapisu — collapsed when not saved */}
+      <div className={`overflow-hidden transition-all duration-300 ${
+        saved ? 'max-h-24 opacity-100 mb-4' : 'max-h-0 opacity-0 pointer-events-none'
+      }`}>
         <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-3 flex items-center gap-2.5">
           <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
           <p className="text-sm text-emerald-700 font-medium">Zmiany zostały zapisane</p>
@@ -278,6 +282,7 @@ export function SettingsForm({ bot }: { bot: Bot }) {
       </div>
 
       {/* Godziny pracy — pełna szerokość bo może być duże */}
+      <div className="mt-4">
       <SectionCard>
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2">
@@ -382,6 +387,7 @@ export function SettingsForm({ bot }: { bot: Bot }) {
           </div>
         )}
       </SectionCard>
+      </div>
 
     </div>
   );

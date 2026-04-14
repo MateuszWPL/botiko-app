@@ -5,7 +5,13 @@ export type BreadcrumbItem = {
   href?: string;
 };
 
-export default function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
+export default function Breadcrumbs({
+  items,
+  variant = 'light',
+}: {
+  items: BreadcrumbItem[];
+  variant?: 'light' | 'dark';
+}) {
   // JSON-LD BreadcrumbList structured data
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -25,7 +31,11 @@ export default function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <nav aria-label="Breadcrumb">
-        <ol className="flex flex-wrap items-center gap-1.5 text-sm text-slate-500">
+        <ol
+          className={`flex flex-wrap items-center gap-1.5 text-sm ${
+            variant === 'dark' ? 'text-white/70' : 'text-slate-500'
+          }`}
+        >
           {items.map((item, i) => (
             <li key={i} className="flex items-center gap-1.5">
               {i > 0 && (
@@ -46,13 +56,23 @@ export default function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
               {item.href && i < items.length - 1 ? (
                 <Link
                   href={item.href}
-                  className="hover:text-indigo-600 transition-colors"
+                  className={
+                    variant === 'dark'
+                      ? 'hover:text-white transition-colors'
+                      : 'hover:text-indigo-600 transition-colors'
+                  }
                 >
                   {item.label}
                 </Link>
               ) : (
                 <span
-                  className={i === items.length - 1 ? 'text-slate-700 font-medium' : ''}
+                  className={
+                    i === items.length - 1
+                      ? variant === 'dark'
+                        ? 'text-white font-medium'
+                        : 'text-slate-700 font-medium'
+                      : ''
+                  }
                   aria-current={i === items.length - 1 ? 'page' : undefined}
                 >
                   {item.label}

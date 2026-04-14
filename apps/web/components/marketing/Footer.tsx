@@ -10,7 +10,7 @@ const LINKS = {
   Firma: [
     { label: 'O nas', href: '/o-nas' },
     { label: 'Blog', href: '/blog' },
-    { label: 'Kontakt', href: 'mailto:hello@botiko.pl' },
+    { label: 'Kontakt', href: '/kontakt' },
   ],
   Prawo: [
     { label: 'Polityka prywatności', href: '/prywatnosc' },
@@ -35,7 +35,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm leading-relaxed mb-5">
-              Asystentka AI dla polskich firm usługowych. Odpowiada za Ciebie 24/7 — bez programowania, bez umowy.
+              Bot obsługi klienta dla polskich firm usługowych. Odpowiada za Ciebie 24/7 — bez programowania, bez umowy.
             </p>
             <div className="flex gap-3">
               <a

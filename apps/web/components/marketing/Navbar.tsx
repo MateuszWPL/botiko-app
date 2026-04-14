@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 
 const NAV_LINKS = [
   { label: 'Jak działa', href: '#jak-dziala' },
@@ -12,6 +13,8 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -32,12 +35,25 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
 
+  function toAppHref(href: string): string {
+    if (href.startsWith('#')) return `/${href}`;
+    return href;
+  }
+
+  function onHashClick(e: React.MouseEvent, hashHref: string) {
+    if (pathname !== '/') return;
+    e.preventDefault();
+    const el = document.querySelector(hashHref);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    router.replace(`/${hashHref}`);
+  }
+
   return (
     <>
       <header
         className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100'
+            ? 'bg-white/95 backdrop-blur-md shadow-sm'
             : 'bg-transparent'
         }`}
       >
@@ -57,8 +73,13 @@ export default function Navbar() {
           <ul className="hidden md:flex items-center gap-6">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
-                <a
-                  href={link.href}
+                <Link
+                  href={toAppHref(link.href)}
+                  onClick={
+                    link.href.startsWith('#')
+                      ? (e) => onHashClick(e, link.href)
+                      : undefined
+                  }
                   className={`text-sm font-medium transition-colors cursor-pointer ${
                     scrolled
                       ? 'text-slate-600 hover:text-brand'
@@ -66,7 +87,7 @@ export default function Navbar() {
                   }`}
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -154,15 +175,17 @@ export default function Navbar() {
         {/* Nav links */}
         <nav className="flex-1 flex flex-col px-6 py-8 gap-1">
           {NAV_LINKS.map((link, i) => (
-            <a
+            <Link
               key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
+              href={toAppHref(link.href)}
+              onClick={() => {
+                setMenuOpen(false);
+              }}
               className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-slate-700 font-medium hover:bg-brand-soft hover:text-brand transition-colors cursor-pointer text-lg"
               style={{ transitionDelay: menuOpen ? `${i * 50}ms` : '0ms' }}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 

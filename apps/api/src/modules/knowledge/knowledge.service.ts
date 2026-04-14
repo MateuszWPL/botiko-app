@@ -17,15 +17,15 @@ import type { AddChunkDto } from './dto/add-chunk.dto';
 function sanitizeContent(raw: string): string {
   return raw
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // strip script blocks first
-    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')   // strip style blocks
-    .replace(/<[^>]+>/g, ' ')   // strip remaining HTML tags
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '') // strip style blocks
+    .replace(/<[^>]+>/g, ' ') // strip remaining HTML tags
     .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
     .replace(/&lt;/gi, '<')
     .replace(/&gt;/gi, '>')
     .replace(/&quot;/gi, '"')
     .replace(/&#39;/gi, "'")
-    .replace(/\s{2,}/g, ' ')    // collapse whitespace
+    .replace(/\s{2,}/g, ' ') // collapse whitespace
     .trim();
 }
 
@@ -162,9 +162,7 @@ export class KnowledgeService {
     }
 
     if (detectKnowledgeInjection(cleanContent)) {
-      throw new BadRequestException(
-        'Content contains invalid instructions.',
-      );
+      throw new BadRequestException('Content contains invalid instructions.');
     }
 
     await this.prisma.knowledgeChunk.update({

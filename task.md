@@ -381,6 +381,25 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 
 ---
 
+### 1A.5c — Security Hardening + Bot Reliability ✅
+
+> Zaimplementowane 2026-04-14
+
+#### Bezpieczeństwo ✅
+- [x] **CORS otwarty dla widgetu** — widget musi działać na dowolnej domenie klienta. `DomainWhitelistGuard` jest rzeczywistą warstwą (sprawdza `bot.allowedDomains` per request). Wcześniej każdy request z `https://salonklienta.pl` kończył się CORS error — widget był martwy na prod.
+- [x] **`botId` walidowany jako UUID** — DTO chatu i leadów: `z.string().uuid()`. Wcześniej `z.string().min(1)` — niepotrzebne DB queries na śmieciowe inputy.
+- [x] **`website` w formularzu kontaktowym** — `z.string().url()`. Wcześniej dowolny string — ryzyko phishingu przez `javascript:` w emailu do admina.
+- [x] **`escapeHtml` pokrywa `'`** — wcześniej brakowało `&#39;`, ryzyko attribute injection w email templateach.
+
+#### Niezawodność bota ✅
+- [x] **Obsługa błędów HTTP per status code w widgecie** — wcześniej każdy `!res.ok` → "błąd połączenia". Teraz: 400 (zła wiadomość), 403 (limit planu → automatycznie otwiera lead form), 429 (rate limit), 5xx (awaria techniczna), AbortError (timeout).
+- [x] **Fetch timeout 30s** — `AbortController` na każdym request do `/api/v1/chat`. Wcześniej spinner kręcił się w nieskończoność przy zawieszonym OpenAI.
+- [x] **Bot odpowiada 24/7** — usunięte blokowanie inputu/przycisku/enter przez `isOffline`. Offline banner przy ustawionych godzinach pracy jest tylko informacyjny. Bot zawsze odpowiada.
+- [x] **`suggestedQuestions` z brand template** — `GET /api/v1/bot/:id/config` teraz zwraca branżowe sugestie (wcześniej hardcoded genericze w widgecie). Widget używa propsa zamiast stałej.
+- [x] **Formularz kontaktowy LP** — graceful degradation: `handleSubmit` poprawnie propaguje błędy do `catch` (wcześniej `finally` połykał wyjątki, fallback `mailto:` nigdy się nie uruchamiał).
+
+---
+
 ### 1A.6 — Manualna QA Checklist (przed deploy)
 
 > Kod vibecoded = nie ufamy że działa bez ręcznego przetestowania każdej ścieżki.
@@ -466,7 +485,7 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 #### API hardening
 - [ ] Throttler rate limits przetestowane: `curl` 21 razy pod rząd na `/api/v1/chat` → 21. powinno zwrócić 429
 - [ ] Helmet headers: sprawdź w DevTools → Network → Response Headers że są `X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security`
-- [ ] CORS: sprawdź że API akceptuje tylko requesty z `app.botiko.pl` i `widget.botiko.pl` (nie `*`)
+- [ ] CORS: otwarty dla wszystkich originów (widgetowy design) — weryfikacja że `DomainWhitelistGuard` blokuje requesty z domen spoza `bot.allowedDomains`: wyślij POST `/api/v1/chat` z `Origin: https://obcadomena.pl` dla bota z wypełnionym `allowedDomains` → powinno zwrócić 403
 - [ ] Env vars nie są w logach: przejrzyj `console.log` w kodzie — żadnego logowania sekretów
 
 #### Widget / RODO
