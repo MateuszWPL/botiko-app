@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState, useTransition } from 'react';
 import { Loader2, Zap, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { createCheckoutAction, createPortalAction } from './actions';
@@ -194,14 +195,16 @@ export default function BillingClient({ status, fetchError }: Props) {
         )}
       </div>
 
-      <div className="flex items-center gap-2 text-xs text-slate-400">
-        <span>Płatności obsługiwane przez</span>
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-100 font-bold text-slate-600 tracking-tight text-xs">
-          <svg viewBox="0 0 60 25" className="h-3.5" aria-label="Stripe" fill="currentColor">
-            <path d="M59.64 14.28h-8.06c.19 1.93 1.6 2.55 3.2 2.55 1.64 0 2.96-.37 4.05-.95v3.32a8.33 8.33 0 0 1-4.56 1.1c-4.01 0-6.83-2.5-6.83-7.48 0-4.19 2.39-7.52 6.3-7.52 3.92 0 5.96 3.28 5.96 7.5 0 .4-.04 1.26-.06 1.48zm-5.92-5.62c-1.03 0-2.17.73-2.17 2.58h4.23c0-1.85-1.07-2.58-2.06-2.58zM40.95 20.3c-1.44 0-2.32-.6-2.9-1.04l-.02 4.63-4.44.94V6.27h3.94l.14 1.07c.57-.88 1.68-1.44 3.23-1.44 2.96 0 5.59 2.56 5.59 7.16 0 5.09-2.59 7.24-5.54 7.24zM40 9.95c-.95 0-1.54.34-1.97.81l.03 6.12c.4.44.98.78 1.94.78 1.52 0 2.54-1.65 2.54-3.87 0-2.15-1.04-3.84-2.54-3.84zM28.24 5.07c1.44 0 2.3-.95 2.3-2.15C30.54.8 29.68 0 28.24 0c-1.43 0-2.3.8-2.3 2.13 0 1.18.87 1.94 2.3 1.94zm2.22 15.13h-4.44V6.27h4.44v13.93zM17.81 20.2c-4.75 0-7.23-3.14-7.23-7.28 0-4.53 2.62-7.66 7.5-7.66 1.96 0 3.51.58 4.3 1.02l-1.35 3.3c-.7-.33-1.58-.68-2.84-.68-1.92 0-3.18 1.31-3.18 3.85 0 2.45 1.27 3.87 3.18 3.87 1.26 0 2.19-.28 2.98-.68l1.35 3.3c-.8.44-2.42 1.03-4.71 1.03zm-14.05-.4L0 6.27h4.7l2.45 8.04 2.42-8.04h4.69l-3.82 13.53h-2.68z" />
-          </svg>
-        </span>
-        <span>— Botiko nie przechowuje danych karty.</span>
+      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+        <span className="whitespace-nowrap">Płatności obsługiwane przez</span>
+        <Image
+          src="/stripe-ar21.svg"
+          alt="Stripe"
+          width={60}
+          height={25}
+          className="h-3.5 w-auto"
+        />
+        <span className="basis-full sm:basis-auto">— Botiko nie przechowuje danych karty.</span>
       </div>
     </div>
   );
