@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 const LINKS = {
@@ -27,9 +28,13 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link href="/" className="inline-flex items-center gap-2 mb-4">
-              <span className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-bold text-sm">
-                B
-              </span>
+              <Image
+                src="/BotikoLogo.png"
+                alt="Botiko"
+                width={32}
+                height={32}
+                className="rounded-lg"
+              />
               <span className="text-white font-bold text-lg">
                 Botiko<span className="text-indigo-400">.pl</span>
               </span>
