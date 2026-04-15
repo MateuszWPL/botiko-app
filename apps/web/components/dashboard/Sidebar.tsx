@@ -79,27 +79,29 @@ export function Sidebar() {
       >
         {/* Logo */}
         <div className="flex items-center justify-between gap-2 p-4 border-b border-slate-800/60 flex-shrink-0">
-          <div className={`flex items-center gap-3 min-w-0 ${collapsed ? 'w-8' : ''}`}>
-            <Image
-              src="/BotikoLogo.png"
-              alt="Botiko"
-              width={32}
-              height={32}
-              className="rounded-lg flex-shrink-0"
-            />
-            <div className={`min-w-0 transition-opacity duration-300 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-              <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent block">
-                Botiko.pl
-              </span>
-              <div className="flex items-center gap-1 mt-0.5 min-w-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
-                <span className="text-xs text-slate-500 whitespace-nowrap truncate">Panel zarządzania</span>
+          {!collapsed && (
+            <div className="flex items-center gap-3 min-w-0">
+              <Image
+                src="/BotikoLogo.png"
+                alt="Botiko"
+                width={32}
+                height={32}
+                className="rounded-lg flex-shrink-0"
+              />
+              <div className="min-w-0">
+                <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent block whitespace-nowrap">
+                  Botiko.pl
+                </span>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+                  <span className="text-xs text-slate-500 whitespace-nowrap">Panel zarządzania</span>
+                </div>
               </div>
             </div>
-          </div>
+          )}
           <button
             onClick={toggleCollapse}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-all flex-shrink-0 cursor-pointer"
+            className={`p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-all flex-shrink-0 cursor-pointer ${collapsed ? 'mx-auto' : ''}`}
             title={collapsed ? 'Rozwiń sidebar' : 'Zwiń sidebar'}
           >
             {collapsed ? (
@@ -111,7 +113,7 @@ export function Sidebar() {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto overflow-x-hidden">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname.startsWith(item.href);
             const Icon = item.icon;
@@ -119,8 +121,8 @@ export function Sidebar() {
               <div key={item.href} className="relative group/tip">
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group ${
-                    collapsed ? 'justify-center' : ''
+                  className={`flex items-center py-2.5 rounded-xl text-sm font-medium transition-all duration-150 group ${
+                    collapsed ? 'justify-center px-2' : 'gap-3 px-3'
                   } ${
                     isActive
                       ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/20'
@@ -132,12 +134,14 @@ export function Sidebar() {
                       isActive ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'
                     }`}
                   />
-                  <div className={`flex items-center gap-2 min-w-0 flex-1 transition-opacity duration-300 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                    <span className="truncate">{item.label}</span>
-                    {isActive && (
-                      <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0" />
-                    )}
-                  </div>
+                  {!collapsed && (
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <span className="truncate">{item.label}</span>
+                      {isActive && (
+                        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0" />
+                      )}
+                    </div>
+                  )}
                 </Link>
                 <Tooltip label={item.label} show={collapsed} />
               </div>
@@ -151,12 +155,12 @@ export function Sidebar() {
             <div className="relative group/tip">
               <button
                 onClick={() => window.dispatchEvent(new Event('botiko:open-wizard'))}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-all duration-150 cursor-pointer ${
-                  collapsed ? 'justify-center' : ''
+                className={`w-full flex items-center py-2.5 rounded-xl text-sm font-medium border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-all duration-150 cursor-pointer ${
+                  collapsed ? 'justify-center px-2' : 'gap-3 px-3'
                 }`}
               >
                 <Rocket className="w-4 h-4 flex-shrink-0" />
-                <span className={`transition-opacity duration-300 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>Konfiguracja bota</span>
+                {!collapsed && <span>Konfiguracja bota</span>}
               </button>
               <Tooltip label="Konfiguracja bota" show={collapsed} />
             </div>
@@ -165,26 +169,28 @@ export function Sidebar() {
 
         {/* Bottom: Plan badge + Logout */}
         <div className="p-3 border-t border-slate-800/60 space-y-2 flex-shrink-0">
-          <div className={`relative group/tip flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800/40 border border-slate-700/40 ${collapsed ? 'justify-center' : ''}`}>
+          <div className={`relative group/tip flex items-center rounded-xl bg-slate-800/40 border border-slate-700/40 ${collapsed ? 'justify-center py-2 px-2' : 'gap-2 px-3 py-2'}`}>
             <div className="w-6 h-6 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
               <Zap className="w-3 h-3 text-white" />
             </div>
-            <div className={`min-w-0 transition-opacity duration-300 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-              <p className="text-xs font-semibold text-slate-300">Starter</p>
-              <p className="text-xs text-slate-500 truncate">149 zł / mies.</p>
-            </div>
+            {!collapsed && (
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-slate-300">Starter</p>
+                <p className="text-xs text-slate-500 truncate">149 zł / mies.</p>
+              </div>
+            )}
             <Tooltip label="Plan Starter · 149 zł/mies." show={collapsed} />
           </div>
 
           <div className="relative group/tip">
             <button
               onClick={() => void handleLogout()}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/10 border border-transparent transition-all duration-150 group cursor-pointer ${
-                collapsed ? 'justify-center' : ''
+              className={`w-full flex items-center py-2.5 rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/10 border border-transparent transition-all duration-150 group cursor-pointer ${
+                collapsed ? 'justify-center px-2' : 'gap-3 px-3'
               }`}
             >
               <LogOut className="w-4 h-4 flex-shrink-0" />
-              <span className={`transition-opacity duration-300 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>Wyloguj się</span>
+              {!collapsed && <span>Wyloguj się</span>}
             </button>
             <Tooltip label="Wyloguj się" show={collapsed} />
           </div>
