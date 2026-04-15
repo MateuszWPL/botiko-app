@@ -17,6 +17,8 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Rocket,
+  Menu,
+  X,
 } from 'lucide-react';
 import { createClient } from '../../lib/supabase';
 
@@ -46,6 +48,7 @@ export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [setupDone, setSetupDone] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
@@ -54,6 +57,21 @@ export function Sidebar() {
     setSetupDone(done);
     setMounted(true);
   }, []);
+
+  // Close mobile drawer on navigation
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when drawer is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileOpen]);
 
   const toggleCollapse = () => {
     const next = !collapsed;
@@ -197,27 +215,113 @@ export function Sidebar() {
         </div>
       </aside>
 
-      {/* Mobile bottom navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950/95 backdrop-blur-sm border-t border-slate-800/60 flex items-center justify-around px-1 py-2">
-        {NAV_ITEMS.slice(0, 5).map((item) => {
-          const isActive = pathname.startsWith(item.href);
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all min-w-0 ${
-                isActive
-                  ? 'text-indigo-400 bg-indigo-500/10'
-                  : 'text-slate-500 hover:text-slate-300'
-              }`}
+      {/* Mobile top header */}
+      <header className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/60 flex items-center px-4 gap-3">
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="p-2 -ml-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all cursor-pointer"
+          aria-label="Otwórz menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <Image src="/BotikoLogo.png" alt="Botiko" width={28} height={28} className="rounded-md" />
+        <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+          {NAV_ITEMS.find((i) => pathname.startsWith(i.href))?.label ?? 'Botiko.pl'}
+        </span>
+      </header>
+
+      {/* Mobile drawer overlay */}
+      <div className={`md:hidden fixed inset-0 z-50 transition-all duration-300 ${mobileOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
+        {/* Backdrop */}
+        <div
+          className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${mobileOpen ? 'opacity-100' : 'opacity-0'}`}
+          onClick={() => setMobileOpen(false)}
+        />
+
+        {/* Drawer */}
+        <aside
+          className={`absolute left-0 top-0 bottom-0 w-72 bg-gradient-to-b from-slate-950 to-slate-900 border-r border-slate-800/50 flex flex-col transform transition-transform duration-300 ease-in-out ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        >
+          {/* Drawer header */}
+          <div className="flex items-center justify-between gap-2 p-4 border-b border-slate-800/60 flex-shrink-0">
+            <div className="flex items-center gap-3">
+              <Image src="/BotikoLogo.png" alt="Botiko" width={32} height={32} className="rounded-lg" />
+              <div>
+                <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent block">
+                  Botiko.pl
+                </span>
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-xs text-slate-500">Panel zarządzania</span>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-all cursor-pointer"
+              aria-label="Zamknij menu"
             >
-              <Icon className="w-5 h-5" />
-              <span className="text-xs truncate font-medium">{item.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Drawer nav */}
+          <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+            {NAV_ITEMS.map((item) => {
+              const isActive = pathname.startsWith(item.href);
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all ${
+                    isActive
+                      ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/20'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent'
+                  }`}
+                >
+                  <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-indigo-400' : 'text-slate-500'}`} />
+                  <span>{item.label}</span>
+                  {isActive && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400" />}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Setup wizard */}
+          {!setupDone && (
+            <div className="px-3 pb-3">
+              <button
+                onClick={() => { setMobileOpen(false); window.dispatchEvent(new Event('botiko:open-wizard')); }}
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-all cursor-pointer"
+              >
+                <Rocket className="w-5 h-5 flex-shrink-0" />
+                <span>Konfiguracja bota</span>
+              </button>
+            </div>
+          )}
+
+          {/* Drawer footer */}
+          <div className="p-3 border-t border-slate-800/60 space-y-2 flex-shrink-0">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800/40 border border-slate-700/40">
+              <div className="w-7 h-7 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                <Zap className="w-3.5 h-3.5 text-white" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-slate-300">Plan Starter</p>
+                <p className="text-xs text-slate-500">149 zł / mies.</p>
+              </div>
+            </div>
+            <button
+              onClick={() => void handleLogout()}
+              className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/10 border border-transparent transition-all cursor-pointer"
+            >
+              <LogOut className="w-5 h-5 flex-shrink-0" />
+              <span>Wyloguj się</span>
+            </button>
+          </div>
+        </aside>
+      </div>
     </>
   );
 }
