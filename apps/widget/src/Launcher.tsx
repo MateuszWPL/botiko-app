@@ -7,105 +7,101 @@ interface LauncherProps {
   onClick: () => void;
 }
 
+const BUBBLE_SHOW_DELAY = 3000;   // pojawia się po 3s
+const BUBBLE_VISIBLE_MS  = 7000;  // widoczna przez 7s (łącznie ~10s od załadowania)
+const BUBBLE_FADEOUT_MS  = 400;   // czas animacji fade-out
+
 export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: LauncherProps) {
-  const [bubbleVisible, setBubbleVisible] = useState(false);
-  const [bubbleDismissed, setBubbleDismissed] = useState(false);
-  const isMobile =
-    typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+  const [bubbleState, setBubbleState] = useState<'hidden' | 'visible' | 'fading'>('hidden');
+  // Reaktywne wykrywanie mobile — reaguje na resize/rotate urządzenia
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches,
+  );
 
-  // Show bubble once after 5s — only if chat never opened
   useEffect(() => {
-    if (bubbleDismissed || isOpen) return;
-    const t = setTimeout(() => setBubbleVisible(true), 5000);
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 768px)');
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  // Pojawiaj bańkę po 3s — tylko jeśli czat nigdy nie był otwarty
+  useEffect(() => {
+    if (isOpen) return;
+    const t = setTimeout(() => setBubbleState('visible'), BUBBLE_SHOW_DELAY);
     return () => clearTimeout(t);
-  }, [bubbleDismissed, isOpen]);
+  }, []); // tylko raz przy montowaniu
 
-  // Permanently dismiss bubble the moment chat opens (any trigger — FAB or bubble click)
+  // Auto fade-out po 7s widoczności
   useEffect(() => {
-    if (isOpen) {
-      setBubbleVisible(false);
-      setBubbleDismissed(true);
-    }
+    if (bubbleState !== 'visible') return;
+    const t = setTimeout(() => setBubbleState('fading'), BUBBLE_VISIBLE_MS);
+    return () => clearTimeout(t);
+  }, [bubbleState]);
+
+  // Po zakończeniu fade-out — ukryj całkowicie
+  useEffect(() => {
+    if (bubbleState !== 'fading') return;
+    const t = setTimeout(() => setBubbleState('hidden'), BUBBLE_FADEOUT_MS);
+    return () => clearTimeout(t);
+  }, [bubbleState]);
+
+  // Ukryj bańkę natychmiast gdy czat się otwiera
+  useEffect(() => {
+    if (isOpen) setBubbleState('hidden');
   }, [isOpen]);
 
-  // On mobile with chat open: hide entire launcher
+  // Na mobile z otwartym chatem: ukryj cały launcher
   if (isMobile && isOpen) return null;
 
   const bubbleText =
-    welcomeMsg.length > 60 ? welcomeMsg.slice(0, 58) + '\u2026' : welcomeMsg;
+    welcomeMsg.length > 55 ? welcomeMsg.slice(0, 53) + '\u2026' : welcomeMsg;
 
+  const showBubble = bubbleState !== 'hidden' && !isOpen;
+
+  // Na mobile z otwartym chatem: ukryj cały launcher — display:none zamiast return null
+  // żeby uniknąć błędów przy ponownym montowaniu komponentu
   return (
     <div
       style={{
+        display: isMobile && isOpen ? 'none' : 'flex',
         position: 'fixed',
         bottom: '24px',
         right: '24px',
         zIndex: 2147483647,
-        display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-end',
-        gap: '8px',
+        gap: '10px',
       }}
     >
       {/* ── Proactive bubble ──────────────────────────────────────────────────── */}
-      {bubbleVisible && !isOpen && (
-        /*
-         * STRUCTURE: outer wrapper (position: relative) contains:
-         *   1. The clickable text div
-         *   2. The dismiss button — SIBLING, not child of 1
-         *
-         * This means clicking X never bubbles into the text div's onClick.
-         * No stopPropagation needed → no shadow-DOM / Preact event issues.
-         */
-        <div style={{ position: 'relative' }}>
-          {/* Clickable text area */}
-          <div
-            onClick={onClick}
-            style={{
-              backgroundColor: '#fff',
-              borderRadius: '12px 12px 4px 12px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-              padding: '11px 36px 11px 15px',
-              maxWidth: '230px',
-              fontSize: '13px',
-              lineHeight: '1.5',
-              color: '#0f172a',
-              cursor: 'pointer',
-              userSelect: 'none',
-              animation: 'botiko-fadein 0.3s ease',
-            }}
-          >
-            {bubbleText}
-          </div>
-
-          {/* Dismiss button — sibling of text div, positioned in top-right corner */}
-          <div
-            onClick={() => {
-              setBubbleVisible(false);
-              setBubbleDismissed(true);
-            }}
-            role="button"
-            aria-label="Zamknij"
-            style={{
-              position: 'absolute',
-              top: '6px',
-              right: '6px',
-              width: '22px',
-              height: '22px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(15, 23, 42, 0.55)',
-              color: '#fff',
-              fontSize: '11px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              userSelect: 'none',
-              zIndex: 1,
-            }}
-          >
-            &#x2715;
-          </div>
+      {showBubble && (
+        <div
+          onClick={onClick}
+          role="button"
+          aria-label="Otwórz czat"
+          style={{
+            backgroundColor: '#fff',
+            borderRadius: '18px 18px 4px 18px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.11), 0 1px 3px rgba(0,0,0,0.06)',
+            padding: '11px 15px',
+            fontSize: '13px',
+            fontWeight: 500,
+            lineHeight: '1.45',
+            color: '#1e293b',
+            cursor: 'pointer',
+            userSelect: 'none',
+            border: '1px solid rgba(99,102,241,0.1)',
+            maxWidth: '200px',
+            whiteSpace: 'normal',
+            // fade-in lub fade-out zależnie od stanu
+            animation: bubbleState === 'visible'
+              ? 'botiko-bubble-in 0.4s cubic-bezier(0.34,1.4,0.64,1) both'
+              : 'botiko-bubble-out 0.4s ease forwards',
+          }}
+        >
+          {bubbleText}
         </div>
       )}
 
@@ -123,20 +119,18 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.22)',
           transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           position: 'relative',
           overflow: 'hidden',
         }}
         onMouseEnter={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.1)';
-          (e.currentTarget as HTMLButtonElement).style.boxShadow =
-            '0 6px 16px rgba(0,0,0,0.3)';
+          (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.08)';
+          (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(0,0,0,0.28)';
         }}
         onMouseLeave={(e) => {
           (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
-          (e.currentTarget as HTMLButtonElement).style.boxShadow =
-            '0 4px 12px rgba(0,0,0,0.25)';
+          (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 16px rgba(0,0,0,0.22)';
         }}
       >
         {/* Chat icon — fades out when open */}
@@ -144,7 +138,7 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
           style={{
             position: 'absolute',
             display: 'flex',
-            transition: 'opacity 0.2s ease, transform 0.2s ease',
+            transition: 'opacity 0.25s ease, transform 0.25s ease',
             opacity: isOpen ? 0 : 1,
             transform: isOpen ? 'rotate(90deg) scale(0.4)' : 'rotate(0deg) scale(1)',
           }}
@@ -165,7 +159,7 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
           style={{
             position: 'absolute',
             display: 'flex',
-            transition: 'opacity 0.2s ease, transform 0.2s ease',
+            transition: 'opacity 0.25s ease, transform 0.25s ease',
             opacity: isOpen ? 1 : 0,
             transform: isOpen ? 'rotate(0deg) scale(1)' : 'rotate(-90deg) scale(0.4)',
           }}
@@ -180,6 +174,18 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
           </svg>
         </span>
       </button>
+
+      {/* Keyframes — scoped to shadow root */}
+      <style>{`
+        @keyframes botiko-bubble-in {
+          from { opacity: 0; transform: translateY(8px) scale(0.94); }
+          to   { opacity: 1; transform: translateY(0)   scale(1); }
+        }
+        @keyframes botiko-bubble-out {
+          from { opacity: 1; transform: translateY(0) scale(1); }
+          to   { opacity: 0; transform: translateY(6px) scale(0.95); }
+        }
+      `}</style>
     </div>
   );
 }

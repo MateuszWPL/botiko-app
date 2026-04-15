@@ -101,8 +101,10 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             <Link
               href="/login"
-              className={`text-sm font-medium transition-colors cursor-pointer ${
-                scrolled ? 'text-slate-600 hover:text-brand' : 'text-white/90 hover:text-white'
+              className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40 ${
+                scrolled
+                  ? 'text-slate-600 hover:text-brand hover:bg-slate-100'
+                  : 'text-white/90 hover:text-white hover:bg-white/10'
               }`}
             >
               Logowanie

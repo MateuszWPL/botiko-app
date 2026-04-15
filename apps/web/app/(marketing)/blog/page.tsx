@@ -170,7 +170,7 @@ export default async function BlogPage({
                   <li key={cat.slug}>
                     <a
                       href={`/blog/kategoria/${cat.slug}`}
-                      className="flex items-center justify-between text-sm text-slate-600 hover:text-indigo-600 transition-colors group"
+                      className="flex items-center justify-between text-sm text-slate-600 hover:text-indigo-600 transition-colors group cursor-pointer"
                     >
                       <span className="group-hover:underline">{cat.name}</span>
                       <span className="text-xs text-slate-400 bg-slate-100 rounded-full px-2 py-0.5">

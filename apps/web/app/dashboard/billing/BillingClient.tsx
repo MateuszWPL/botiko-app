@@ -202,7 +202,7 @@ export default function BillingClient({ status, fetchError }: Props) {
           alt="Stripe"
           width={60}
           height={25}
-          className="h-3.5 w-auto"
+          className="h-5 w-auto"
         />
         <span className="basis-full sm:basis-auto">— Botiko nie przechowuje danych karty.</span>
       </div>

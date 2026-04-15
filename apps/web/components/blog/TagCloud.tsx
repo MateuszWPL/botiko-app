@@ -55,7 +55,7 @@ export default function TagCloud({
           type="button"
           onClick={() => setExpanded((e) => !e)}
           aria-expanded={expanded}
-          className="mt-3 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-center text-xs font-medium text-indigo-700 transition-colors hover:border-indigo-200 hover:bg-indigo-50"
+          className="mt-3 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-center text-xs font-medium text-indigo-700 transition-colors hover:border-indigo-200 hover:bg-indigo-50 cursor-pointer"
         >
           {expanded
             ? 'Zwiń listę tagów'

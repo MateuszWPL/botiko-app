@@ -58,6 +58,13 @@ export function Sidebar() {
     setMounted(true);
   }, []);
 
+  // Keep sidebar in sync when wizard marks setup as done
+  useEffect(() => {
+    const handler = () => setSetupDone(true);
+    window.addEventListener('botiko:setup-done', handler);
+    return () => window.removeEventListener('botiko:setup-done', handler);
+  }, []);
+
   // Close mobile drawer on navigation
   useEffect(() => {
     setMobileOpen(false);

@@ -63,8 +63,15 @@ function Widget({
 }
 
 async function init() {
-  // Guard against double-init (React Strict Mode runs effects twice in dev,
-  // GTM may inject the script multiple times, or the snippet is pasted twice).
+  // Guard against double-init — synchronous flag na documentElement ustawiony PRZED
+  // async init, odporny na race condition gdy dwa skrypty ładują się równolegle.
+  // getElementById jest async i może przepuścić dwa równoległe init().
+  if (document.documentElement.hasAttribute('data-botiko-init')) {
+    return;
+  }
+  document.documentElement.setAttribute('data-botiko-init', 'true');
+
+  // Dodatkowy guard: jeśli host już istnieje (np. nawigacja SPA), wyjdź
   if (document.getElementById('botiko-host')) {
     return;
   }

@@ -14,40 +14,6 @@ const WIDGET_URL =
   process.env.NEXT_PUBLIC_WIDGET_URL ??
   (process.env.NODE_ENV === 'development' ? 'http://localhost:5173' : 'https://widget.botiko.pl');
 
-// SVG loga platform
-function WordPressLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zM3.667 12c0-1.307.28-2.549.778-3.674L7.93 19.243A8.355 8.355 0 013.667 12zm8.333 8.333a8.376 8.376 0 01-2.371-.344l2.518-7.318 2.578 7.063c.017.041.037.079.058.116a8.374 8.374 0 01-2.783.483zm1.152-12.541c.503-.026.956-.079.956-.079.45-.053.397-.715-.053-.689 0 0-1.352.106-2.224.106-.82 0-2.199-.106-2.199-.106-.45-.026-.503.662-.053.689 0 0 .424.053.874.079l1.299 3.559-1.824 5.472-3.034-9.031c.503-.026.956-.079.956-.079.449-.053.396-.715-.054-.689 0 0-1.351.106-2.224.106-.156 0-.34-.004-.535-.011A8.338 8.338 0 0112 3.667c2.18 0 4.171.833 5.666 2.197-.036-.002-.071-.006-.108-.006-1.42 0-2.226 1.234-2.226 2.559 0 1.169.662 2.16 1.378 3.337.531.928 1.143 2.119 1.143 3.842 0 1.193-.459 2.576-.981 4.514l-1.286-4.29z" />
-    </svg>
-  );
-}
-
-function WixLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.5 14.5l-2-5-2 5H5l3-9h1.5l2 5 2-5H15l3 9h-1.5l-2-5-2 5h-2z" />
-    </svg>
-  );
-}
-
-function SquarespaceLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.5 11.5h-9v-3h9v3z" />
-    </svg>
-  );
-}
-
-function WebflowLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.82 7.34l-3.12 9.32-2.1-6.44 1.65-2.88H17.82zm-7.68 0L7.02 16.66 4.18 7.34h2.7l1.36 4.84 1.36-4.84h.54zM2 7.34h2l2.5 7.44L8 11.6 9.5 16.66H12l3.2-9.32h-2.1L12 10.52l-1.1-3.18H2zm20 0h-2.1L17 16.66h2.3L22 7.34z" />
-    </svg>
-  );
-}
-
-
 const STEPS = [
   { n: 1, title: 'Skopiuj kod', desc: 'Kliknij przycisk Kopiuj' },
   { n: 2, title: 'Wklej na stronie', desc: 'Przed </body> w HTML' },
@@ -57,7 +23,6 @@ const STEPS = [
 export function EmbedCode({ bots }: { bots: Bot[] }) {
   const [selectedBot, setSelectedBot] = useState(bots[0]?.id ?? '');
   const [copied, setCopied] = useState(false);
-  const [openPlatform, setOpenPlatform] = useState<string | null>(null);
 
   if (bots.length === 0) {
     return (

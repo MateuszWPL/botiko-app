@@ -11,6 +11,11 @@ export default function DemoWidget() {
   useEffect(() => {
     if (!DEMO_BOT_ID) return;
 
+    // Guard 1: embed.ts ustawi ten atrybut gdy widget zostanie załadowany.
+    // Jeśli już istnieje — widget działa, nie ładuj kolejnego skryptu.
+    if (document.documentElement.hasAttribute('data-botiko-init')) return;
+
+    // Guard 2: skrypt już jest w DOM (np. Next.js re-render, hot reload)
     const existing = document.querySelector('script[data-botiko-demo]');
     if (existing) return;
 
@@ -24,8 +29,10 @@ export default function DemoWidget() {
 
     return () => {
       script.remove();
-      // Also remove the widget host so a remount (React Strict Mode) gets a clean slate
-      document.getElementById('botiko-host')?.remove();
+      // NOTE: celowo NIE usuwamy #botiko-host ani data-botiko-init podczas cleanup!
+      // embed.ts używa ich jako guard przed double-init.
+      // React Strict Mode uruchamia effecty dwa razy — gdybyśmy usunęli guard,
+      // drugi init() stworzył by drugi widget.
     };
   }, []);
 

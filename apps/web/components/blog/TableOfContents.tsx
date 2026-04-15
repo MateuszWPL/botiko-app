@@ -9,23 +9,49 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
   useEffect(() => {
     if (items.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (visible.length > 0) {
-          setActiveId(visible[0].target.id);
+    // Ustal "aktywny" nagłówek jako ostatni nagłówek nad górnym offsetem.
+    const topOffsetPx = 120;
+    const ids = items.map((i) => i.id);
+
+    let raf = 0;
+    const computeActive = () => {
+      raf = 0;
+      let best: string | null = null;
+      let bestTop = -Infinity;
+
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top;
+        if (top <= topOffsetPx && top > bestTop) {
+          bestTop = top;
+          best = id;
         }
-      },
-      { rootMargin: '-80px 0px -60% 0px' }
-    );
+      }
 
-    items.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
+      // Jeśli jesteśmy wysoko (przed pierwszym nagłówkiem), aktywuj pierwszy.
+      setActiveId(best ?? ids[0] ?? '');
+    };
 
-    return () => observer.disconnect();
+    const onScrollOrResize = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(computeActive);
+    };
+
+    computeActive();
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize);
+    window.addEventListener('hashchange', onScrollOrResize);
+
+    return () => {
+      window.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
+      window.removeEventListener('hashchange', onScrollOrResize);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
   }, [items]);
+
+  const hasLevel3 = items.some((i) => i.level === 3);
 
   if (items.length < 2) return null;
 
@@ -37,7 +63,7 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
       <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
         Spis treści
       </p>
-      <ol className="space-y-1.5">
+      <ol className={hasLevel3 ? 'space-y-1.5' : 'space-y-1'}>
         {items.map((item) => (
           <li
             key={item.id}

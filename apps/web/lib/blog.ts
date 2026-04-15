@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { cache } from 'react';
+import { dedupeSlug, slugify } from '@/lib/slug';
 
 // Fallback for when process.cwd() is already repo root (e.g. CI)
 function getContentDir(): string {
@@ -44,22 +45,6 @@ function calculateReadingTime(content: string): number {
   const wordsPerMinute = 200;
   const wordCount = content.trim().split(/\s+/).length;
   return Math.max(1, Math.round(wordCount / wordsPerMinute));
-}
-
-export function slugify(str: string): string {
-  return str
-    .toLowerCase()
-    .replace(/ą/g, 'a')
-    .replace(/ę/g, 'e')
-    .replace(/ó/g, 'o')
-    .replace(/ś/g, 's')
-    .replace(/ł/g, 'l')
-    .replace(/ż/g, 'z')
-    .replace(/ź/g, 'z')
-    .replace(/ć/g, 'c')
-    .replace(/ń/g, 'n')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
 }
 
 function _getAllPosts(): PostMeta[] {
@@ -194,12 +179,13 @@ export type TocItem = {
 export function extractToc(content: string): TocItem[] {
   const headingRegex = /^(#{2,3})\s+(.+)$/gm;
   const items: TocItem[] = [];
+  const slugCounts = new Map<string, number>();
   let match;
 
   while ((match = headingRegex.exec(content)) !== null) {
     const level = match[1].length as 2 | 3;
     const text = match[2].trim();
-    const id = slugify(text);
+    const id = dedupeSlug(slugify(text), slugCounts);
     items.push({ id, text, level });
   }
 

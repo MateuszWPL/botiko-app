@@ -617,12 +617,47 @@ export function SetupWizardProvider() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    // Auto-open for new users who haven't completed setup
-    if (!isSetupDone()) {
-      // Small delay so the dashboard renders first
-      const t = setTimeout(() => setOpen(true), 600);
-      return () => clearTimeout(t);
+    let cancelled = false;
+    let timeoutId: number | null = null;
+
+    async function checkAndMaybeOpen() {
+      // If localStorage already says done — skip API call entirely
+      if (isSetupDone()) return;
+
+      // Check API: if bot already exists, mark done and skip wizard
+      try {
+        const supabase = createClient();
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
+        if (!token) throw new Error('No session token');
+
+        const res = await fetch(
+          `${API_URL}/api/v1/bot`,
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+        if (res.ok) {
+          const bots = (await res.json()) as { id: string }[];
+          if (bots.length > 0) {
+            markSetupDone();
+            // Also notify Sidebar to hide the setup button
+            window.dispatchEvent(new Event('botiko:setup-done'));
+            return;
+          }
+        }
+      } catch {
+        // API unreachable — fall through to show wizard
+      }
+
+      if (!cancelled) {
+        timeoutId = window.setTimeout(() => setOpen(true), 600);
+      }
     }
+
+    void checkAndMaybeOpen();
+    return () => {
+      cancelled = true;
+      if (timeoutId != null) window.clearTimeout(timeoutId);
+    };
   }, []);
 
   // Listen for manual trigger from sidebar
