@@ -45,11 +45,11 @@ const INDUSTRIES = [
     color: '#EC4899',
     bg: '#FDF2F8',
     headline: 'Bot dla salonu urody',
-    description: 'Manicure, stylizacja rzęs, brwi — bot zna Twój cennik i zapisuje klientki nawet o 23:00.',
-    features: ['Odpowiada na pytania o cennik', 'Informuje o wolnych terminach', 'Zbiera rezerwacje i dane klientek', 'Odsyła do Booksy / Vagaro', 'Wysyła przypomnienia o wizycie'],
+    description: 'Manicure, stylizacja rzęs, brwi — bot odpowiada na pytania o usługi i ceny, zbiera leady nawet o 23:00.',
+    features: ['Odpowiada na pytania o cennik i czas zabiegu', 'Zbiera dane klientki (imię, telefon, email)', 'Odsyła do Twojego systemu rezerwacji', 'Podpowiada najczęstsze pytania', 'Obsługuje pytania o promocje i pakiety'],
     sample: [
       { role: 'user', text: 'Ile kosztuje manicure hybrydowy?' },
-      { role: 'bot', text: 'Manicure hybrydowy to 90 zł 💅 Czas ok. 75 min. Mam wolne miejsce jutro o 14:00 — zarezerwować?' },
+      { role: 'bot', text: 'Manicure hybrydowy to 90 zł 💅 Czas ok. 75 min. Chcesz się zapisać? Podaj swoje imię i numer telefonu — zadzwonimy do Ciebie jutro!' },
     ],
   },
   {
@@ -59,11 +59,11 @@ const INDUSTRIES = [
     color: '#06B6D4',
     bg: '#ECFEFF',
     headline: 'Bot dla gabinetu medycznego',
-    description: 'Fizjoterapia, kosmetologia, stomatologia — bot informuje o usługach i zbiera dane do rejestracji.',
-    features: ['Odpowiada na pytania o zabiegi i ceny', 'Informuje o wymaganiach przed wizytą', 'Zbiera dane do rejestracji', 'Odsyła do systemu rejestracji online', 'Odpowiada o specjalistach i godzinach'],
+    description: 'Fizjoterapia, kosmetologia, stomatologia — bot odpowiada na pytania o zabiegi, zbiera dane pacjentów.',
+    features: ['Odpowiada na pytania o zabiegi i ceny', 'Wyjaśnia wymagania przed wizytą', 'Zbiera dane pacjenta do rejestracji', 'Odsyła do formularza rejestracji online', 'Informuje o specjalistach i godzinach'],
     sample: [
       { role: 'user', text: 'Czy przyjmujecie bez skierowania na fizjo?' },
-      { role: 'bot', text: 'Tak, bez skierowania ✅ Pierwsza wizyta 60 min / 150 zł. Mamy wolny termin w środę o 10:00. Chcesz się zapisać?' },
+      { role: 'bot', text: 'Tak, bez skierowania ✅ Pierwsza wizyta 60 min / 150 zł. Chcesz się umówić? Potrzebujemy imię, telefon i krótko o problemie.' },
     ],
   },
   {
@@ -73,11 +73,11 @@ const INDUSTRIES = [
     color: '#F97316',
     bg: '#FFF7ED',
     headline: 'Bot dla restauracji',
-    description: 'Godziny otwarcia, menu, rezerwacje stolików — bot obsługuje gości nawet gdy lokal jest pełny.',
-    features: ['Informuje o menu i specjalnościach dnia', 'Przyjmuje rezerwacje stolików', 'Odpowiada na pytania o alergie', 'Informuje o godzinach i lokalizacji', 'Obsługuje pytania o catering i eventy'],
+    description: 'Menu, godziny, pytania o alergie — bot obsługuje gości nawet gdy jesteś w kuchni.',
+    features: ['Informuje o menu i specjalnościach dnia', 'Zbiera rezerwacje (imię, liczba osób, godzina)', 'Odpowiada na pytania o alergie i składniki', 'Informuje o godzinach i lokalizacji', 'Odsyła do systemu rezerwacji online'],
     sample: [
       { role: 'user', text: 'Czy przyjmujecie rezerwacje na jutro wieczór dla 6 osób?' },
-      { role: 'bot', text: 'Oczywiście! 🍽️ Mamy wolny stolik jutro o 19:00 i 20:30. Jaka godzina odpowiada? Podaj imię — potwierdzimy SMS-em.' },
+      { role: 'bot', text: 'Oczywiście! 🍽️ Na jaką godzinę? Potrzebujemy: imię, numer telefonu i godzinę. Wtedy potwierdzimy rezerwację!' },
     ],
   },
   {
@@ -87,11 +87,11 @@ const INDUSTRIES = [
     color: '#64748B',
     bg: '#F8FAFC',
     headline: 'Bot dla warsztatu',
-    description: 'Wyceny, terminy, pytania o usługi — bot odpowiada gdy masz ręce w silniku.',
-    features: ['Odpowiada na pytania o usługi i ceny', 'Zapisuje na diagnostykę i naprawę', 'Informuje o czasie oczekiwania', 'Zbiera dane pojazdu od klienta', 'Wysyła potwierdzenie przyjęcia auta'],
+    description: 'Wyceny, usługi, terminy — bot odpowiada i zbiera leady gdy Ty naprawiasz auto.',
+    features: ['Odpowiada na pytania o usługi i ceny', 'Zbiera dane pojazdu i właściciela', 'Informuje o przybliżonym czasie naprawy', 'Odsyła do kalendarza wizyt', 'Obsługuje pytania o gwarancje i promocje'],
     sample: [
       { role: 'user', text: 'Ile kosztuje wymiana oleju i kiedy możecie przyjąć?' },
-      { role: 'bot', text: 'Wymiana oleju: 120–180 zł zależnie od oleju 🔧 Czas: ~45 min. Mamy wolny slot jutro 9:00 i pojutrze 13:00. Kiedy wpadacie?' },
+      { role: 'bot', text: 'Wymiana oleju: 120–180 zł 🔧 Czas: ~45 min. Aby zarezerwować termin, podaj: imię, numer telefonu i matkę pojazdu. Odsyłamy do naszego kalendarza!' },
     ],
   },
   {
@@ -101,11 +101,11 @@ const INDUSTRIES = [
     color: '#6366F1',
     bg: '#EEF2FF',
     headline: 'Bot dla każdej firmy usługowej',
-    description: 'Szkoła tańca, studio jogi, fotograf, tłumacz — tworzysz własny szablon w 15 minut.',
-    features: ['W pełni konfigurowalny szablon', 'Wgrywasz własne FAQ i cennik', 'Dostosowujesz styl komunikacji', 'Integrujesz z dowolnym linkiem rezerwacji', 'Wsparcie przy konfiguracji gratis'],
+    description: 'Szkoła tańca, studio jogi, fotograf — tworzysz szablon w 15 minut wgrywając własne FAQ.',
+    features: ['W pełni konfigurowalny szablon', 'Wgrywasz własne FAQ i cennik', 'Dostosowujesz styl komunikacji', 'Zbiera leady (imię, email, telefon)', 'Wsparcie przy konfiguracji gratis'],
     sample: [
       { role: 'user', text: 'Czy prowadzicie zajęcia dla początkujących?' },
-      { role: 'bot', text: 'Tak! Mamy kurs dla zupełnych początkujących 🌟 Zajęcia pn. i śr. o 18:00. Pierwsze wejście za darmo. Zapisać Cię?' },
+      { role: 'bot', text: 'Tak! Mamy kurs dla zupełnych początkujących 🌟 Zajęcia pn. i śr. o 18:00. Zainteresowany? Wpisz imię i numer — wyślemy szczegóły!' },
     ],
   },
 ];
