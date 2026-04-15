@@ -2,7 +2,6 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
-import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -16,6 +15,7 @@ import { mdxComponents } from '@/components/blog/mdx/components';
 import Breadcrumbs from '@/components/blog/Breadcrumbs';
 import TableOfContents from '@/components/blog/TableOfContents';
 import PostCard from '@/components/blog/PostCard';
+import { rehypeHeadingIds } from '@/components/blog/mdx/rehypeHeadingIds';
 
 export async function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
@@ -203,7 +203,7 @@ export default async function BlogPostPage({
                     mdxOptions: {
                       remarkPlugins: [remarkGfm],
                       rehypePlugins: [
-                        rehypeSlug,
+                        rehypeHeadingIds,
                         [
                           rehypeAutolinkHeadings,
                           { behavior: 'wrap', properties: { tabIndex: -1 } },
@@ -262,25 +262,27 @@ export default async function BlogPostPage({
             </div>
 
             {/* Sidebar */}
-            <aside className="hidden lg:block mt-0">
-              <div className="sticky top-24 space-y-6">
-                {/* ToC */}
+            <aside className="hidden lg:block mt-0 self-start h-fit">
+              <div className="space-y-6">
+                {/* ToC (nie sticky) */}
                 <TableOfContents items={toc} />
 
-                {/* CTA */}
-                <div className="rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 p-5 text-white">
-                  <p className="font-bold text-sm mb-1">
-                    Chcesz bot dla swojej firmy?
-                  </p>
-                  <p className="text-indigo-100 text-xs mb-4 leading-relaxed">
-                    14 dni za darmo. Konfiguracja w 30 minut. Bez programowania.
-                  </p>
-                  <a
-                    href="/rejestracja"
-                    className="block text-center py-2.5 rounded-lg bg-white text-indigo-700 font-bold text-sm hover:shadow-lg transition-shadow"
-                  >
-                    Zacznij za darmo →
-                  </a>
+                {/* CTA badge (sticky) */}
+                <div className="sticky top-24 self-start">
+                  <div className="rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 p-5 text-white">
+                    <p className="font-bold text-sm mb-1">
+                      Chcesz bot dla swojej firmy?
+                    </p>
+                    <p className="text-indigo-100 text-xs mb-4 leading-relaxed">
+                      14 dni za darmo. Konfiguracja w 30 minut. Bez programowania.
+                    </p>
+                    <a
+                      href="/rejestracja"
+                      className="block text-center py-2.5 rounded-lg bg-white text-indigo-700 font-bold text-sm hover:shadow-lg transition-shadow"
+                    >
+                      Zacznij za darmo →
+                    </a>
+                  </div>
                 </div>
               </div>
             </aside>
@@ -304,7 +306,9 @@ export default async function BlogPostPage({
           <div className="lg:hidden mt-10">
             <div className="rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 p-6 text-white text-center">
               <p className="font-bold mb-1">Wypróbuj Botiko za darmo</p>
-              <p className="text-indigo-100 text-sm mb-4">14 dni testu, bez karty kredytowej.</p>
+              <p className="text-indigo-100 text-sm mb-4">
+                14 dni testu, bez karty kredytowej.
+              </p>
               <a
                 href="/rejestracja"
                 className="inline-block px-6 py-3 rounded-full bg-white text-indigo-700 font-bold text-sm"

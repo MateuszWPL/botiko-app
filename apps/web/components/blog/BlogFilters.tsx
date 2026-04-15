@@ -46,7 +46,7 @@ export default function BlogFilters({
         <button
           type="button"
           onClick={() => updateParam('kategoria', null)}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
             !activeCategory
               ? 'bg-indigo-600 text-white shadow-sm'
               : 'bg-white border border-slate-200 text-slate-600 hover:border-indigo-200 hover:text-indigo-600'
@@ -64,7 +64,7 @@ export default function BlogFilters({
                 activeCategory === cat.slug ? null : cat.slug
               )
             }
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${
               activeCategory === cat.slug
                 ? 'bg-indigo-600 text-white shadow-sm'
                 : 'bg-white border border-slate-200 text-slate-600 hover:border-indigo-200 hover:text-indigo-600'
@@ -90,7 +90,7 @@ export default function BlogFilters({
                   activeSort === opt.value ? null : opt.value
                 )
               }
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 (activeSort ?? 'newest') === opt.value
                   ? 'bg-slate-900 text-white'
                   : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'

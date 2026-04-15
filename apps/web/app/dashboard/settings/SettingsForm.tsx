@@ -68,7 +68,7 @@ function Toggle({
       role="switch"
       aria-checked={checked}
       onClick={onChange}
-      className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 ${
+      className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer ${
         checked ? activeColor : 'bg-slate-200'
       }`}
     >
@@ -356,7 +356,7 @@ export function SettingsForm({ bot }: { bot: Bot }) {
                             : [...f.businessDays, idx],
                         }))
                       }
-                      className={`w-10 h-9 rounded-lg text-xs font-semibold transition-colors ${
+                      className={`w-10 h-9 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                         active
                           ? 'bg-amber-500 text-white shadow-sm'
                           : 'bg-slate-100 text-slate-500 hover:bg-slate-200'

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -91,9 +92,13 @@ function AuthLeftPanel() {
       }}
     >
       <Link href="/" className="flex items-center gap-2.5">
-        <span className="w-9 h-9 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center text-white font-bold text-base">
-          B
-        </span>
+        <Image
+          src="/BotikoLogo.png"
+          alt="Botiko"
+          width={36}
+          height={36}
+          className="rounded-xl"
+        />
         <span className="text-white font-bold text-xl">
           Botiko<span className="text-indigo-300">.pl</span>
         </span>

@@ -137,6 +137,7 @@ export function ChatWindow({
   const [userMessageCount, setUserMessageCount] = useState<number>(initial.userMessageCount);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [lead, setLead] = useState<LeadFormState>({
     visible: false,
     name: '',
@@ -148,8 +149,17 @@ export function ChatWindow({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const isMobile =
-    typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+  // Reaktywne wykrywanie mobile — reaguje na obrót urządzenia
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches,
+  );
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 768px)');
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   // Show quick suggestions only before first user message
   const showSuggestions = userMessageCount === 0;
@@ -173,6 +183,15 @@ export function ChatWindow({
       setTimeout(() => inputRef.current?.focus(), 200);
     }
   }, [isOpen, isMobile]);
+
+  // Płynne zamknięcie: najpierw animacja fade-out, potem wywołanie onClose
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      onClose();
+    }, 220);
+  };
 
   const sendMessage = async (text?: string) => {
     const content = (text ?? input).trim();
@@ -278,7 +297,9 @@ export function ChatWindow({
         zIndex: 2147483646,
         overflow: 'hidden',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-        animation: 'botiko-fadein 0.2s ease',
+        animation: isClosing
+          ? 'botiko-fadeout 0.22s ease forwards'
+          : 'botiko-fadein 0.25s cubic-bezier(0.34,1.2,0.64,1)',
       }}
     >
       {/* ── Header ── */}
@@ -330,7 +351,7 @@ export function ChatWindow({
 
         {/* Close button */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           aria-label="Zamknij"
           style={{
             background: 'rgba(255,255,255,0.15)',
@@ -627,8 +648,12 @@ export function ChatWindow({
 
       <style>{`
         @keyframes botiko-fadein {
-          from { opacity: 0; transform: translateY(8px); }
-          to { opacity: 1; transform: translateY(0); }
+          from { opacity: 0; transform: translateY(12px) scale(0.97); }
+          to   { opacity: 1; transform: translateY(0)   scale(1); }
+        }
+        @keyframes botiko-fadeout {
+          from { opacity: 1; transform: translateY(0)   scale(1); }
+          to   { opacity: 0; transform: translateY(10px) scale(0.97); }
         }
         @keyframes botiko-bounce {
           0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
