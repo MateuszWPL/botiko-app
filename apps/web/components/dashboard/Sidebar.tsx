@@ -91,9 +91,9 @@ export function Sidebar() {
               <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent block">
                 Botiko.pl
               </span>
-              <div className="flex items-center gap-1 mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs text-slate-500">Panel zarządzania</span>
+              <div className="flex items-center gap-1 mt-0.5 min-w-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+                <span className="text-xs text-slate-500 whitespace-nowrap truncate">Panel zarządzania</span>
               </div>
             </div>
           </div>
