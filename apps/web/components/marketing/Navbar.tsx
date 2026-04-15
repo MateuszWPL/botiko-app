@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -60,9 +61,13 @@ export default function Navbar() {
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 font-bold text-xl cursor-pointer">
-            <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-brand text-white text-sm font-bold">
-              B
-            </span>
+            <Image
+              src="/BotikoLogo.png"
+              alt="Botiko"
+              width={32}
+              height={32}
+              className="rounded-lg"
+            />
             <span className={scrolled ? 'text-text' : 'text-white drop-shadow'}>
               Botiko
               <span className={scrolled ? 'text-brand' : 'text-white/80'}>.pl</span>

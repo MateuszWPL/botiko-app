@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '../../../lib/supabase';
 
@@ -28,6 +29,10 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
           <div className="text-center mb-8">
+            <Link href="/" className="inline-flex items-center gap-2 mb-6">
+              <Image src="/BotikoLogo.png" alt="Botiko" width={36} height={36} className="rounded-xl" />
+              <span className="font-bold text-lg text-slate-900">Botiko<span className="text-brand">.pl</span></span>
+            </Link>
             <h1 className="text-2xl font-bold text-slate-900">Reset hasła</h1>
             <p className="text-slate-500 mt-1 text-sm">
               Wyślemy link do resetowania hasła

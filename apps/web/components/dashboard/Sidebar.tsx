@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -12,7 +13,6 @@ import {
   Code2,
   CreditCard,
   LogOut,
-  Bot,
   Zap,
   PanelLeftClose,
   PanelLeftOpen,
@@ -80,9 +80,13 @@ export function Sidebar() {
         {/* Logo */}
         <div className="flex items-center justify-between gap-2 p-4 border-b border-slate-800/60 flex-shrink-0">
           <div className={`flex items-center gap-3 min-w-0 ${collapsed ? 'w-8' : ''}`}>
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/25 flex-shrink-0">
-              <Bot className="w-4 h-4 text-white" />
-            </div>
+            <Image
+              src="/BotikoLogo.png"
+              alt="Botiko"
+              width={32}
+              height={32}
+              className="rounded-lg flex-shrink-0"
+            />
             {!collapsed && (
               <div className="min-w-0">
                 <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent block">

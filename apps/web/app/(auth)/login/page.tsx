@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '../../../lib/supabase';
@@ -21,9 +22,13 @@ function AuthLeftPanel({ headline, sub }: { headline: string; sub: string }) {
     >
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2.5">
-        <span className="w-9 h-9 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center text-white font-bold text-base">
-          B
-        </span>
+        <Image
+          src="/BotikoLogo.png"
+          alt="Botiko"
+          width={36}
+          height={36}
+          className="rounded-xl"
+        />
         <span className="text-white font-bold text-xl">
           Botiko<span className="text-indigo-300">.pl</span>
         </span>
@@ -103,7 +108,7 @@ function LoginForm() {
     <div className="flex flex-col justify-center w-full max-w-sm mx-auto px-6 lg:px-0 py-12 lg:py-0 min-h-screen lg:min-h-0">
       {/* Mobile logo */}
       <Link href="/" className="flex items-center gap-2 mb-8 lg:hidden">
-        <span className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-bold text-sm">B</span>
+        <Image src="/BotikoLogo.png" alt="Botiko" width={32} height={32} className="rounded-lg" />
         <span className="font-bold text-lg text-slate-900">Botiko<span className="text-brand">.pl</span></span>
       </Link>
 
