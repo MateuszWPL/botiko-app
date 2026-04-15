@@ -78,7 +78,7 @@ export function Sidebar() {
         className={`hidden md:flex flex-col h-screen sticky top-0 flex-shrink-0 bg-gradient-to-b from-slate-950 to-slate-900 border-r border-slate-800/50 overflow-hidden transition-[width] duration-300 ease-in-out ${sidebarWidth}`}
       >
         {/* Logo */}
-        <div className="flex items-center justify-between gap-2 p-4 border-b border-slate-800/60 flex-shrink-0">
+        <div className={`flex items-center gap-2 p-4 border-b border-slate-800/60 flex-shrink-0 ${collapsed ? 'justify-center' : 'justify-between'}`}>
           <div className={`flex items-center gap-3 min-w-0 ${collapsed ? 'w-8' : ''}`}>
             <Image
               src="/BotikoLogo.png"
