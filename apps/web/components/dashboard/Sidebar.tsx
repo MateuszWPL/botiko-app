@@ -87,17 +87,15 @@ export function Sidebar() {
               height={32}
               className="rounded-lg flex-shrink-0"
             />
-            {!collapsed && (
-              <div className="min-w-0">
-                <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent block">
-                  Botiko.pl
-                </span>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-xs text-slate-500">Panel zarządzania</span>
-                </div>
+            <div className={`min-w-0 transition-opacity duration-300 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+              <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent block">
+                Botiko.pl
+              </span>
+              <div className="flex items-center gap-1 mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-xs text-slate-500">Panel zarządzania</span>
               </div>
-            )}
+            </div>
           </div>
           <button
             onClick={toggleCollapse}
@@ -134,14 +132,12 @@ export function Sidebar() {
                       isActive ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'
                     }`}
                   />
-                  {!collapsed && (
-                    <>
-                      <span className="truncate">{item.label}</span>
-                      {isActive && (
-                        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0" />
-                      )}
-                    </>
-                  )}
+                  <div className={`flex items-center gap-2 min-w-0 flex-1 transition-opacity duration-300 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                    <span className="truncate">{item.label}</span>
+                    {isActive && (
+                      <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0" />
+                    )}
+                  </div>
                 </Link>
                 <Tooltip label={item.label} show={collapsed} />
               </div>
@@ -160,7 +156,7 @@ export function Sidebar() {
                 }`}
               >
                 <Rocket className="w-4 h-4 flex-shrink-0" />
-                {!collapsed && <span>Konfiguracja bota</span>}
+                <span className={`transition-opacity duration-300 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>Konfiguracja bota</span>
               </button>
               <Tooltip label="Konfiguracja bota" show={collapsed} />
             </div>
@@ -173,12 +169,10 @@ export function Sidebar() {
             <div className="w-6 h-6 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
               <Zap className="w-3 h-3 text-white" />
             </div>
-            {!collapsed && (
-              <div className="min-w-0">
-                <p className="text-xs font-semibold text-slate-300">Starter</p>
-                <p className="text-xs text-slate-500 truncate">149 zł / mies.</p>
-              </div>
-            )}
+            <div className={`min-w-0 transition-opacity duration-300 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+              <p className="text-xs font-semibold text-slate-300">Starter</p>
+              <p className="text-xs text-slate-500 truncate">149 zł / mies.</p>
+            </div>
             <Tooltip label="Plan Starter · 149 zł/mies." show={collapsed} />
           </div>
 
@@ -190,7 +184,7 @@ export function Sidebar() {
               }`}
             >
               <LogOut className="w-4 h-4 flex-shrink-0" />
-              {!collapsed && <span>Wyloguj się</span>}
+              <span className={`transition-opacity duration-300 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>Wyloguj się</span>
             </button>
             <Tooltip label="Wyloguj się" show={collapsed} />
           </div>
