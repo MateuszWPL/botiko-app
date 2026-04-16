@@ -67,6 +67,7 @@ export class AuthService {
             name: dto.companyName,
             industry: dto.industry,
             plan: 'STARTER',
+            isActive: true,
           },
         });
 
