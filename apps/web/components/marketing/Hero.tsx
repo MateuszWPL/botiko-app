@@ -40,56 +40,49 @@ function TypewriterText({ words }: { words: string[] }) {
 
 /* ─── Chat mockup ───────────────────────────────────────────── */
 
-type Phase = 'user-typing' | 'user-sent' | 'bot-typing' | 'bot-sent' | 'lead';
+type Phase = 'welcome' | 'suggestions' | 'user-sent' | 'bot-typing' | 'bot-replied' | 'lead';
+
+const BRAND = '#6366F1';
 
 const SCENES = [
   {
-    industry: 'Salon beauty',
-    color: '#EC4899',
-    emoji: '💅',
-    userMsg: 'Czy macie wolne w piątek po 17:00?',
-    botMsg: 'Jasne! Zostaw numer – recepcja oddzwoni i dobierzemy termin 💅',
+    botWelcome: 'Hej! Masz pytania? 💅',
+    suggestions: ['Jakie usługi oferujecie?', 'Jakie są godziny otwarcia?', 'Jak się skontaktować?'],
+    userMsg: 'Jakie usługi oferujecie?',
+    botReply: 'Oferujemy manicure, pedicure, przedłużanie paznokci i stylizacje 💅 Chcesz umówić wizytę?',
     leadName: 'Kasia W.',
-    leadTag: 'Wizyta piątek',
+    leadTag: 'Wizyta · beauty',
   },
   {
-    industry: 'Gabinet fizjo',
-    color: '#06B6D4',
-    emoji: '🏥',
-    userMsg: 'Ile kosztuje pierwsza konsultacja?',
-    botMsg: 'Konsultacja wstępna to 180 zł / 60 min. Chcesz umówić wizytę?',
+    botWelcome: 'Dzień dobry! W czym mogę pomóc? 🏥',
+    suggestions: ['Cennik konsultacji', 'Jak się zapisać?', 'Godziny otwarcia'],
+    userMsg: 'Cennik konsultacji',
+    botReply: 'Konsultacja wstępna to 180 zł / 60 min. Zostaw numer — oddzwonimy i umówimy termin 📞',
     leadName: 'Marek P.',
-    leadTag: 'Konsultacja',
+    leadTag: 'Wizyta · fizjo',
   },
   {
-    industry: 'Restauracja',
-    color: '#F97316',
-    emoji: '🍽️',
-    userMsg: 'Czy macie opcje wegetariańskie?',
-    botMsg: 'Mamy 9 dań wegetariańskich! Rezerwacja stolika na wieczór? 🥗',
+    botWelcome: 'Witamy! Czym mogę służyć? 🍽️',
+    suggestions: ['Menu dnia', 'Rezerwacja stolika', 'Godziny otwarcia'],
+    userMsg: 'Rezerwacja stolika',
+    botReply: 'Chętnie zarezerwujemy stolik! Na ile osób i o której godzinie? 😊',
     leadName: 'Ania K.',
-    leadTag: 'Rezerwacja',
+    leadTag: 'Rezerwacja · restauracja',
   },
 ];
 
-const TIMING = {
-  userTyping: 900,
-  userSent: 1400,
-  botTyping: 2000,
-  botSent: 3200,
-  lead: 4200,
-  nextScene: 6800,
-};
+// ms od startu sceny
+const T = { suggestions: 700, userSent: 1800, botTyping: 2200, botReplied: 3600, lead: 4400, next: 7000 };
 
-function TypingDots() {
+function BotTypingDots() {
   return (
-    <div className="flex items-center gap-1 px-3 py-2">
+    <div style={{ display: 'flex', gap: '4px', alignItems: 'center', padding: '10px 14px' }}>
       {[0, 1, 2].map((i) => (
-        <motion.span
+        <motion.div
           key={i}
-          className="w-1.5 h-1.5 rounded-full bg-slate-400"
+          style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#94a3b8' }}
           animate={{ y: [0, -4, 0], opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 0.7, repeat: Infinity, delay: i * 0.15, ease: 'easeInOut' }}
+          transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.18, ease: 'easeInOut' }}
         />
       ))}
     </div>
@@ -98,301 +91,327 @@ function TypingDots() {
 
 function ChatMockup() {
   const [sceneIdx, setSceneIdx] = useState(0);
-  const [phase, setPhase] = useState<Phase>('user-typing');
-
-  const scene = SCENES[sceneIdx];
+  const [phase, setPhase] = useState<Phase>('welcome');
 
   useEffect(() => {
-    setPhase('user-typing');
-
+    setPhase('welcome');
     const timers = [
-      setTimeout(() => setPhase('user-sent'), TIMING.userSent),
-      setTimeout(() => setPhase('bot-typing'), TIMING.botTyping),
-      setTimeout(() => setPhase('bot-sent'), TIMING.botSent),
-      setTimeout(() => setPhase('lead'), TIMING.lead),
-      setTimeout(() => {
-        setSceneIdx((p) => (p + 1) % SCENES.length);
-      }, TIMING.nextScene),
+      setTimeout(() => setPhase('suggestions'), T.suggestions),
+      setTimeout(() => setPhase('user-sent'), T.userSent),
+      setTimeout(() => setPhase('bot-typing'), T.botTyping),
+      setTimeout(() => setPhase('bot-replied'), T.botReplied),
+      setTimeout(() => setPhase('lead'), T.lead),
+      setTimeout(() => setSceneIdx((p) => (p + 1) % SCENES.length), T.next),
     ];
-
     return () => timers.forEach(clearTimeout);
   }, [sceneIdx]);
 
-  const showUserMsg = phase === 'user-sent' || phase === 'bot-typing' || phase === 'bot-sent' || phase === 'lead';
+  const scene = SCENES[sceneIdx];
+  const showSuggestions = phase === 'suggestions';
+  const showUserMsg = phase === 'user-sent' || phase === 'bot-typing' || phase === 'bot-replied' || phase === 'lead';
   const showBotTyping = phase === 'bot-typing';
-  const showBotMsg = phase === 'bot-sent' || phase === 'lead';
+  const showBotReply = phase === 'bot-replied' || phase === 'lead';
   const showLead = phase === 'lead';
 
   return (
-    <div className="relative w-full max-w-sm mx-auto lg:mx-0">
+    <div className="w-full flex flex-col gap-3">
 
-      {/* ── Floating badge: czas odpowiedzi ── */}
-      <motion.div
-        className="absolute -left-8 top-12 z-20"
-        initial={{ x: -20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.5, type: 'spring' }}
-      >
-        <div
-          className="flex items-center gap-2 px-3 py-2 rounded-2xl shadow-xl text-xs font-semibold"
-          style={{
-            background: 'rgba(255,255,255,0.12)',
-            border: '1px solid rgba(255,255,255,0.22)',
-            backdropFilter: 'blur(12px)',
-            color: '#fff',
-            transform: 'rotate(-3deg)',
-          }}
+      {/* ── Rząd 1: Chat window + boczne badge ── */}
+      <div className="flex items-start gap-3">
+
+        {/* Chat window — identyczny styl jak widget */}
+        <motion.div
+          className="flex-1 rounded-2xl overflow-hidden shadow-2xl"
+          initial={{ y: 16, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.15, duration: 0.5, type: 'spring' }}
+          style={{ backgroundColor: '#fff', minHeight: 320 }}
         >
-          <span className="text-base">⚡</span>
-          <div>
-            <p className="leading-none">Odp. w 1.2s</p>
-            <p className="text-white/50 font-normal leading-none mt-0.5">śr. czas</p>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* ── Floating badge: online 24/7 ── */}
-      <motion.div
-        className="absolute -right-6 top-6 z-20"
-        initial={{ x: 20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ delay: 0.8, duration: 0.5, type: 'spring' }}
-      >
-        <div
-          className="flex items-center gap-2 px-3 py-2 rounded-2xl shadow-xl text-xs font-semibold"
-          style={{
-            background: 'rgba(16,185,129,0.18)',
-            border: '1px solid rgba(16,185,129,0.35)',
-            backdropFilter: 'blur(12px)',
-            color: '#6ee7b7',
-            transform: 'rotate(2deg)',
-          }}
-        >
-          <motion.span
-            className="w-2 h-2 rounded-full bg-accent"
-            animate={{ opacity: [1, 0.3, 1] }}
-            transition={{ duration: 1.8, repeat: Infinity }}
-          />
-          <span>Online 24/7</span>
-        </div>
-      </motion.div>
-
-      {/* ── Floating badge: RODO ── */}
-      <motion.div
-        className="absolute -right-4 bottom-20 z-20"
-        initial={{ x: 20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ delay: 1.0, duration: 0.5, type: 'spring' }}
-      >
-        <div
-          className="flex items-center gap-2 px-3 py-2 rounded-2xl shadow-xl text-xs font-semibold"
-          style={{
-            background: 'rgba(99,102,241,0.2)',
-            border: '1px solid rgba(99,102,241,0.35)',
-            backdropFilter: 'blur(12px)',
-            color: '#a5b4fc',
-            transform: 'rotate(1.5deg)',
-          }}
-        >
-          <span>🔒</span>
-          <span>RODO zgodny</span>
-        </div>
-      </motion.div>
-
-      {/* ── Lead notification (pojawia się dynamicznie) ── */}
-      <AnimatePresence>
-        {showLead && (
-          <motion.div
-            className="absolute -left-6 bottom-16 z-30"
-            initial={{ x: -30, opacity: 0, scale: 0.9 }}
-            animate={{ x: 0, opacity: 1, scale: 1 }}
-            exit={{ x: -20, opacity: 0, scale: 0.9 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-          >
-            <div
-              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl shadow-2xl"
-              style={{
-                background: 'rgba(16,185,129,0.22)',
-                border: '1px solid rgba(16,185,129,0.4)',
-                backdropFilter: 'blur(16px)',
-              }}
-            >
-              <div className="w-7 h-7 rounded-full flex items-center justify-center text-sm"
-                style={{ background: 'rgba(16,185,129,0.3)' }}>
-                ✅
-              </div>
-              <div>
-                <p className="text-xs font-bold text-white leading-none">Lead zebrany!</p>
-                <p className="text-[10px] text-emerald-300 leading-none mt-0.5">
-                  {scene.leadName} · {scene.leadTag}
-                </p>
+          {/* Header */}
+          <div style={{ backgroundColor: BRAND, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{
+              width: 38, height: 38, borderRadius: '50%',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              border: '2px solid rgba(255,255,255,0.3)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 16, fontWeight: 700, color: '#fff', flexShrink: 0,
+            }}>B</div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontWeight: 700, fontSize: 14, color: '#fff', lineHeight: 1.2 }}>Botiko</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 2 }}>
+                <motion.span
+                  style={{ width: 7, height: 7, borderRadius: '50%', backgroundColor: '#4ade80', flexShrink: 0, display: 'inline-block' }}
+                  animate={{ opacity: [1, 0.4, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+                <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.85)' }}>Online · odpowiada błyskawicznie</span>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── Główne okno chatu ── */}
-      <motion.div
-        className="relative rounded-3xl overflow-hidden shadow-2xl"
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.6, type: 'spring' }}
-        style={{
-          background: 'rgba(255,255,255,0.07)',
-          border: '1px solid rgba(255,255,255,0.14)',
-          backdropFilter: 'blur(20px)',
-        }}
-      >
-        {/* Header */}
-        <div
-          className="flex items-center gap-3 px-4 py-3.5"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.15)' }}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={sceneIdx}
-              className="flex items-center gap-3 flex-1 min-w-0"
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 8 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0"
-                style={{ background: scene.color + '33', border: `1px solid ${scene.color}55` }}
-              >
-                {scene.emoji}
-              </div>
-              <div className="min-w-0">
-                <p className="text-white text-xs font-semibold truncate">{scene.industry}</p>
-                <p className="text-emerald-400 text-[10px] flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-                  Botiko · online
-                </p>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-          {/* Dot indicators */}
-          <div className="flex gap-1">
-            {SCENES.map((_, i) => (
-              <div
-                key={i}
-                className="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                style={{ background: i === sceneIdx ? scene.color : 'rgba(255,255,255,0.25)' }}
-              />
-            ))}
+            <div style={{
+              background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 8,
+              width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </div>
           </div>
-        </div>
 
-        {/* Messages */}
-        <div className="flex flex-col gap-2.5 px-4 py-4 min-h-[180px]">
-          {/* User message */}
-          <AnimatePresence>
-            {(phase === 'user-typing' || showUserMsg) && (
-              <motion.div
-                className="flex justify-end"
-                initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-              >
-                {phase === 'user-typing' ? (
-                  <div
-                    className="rounded-2xl rounded-tr-sm"
-                    style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.15)' }}
-                  >
-                    <TypingDots />
-                  </div>
-                ) : (
-                  <div
-                    className="max-w-[80%] px-3.5 py-2.5 rounded-2xl rounded-tr-sm text-xs text-white font-medium leading-relaxed"
-                    style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)' }}
-                  >
+          {/* Messages */}
+          <div style={{ padding: '14px 12px 8px', display: 'flex', flexDirection: 'column', gap: 8, minHeight: 220 }}>
+
+            {/* Welcome message from bot */}
+            <motion.div
+              style={{ display: 'flex', alignItems: 'flex-end', gap: 6 }}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.4 }}
+            >
+              <div style={{
+                width: 24, height: 24, borderRadius: '50%', backgroundColor: BRAND,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 10, fontWeight: 700, color: '#fff', flexShrink: 0,
+              }}>B</div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={sceneIdx}
+                  style={{
+                    maxWidth: '78%', padding: '9px 13px',
+                    borderRadius: '4px 14px 14px 14px',
+                    backgroundColor: '#f1f5f9',
+                    color: '#0f172a', fontSize: 13, lineHeight: 1.5,
+                  }}
+                  initial={{ opacity: 0, x: -6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  {scene.botWelcome}
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Suggested questions — po prawej, jak w widgecie */}
+            <AnimatePresence>
+              {showSuggestions && (
+                <motion.div
+                  style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'flex-end' }}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {scene.suggestions.map((s, i) => (
+                    <motion.div
+                      key={s}
+                      style={{
+                        padding: '7px 13px', borderRadius: 20,
+                        border: `1.5px solid ${BRAND}`,
+                        color: BRAND, fontSize: 12, lineHeight: 1.3,
+                        backgroundColor: 'transparent',
+                      }}
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.12, duration: 0.3 }}
+                    >
+                      {s}
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* User message */}
+            <AnimatePresence>
+              {showUserMsg && (
+                <motion.div
+                  style={{ display: 'flex', justifyContent: 'flex-end' }}
+                  initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+                >
+                  <div style={{
+                    maxWidth: '78%', padding: '9px 13px',
+                    borderRadius: '14px 14px 4px 14px',
+                    backgroundColor: BRAND, color: '#fff',
+                    fontSize: 13, lineHeight: 1.5,
+                  }}>
                     {scene.userMsg}
                   </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {/* Bot response */}
-          <AnimatePresence>
-            {(showBotTyping || showBotMsg) && (
-              <motion.div
-                className="flex justify-start gap-2"
-                initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-              >
-                <div
-                  className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5"
-                  style={{ background: `${scene.color}44` }}
+            {/* Bot typing / reply */}
+            <AnimatePresence>
+              {(showBotTyping || showBotReply) && (
+                <motion.div
+                  style={{ display: 'flex', alignItems: 'flex-end', gap: 6 }}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 24 }}
                 >
-                  🤖
-                </div>
-                {showBotTyping ? (
-                  <div
-                    className="rounded-2xl rounded-tl-sm"
-                    style={{ background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.3)' }}
-                  >
-                    <TypingDots />
-                  </div>
-                ) : (
-                  <div
-                    className="max-w-[80%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm text-xs leading-relaxed"
-                    style={{ background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.3)', color: '#c7d2fe' }}
-                  >
-                    {scene.botMsg}
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+                  <div style={{
+                    width: 24, height: 24, borderRadius: '50%', backgroundColor: BRAND,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 10, fontWeight: 700, color: '#fff', flexShrink: 0,
+                  }}>B</div>
+                  {showBotTyping ? (
+                    <div style={{ borderRadius: '4px 14px 14px 14px', backgroundColor: '#f1f5f9' }}>
+                      <BotTypingDots />
+                    </div>
+                  ) : (
+                    <motion.div
+                      style={{
+                        maxWidth: '78%', padding: '9px 13px',
+                        borderRadius: '4px 14px 14px 14px',
+                        backgroundColor: '#f1f5f9', color: '#0f172a',
+                        fontSize: 13, lineHeight: 1.5,
+                      }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {scene.botReply}
+                    </motion.div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
-        {/* Input bar */}
-        <div
-          className="flex items-center gap-2 px-4 py-3"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.08)', background: 'rgba(0,0,0,0.1)' }}
+          {/* Input bar */}
+          <div style={{
+            borderTop: '1px solid #e2e8f0', padding: '10px 12px',
+            display: 'flex', alignItems: 'center', gap: 8, backgroundColor: '#fff',
+          }}>
+            <div style={{
+              flex: 1, height: 36, borderRadius: 18,
+              border: '1px solid #e2e8f0', backgroundColor: '#f8fafc',
+              display: 'flex', alignItems: 'center', padding: '0 12px',
+            }}>
+              <span style={{ fontSize: 12, color: '#94a3b8' }}>Napisz wiadomość...</span>
+            </div>
+            <div style={{
+              width: 36, height: 36, borderRadius: '50%', backgroundColor: BRAND,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+            }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" fill="white" stroke="none" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div style={{ padding: '6px 0 8px', textAlign: 'center', backgroundColor: '#fff' }}>
+            <span style={{ fontSize: 10, color: '#94a3b8' }}>Powered by </span>
+            <span style={{ fontSize: 10, color: BRAND, fontWeight: 600 }}>Botiko.pl</span>
+          </div>
+        </motion.div>
+
+        {/* Boczna kolumna: 2 stacked badges */}
+        <motion.div
+          className="flex flex-col gap-2.5 pt-4"
+          initial={{ x: 16, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.5, type: 'spring' }}
         >
+          {/* ⚡ Czas odpowiedzi */}
           <div
-            className="flex-1 h-8 rounded-full px-3 flex items-center"
-            style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}
+            className="rounded-2xl px-3 py-2.5 shadow-lg"
+            style={{
+              background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)',
+              backdropFilter: 'blur(12px)', transform: 'rotate(-2deg)',
+            }}
           >
-            <span className="text-white/30 text-[11px]">Napisz wiadomość...</span>
+            <p className="text-white text-[11px] font-bold leading-none whitespace-nowrap">⚡ 1.2s</p>
+            <p className="text-white/50 text-[10px] leading-none mt-1 whitespace-nowrap">śr. odpowiedź</p>
           </div>
-          <div
-            className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ background: 'rgba(99,102,241,0.6)' }}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
-              <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-        </div>
-      </motion.div>
 
-      {/* ── Extra stats row pod oknem chatu ── */}
+          {/* 🟢 Online */}
+          <div
+            className="rounded-2xl px-3 py-2.5 shadow-lg"
+            style={{
+              background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)',
+              backdropFilter: 'blur(12px)', transform: 'rotate(2.5deg)',
+            }}
+          >
+            <div className="flex items-center gap-1.5">
+              <motion.span
+                className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1.8, repeat: Infinity }}
+              />
+              <p className="text-emerald-300 text-[11px] font-bold leading-none whitespace-nowrap">Online 24/7</p>
+            </div>
+            <p className="text-white/40 text-[10px] leading-none mt-1 whitespace-nowrap">nigdy nie śpi</p>
+          </div>
+
+          {/* 🔒 RODO */}
+          <div
+            className="rounded-2xl px-3 py-2.5 shadow-lg"
+            style={{
+              background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)',
+              backdropFilter: 'blur(12px)', transform: 'rotate(-1.5deg)',
+            }}
+          >
+            <p className="text-indigo-300 text-[11px] font-bold leading-none whitespace-nowrap">🔒 RODO</p>
+            <p className="text-white/40 text-[10px] leading-none mt-1 whitespace-nowrap">zgodność PL</p>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* ── Rząd 2: dolne badges + dynamiczny lead ── */}
       <motion.div
-        className="mt-3 flex gap-2"
-        initial={{ opacity: 0, y: 10 }}
+        className="flex gap-2.5"
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.1, duration: 0.5 }}
+        transition={{ delay: 0.8, duration: 0.4 }}
       >
+        {/* 149 zł */}
         <div
-          className="flex-1 rounded-2xl px-3 py-2.5"
-          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)' }}
+          className="flex-1 rounded-2xl px-3.5 py-2.5 shadow-lg"
+          style={{
+            background: 'rgba(255,255,255,0.09)', border: '1px solid rgba(255,255,255,0.15)',
+            backdropFilter: 'blur(10px)',
+          }}
         >
-          <p className="text-white/80 text-[11px] font-semibold">🔥 149 zł / mies.</p>
-          <p className="text-white/40 text-[10px] mt-0.5">oszczędza 2h/dzień</p>
+          <p className="text-white text-[11px] font-bold leading-none">🔥 149 zł / mies.</p>
+          <p className="text-white/45 text-[10px] leading-none mt-1">oszczędza 2h dziennie</p>
         </div>
+
+        {/* Bez kodowania */}
         <div
-          className="flex-1 rounded-2xl px-3 py-2.5"
-          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)' }}
+          className="flex-1 rounded-2xl px-3.5 py-2.5 shadow-lg"
+          style={{
+            background: 'rgba(255,255,255,0.09)', border: '1px solid rgba(255,255,255,0.15)',
+            backdropFilter: 'blur(10px)',
+          }}
         >
-          <p className="text-white/80 text-[11px] font-semibold">📋 Bez kodowania</p>
-          <p className="text-white/40 text-[10px] mt-0.5">gotowy w 15 minut</p>
+          <p className="text-white text-[11px] font-bold leading-none">📋 Bez kodowania</p>
+          <p className="text-white/45 text-[10px] leading-none mt-1">gotowy w 15 minut</p>
         </div>
+
+        {/* Dynamiczny lead badge */}
+        <AnimatePresence>
+          {showLead && (
+            <motion.div
+              className="flex-1 rounded-2xl px-3.5 py-2.5 shadow-xl"
+              style={{
+                background: 'rgba(16,185,129,0.2)', border: '1px solid rgba(16,185,129,0.4)',
+                backdropFilter: 'blur(10px)',
+              }}
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.85, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+            >
+              <p className="text-emerald-300 text-[11px] font-bold leading-none">✅ Lead zebrany!</p>
+              <p className="text-white/60 text-[10px] leading-none mt-1">{scene.leadName}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </div>
   );
@@ -435,7 +454,7 @@ export default function Hero() {
         }} />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-20">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] gap-12 lg:gap-10 items-center">
 
           {/* Left — copy */}
           <div>
@@ -455,10 +474,10 @@ export default function Hero() {
               <br />
               <span className="text-white/40">o 22:00.</span>
               <br />
-              <span className="text-[#a5b4fc] block h-[1.2em] mb-1">
+              <span className="text-[#a5b4fc] block h-[1.2em] mb-1 overflow-hidden">
                 <TypewriterText words={[
-                  'Botiko odpowiada', 
-                  'Botiko łapie leady', 
+                  'Botiko odpowiada',
+                  'Botiko łapie leady',
                   'Botiko doradza'
                 ]} />
               </span>
