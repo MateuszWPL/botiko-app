@@ -462,12 +462,12 @@ export default function Hero() {
             </div>
 
             <h1
-              className="animate-fade-in-up text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-6 w-full"
+              className="animate-fade-in-up text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.08] tracking-tight mb-6 w-full"
               style={{ animationDelay: '0.1s' }}
             >
               Klienci piszą o 22:00.
               <br />
-              <span className="text-[#a5b4fc] block text-3xl sm:text-4xl lg:text-5xl h-[1.3em] overflow-hidden">
+              <span className="text-[#a5b4fc] block h-[1.3em] overflow-hidden">
                 <TypewriterText words={[
                   'Botiko odpowiada.',
                   'Botiko łapie leady.',
