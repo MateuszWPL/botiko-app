@@ -46,28 +46,28 @@ const BRAND = '#6366F1';
 
 const SCENES = [
   {
-    botWelcome: 'Hej! Masz pytania? 💅',
+    botWelcome: 'Hej! Masz pytania?',
     suggestions: ['Jakie usługi oferujecie?', 'Jakie są godziny otwarcia?', 'Jak się skontaktować?'],
-    userMsg: 'Jakie usługi oferujecie?',
-    botReply: 'Oferujemy manicure, pedicure, przedłużanie paznokci i stylizacje 💅 Chcesz umówić wizytę?',
+    userMsg: 'Jakie są godziny otwarcia?',
+    botReply: 'Przyjmujemy pon–pt 9–20, sob 9–17. Zostaw numer — oddzwonimy i dobierzemy termin!',
     leadName: 'Kasia W.',
-    leadTag: 'Wizyta · beauty',
+    leadTag: 'Zapytanie · beauty',
   },
   {
-    botWelcome: 'Dzień dobry! W czym mogę pomóc? 🏥',
-    suggestions: ['Cennik konsultacji', 'Jak się zapisać?', 'Godziny otwarcia'],
+    botWelcome: 'Dzień dobry! W czym mogę pomóc?',
+    suggestions: ['Cennik konsultacji', 'Jak się skontaktować?', 'Godziny otwarcia'],
     userMsg: 'Cennik konsultacji',
-    botReply: 'Konsultacja wstępna to 180 zł / 60 min. Zostaw numer — oddzwonimy i umówimy termin 📞',
+    botReply: 'Konsultacja wstępna to 180 zł / 60 min. Zostaw numer — terapeuta oddzwoni i odpowie na pytania.',
     leadName: 'Marek P.',
-    leadTag: 'Wizyta · fizjo',
+    leadTag: 'Zapytanie · fizjo',
   },
   {
-    botWelcome: 'Witamy! Czym mogę służyć? 🍽️',
-    suggestions: ['Menu dnia', 'Rezerwacja stolika', 'Godziny otwarcia'],
-    userMsg: 'Rezerwacja stolika',
-    botReply: 'Chętnie zarezerwujemy stolik! Na ile osób i o której godzinie? 😊',
+    botWelcome: 'Witamy! Czym mogę służyć?',
+    suggestions: ['Jakie macie menu?', 'Godziny otwarcia', 'Jak się skontaktować?'],
+    userMsg: 'Jakie macie menu?',
+    botReply: 'Serwujemy kuchnię polską i włoską. Zostaw numer — zadzwonimy i odpowiemy na wszystkie pytania!',
     leadName: 'Ania K.',
-    leadTag: 'Rezerwacja · restauracja',
+    leadTag: 'Zapytanie · restauracja',
   },
 ];
 
@@ -214,7 +214,7 @@ function ChatMockup() {
                   style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'flex-end' }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+                  exit={{ opacity: 0, transition: { duration: 0 } }}
                   transition={{ duration: 0.3 }}
                 >
                   {scene.suggestions.map((s, i) => (
