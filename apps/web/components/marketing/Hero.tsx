@@ -126,13 +126,13 @@ function ChatMockup() {
       {/* ── Rząd 1: Chat window + boczne badge ── */}
       <div className="flex items-start gap-3">
 
-        {/* Chat window — identyczny styl jak widget */}
+        {/* Chat window — identyczny styl jak widget, fixed height */}
         <motion.div
           className="flex-1 rounded-2xl overflow-hidden shadow-2xl"
           initial={{ y: 16, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.15, duration: 0.5, type: 'spring' }}
-          style={{ backgroundColor: '#fff', minHeight: 320 }}
+          style={{ backgroundColor: '#fff', height: 380, display: 'flex', flexDirection: 'column' }}
         >
           {/* Header */}
           <div style={{ backgroundColor: BRAND, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -170,7 +170,7 @@ function ChatMockup() {
             style={{
               padding: '14px 12px 8px',
               display: 'flex', flexDirection: 'column', gap: 8,
-              minHeight: 220, maxHeight: 280,
+              flex: 1, minHeight: 0,
               overflowY: 'auto',
               scrollBehavior: 'smooth',
             }}
