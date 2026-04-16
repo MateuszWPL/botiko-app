@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { getBrandTemplate } from '../../brand-templates';
+import { KnowledgeService } from '../knowledge/knowledge.service';
 import type { CreateBotDto } from './dto/create-bot.dto';
 import type { UpdateBotDto } from './dto/update-bot.dto';
 
@@ -35,7 +36,10 @@ export interface BotDetail {
 export class BotService {
   private readonly logger = new Logger(BotService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly knowledgeService: KnowledgeService,
+  ) {}
 
   async create(tenantId: string, dto: CreateBotDto): Promise<BotDetail> {
     const existing = await this.prisma.bot.count({ where: { tenantId } });
@@ -44,6 +48,11 @@ export class BotService {
         'Plan STARTER allows only 1 bot per account. Update your bot instead.',
       );
     }
+
+    const tenant = await this.prisma.tenant.findUnique({
+      where: { id: tenantId },
+      select: { industry: true },
+    });
 
     const bot = await this.prisma.bot.create({
       data: {
@@ -63,8 +72,39 @@ export class BotService {
       },
     });
 
+    // Fire-and-forget: seed industry FAQ templates as initial knowledge chunks.
+    // Gives new users a working bot out of the box even before they add custom content.
+    // Errors are logged but never fail bot creation.
+    if (tenant) {
+      const template = getBrandTemplate(tenant.industry);
+      void this.seedFaqTemplates(tenantId, bot.id, template.faqTemplates);
+    }
+
     this.logger.log(`Bot created: ${bot.id} for tenant: ${tenantId}`);
     return bot;
+  }
+
+  private seedFaqTemplates(
+    tenantId: string,
+    botId: string,
+    faqs: Array<{ question: string; answer: string }>,
+  ): Promise<void> {
+    if (faqs.length === 0) return Promise.resolve();
+
+    return (async () => {
+      for (const faq of faqs) {
+        const content = `Pytanie: ${faq.question}\nOdpowiedź: ${faq.answer}`;
+        try {
+          await this.knowledgeService.addChunk(tenantId, botId, { content });
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : String(err);
+          this.logger.warn(`FAQ seed failed for bot ${botId}: ${msg}`);
+        }
+      }
+      this.logger.log(
+        `FAQ templates seeded for bot: ${botId} (${String(faqs.length)} chunks)`,
+      );
+    })();
   }
 
   async getPublicConfig(botId: string): Promise<BotPublicConfig> {

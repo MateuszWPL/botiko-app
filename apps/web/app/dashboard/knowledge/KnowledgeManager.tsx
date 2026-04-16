@@ -642,7 +642,7 @@ export function KnowledgeManager({
           <EmptyState
             icon={BookOpen}
             title="Baza wiedzy jest pusta"
-            description="Dodaj informacje o swoich usługach, cenach i godzinach otwarcia"
+            description="Bot nie może odpowiadać na pytania bez wiedzy o Twojej firmie. Zacznij od zakładki Kontakt — dodaj telefon, adres i godziny otwarcia."
           />
         ) : (
           <div className="space-y-3">

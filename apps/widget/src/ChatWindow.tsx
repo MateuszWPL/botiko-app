@@ -150,7 +150,7 @@ export function ChatWindow({
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   // Reaktywne wykrywanie mobile — reaguje na obrót urządzenia
   const [isMobile, setIsMobile] = useState(
     typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches,
@@ -163,8 +163,7 @@ export function ChatWindow({
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // Show quick suggestions only before first user message
-  const showSuggestions = userMessageCount === 0;
+  const [showSuggestions, setShowSuggestions] = useState(userMessageCount === 0);
 
   useEffect(() => {
     saveSession(botId, {
@@ -200,6 +199,7 @@ export function ChatWindow({
     if (!content || isLoading) return;
 
     setInput('');
+    setShowSuggestions(false);
     setMessages((prev) => [...prev, { role: 'user', content }]);
     setIsLoading(true);
 
@@ -582,6 +582,27 @@ export function ChatWindow({
         flexShrink: 0,
         backgroundColor: '#fff',
       }}>
+        {/* Suggested questions toggle — visible after first message if questions exist */}
+        {suggestedQuestions.length > 0 && userMessageCount > 0 && !isLoading && (
+          <button
+            onClick={() => setShowSuggestions((s) => !s)}
+            title="Przykładowe pytania"
+            style={{
+              padding: '8px',
+              borderRadius: '8px',
+              border: `1.5px solid ${showSuggestions ? `var(--botiko-primary, ${primaryColor})` : '#e2e8f0'}`,
+              backgroundColor: showSuggestions ? `var(--botiko-primary, ${primaryColor})` : '#fff',
+              cursor: 'pointer',
+              fontSize: '13px',
+              fontWeight: 700,
+              lineHeight: 1,
+              flexShrink: 0,
+              color: showSuggestions ? '#fff' : '#64748b',
+            }}
+          >
+            ?
+          </button>
+        )}
         {/* Lead form button */}
         {!lead.visible && !lead.submitted && userMessageCount >= 2 && (
           <button
@@ -601,20 +622,33 @@ export function ChatWindow({
             📞
           </button>
         )}
-        <input
+        <textarea
           ref={inputRef}
-          type="text"
           value={input}
-          onInput={(e) => setInput((e.target as HTMLInputElement).value)}
+          onInput={(e) => {
+            const el = e.target as HTMLTextAreaElement;
+            setInput(el.value);
+            // Auto-grow up to 3 lines (~96px)
+            el.style.height = 'auto';
+            el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
               void sendMessage();
             }
           }}
-          placeholder="Napisz wiadomość..."
+          placeholder="Napisz wiadomość... (Shift+Enter = nowa linia)"
           maxLength={1000}
-          style={{ ...inputStyle, flex: 1 }}
+          rows={1}
+          style={{
+            ...inputStyle,
+            flex: 1,
+            resize: 'none',
+            overflowY: 'hidden',
+            lineHeight: '1.4',
+            maxHeight: '96px',
+          }}
         />
         <button
           onClick={() => void sendMessage()}
