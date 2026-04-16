@@ -21,20 +21,20 @@ export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez 
         background: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #4338CA 100%)',
       }}
     >
-      {/* Photo — right side, peeks from behind the gradient */}
+      {/* Photo — full area, anchored right, gradient masks from left/top/bottom */}
       <div
-        className="absolute inset-y-0 right-0 w-3/5 pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'url(/blog/salon-beauty-24-7/hero.webp)',
+          backgroundImage: 'url(/blog/salon-beauty-24-7/hero.png)',
           backgroundSize: 'cover',
-          backgroundPosition: 'center top',
+          backgroundPosition: 'right center',
         }}
       >
-        {/* Left fade */}
+        {/* Left-to-right fade — full width, opaque on left */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to right, #1e1b4b 0%, #312e81 20%, rgba(67,56,202,0.5) 50%, transparent 100%)',
+            background: 'linear-gradient(to right, #1e1b4b 0%, #312e81 35%, rgba(49,46,129,0.7) 60%, transparent 100%)',
           }}
         />
         {/* Top fade */}
