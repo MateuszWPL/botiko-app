@@ -352,6 +352,33 @@ export function ChatWindow({
           </div>
         </div>
 
+        {/* Suggested questions toggle — mały przycisk obok X, widoczny po 1. wiadomości */}
+        {suggestedQuestions.length > 0 && userMessageCount > 0 && !isLoading && (
+          <button
+            onClick={() => setShowSuggestions((s) => !s)}
+            title="Przykładowe pytania"
+            aria-label="Przykładowe pytania"
+            style={{
+              background: showSuggestions ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)',
+              border: 'none',
+              borderRadius: '8px',
+              color: '#fff',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '30px',
+              height: '30px',
+              flexShrink: 0,
+              fontSize: '14px',
+              fontWeight: 700,
+              lineHeight: 1,
+            }}
+          >
+            ?
+          </button>
+        )}
+
         {/* Close button */}
         <button
           onClick={handleClose}
@@ -474,15 +501,14 @@ export function ChatWindow({
           </div>
         )}
 
-        {/* Quick suggestions — show before first message */}
+        {/* Quick suggestions — wyrównane do prawej jak wiadomości użytkownika */}
         {showSuggestions && !isLoading && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginTop: '4px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginTop: '4px', alignItems: 'flex-end' }}>
             {suggestedQuestions.map((s) => (
               <button
                 key={s}
                 onClick={() => void sendMessage(s)}
                 style={{
-                  alignSelf: 'flex-start',
                   padding: '7px 13px',
                   borderRadius: '20px',
                   border: `1.5px solid var(--botiko-primary, ${primaryColor})`,
@@ -490,7 +516,7 @@ export function ChatWindow({
                   color: `var(--botiko-primary, ${primaryColor})`,
                   fontSize: '13px',
                   cursor: 'pointer',
-                  textAlign: 'left',
+                  textAlign: 'right',
                   lineHeight: 1.3,
                   transition: 'background-color 0.15s ease',
                 }}
@@ -582,27 +608,6 @@ export function ChatWindow({
         flexShrink: 0,
         backgroundColor: '#fff',
       }}>
-        {/* Suggested questions toggle — visible after first message if questions exist */}
-        {suggestedQuestions.length > 0 && userMessageCount > 0 && !isLoading && (
-          <button
-            onClick={() => setShowSuggestions((s) => !s)}
-            title="Przykładowe pytania"
-            style={{
-              padding: '8px',
-              borderRadius: '8px',
-              border: `1.5px solid ${showSuggestions ? `var(--botiko-primary, ${primaryColor})` : '#e2e8f0'}`,
-              backgroundColor: showSuggestions ? `var(--botiko-primary, ${primaryColor})` : '#fff',
-              cursor: 'pointer',
-              fontSize: '13px',
-              fontWeight: 700,
-              lineHeight: 1,
-              flexShrink: 0,
-              color: showSuggestions ? '#fff' : '#64748b',
-            }}
-          >
-            ?
-          </button>
-        )}
         {/* Lead form button */}
         {!lead.visible && !lead.submitted && userMessageCount >= 2 && (
           <button
@@ -638,7 +643,7 @@ export function ChatWindow({
               void sendMessage();
             }
           }}
-          placeholder="Napisz wiadomość... (Shift+Enter = nowa linia)"
+          placeholder="Napisz wiadomość..."
           maxLength={1000}
           rows={1}
           style={{
