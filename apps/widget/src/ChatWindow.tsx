@@ -355,7 +355,12 @@ export function ChatWindow({
         {/* Suggested questions toggle — mały przycisk obok X, widoczny po 1. wiadomości */}
         {suggestedQuestions.length > 0 && userMessageCount > 0 && !isLoading && (
           <button
-            onClick={() => setShowSuggestions((s) => !s)}
+            onClick={() => {
+              setShowSuggestions((s) => {
+                if (!s) setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 30);
+                return !s;
+              });
+            }}
             title="Przykładowe pytania"
             aria-label="Przykładowe pytania"
             style={{
