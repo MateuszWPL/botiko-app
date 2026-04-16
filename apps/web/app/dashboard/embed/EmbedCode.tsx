@@ -30,7 +30,7 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
         icon={Code2}
         title="Najpierw utwórz bota"
         description="Kod instalacyjny jest dostępny po utworzeniu bota"
-        action={{ label: 'Utwórz bota', href: '/onboarding/step-1' }}
+        action={{ label: 'Utwórz bota', openWizard: true }}
       />
     );
   }
