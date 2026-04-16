@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -92,6 +92,7 @@ function BotTypingDots() {
 function ChatMockup() {
   const [sceneIdx, setSceneIdx] = useState(0);
   const [phase, setPhase] = useState<Phase>('welcome');
+  const messagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setPhase('welcome');
@@ -105,6 +106,12 @@ function ChatMockup() {
     ];
     return () => timers.forEach(clearTimeout);
   }, [sceneIdx]);
+
+  useEffect(() => {
+    const el = messagesRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+  }, [phase]);
 
   const scene = SCENES[sceneIdx];
   const showSuggestions = phase === 'suggestions';
@@ -158,7 +165,16 @@ function ChatMockup() {
           </div>
 
           {/* Messages */}
-          <div style={{ padding: '14px 12px 8px', display: 'flex', flexDirection: 'column', gap: 8, minHeight: 220 }}>
+          <div
+            ref={messagesRef}
+            style={{
+              padding: '14px 12px 8px',
+              display: 'flex', flexDirection: 'column', gap: 8,
+              minHeight: 220, maxHeight: 280,
+              overflowY: 'auto',
+              scrollBehavior: 'smooth',
+            }}
+          >
 
             {/* Welcome message from bot */}
             <motion.div
@@ -314,45 +330,47 @@ function ChatMockup() {
         >
           {/* ⚡ Czas odpowiedzi */}
           <div
-            className="rounded-2xl px-3 py-2.5 shadow-lg"
-            style={{
-              background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)',
-              backdropFilter: 'blur(12px)', transform: 'rotate(-2deg)',
-            }}
+            className="rounded-2xl px-3.5 py-3 shadow-lg"
+            style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.18)', backdropFilter: 'blur(12px)' }}
           >
-            <p className="text-white text-[11px] font-bold leading-none whitespace-nowrap">⚡ 1.2s</p>
-            <p className="text-white/50 text-[10px] leading-none mt-1 whitespace-nowrap">śr. odpowiedź</p>
+            <div className="flex items-center gap-2 mb-1">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="#fbbf24" stroke="none" />
+              </svg>
+              <p className="text-white text-xs font-bold leading-none whitespace-nowrap">1.2s</p>
+            </div>
+            <p className="text-white/50 text-[10px] leading-none whitespace-nowrap">śr. odpowiedź</p>
           </div>
 
-          {/* 🟢 Online */}
+          {/* Online 24/7 */}
           <div
-            className="rounded-2xl px-3 py-2.5 shadow-lg"
-            style={{
-              background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)',
-              backdropFilter: 'blur(12px)', transform: 'rotate(2.5deg)',
-            }}
+            className="rounded-2xl px-3.5 py-3 shadow-lg"
+            style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)', backdropFilter: 'blur(12px)' }}
           >
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2 mb-1">
               <motion.span
                 className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0"
                 animate={{ opacity: [1, 0.3, 1] }}
                 transition={{ duration: 1.8, repeat: Infinity }}
               />
-              <p className="text-emerald-300 text-[11px] font-bold leading-none whitespace-nowrap">Online 24/7</p>
+              <p className="text-emerald-300 text-xs font-bold leading-none whitespace-nowrap">Online 24/7</p>
             </div>
-            <p className="text-white/40 text-[10px] leading-none mt-1 whitespace-nowrap">nigdy nie śpi</p>
+            <p className="text-white/40 text-[10px] leading-none whitespace-nowrap">nigdy nie śpi</p>
           </div>
 
-          {/* 🔒 RODO */}
+          {/* RODO */}
           <div
-            className="rounded-2xl px-3 py-2.5 shadow-lg"
-            style={{
-              background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)',
-              backdropFilter: 'blur(12px)', transform: 'rotate(-1.5deg)',
-            }}
+            className="rounded-2xl px-3.5 py-3 shadow-lg"
+            style={{ background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.3)', backdropFilter: 'blur(12px)' }}
           >
-            <p className="text-indigo-300 text-[11px] font-bold leading-none whitespace-nowrap">🔒 RODO</p>
-            <p className="text-white/40 text-[10px] leading-none mt-1 whitespace-nowrap">zgodność PL</p>
+            <div className="flex items-center gap-2 mb-1">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <p className="text-indigo-300 text-xs font-bold leading-none whitespace-nowrap">RODO</p>
+            </div>
+            <p className="text-white/40 text-[10px] leading-none whitespace-nowrap">zgodność PL</p>
           </div>
         </motion.div>
       </div>
@@ -372,8 +390,13 @@ function ChatMockup() {
             backdropFilter: 'blur(10px)',
           }}
         >
-          <p className="text-white text-[11px] font-bold leading-none">🔥 149 zł / mies.</p>
-          <p className="text-white/45 text-[10px] leading-none mt-1">oszczędza 2h dziennie</p>
+          <div className="flex items-center gap-1.5 mb-1">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="#f97316" stroke="none">
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm1 14.5h-2V11h2v5.5zm0-7.5h-2V7h2v2z" />
+            </svg>
+            <p className="text-white text-[11px] font-bold leading-none">149 zł / mies.</p>
+          </div>
+          <p className="text-white/45 text-[10px] leading-none">oszczędza 2h dziennie</p>
         </div>
 
         {/* Badge 2: swap "Bez kodowania" ↔ "Lead zebrany" — layout się nie zmienia */}
@@ -392,8 +415,13 @@ function ChatMockup() {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.25 }}
               >
-                <p className="text-emerald-300 text-[11px] font-bold leading-none">✅ Lead zebrany!</p>
-                <p className="text-white/60 text-[10px] leading-none mt-1">{scene.leadName}</p>
+                <div className="flex items-center gap-1.5 mb-1">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <p className="text-emerald-300 text-[11px] font-bold leading-none">Lead zebrany!</p>
+                </div>
+                <p className="text-white/60 text-[10px] leading-none">{scene.leadName}</p>
               </motion.div>
             ) : (
               <motion.div
@@ -408,8 +436,13 @@ function ChatMockup() {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.25 }}
               >
-                <p className="text-white text-[11px] font-bold leading-none">📋 Bez kodowania</p>
-                <p className="text-white/45 text-[10px] leading-none mt-1">gotowy w 15 minut</p>
+                <div className="flex items-center gap-1.5 mb-1">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" />
+                  </svg>
+                  <p className="text-white text-[11px] font-bold leading-none">Bez kodowania</p>
+                </div>
+                <p className="text-white/45 text-[10px] leading-none">gotowy w 15 minut</p>
               </motion.div>
             )}
           </AnimatePresence>
