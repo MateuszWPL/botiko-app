@@ -23,32 +23,32 @@ export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez 
     >
       {/* Photo — right side, peeks from behind the gradient */}
       <div
-        className="absolute inset-y-0 right-0 w-3/4 pointer-events-none"
+        className="absolute inset-y-0 right-0 w-3/5 pointer-events-none"
         style={{
-          backgroundImage: 'url(https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=900&q=80)',
+          backgroundImage: 'url(/blog/salon-beauty-24-7/hero.webp)',
           backgroundSize: 'cover',
           backgroundPosition: 'center top',
         }}
       >
-        {/* Left fade — strongest, covers most of the photo */}
+        {/* Left fade */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to right, #1e1b4b 0%, #312e81 25%, rgba(67,56,202,0.7) 55%, transparent 100%)',
+            background: 'linear-gradient(to right, #1e1b4b 0%, #312e81 20%, rgba(67,56,202,0.5) 50%, transparent 100%)',
           }}
         />
         {/* Top fade */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to bottom, #1e1b4b 0%, transparent 30%)',
+            background: 'linear-gradient(to bottom, #1e1b4b 0%, transparent 25%)',
           }}
         />
         {/* Bottom fade */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(to top, #1e1b4b 0%, transparent 35%)',
+            background: 'linear-gradient(to top, #1e1b4b 0%, transparent 30%)',
           }}
         />
       </div>
