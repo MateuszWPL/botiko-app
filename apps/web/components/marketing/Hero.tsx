@@ -196,9 +196,9 @@ function ChatMockup() {
               {showSuggestions && (
                 <motion.div
                   style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'flex-end' }}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
                 >
                   {scene.suggestions.map((s, i) => (
@@ -226,9 +226,9 @@ function ChatMockup() {
               {showUserMsg && (
                 <motion.div
                   style={{ display: 'flex', justifyContent: 'flex-end' }}
-                  initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.25 }}
                 >
                   <div style={{
                     maxWidth: '78%', padding: '9px 13px',
@@ -247,9 +247,9 @@ function ChatMockup() {
               {(showBotTyping || showBotReply) && (
                 <motion.div
                   style={{ display: 'flex', alignItems: 'flex-end', gap: 6 }}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.25 }}
                 >
                   <div style={{
                     width: 24, height: 24, borderRadius: '50%', backgroundColor: BRAND,
@@ -357,14 +357,14 @@ function ChatMockup() {
         </motion.div>
       </div>
 
-      {/* ── Rząd 2: dolne badges + dynamiczny lead ── */}
+      {/* ── Rząd 2: dolne badges — zawsze 2, drugi swap z leadem ── */}
       <motion.div
         className="flex gap-2.5"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, duration: 0.4 }}
       >
-        {/* 149 zł */}
+        {/* Badge 1: zawsze widoczny */}
         <div
           className="flex-1 rounded-2xl px-3.5 py-2.5 shadow-lg"
           style={{
@@ -376,37 +376,44 @@ function ChatMockup() {
           <p className="text-white/45 text-[10px] leading-none mt-1">oszczędza 2h dziennie</p>
         </div>
 
-        {/* Bez kodowania */}
-        <div
-          className="flex-1 rounded-2xl px-3.5 py-2.5 shadow-lg"
-          style={{
-            background: 'rgba(255,255,255,0.09)', border: '1px solid rgba(255,255,255,0.15)',
-            backdropFilter: 'blur(10px)',
-          }}
-        >
-          <p className="text-white text-[11px] font-bold leading-none">📋 Bez kodowania</p>
-          <p className="text-white/45 text-[10px] leading-none mt-1">gotowy w 15 minut</p>
+        {/* Badge 2: swap "Bez kodowania" ↔ "Lead zebrany" — layout się nie zmienia */}
+        <div className="flex-1 relative" style={{ minHeight: 44 }}>
+          <AnimatePresence mode="wait">
+            {showLead ? (
+              <motion.div
+                key="lead"
+                className="absolute inset-0 rounded-2xl px-3.5 py-2.5 shadow-xl"
+                style={{
+                  background: 'rgba(16,185,129,0.2)', border: '1px solid rgba(16,185,129,0.4)',
+                  backdropFilter: 'blur(10px)',
+                }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.25 }}
+              >
+                <p className="text-emerald-300 text-[11px] font-bold leading-none">✅ Lead zebrany!</p>
+                <p className="text-white/60 text-[10px] leading-none mt-1">{scene.leadName}</p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="nocode"
+                className="absolute inset-0 rounded-2xl px-3.5 py-2.5 shadow-lg"
+                style={{
+                  background: 'rgba(255,255,255,0.09)', border: '1px solid rgba(255,255,255,0.15)',
+                  backdropFilter: 'blur(10px)',
+                }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.25 }}
+              >
+                <p className="text-white text-[11px] font-bold leading-none">📋 Bez kodowania</p>
+                <p className="text-white/45 text-[10px] leading-none mt-1">gotowy w 15 minut</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-
-        {/* Dynamiczny lead badge */}
-        <AnimatePresence>
-          {showLead && (
-            <motion.div
-              className="flex-1 rounded-2xl px-3.5 py-2.5 shadow-xl"
-              style={{
-                background: 'rgba(16,185,129,0.2)', border: '1px solid rgba(16,185,129,0.4)',
-                backdropFilter: 'blur(10px)',
-              }}
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.85, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 320, damping: 22 }}
-            >
-              <p className="text-emerald-300 text-[11px] font-bold leading-none">✅ Lead zebrany!</p>
-              <p className="text-white/60 text-[10px] leading-none mt-1">{scene.leadName}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </motion.div>
     </div>
   );
