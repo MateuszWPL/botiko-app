@@ -452,7 +452,7 @@ export default function Hero() {
         <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] gap-12 lg:gap-10 items-center">
 
           {/* Left — copy */}
-          <div>
+          <div className="min-w-0">
             <div
               className="animate-fade-in-up inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
               style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', color: '#a5b4fc' }}
@@ -462,21 +462,19 @@ export default function Hero() {
             </div>
 
             <h1
-              className="animate-fade-in-up text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.08] tracking-tight mb-6"
+              className="animate-fade-in-up text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-6 w-full"
               style={{ animationDelay: '0.1s' }}
             >
-              Klienci piszą
+              Klienci piszą o 22:00.
               <br />
-              <span className="text-white/40">o 22:00.</span>
-              <br />
-              <span className="text-[#a5b4fc] block h-[1.2em] mb-1 overflow-hidden">
+              <span className="text-[#a5b4fc] block text-3xl sm:text-4xl lg:text-5xl h-[1.3em] overflow-hidden">
                 <TypewriterText words={[
-                  'Botiko odpowiada',
-                  'Botiko łapie leady',
-                  'Botiko doradza'
+                  'Botiko odpowiada.',
+                  'Botiko łapie leady.',
+                  'Botiko doradza.',
                 ]} />
               </span>
-              <span className="text-white">za Ciebie.</span>
+              <span className="text-white">Ty śpisz spokojnie.</span>
             </h1>
 
             <p
