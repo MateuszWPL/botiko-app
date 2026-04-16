@@ -25,14 +25,14 @@ model User {
   id        String   @id @default(cuid())
   email     String   @unique
   tenantId  String
-  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
 model Bot {
   id                 String         @id @default(cuid())
   tenantId           String
-  tenant             Tenant         @relation(fields: [tenantId], references: [id])
+  tenant             Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   name               String
   welcomeMsg         String
   primaryColor       String         @default("#6366F1")
@@ -49,7 +49,7 @@ model Bot {
 model KnowledgeChunk {
   id        String                 @id @default(cuid())
   botId     String
-  bot       Bot                    @relation(fields: [botId], references: [id])
+  bot       Bot                    @relation(fields: [botId], references: [id], onDelete: Cascade)
   content   String
   embedding Unsupported("vector(1536)")
   category  String?
@@ -59,7 +59,7 @@ model KnowledgeChunk {
 model Lead {
   id        String     @id @default(cuid())
   tenantId  String
-  tenant    Tenant     @relation(fields: [tenantId], references: [id])
+  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   botId     String
   name      String     // encrypted AES-256
   phone     String     // encrypted AES-256
@@ -71,7 +71,7 @@ model Lead {
 model Conversation {
   id        String    @id @default(cuid())
   botId     String
-  bot       Bot       @relation(fields: [botId], references: [id])
+  bot       Bot       @relation(fields: [botId], references: [id], onDelete: Cascade)
   sessionId String
   messages  Message[]
   createdAt DateTime  @default(now())
@@ -80,7 +80,7 @@ model Conversation {
 model Message {
   id             String       @id @default(cuid())
   conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   role           MsgRole
   content        String
   createdAt      DateTime     @default(now())
