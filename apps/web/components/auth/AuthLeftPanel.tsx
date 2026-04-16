@@ -114,8 +114,8 @@ export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez 
           { val: '<15 min', label: 'wdrożenie' },
         ].map((s) => (
           <div key={s.label}>
-            <p className="text-white text-lg font-extrabold">{s.val}</p>
-            <p className="text-indigo-300 text-xs">{s.label}</p>
+            <p className="text-white text-2xl font-extrabold">{s.val}</p>
+            <p className="text-indigo-300 text-sm">{s.label}</p>
           </div>
         ))}
       </div>
