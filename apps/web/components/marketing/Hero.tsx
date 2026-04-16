@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function TypewriterText({ words }: { words: string[] }) {
   const [index, setIndex] = useState(0);
@@ -37,6 +37,368 @@ function TypewriterText({ words }: { words: string[] }) {
     </span>
   );
 }
+
+/* ─── Chat mockup ───────────────────────────────────────────── */
+
+type Phase = 'user-typing' | 'user-sent' | 'bot-typing' | 'bot-sent' | 'lead';
+
+const SCENES = [
+  {
+    industry: 'Salon beauty',
+    color: '#EC4899',
+    emoji: '💅',
+    userMsg: 'Czy macie wolne w piątek po 17:00?',
+    botMsg: 'Jasne! Zostaw numer – recepcja oddzwoni i dobierzemy termin 💅',
+    leadName: 'Kasia W.',
+    leadTag: 'Wizyta piątek',
+  },
+  {
+    industry: 'Gabinet fizjo',
+    color: '#06B6D4',
+    emoji: '🏥',
+    userMsg: 'Ile kosztuje pierwsza konsultacja?',
+    botMsg: 'Konsultacja wstępna to 180 zł / 60 min. Chcesz umówić wizytę?',
+    leadName: 'Marek P.',
+    leadTag: 'Konsultacja',
+  },
+  {
+    industry: 'Restauracja',
+    color: '#F97316',
+    emoji: '🍽️',
+    userMsg: 'Czy macie opcje wegetariańskie?',
+    botMsg: 'Mamy 9 dań wegetariańskich! Rezerwacja stolika na wieczór? 🥗',
+    leadName: 'Ania K.',
+    leadTag: 'Rezerwacja',
+  },
+];
+
+const TIMING = {
+  userTyping: 900,
+  userSent: 1400,
+  botTyping: 2000,
+  botSent: 3200,
+  lead: 4200,
+  nextScene: 6800,
+};
+
+function TypingDots() {
+  return (
+    <div className="flex items-center gap-1 px-3 py-2">
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          className="w-1.5 h-1.5 rounded-full bg-slate-400"
+          animate={{ y: [0, -4, 0], opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 0.7, repeat: Infinity, delay: i * 0.15, ease: 'easeInOut' }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ChatMockup() {
+  const [sceneIdx, setSceneIdx] = useState(0);
+  const [phase, setPhase] = useState<Phase>('user-typing');
+
+  const scene = SCENES[sceneIdx];
+
+  useEffect(() => {
+    setPhase('user-typing');
+
+    const timers = [
+      setTimeout(() => setPhase('user-sent'), TIMING.userSent),
+      setTimeout(() => setPhase('bot-typing'), TIMING.botTyping),
+      setTimeout(() => setPhase('bot-sent'), TIMING.botSent),
+      setTimeout(() => setPhase('lead'), TIMING.lead),
+      setTimeout(() => {
+        setSceneIdx((p) => (p + 1) % SCENES.length);
+      }, TIMING.nextScene),
+    ];
+
+    return () => timers.forEach(clearTimeout);
+  }, [sceneIdx]);
+
+  const showUserMsg = phase === 'user-sent' || phase === 'bot-typing' || phase === 'bot-sent' || phase === 'lead';
+  const showBotTyping = phase === 'bot-typing';
+  const showBotMsg = phase === 'bot-sent' || phase === 'lead';
+  const showLead = phase === 'lead';
+
+  return (
+    <div className="relative w-full max-w-sm mx-auto lg:mx-0">
+
+      {/* ── Floating badge: czas odpowiedzi ── */}
+      <motion.div
+        className="absolute -left-8 top-12 z-20"
+        initial={{ x: -20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.5, type: 'spring' }}
+      >
+        <div
+          className="flex items-center gap-2 px-3 py-2 rounded-2xl shadow-xl text-xs font-semibold"
+          style={{
+            background: 'rgba(255,255,255,0.12)',
+            border: '1px solid rgba(255,255,255,0.22)',
+            backdropFilter: 'blur(12px)',
+            color: '#fff',
+            transform: 'rotate(-3deg)',
+          }}
+        >
+          <span className="text-base">⚡</span>
+          <div>
+            <p className="leading-none">Odp. w 1.2s</p>
+            <p className="text-white/50 font-normal leading-none mt-0.5">śr. czas</p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── Floating badge: online 24/7 ── */}
+      <motion.div
+        className="absolute -right-6 top-6 z-20"
+        initial={{ x: 20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ delay: 0.8, duration: 0.5, type: 'spring' }}
+      >
+        <div
+          className="flex items-center gap-2 px-3 py-2 rounded-2xl shadow-xl text-xs font-semibold"
+          style={{
+            background: 'rgba(16,185,129,0.18)',
+            border: '1px solid rgba(16,185,129,0.35)',
+            backdropFilter: 'blur(12px)',
+            color: '#6ee7b7',
+            transform: 'rotate(2deg)',
+          }}
+        >
+          <motion.span
+            className="w-2 h-2 rounded-full bg-accent"
+            animate={{ opacity: [1, 0.3, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity }}
+          />
+          <span>Online 24/7</span>
+        </div>
+      </motion.div>
+
+      {/* ── Floating badge: RODO ── */}
+      <motion.div
+        className="absolute -right-4 bottom-20 z-20"
+        initial={{ x: 20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ delay: 1.0, duration: 0.5, type: 'spring' }}
+      >
+        <div
+          className="flex items-center gap-2 px-3 py-2 rounded-2xl shadow-xl text-xs font-semibold"
+          style={{
+            background: 'rgba(99,102,241,0.2)',
+            border: '1px solid rgba(99,102,241,0.35)',
+            backdropFilter: 'blur(12px)',
+            color: '#a5b4fc',
+            transform: 'rotate(1.5deg)',
+          }}
+        >
+          <span>🔒</span>
+          <span>RODO zgodny</span>
+        </div>
+      </motion.div>
+
+      {/* ── Lead notification (pojawia się dynamicznie) ── */}
+      <AnimatePresence>
+        {showLead && (
+          <motion.div
+            className="absolute -left-6 bottom-16 z-30"
+            initial={{ x: -30, opacity: 0, scale: 0.9 }}
+            animate={{ x: 0, opacity: 1, scale: 1 }}
+            exit={{ x: -20, opacity: 0, scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+          >
+            <div
+              className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl shadow-2xl"
+              style={{
+                background: 'rgba(16,185,129,0.22)',
+                border: '1px solid rgba(16,185,129,0.4)',
+                backdropFilter: 'blur(16px)',
+              }}
+            >
+              <div className="w-7 h-7 rounded-full flex items-center justify-center text-sm"
+                style={{ background: 'rgba(16,185,129,0.3)' }}>
+                ✅
+              </div>
+              <div>
+                <p className="text-xs font-bold text-white leading-none">Lead zebrany!</p>
+                <p className="text-[10px] text-emerald-300 leading-none mt-0.5">
+                  {scene.leadName} · {scene.leadTag}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Główne okno chatu ── */}
+      <motion.div
+        className="relative rounded-3xl overflow-hidden shadow-2xl"
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.6, type: 'spring' }}
+        style={{
+          background: 'rgba(255,255,255,0.07)',
+          border: '1px solid rgba(255,255,255,0.14)',
+          backdropFilter: 'blur(20px)',
+        }}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center gap-3 px-4 py-3.5"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.15)' }}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={sceneIdx}
+              className="flex items-center gap-3 flex-1 min-w-0"
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 8 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0"
+                style={{ background: scene.color + '33', border: `1px solid ${scene.color}55` }}
+              >
+                {scene.emoji}
+              </div>
+              <div className="min-w-0">
+                <p className="text-white text-xs font-semibold truncate">{scene.industry}</p>
+                <p className="text-emerald-400 text-[10px] flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+                  Botiko · online
+                </p>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+          {/* Dot indicators */}
+          <div className="flex gap-1">
+            {SCENES.map((_, i) => (
+              <div
+                key={i}
+                className="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                style={{ background: i === sceneIdx ? scene.color : 'rgba(255,255,255,0.25)' }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Messages */}
+        <div className="flex flex-col gap-2.5 px-4 py-4 min-h-[180px]">
+          {/* User message */}
+          <AnimatePresence>
+            {(phase === 'user-typing' || showUserMsg) && (
+              <motion.div
+                className="flex justify-end"
+                initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+              >
+                {phase === 'user-typing' ? (
+                  <div
+                    className="rounded-2xl rounded-tr-sm"
+                    style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.15)' }}
+                  >
+                    <TypingDots />
+                  </div>
+                ) : (
+                  <div
+                    className="max-w-[80%] px-3.5 py-2.5 rounded-2xl rounded-tr-sm text-xs text-white font-medium leading-relaxed"
+                    style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)' }}
+                  >
+                    {scene.userMsg}
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Bot response */}
+          <AnimatePresence>
+            {(showBotTyping || showBotMsg) && (
+              <motion.div
+                className="flex justify-start gap-2"
+                initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+              >
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5"
+                  style={{ background: `${scene.color}44` }}
+                >
+                  🤖
+                </div>
+                {showBotTyping ? (
+                  <div
+                    className="rounded-2xl rounded-tl-sm"
+                    style={{ background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.3)' }}
+                  >
+                    <TypingDots />
+                  </div>
+                ) : (
+                  <div
+                    className="max-w-[80%] px-3.5 py-2.5 rounded-2xl rounded-tl-sm text-xs leading-relaxed"
+                    style={{ background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.3)', color: '#c7d2fe' }}
+                  >
+                    {scene.botMsg}
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Input bar */}
+        <div
+          className="flex items-center gap-2 px-4 py-3"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.08)', background: 'rgba(0,0,0,0.1)' }}
+        >
+          <div
+            className="flex-1 h-8 rounded-full px-3 flex items-center"
+            style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}
+          >
+            <span className="text-white/30 text-[11px]">Napisz wiadomość...</span>
+          </div>
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ background: 'rgba(99,102,241,0.6)' }}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
+              <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── Extra stats row pod oknem chatu ── */}
+      <motion.div
+        className="mt-3 flex gap-2"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.1, duration: 0.5 }}
+      >
+        <div
+          className="flex-1 rounded-2xl px-3 py-2.5"
+          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)' }}
+        >
+          <p className="text-white/80 text-[11px] font-semibold">🔥 149 zł / mies.</p>
+          <p className="text-white/40 text-[10px] mt-0.5">oszczędza 2h/dzień</p>
+        </div>
+        <div
+          className="flex-1 rounded-2xl px-3 py-2.5"
+          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)' }}
+        >
+          <p className="text-white/80 text-[11px] font-semibold">📋 Bez kodowania</p>
+          <p className="text-white/40 text-[10px] mt-0.5">gotowy w 15 minut</p>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+/* ─── Trust stats ────────────────────────────────────────────── */
 
 const TRUST_STATS = [
   { value: '14 dni', label: 'darmowych testów' },
@@ -143,85 +505,12 @@ export default function Hero() {
             </p>
           </div>
 
-          {/* Right — video placeholder */}
-          <div className="animate-fade-in-up flex flex-col justify-center lg:justify-end gap-4" style={{ animationDelay: '0.2s' }}>
-            <div className="relative w-full max-w-lg mx-auto lg:mx-0">
-              {/* Video placeholder card */}
-              <div
-                className="relative rounded-3xl overflow-hidden shadow-2xl"
-                style={{
-                  background: 'linear-gradient(135deg, #1e1b4b 0%, #2d2a6e 50%, #3730a3 100%)',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                  aspectRatio: '16/9',
-                }}
-              >
-                {/* Decorative grid pattern */}
-                <div
-                  className="absolute inset-0 opacity-[0.06]"
-                  style={{
-                    backgroundImage: 'linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px)',
-                    backgroundSize: '32px 32px',
-                  }}
-                />
-
-                {/* Soft glow orbs */}
-                <div className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full opacity-20"
-                  style={{ background: 'radial-gradient(circle, #8B5CF6, transparent 70%)' }} />
-                <div className="absolute bottom-1/4 right-1/4 w-24 h-24 rounded-full opacity-15"
-                  style={{ background: 'radial-gradient(circle, #10B981, transparent 70%)' }} />
-
-                {/* Center content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                  {/* Play button */}
-                  <div
-                    className="w-16 h-16 rounded-full flex items-center justify-center shadow-xl"
-                    style={{ background: 'rgba(255,255,255,0.15)', border: '2px solid rgba(255,255,255,0.3)', backdropFilter: 'blur(8px)' }}
-                  >
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="white" className="ml-1">
-                      <polygon points="5,3 19,12 5,21" />
-                    </svg>
-                  </div>
-
-                  <div className="text-center px-6">
-                    <p className="text-white font-semibold text-sm">Zobacz jak Botiko działa</p>
-                    <p className="text-indigo-300 text-xs mt-1">Film wkrótce · ~60 sekund</p>
-                  </div>
-                </div>
-
-                {/* Bottom bar — fake video controls */}
-                <div
-                  className="absolute bottom-0 inset-x-0 px-5 py-3 flex items-center gap-3"
-                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)' }}
-                >
-                  <div className="flex-1 h-0.5 rounded-full bg-white/20">
-                    <div className="w-0 h-full rounded-full bg-white/50" />
-                  </div>
-                  <span className="text-white/50 text-[10px] font-mono">0:60</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Badges row */}
-            <div className="flex gap-3 max-w-lg mx-auto lg:mx-0 w-full">
-              <div className="glass rounded-2xl px-4 py-2.5 flex-1 shadow-lg">
-                <p className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2.5">
-                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                  </svg>
-                  Odpowiedź w kilka sekund
-                </p>
-                <p className="text-[11px] text-slate-500 mt-0.5">Ty śpisz spokojnie</p>
-              </div>
-              <div className="glass rounded-2xl px-4 py-2.5 flex-1 shadow-lg">
-                <p className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  Lead zapisany
-                </p>
-                <p className="text-[11px] text-slate-500 mt-0.5">Demo leada · Piątek 14:30</p>
-              </div>
-            </div>
+          {/* Right — animated chat mockup */}
+          <div
+            className="animate-fade-in-up flex flex-col justify-center items-center lg:items-start"
+            style={{ animationDelay: '0.2s' }}
+          >
+            <ChatMockup />
           </div>
         </div>
 
