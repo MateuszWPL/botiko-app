@@ -93,6 +93,7 @@ function ChatMockup() {
   const [sceneIdx, setSceneIdx] = useState(0);
   const [phase, setPhase] = useState<Phase>('welcome');
   const messagesRef = useRef<HTMLDivElement>(null);
+  const frozenLeadName = useRef<string>(SCENES[0].leadName);
 
   useEffect(() => {
     setPhase('welcome');
@@ -101,7 +102,7 @@ function ChatMockup() {
       setTimeout(() => setPhase('user-sent'), T.userSent),
       setTimeout(() => setPhase('bot-typing'), T.botTyping),
       setTimeout(() => setPhase('bot-replied'), T.botReplied),
-      setTimeout(() => setPhase('lead'), T.lead),
+      setTimeout(() => { frozenLeadName.current = SCENES[sceneIdx].leadName; setPhase('lead'); }, T.lead),
       setTimeout(() => setSceneIdx((p) => (p + 1) % SCENES.length), T.next),
     ];
     return () => timers.forEach(clearTimeout);
@@ -421,7 +422,7 @@ function ChatMockup() {
                   </svg>
                   <p className="text-emerald-300 text-[11px] font-bold leading-none">Lead zebrany!</p>
                 </div>
-                <p className="text-white/60 text-[10px] leading-none">{scene.leadName}</p>
+                <p className="text-white/60 text-[10px] leading-none">{frozenLeadName.current}</p>
               </motion.div>
             ) : (
               <motion.div
