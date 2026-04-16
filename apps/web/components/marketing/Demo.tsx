@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
+import Image from 'next/image';
 import ScrollReveal from './ScrollReveal';
 
 const DEMO_BOT_ID = process.env.NEXT_PUBLIC_DEMO_BOT_ID;
@@ -44,128 +45,6 @@ const FEATURES = [
   },
 ];
 
-const NOTIFICATIONS = [
-  {
-    icon: '💬',
-    accent: '#6366F1',
-    bg: '#EEF2FF',
-    label: 'Nowa wiadomość',
-    body: 'Ile kosztuje manicure hybrydowy?',
-    from: 'Karolina M.',
-    time: 'przed chwilą',
-  },
-  {
-    icon: '📞',
-    accent: '#10B981',
-    bg: '#ECFDF5',
-    label: 'Bot zebrał lead!',
-    body: 'Anna W. zostawiła numer — czeka na kontakt',
-    from: 'Anna W.',
-    time: '2 min temu',
-  },
-  {
-    icon: '🌙',
-    accent: '#8B5CF6',
-    bg: '#F5F3FF',
-    label: 'Odpowiedź o 23:17',
-    body: 'Bot odpisał kiedy Ty spałaś',
-    from: 'Monika K.',
-    time: '5 min temu',
-  },
-  {
-    icon: '⚡',
-    accent: '#F59E0B',
-    bg: '#FFFBEB',
-    label: 'Błyskawiczna odpowiedź',
-    body: 'Klientka spytała o wolne terminy w piątek',
-    from: 'Natalia B.',
-    time: '8 min temu',
-  },
-  {
-    icon: '✅',
-    accent: '#10B981',
-    bg: '#ECFDF5',
-    label: 'Lead przekonwertowany',
-    body: 'Paulina umówiła wizytę przez Booksy',
-    from: 'Paulina S.',
-    time: '12 min temu',
-  },
-];
-
-function LiveFeed() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setVisible(false);
-      setTimeout(() => {
-        setActiveIndex((i) => (i + 1) % NOTIFICATIONS.length);
-        setVisible(true);
-      }, 350);
-    }, 2800);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Show 3 notifications: incoming (top, animated), + 2 older below (static, dimmed)
-  const items = [0, 1, 2].map((offset) => NOTIFICATIONS[(activeIndex + offset) % NOTIFICATIONS.length]);
-
-  return (
-    <div className="relative w-full max-w-sm mx-auto select-none">
-      {/* Live pill */}
-      <div className="flex justify-center mb-4">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-red-50 text-red-500 border border-red-100">
-          <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-          LIVE
-        </span>
-      </div>
-
-      <div className="flex flex-col gap-2.5">
-        {items.map((notif, offset) => (
-          <div
-            key={`${notif.label}-${offset}`}
-            className="flex items-start gap-3 rounded-2xl px-4 py-3.5 border transition-all duration-500"
-            style={{
-              background: offset === 0 ? notif.bg : '#FAFAFA',
-              borderColor: offset === 0 ? notif.accent + '33' : '#F1F5F9',
-              opacity: offset === 0 ? (visible ? 1 : 0) : offset === 1 ? 0.65 : 0.35,
-              transform: offset === 0 ? (visible ? 'translateY(0)' : 'translateY(-8px)') : 'none',
-              boxShadow: offset === 0 ? `0 4px 24px ${notif.accent}18` : 'none',
-            }}
-          >
-            {/* Icon */}
-            <div
-              className="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-base"
-              style={{ background: offset === 0 ? notif.accent + '18' : '#F1F5F9' }}
-            >
-              {notif.icon}
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between gap-2">
-                <span
-                  className="text-xs font-bold truncate"
-                  style={{ color: offset === 0 ? notif.accent : '#94A3B8' }}
-                >
-                  {notif.label}
-                </span>
-                <span className="text-[10px] text-slate-400 shrink-0">{notif.time}</span>
-              </div>
-              <p className="text-xs text-slate-600 mt-0.5 truncate">{notif.body}</p>
-              <p className="text-[10px] text-slate-400 mt-0.5">{notif.from}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* "handled by bot" footer */}
-      <p className="text-center text-[11px] text-slate-400 mt-3">
-        Obsługiwane automatycznie przez Botiko — bez Twojego udziału
-      </p>
-    </div>
-  );
-}
 
 declare global {
   interface Window {
@@ -207,9 +86,12 @@ export default function Demo() {
           )}
         </ScrollReveal>
 
-        {/* Live feed */}
-        <ScrollReveal className="mb-14">
-          <LiveFeed />
+        {/* Logo */}
+        <ScrollReveal className="flex justify-center mb-14">
+          <div className="relative">
+            <div className="absolute inset-0 rounded-full blur-3xl opacity-20" style={{ background: '#6366F1', transform: 'scale(1.8)' }} />
+            <Image src="/BotikoLogo.png" alt="Botiko" width={96} height={96} className="relative rounded-3xl shadow-xl" />
+          </div>
         </ScrollReveal>
 
         {/* Features grid */}
