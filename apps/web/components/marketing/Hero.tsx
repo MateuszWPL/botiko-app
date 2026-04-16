@@ -31,10 +31,10 @@ function TypewriterText({ words }: { words: string[] }) {
   }, [subIndex, index, isDeleting, words]);
 
   return (
-    <span className="inline-flex items-baseline whitespace-nowrap min-h-[1.2em]">
+    <>
       <span>{words[index].substring(0, subIndex)}</span>
-      <span className="animate-pulse inline-block w-[4px] h-[0.8em] bg-indigo-300 ml-1" />
-    </span>
+      <span className="animate-pulse inline-block w-[3px] h-[0.75em] bg-indigo-300 ml-0.5 align-middle" />
+    </>
   );
 }
 
@@ -303,11 +303,6 @@ function ChatMockup() {
             </div>
           </div>
 
-          {/* Footer */}
-          <div style={{ padding: '6px 0 8px', textAlign: 'center', backgroundColor: '#fff' }}>
-            <span style={{ fontSize: 10, color: '#94a3b8' }}>Powered by </span>
-            <span style={{ fontSize: 10, color: BRAND, fontWeight: 600 }}>Botiko.pl</span>
-          </div>
         </motion.div>
 
         {/* Boczna kolumna: 2 stacked badges */}
