@@ -27,8 +27,9 @@ export async function TrialBanner() {
   // Trial not tracked (edge case)
   if (!status.trialEndsAt && status.hasSubscription) return null;
 
-  const isExpired = !status.isActive && !status.hasSubscription;
   const daysLeft = status.trialEndsAt ? getDaysLeft(status.trialEndsAt) : 0;
+  const trialStillActive = status.trialEndsAt ? daysLeft > 0 : false;
+  const isExpired = !status.isActive && !status.hasSubscription && !trialStillActive;
 
   // No banner during healthy trial (> 5 days left)
   if (!isExpired && daysLeft > 5) return null;

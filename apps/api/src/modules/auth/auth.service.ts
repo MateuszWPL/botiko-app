@@ -52,9 +52,7 @@ export class AuthService {
         errorMsg.includes('duplicate') ||
         errorMsg.includes('email address has already been registered')
       ) {
-        throw new ConflictException(
-          'Użytkownik z tym emailem już istnieje',
-        );
+        throw new ConflictException('Użytkownik z tym emailem już istnieje');
       }
       this.logger.error('Supabase user creation failed', authError?.message);
       throw new InternalServerErrorException('Rejestracja nie powiodła się');
@@ -69,6 +67,7 @@ export class AuthService {
             name: dto.companyName,
             industry: dto.industry,
             plan: 'STARTER',
+            isActive: true,
           },
         });
 

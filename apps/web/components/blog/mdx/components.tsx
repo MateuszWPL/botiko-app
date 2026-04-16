@@ -4,6 +4,7 @@ import InfoBox from './InfoBox';
 import ImageGallery from './ImageGallery';
 import VideoEmbed from './VideoEmbed';
 import CallToAction from './CallToAction';
+import DownloadPdf from './DownloadPdf';
 
 // Custom blog components available inside MDX files
 export const mdxComponents = {
@@ -11,6 +12,7 @@ export const mdxComponents = {
   ImageGallery,
   VideoEmbed,
   CallToAction,
+  DownloadPdf,
 
   img: ({ src, alt }: ComponentPropsWithoutRef<'img'>) => (
     <figure className="my-8">

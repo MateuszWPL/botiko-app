@@ -6,6 +6,7 @@ import {
   ServiceUnavailableException,
 } from '@nestjs/common';
 import StripeLib from 'stripe';
+import { Plan } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { NotificationService } from '../../common/services/notification.service';
 import { env } from '../../config/env';
@@ -27,6 +28,7 @@ const ACTIVE_STATUSES: string[] = ['active', 'trialing', 'past_due'];
 
 // Minimal local shapes for webhook event payloads
 interface StripeSession {
+  id: string;
   client_reference_id: string | null;
   customer: string | { id?: string } | null;
   subscription: string | { id?: string } | null;
@@ -123,7 +125,10 @@ export class BillingService {
    * Sends trial reminder emails and deactivates expired trials.
    * Idempotent: emails only sent on exact trial day (day 11 = 3 days left, day 13 = 1 day left, day 14+ = expired).
    */
-  async runTrialNotifications(): Promise<{ processed: number; emails: number }> {
+  async runTrialNotifications(): Promise<{
+    processed: number;
+    emails: number;
+  }> {
     const tenants = await this.prisma.tenant.findMany({
       where: { stripeSubscriptionId: null },
       select: {
@@ -152,7 +157,9 @@ export class BillingService {
           where: { id: tenant.id },
           data: { isActive: false },
         });
-        this.logger.log(`Cron: trial expired — deactivated tenant: ${tenant.id}`);
+        this.logger.log(
+          `Cron: trial expired — deactivated tenant: ${tenant.id}`,
+        );
       }
 
       // Send emails only on specific days (idempotent — cron runs once daily)
@@ -166,7 +173,9 @@ export class BillingService {
       }
     }
 
-    this.logger.log(`Trial cron: processed ${tenants.length} tenants, sent ${emails} emails`);
+    this.logger.log(
+      `Trial cron: processed ${tenants.length} tenants, sent ${emails} emails`,
+    );
     return { processed: tenants.length, emails };
   }
 
@@ -288,16 +297,36 @@ export class BillingService {
         ? session.subscription
         : session.subscription?.id;
 
+    // Retrieve session with line_items to determine which plan was purchased.
+    // Falls back to STARTER if retrieval fails — safe for single-plan MVP.
+    let plan: Plan = Plan.STARTER;
+    try {
+      const fullSession = await this.stripe!.checkout.sessions.retrieve(
+        session.id,
+        { expand: ['line_items'] },
+      );
+      const priceId = fullSession.line_items?.data[0]?.price?.id;
+      plan = this.resolvePlan(priceId);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.warn(
+        `Could not retrieve session line_items: ${msg} — defaulting to STARTER`,
+      );
+    }
+
     await this.prisma.tenant.update({
       where: { id: tenantId },
       data: {
         isActive: true,
+        plan,
         stripeCustomerId: customerId ?? undefined,
         stripeSubscriptionId: subscriptionId ?? undefined,
       },
     });
 
-    this.logger.log(`Checkout completed — tenant activated: ${tenantId}`);
+    this.logger.log(
+      `Checkout completed — tenant activated: ${tenantId}, plan: ${plan}`,
+    );
   }
 
   private async onSubscriptionUpdated(
@@ -363,5 +392,21 @@ export class BillingService {
     if (!this.stripe) {
       throw new ServiceUnavailableException('Billing not configured');
     }
+  }
+
+  /**
+   * Maps a Stripe price ID to the corresponding Plan enum value.
+   * Extend this when adding PRO or PREMIUM tiers — add STRIPE_PRO_PRICE_ID
+   * to env.ts and map it here.
+   */
+  private resolvePlan(priceId: string | null | undefined): Plan {
+    if (
+      priceId &&
+      env.STRIPE_PRO_PRICE_ID &&
+      priceId === env.STRIPE_PRO_PRICE_ID
+    ) {
+      return Plan.PRO;
+    }
+    return Plan.STARTER;
   }
 }

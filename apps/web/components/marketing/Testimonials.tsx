@@ -135,7 +135,7 @@ export default function Testimonials() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="grid sm:grid-cols-3 gap-6 text-center pt-10" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
           {[
-            { value: 'Pilot', label: 'program wdrożeń dla pierwszych firm' },
+            { value: '14 dni', label: 'darmowych testów bez karty' },
             { value: '24/7', label: 'bot odpowiada także po godzinach' },
             { value: '~ 15 min', label: 'konfiguracja bota w wielu przypadkach' },
           ].map((stat) => (

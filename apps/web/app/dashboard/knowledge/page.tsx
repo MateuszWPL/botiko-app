@@ -47,7 +47,7 @@ export default async function KnowledgePage() {
           icon={BookOpen}
           title="Najpierw utwórz bota"
           description="Baza wiedzy jest powiązana z konkretnym botem"
-          action={{ label: 'Utwórz bota', href: '/onboarding/step-1' }}
+          action={{ label: 'Utwórz bota', openWizard: true }}
         />
       ) : (
         <KnowledgeManager botId={firstBot.id} initialChunks={chunks} />

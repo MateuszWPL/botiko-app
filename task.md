@@ -267,10 +267,10 @@
 - [x] `components/ui/StatusBadge.tsx` — lead status z ikoną i kolorem, wydzielony z LeadsTable
 
 #### Testowanie wizualne
-- [ ] Sprawdź na 1280px (laptop) — najczęstszy rozmiar u klientów
-- [ ] Sprawdź na 375px (iPhone SE) — mobile
-- [ ] Dark mode: nie robimy (za wcześnie) — upewnij się że nie ma `dark:` klas które psują wygląd
-- [ ] Sprawdź animacje: `prefers-reduced-motion` respektowany (dodaj `motion-safe:` prefix)
+- [x] Sprawdź na 1280px (laptop) — najczęstszy rozmiar u klientów
+- [x] Sprawdź na 375px (iPhone SE) — mobile
+- [x] Dark mode: nie robimy (za wcześnie) — upewnij się że nie ma `dark:` klas które psują wygląd
+- [x] Sprawdź animacje: `prefers-reduced-motion` respektowany (dodaj `motion-safe:` prefix)
 
 ---
 
@@ -288,10 +288,10 @@
 - [x] Link do polityki prywatności w widgecie przy checkboxie RODO i w footerze LP
 
 #### Testowanie (manualne — do zrobienia przed pilotem)
-- [ ] Sprawdź LP na mobile (Chrome DevTools → iPhone SE)
-- [ ] Sprawdź że przycisk CTA otwiera onboarding rejestrację
-- [ ] Sprawdź demo bot — ustaw `NEXT_PUBLIC_DEMO_BOT_ID`, zadaj 3-4 pytania, zrób lead, sprawdź czy email dociera
-- [ ] Sprawdź OG preview: wklej URL LP w [opengraph.xyz](https://www.opengraph.xyz/)
+- [x] Sprawdź LP na mobile (Chrome DevTools → iPhone SE)
+- [x] Sprawdź że przycisk CTA otwiera onboarding rejestrację
+- [x] Sprawdź demo bot — ustaw `NEXT_PUBLIC_DEMO_BOT_ID`, zadaj 3-4 pytania, zrób lead, sprawdź czy email dociera
+- [x] Sprawdź OG preview: wklej URL LP w [opengraph.xyz](https://www.opengraph.xyz/)
 
 ---
 
@@ -371,13 +371,13 @@ featured: false                 # true = wyróżniony post na górze listingu
 Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<ImageGallery>`, `<VideoEmbed>`, `<CallToAction>`.
 
 #### Testowanie (manualne)
-- [ ] Sprawdź `/blog` — listing, filtry kategorii, paginacja
-- [ ] Kliknij w post → sprawdź breadcrumbs, ToC, rich content
-- [ ] Sprawdź `/blog/kategoria/ai-dla-beauty` i `/blog/tag/salon-beauty`
-- [ ] Sprawdź `sitemap.xml` — widać posty bloga
-- [ ] Walidacja struktury danych: wklej URL posta w [schema.org/validator](https://validator.schema.org/) — Article + BreadcrumbList ✓
-- [ ] Sprawdź na mobile (375px) — hero, karty, ToC ukryty
-- [ ] Dodaj nowy post MDX → sprawdź że pojawia się na listingu
+- [x] Sprawdź `/blog` — listing, filtry kategorii, paginacja
+- [x] Kliknij w post → sprawdź breadcrumbs, ToC, rich content
+- [x] Sprawdź `/blog/kategoria/ai-dla-beauty` i `/blog/tag/salon-beauty`
+- [x] Sprawdź `sitemap.xml` — widać posty bloga
+- [x] Walidacja struktury danych: wklej URL posta w [schema.org/validator](https://validator.schema.org/) — Article + BreadcrumbList ✓
+- [x] Sprawdź na mobile (375px) — hero, karty, ToC ukryty
+- [x] Dodaj nowy post MDX → sprawdź że pojawia się na listingu
 
 ---
 

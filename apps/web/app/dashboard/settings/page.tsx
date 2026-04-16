@@ -36,7 +36,7 @@ export default async function SettingsPage() {
           icon={Settings}
           title="Nie masz jeszcze żadnego bota"
           description="Utwórz bota aby skonfigurować jego ustawienia"
-          action={{ label: 'Utwórz bota', href: '/onboarding/step-1' }}
+          action={{ label: 'Utwórz bota', openWizard: true }}
         />
       ) : (
         <SettingsForm bot={bot} />

@@ -1,11 +1,47 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+
+function TypewriterText({ words }: { words: string[] }) {
+  const [index, setIndex] = useState(0);
+  const [subIndex, setSubIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    if (index === words.length) return;
+
+    if (subIndex === words[index].length + 1 && !isDeleting) {
+      const timeout = setTimeout(() => setIsDeleting(true), 2500);
+      return () => clearTimeout(timeout);
+    }
+
+    if (subIndex === 0 && isDeleting) {
+      setIsDeleting(false);
+      setIndex((prev) => (prev + 1) % words.length);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setSubIndex((prev) => prev + (isDeleting ? -1 : 1));
+    }, isDeleting ? 25 : 60);
+
+    return () => clearTimeout(timeout);
+  }, [subIndex, index, isDeleting, words]);
+
+  return (
+    <span className="inline-flex items-baseline whitespace-nowrap min-h-[1.2em]">
+      <span>{words[index].substring(0, subIndex)}</span>
+      <span className="animate-pulse inline-block w-[4px] h-[0.8em] bg-indigo-300 ml-1" />
+    </span>
+  );
+}
 
 const TRUST_STATS = [
-  { value: 'Pilot', label: 'pierwsze wdrożenia' },
+  { value: '14 dni', label: 'darmowych testów' },
   { value: '24/7', label: 'dostępny bot' },
-  { value: 'Sekundy', label: 'czas odpowiedzi' },
+  { value: '< 2s', label: 'czas odpowiedzi' },
   { value: '15 min', label: 'wdrożenie bota' },
 ];
 
@@ -18,10 +54,18 @@ export default function Hero() {
         className="absolute inset-0 -z-10"
         style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 35%, #4338CA 65%, #6366F1 100%)' }}
       />
-      <div className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full opacity-20 -z-10"
-        style={{ background: 'radial-gradient(circle, #8B5CF6, transparent 70%)' }} />
-      <div className="absolute -bottom-24 -left-24 w-[400px] h-[400px] rounded-full opacity-15 -z-10"
-        style={{ background: 'radial-gradient(circle, #10B981, transparent 70%)' }} />
+      <motion.div 
+        className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full opacity-20 -z-10"
+        style={{ background: 'radial-gradient(circle, #8B5CF6, transparent 70%)' }} 
+        animate={{ y: [0, 30, 0], scale: [1, 1.05, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div 
+        className="absolute -bottom-24 -left-24 w-[400px] h-[400px] rounded-full opacity-15 -z-10"
+        style={{ background: 'radial-gradient(circle, #10B981, transparent 70%)' }} 
+        animate={{ x: [0, 20, 0], y: [0, -30, 0], scale: [1, 1.1, 1] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+      />
       <div className="absolute inset-0 -z-10 opacity-[0.04]"
         style={{
           backgroundImage: 'linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)',
@@ -49,8 +93,13 @@ export default function Hero() {
               <br />
               <span className="text-white/40">o 22:00.</span>
               <br />
-              <span style={{ color: '#a5b4fc' }}>Botiko odpowiada</span>
-              <br />
+              <span className="text-[#a5b4fc] block h-[1.2em] mb-1">
+                <TypewriterText words={[
+                  'Botiko odpowiada', 
+                  'Botiko łapie leady', 
+                  'Botiko doradza'
+                ]} />
+              </span>
               <span className="text-white">za Ciebie.</span>
             </h1>
 
@@ -177,17 +226,26 @@ export default function Hero() {
         </div>
 
         {/* Trust bar */}
-        <div
-          className="animate-fade-in-up mt-16 pt-8 grid grid-cols-2 sm:grid-cols-4 gap-6"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.1)', animationDelay: '0.5s' }}
+        <motion.div
+          className="mt-16 pt-8 grid grid-cols-2 sm:grid-cols-4 gap-6"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5, staggerChildren: 0.1 }}
         >
-          {TRUST_STATS.map((stat) => (
-            <div key={stat.label} className="text-center">
+          {TRUST_STATS.map((stat, i) => (
+            <motion.div 
+              key={stat.label} 
+              className="text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 + i * 0.1, duration: 0.5, type: 'spring' }}
+            >
               <p className="text-3xl font-extrabold text-white">{stat.value}</p>
               <p className="text-sm text-indigo-300 mt-1">{stat.label}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
 
       {/* Wave divider */}

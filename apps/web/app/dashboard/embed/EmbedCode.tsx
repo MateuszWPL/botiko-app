@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Copy, Check, Code2, CheckCircle2, Rocket } from 'lucide-react';
 import { toast } from 'sonner';
-import { EmptyState } from '../../../components/ui/EmptyState';
+import { EmptyStateClient } from '../../../components/ui/EmptyStateClient';
 
 interface Bot {
   id: string;
@@ -26,11 +26,11 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
 
   if (bots.length === 0) {
     return (
-      <EmptyState
+      <EmptyStateClient
         icon={Code2}
         title="Najpierw utwórz bota"
         description="Kod instalacyjny jest dostępny po utworzeniu bota"
-        action={{ label: 'Utwórz bota', href: '/onboarding/step-1' }}
+        action={{ label: 'Utwórz bota', openWizard: true }}
       />
     );
   }
@@ -77,7 +77,7 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
         </div>
         {/* Code */}
         <div className="bg-slate-950 px-5 py-4 relative group">
-          <code className="text-emerald-400 text-xs sm:text-sm leading-relaxed break-all pr-24 block font-mono">
+          <code className="text-emerald-400 text-xs sm:text-sm leading-relaxed break-all pr-40 block font-mono">
             {embedCode}
           </code>
           <button

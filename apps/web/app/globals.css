@@ -25,6 +25,10 @@
   html {
     scroll-behavior: smooth;
   }
+
+  button, [role="button"] {
+    cursor: pointer;
+  }
 }
 
 body {

@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import {
   KnowledgeService,
   type KnowledgeChunkResponse,
@@ -22,6 +23,9 @@ import { AuthGuard } from '../../common/guards/auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
 import { CurrentTenant } from '../../common/decorators/current-tenant.decorator';
 
+// Write operations trigger OpenAI embedding calls — throttle to prevent
+// accidental or intentional API cost spikes (30 req/min per IP).
+@Throttle({ default: { limit: 30, ttl: 60000 } })
 @Controller('api/v1/knowledge')
 @UseGuards(AuthGuard, TenantGuard)
 export class KnowledgeController {

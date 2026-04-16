@@ -77,8 +77,14 @@ export class NotificationService {
       ? 'Twój trial Botiko.pl wygasł — aktywuj plan'
       : `Zostało Ci ${data.daysLeft} ${data.daysLeft === 1 ? 'dzień' : 'dni'} trialu Botiko.pl`;
 
-    const headerBg = isExpired ? '#dc2626' : data.daysLeft <= 2 ? '#d97706' : '#6366F1';
-    const ctaText = isExpired ? 'Aktywuj plan — 149 zł/mies.' : 'Aktywuj subskrypcję →';
+    const headerBg = isExpired
+      ? '#dc2626'
+      : data.daysLeft <= 2
+        ? '#d97706'
+        : '#6366F1';
+    const ctaText = isExpired
+      ? 'Aktywuj plan — 149 zł/mies.'
+      : 'Aktywuj subskrypcję →';
     const bodyText = isExpired
       ? `Cześć ${safeName},<br><br>Twój 14-dniowy okres próbny Botiko.pl właśnie wygasł.<br><strong>Bot przestał odpowiadać na wiadomości klientów.</strong><br><br>Aktywuj plan Starter za 149 zł/mies. aby przywrócić działanie bota.`
       : `Cześć ${safeName},<br><br>Twój 14-dniowy trial Botiko.pl kończy się za <strong>${data.daysLeft} ${data.daysLeft === 1 ? 'dzień' : 'dni'}</strong>.<br><br>Aktywuj subskrypcję teraz, żeby bot działał nieprzerwanie po zakończeniu trialu.`;
@@ -124,9 +130,14 @@ export class NotificationService {
         subject,
         html,
       });
-      this.logger.log(`Trial notification sent (daysLeft=${data.daysLeft}) to ${data.toEmail}`);
+      this.logger.log(
+        `Trial notification sent (daysLeft=${data.daysLeft}) to ${data.toEmail}`,
+      );
     } catch (err: unknown) {
-      this.logger.error(`Failed to send trial notification to ${data.toEmail}`, err);
+      this.logger.error(
+        `Failed to send trial notification to ${data.toEmail}`,
+        err,
+      );
     }
   }
 

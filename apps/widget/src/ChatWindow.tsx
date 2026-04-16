@@ -12,6 +12,7 @@ interface LeadFormState {
   consent: boolean;
   submitted: boolean;
   loading: boolean;
+  error: string | null;
 }
 
 interface ChatWindowProps {
@@ -145,10 +146,11 @@ export function ChatWindow({
     consent: false,
     submitted: initial.leadSubmitted,
     loading: false,
+    error: null,
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   // Reaktywne wykrywanie mobile — reaguje na obrót urządzenia
   const [isMobile, setIsMobile] = useState(
     typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches,
@@ -161,8 +163,7 @@ export function ChatWindow({
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // Show quick suggestions only before first user message
-  const showSuggestions = userMessageCount === 0;
+  const [showSuggestions, setShowSuggestions] = useState(userMessageCount === 0);
 
   useEffect(() => {
     saveSession(botId, {
@@ -198,6 +199,7 @@ export function ChatWindow({
     if (!content || isLoading) return;
 
     setInput('');
+    setShowSuggestions(false);
     setMessages((prev) => [...prev, { role: 'user', content }]);
     setIsLoading(true);
 
@@ -254,10 +256,10 @@ export function ChatWindow({
 
   const submitLead = async () => {
     if (!lead.name.trim() || !lead.phone.trim() || !lead.consent) return;
-    setLead((s) => ({ ...s, loading: true }));
+    setLead((s) => ({ ...s, loading: true, error: null }));
 
     try {
-      await fetch(`${apiUrl}/api/v1/leads`, {
+      const res = await fetch(`${apiUrl}/api/v1/leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -267,13 +269,14 @@ export function ChatWindow({
           consentGiven: true,
         }),
       });
-      setLead((s) => ({ ...s, submitted: true, loading: false, visible: false }));
+      if (!res.ok) throw new Error(`HTTP ${String(res.status)}`);
+      setLead((s) => ({ ...s, submitted: true, loading: false, visible: false, error: null }));
       setMessages((prev) => [
         ...prev,
         { role: 'assistant', content: 'Dziękuję! Twoje dane zostały zapisane. Odezwiemy się wkrótce!' },
       ]);
     } catch {
-      setLead((s) => ({ ...s, loading: false }));
+      setLead((s) => ({ ...s, loading: false, error: 'Nie udało się zapisać. Spróbuj ponownie.' }));
     }
   };
 
@@ -348,6 +351,38 @@ export function ChatWindow({
             </span>
           </div>
         </div>
+
+        {/* Suggested questions toggle — mały przycisk obok X, widoczny po 1. wiadomości */}
+        {suggestedQuestions.length > 0 && userMessageCount > 0 && !isLoading && (
+          <button
+            onClick={() => {
+              setShowSuggestions((s) => {
+                if (!s) setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 30);
+                return !s;
+              });
+            }}
+            title="Przykładowe pytania"
+            aria-label="Przykładowe pytania"
+            style={{
+              background: showSuggestions ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)',
+              border: 'none',
+              borderRadius: '8px',
+              color: '#fff',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '30px',
+              height: '30px',
+              flexShrink: 0,
+              fontSize: '14px',
+              fontWeight: 700,
+              lineHeight: 1,
+            }}
+          >
+            ?
+          </button>
+        )}
 
         {/* Close button */}
         <button
@@ -471,15 +506,14 @@ export function ChatWindow({
           </div>
         )}
 
-        {/* Quick suggestions — show before first message */}
+        {/* Quick suggestions — wyrównane do prawej jak wiadomości użytkownika */}
         {showSuggestions && !isLoading && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginTop: '4px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginTop: '4px', alignItems: 'flex-end' }}>
             {suggestedQuestions.map((s) => (
               <button
                 key={s}
                 onClick={() => void sendMessage(s)}
                 style={{
-                  alignSelf: 'flex-start',
                   padding: '7px 13px',
                   borderRadius: '20px',
                   border: `1.5px solid var(--botiko-primary, ${primaryColor})`,
@@ -487,7 +521,7 @@ export function ChatWindow({
                   color: `var(--botiko-primary, ${primaryColor})`,
                   fontSize: '13px',
                   cursor: 'pointer',
-                  textAlign: 'left',
+                  textAlign: 'right',
                   lineHeight: 1.3,
                   transition: 'background-color 0.15s ease',
                 }}
@@ -555,12 +589,17 @@ export function ChatWindow({
               {lead.loading ? '...' : 'Wyślij'}
             </button>
             <button
-              onClick={() => setLead((s) => ({ ...s, visible: false }))}
+              onClick={() => setLead((s) => ({ ...s, visible: false, error: null }))}
               style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', backgroundColor: '#fff', fontSize: '13px', cursor: 'pointer', color: '#64748b' }}
             >
               Anuluj
             </button>
           </div>
+          {lead.error && (
+            <div style={{ marginTop: '6px', fontSize: '12px', color: '#dc2626' }}>
+              {lead.error}
+            </div>
+          )}
         </div>
       )}
 
@@ -593,11 +632,16 @@ export function ChatWindow({
             📞
           </button>
         )}
-        <input
+        <textarea
           ref={inputRef}
-          type="text"
           value={input}
-          onInput={(e) => setInput((e.target as HTMLInputElement).value)}
+          onInput={(e) => {
+            const el = e.target as HTMLTextAreaElement;
+            setInput(el.value);
+            // Auto-grow up to 3 lines (~96px)
+            el.style.height = 'auto';
+            el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
@@ -606,7 +650,15 @@ export function ChatWindow({
           }}
           placeholder="Napisz wiadomość..."
           maxLength={1000}
-          style={{ ...inputStyle, flex: 1 }}
+          rows={1}
+          style={{
+            ...inputStyle,
+            flex: 1,
+            resize: 'none',
+            overflowY: 'hidden',
+            lineHeight: '1.4',
+            maxHeight: '96px',
+          }}
         />
         <button
           onClick={() => void sendMessage()}

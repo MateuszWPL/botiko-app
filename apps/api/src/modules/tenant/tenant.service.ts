@@ -44,7 +44,9 @@ export class TenantService {
         await tx.conversation.deleteMany({ where: { botId: { in: botIds } } });
 
         // 3. KnowledgeChunks
-        await tx.knowledgeChunk.deleteMany({ where: { botId: { in: botIds } } });
+        await tx.knowledgeChunk.deleteMany({
+          where: { botId: { in: botIds } },
+        });
       }
 
       // 4. Leads
@@ -68,7 +70,10 @@ export class TenantService {
       .deleteUser(userId)
       .then(({ error }) => {
         if (error) {
-          this.logger.error(`Supabase auth user delete failed for ${userId}`, error);
+          this.logger.error(
+            `Supabase auth user delete failed for ${userId}`,
+            error,
+          );
         }
       })
       .catch((err: unknown) => {
