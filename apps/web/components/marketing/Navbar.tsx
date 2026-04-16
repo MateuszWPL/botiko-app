@@ -29,7 +29,7 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('pageshow', onScroll);
     };
-  }, []);
+  }, [forceScrolled]);
 
   // Lock body scroll when menu open
   useEffect(() => {

@@ -24,7 +24,7 @@ export function PdfBeautySalon({ title }: { title: string }) {
             <p style={{ margin: '0 0 12px 0', fontStyle: 'italic', color: '#64748b', fontSize: '12px' }}>Wklej w: Konfiguracja › Zachowanie asystenta</p>
             <div style={{ borderLeft: '4px solid #6366f1', paddingLeft: '16px' }}>
               Jesteś wirtualną recepcjonistką w salonie beauty <strong style={{ color: '#000' }}>[NAZWA_SALONU]</strong> w <strong style={{ color: '#000' }}>[MIASTO, ULICA]</strong>. Odpowiadasz klientkom na pytania o cennik i zachęcasz je do zostawienia danych kontaktowych.<br /><br />
-              <span style={{ color: '#dc2626', fontWeight: 700 }}>🔴 KLUCZOWA ZASADA:</span> Nigdy nie zgadujesz wolnych terminów. Gdy klientka pyta o termin – prosisz o numer telefonu. Recepcja oddzwoni i ustali termin ręcznie. Twój cel to zebranie leada.<br /><br />
+              <span style={{ color: '#dc2626', fontWeight: 700 }}>🔴 KLUCZOWA ZASADA:</span> Nigdy nie zgadujesz wolnych terminów. Gdy klientka pyta o termin &ndash; prosisz o numer telefonu. Recepcja oddzwoni i ustali termin ręcznie. Twój cel to zebranie leada.<br /><br />
               Pisz ciepło i estetycznie (💅 ✨). Gdy nie potrafisz pomóc, proś o numer dla managera salonu.
             </div>
           </div>
@@ -35,7 +35,7 @@ export function PdfBeautySalon({ title }: { title: string }) {
           <span style={{ fontSize: '18px' }}>📚</span>
           <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 700, color: '#0f172a' }}>2. Wpisy Bazy Wiedzy — Kopiuj-Wklej</h2>
         </div>
-        <p style={{ margin: '0 0 20px 0', fontSize: '12px', color: '#64748b' }}>Dodaj poniższe pary jako osobne wpisy w sekcji "Baza Wiedzy" w panelu Botiko. Zastąp [ZMIENNE] własnymi danymi.</p>
+        <p style={{ margin: '0 0 20px 0', fontSize: '12px', color: '#64748b' }}>Dodaj poniższe pary jako osobne wpisy w sekcji &quot;Baza Wiedzy&quot; w panelu Botiko. Zastąp [ZMIENNE] własnymi danymi.</p>
 
         {/* FAQ 1 */}
         <FaqCard accent="#4f46e5" badge="FAQ 1" badgeTitle="Rezerwacja — zbieranie leada">
@@ -83,7 +83,10 @@ function FaqCard({ accent, badge, badgeTitle, children }: { accent: string; badg
   return (
     <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', overflow: 'hidden', marginBottom: '16px' }}>
       <div style={{ backgroundColor: '#f1f5f9', borderBottom: '1px solid #e2e8f0', padding: '10px 20px', display: 'flex', gap: '8px', fontSize: '13px', fontWeight: 700, color: '#334155' }}>
-        <span style={{ color: accent }}>{badge} //</span>
+        <span style={{ color: accent }}>
+          {badge}
+          {' // '}
+        </span>
         <span>{badgeTitle}</span>
       </div>
       <div style={{ padding: '20px' }}>

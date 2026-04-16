@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import ScrollReveal from './ScrollReveal';
 
 /* ─── Step visual mockups ──────────────────────────────────── */
@@ -59,7 +59,7 @@ function MockupBranch() {
       setActiveIndex((prev) => (prev + 1) % INDUSTRIES.length);
     }, 2500);
     return () => clearInterval(timer);
-  }, []);
+  }, [INDUSTRIES.length]);
 
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">

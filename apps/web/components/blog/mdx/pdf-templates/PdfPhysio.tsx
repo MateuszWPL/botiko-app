@@ -31,12 +31,14 @@ export function PdfPhysio({ title }: { title: string }) {
           <div style={{ padding: '24px', fontSize: '13.5px', lineHeight: 1.8, color: '#334155' }}>
             <p style={{ margin: '0 0 10px 0', fontSize: '11px', fontStyle: 'italic', color: '#64748b' }}>Wklej w panelu: Konfiguracja › Zachowanie asystenta › Prompt systemowy</p>
             <div style={{ borderLeft: '4px solid #0d9488', paddingLeft: '16px' }}>
+              {/* eslint-disable-next-line react/no-unescaped-entities */}
               Jesteś wirtualnym asystentem recepcji w gabinecie fizjoterapii <strong style={{ color: '#000' }}>[NAZWA_GABINETU]</strong> w <strong style={{ color: '#000' }}>[MIASTO, ULICA]</strong>, prowadzonym przez <strong style={{ color: '#000' }}>[IMIĘ FIZJOTERAPEUTY]</strong>.<br /><br />
               Twoim celem jest odpowiadanie na pytania pacjentów o dostępne terapie, ceny, zasady i przygotowanie do wizyt. Zawsze dbasz o spokojny, profesjonalny i empatyczny ton — Twoi rozmówcy często cierpią z powodu bólu.<br /><br />
               <span style={{ color: '#dc2626', fontWeight: 700 }}>🔴 ZASADY BEZWZGLĘDNE:</span><br />
               1. Nigdy nie stawiasz diagnozy ani nie doradzasz w kwestiach stricte medycznych. Odsyłasz do fizjoterapeuty lub lekarza.<br />
               2. Nigdy nie potwierdzasz konkretnych wolnych terminów — nie masz dostępu do kalendarza. Zawsze zbierasz numer telefonu i imię pacjenta, aby recepcja oddzwoniła.<br />
-              3. Nie obiecujesz skuteczności konkretnych terapii — używasz sformułowań "może pomóc", "warto omówić z terapeutą".<br /><br />
+              {/* eslint-disable-next-line react/no-unescaped-entities */}
+              3. Nie obiecujesz skuteczności konkretnych terapii — używasz sformułowań &quot;może pomóc&quot;, &quot;warto omówić z terapeutą&quot;.<br /><br />
               Gdy pytanie wykracza poza Twoją wiedzę — zbierz dane kontaktowe i poinformuj, że terapeuta osobiście odpowie.
             </div>
           </div>
@@ -48,7 +50,8 @@ export function PdfPhysio({ title }: { title: string }) {
           <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 700, color: '#0f172a' }}>2. Wpisy Bazy Wiedzy — Kopiuj-Wklej (FAQ)</h2>
         </div>
         <p style={{ margin: '0 0 22px 0', fontSize: '12px', color: '#64748b', lineHeight: 1.6 }}>
-          Poniżej 8 rozbudowanych wpisów FAQ. Każdy wpis to osobna "karta wiedzy" do dodania w sekcji Botiko. Zastąp <strong>[ZMIENNE]</strong> własnymi danymi przed wklejeniem.
+          {/* eslint-disable-next-line react/no-unescaped-entities */}
+          Poniżej 8 rozbudowanych wpisów FAQ. Każdy wpis to osobna &quot;karta wiedzy&quot; do dodania w sekcji Botiko. Zastąp <strong>[ZMIENNE]</strong> własnymi danymi przed wklejeniem.
         </p>
 
         <PhysioFaqCard number="FAQ 1" title="Rezerwacja — zbieranie leada (priorytetowe)">
@@ -56,6 +59,7 @@ export function PdfPhysio({ title }: { title: string }) {
             Chcę umówić wizytę. Czy jest wolne w piątek? Jak zapisać się do fizjoterapeuty? Chcę zarezerwować termin.
           </PhysioRow>
           <PhysioRow icon="🟩" label="Odpowiedź bota (kopiuj)">
+            {/* eslint-disable-next-line react/no-unescaped-entities */}
             Chętnie pomożemy Ci zarezerwować wizytę! 📅 Ponieważ nasz grafik zmienia się dynamicznie, terminy ustala recepcja bezpośrednio.<br />
             Zostaw proszę swoje <strong>[imię i numer telefonu]</strong>, a oddzwonimy w ciągu <strong>[X godzin]</strong> w dni robocze, by dobrać termin dopasowany do Ciebie. Możesz też napisać, czy preferujesz godziny porane czy popołudniowe 🙂
           </PhysioRow>
@@ -124,8 +128,9 @@ export function PdfPhysio({ title }: { title: string }) {
             Gdzie jesteście? Adres gabinetu, parking, dojazd komunikacją miejską, jak dojechać.
           </PhysioRow>
           <PhysioRow icon="🟩" label="Odpowiedź bota (kopiuj)">
+            {/* eslint-disable-next-line react/no-unescaped-entities */}
             📍 Gabinet mieści się pod adresem: <strong>[ULICA, NUMER, MIASTO]</strong>, <strong>[NUMER_KONDYGNACJI]</strong> piętro / lokal <strong>[X]</strong>.<br /><br />
-            🚗 <strong>Parkowanie:</strong> [OPIS PARKINGU — np. "Darmowy parking na tyłach budynku od ul. X" lub "Płatna strefa, miejsca przy wejściu"]<br /><br />
+            🚗 <strong>Parkowanie:</strong> [OPIS PARKINGU — np. &quot;Darmowy parking na tyłach budynku od ul. X&quot; lub &quot;Płatna strefa, miejsca przy wejściu&quot;]<br /><br />
             🚌 <strong>Komunikacja miejska:</strong> Autobus/tramwaj nr <strong>[NUMER]</strong>, przystanek <strong>[NAZWA]</strong> — ok. <strong>[X]</strong> minut piechotą.<br /><br />
             Masz problem z dojazdem? Napisz tu swój numer — recepcja zadzwoni i naprowadzi Cię osobiście 🗺️
           </PhysioRow>
@@ -136,6 +141,7 @@ export function PdfPhysio({ title }: { title: string }) {
             Czy przyjmujecie NFZ? Ubezpieczenie Medicover, Lux Med, PZU Zdrowie, prywatna rehabilitacja.
           </PhysioRow>
           <PhysioRow icon="🟩" label="Odpowiedź bota (kopiuj)">
+            {/* eslint-disable-next-line react/no-unescaped-entities */}
             Gabinet działa w systemie <strong>komercyjnym (prywatnym)</strong> — nie realizujemy wizyt w ramach NFZ.<br /><br />
             🔹 <strong>Pakiety prywatne:</strong> Akceptujemy ubezpieczenia: <strong>[WPISZ: np. Medicover, Lux Med, PZU Zdrowie]</strong>. Przy umawianiu wizyty poinformuj recepcję o posiadanym pakiecie.<br />
             🔹 <strong>Faktury VAT:</strong> Wystawiamy faktury na firmy i osoby fizyczne — można odliczyć w ramach ulgi rehabilitacyjnej.<br /><br />
@@ -161,8 +167,8 @@ export function PdfPhysio({ title }: { title: string }) {
           </div>
           <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '12.5px', lineHeight: 1.8, color: '#78350f' }}>
             <li>Ustaw empatyczny, spokojny ton — pacjenci często są w bólu lub zestresowani.</li>
-            <li>Słowa-klucze do wychwycenia intencji rezerwacyjnej: "termin", "zapisać", "umówić", "wolne", "kiedy".</li>
-            <li>Po zebraniu numeru — dodaj etykietę "FIZJO_LEAD" w panelu, by odróżnić od innych zapytań.</li>
+            <li>Słowa-klucze do wychwycenia intencji rezerwacyjnej: &quot;termin&quot;, &quot;zapisać&quot;, &quot;umówić&quot;, &quot;wolne&quot;, &quot;kiedy&quot;.</li>
+            <li>Po zebraniu numeru — dodaj etykietę &quot;FIZJO_LEAD&quot; w panelu, by odróżnić od innych zapytań.</li>
             <li>Ogranicz bota do max 3 zdań na wiadomość — długie odpowiedzi zniechęcają pacjentów mobilnych.</li>
             <li>Jeśli ktoś opisuje ostry ból / nagły uraz — bot powinien zaproponować kontakt telefoniczny NATYCHMIAST.</li>
           </ul>
@@ -182,7 +188,10 @@ function PhysioFaqCard({ number, title, children }: { number: string; title: str
   return (
     <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', overflow: 'hidden', marginBottom: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
       <div style={{ backgroundColor: '#f0fdfa', borderBottom: '1px solid #ccfbf1', padding: '10px 20px', display: 'flex', gap: '10px', fontSize: '13px', fontWeight: 700 }}>
-        <span style={{ color: '#0f766e' }}>{number} //</span>
+        <span style={{ color: '#0f766e' }}>
+          {number}
+          {' // '}
+        </span>
         <span style={{ color: '#134e4a' }}>{title}</span>
       </div>
       <div style={{ padding: '18px 20px', display: 'grid', gap: '12px' }}>
