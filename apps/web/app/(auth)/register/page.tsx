@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { AuthLeftPanel } from '../../../components/auth/AuthLeftPanel';
 
 const INDUSTRIES = [
   {
@@ -76,77 +77,6 @@ const INDUSTRIES = [
 ];
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
-
-const BENEFITS = [
-  'Bot AI gotowy w 15 minut — zero programowania',
-  'Zbiera leady kiedy śpisz — imię + telefon + pytanie',
-  '14 dni za darmo, bez karty kredytowej',
-];
-
-function AuthLeftPanel() {
-  return (
-    <div
-      className="flex flex-col justify-between px-6 py-8 lg:px-12 lg:py-10 order-2 lg:order-1"
-      style={{
-        background: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 40%, #4338CA 80%, #6366F1 100%)',
-      }}
-    >
-      <Link href="/" className="flex items-center gap-2.5">
-        <Image
-          src="/BotikoLogo.png"
-          alt="Botiko"
-          width={36}
-          height={36}
-          className="rounded-xl"
-        />
-        <span className="text-white font-bold text-xl">
-          Botiko<span className="text-indigo-300">.pl</span>
-        </span>
-      </Link>
-
-      <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
-          style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', color: '#a5b4fc' }}>
-          <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-          14 dni za darmo — bez karty
-        </div>
-
-        <h2 className="text-3xl font-extrabold text-white mb-2">
-          Zacznij zbierać leady
-        </h2>
-        <p className="text-indigo-200 text-base mb-10">
-          Dołącz do programu pilotażowego i zacznij zbierać leady po godzinach.
-        </p>
-
-        <ul className="flex flex-col gap-4">
-          {BENEFITS.map((b) => (
-            <li key={b} className="flex items-start gap-3">
-              <span className="mt-0.5 shrink-0 w-5 h-5 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              </span>
-              <span className="text-indigo-100 text-sm leading-relaxed">{b}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="flex items-center gap-6 pt-8 border-t border-white/10">
-        {[
-          { val: '14 dni', label: 'darmowych testów' },
-          { val: '24/7', label: 'dostępny bot' },
-          { val: '< 15 min', label: 'wdrożenie' },
-        ].map((s) => (
-          <div key={s.label}>
-            <p className="text-white text-lg font-extrabold">{s.val}</p>
-            <p className="text-indigo-300 text-xs">{s.label}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -313,7 +243,10 @@ export default function RegisterPage() {
           </p>
         </div>
       </div>
-      <AuthLeftPanel />
+      <AuthLeftPanel
+        headline="Zacznij zbierać leady"
+        sub="Dołącz do programu pilotażowego i zacznij zbierać leady po godzinach."
+      />
     </main>
   );
 }

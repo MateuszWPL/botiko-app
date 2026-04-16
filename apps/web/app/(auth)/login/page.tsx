@@ -5,70 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '../../../lib/supabase';
-
-const BENEFITS = [
-  'Bot odpowiada za Ciebie 24/7 — nawet o 22:00',
-  'Zbiera leady automatycznie — imię + telefon klienta',
-  'Wdrożenie w 15 minut — zero programowania',
-];
-
-function AuthLeftPanel({ headline, sub }: { headline: string; sub: string }) {
-  return (
-    <div
-      className="flex flex-col justify-between px-6 py-8 lg:px-12 lg:py-10 order-2 lg:order-1"
-      style={{
-        background: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 40%, #4338CA 80%, #6366F1 100%)',
-      }}
-    >
-      {/* Logo */}
-      <Link href="/" className="flex items-center gap-2.5">
-        <Image
-          src="/BotikoLogo.png"
-          alt="Botiko"
-          width={36}
-          height={36}
-          className="rounded-xl"
-        />
-        <span className="text-white font-bold text-xl">
-          Botiko<span className="text-indigo-300">.pl</span>
-        </span>
-      </Link>
-
-      {/* Center content */}
-      <div>
-        <h2 className="text-3xl font-extrabold text-white mb-2">{headline}</h2>
-        <p className="text-indigo-200 text-base mb-10">{sub}</p>
-
-        <ul className="flex flex-col gap-4">
-          {BENEFITS.map((b) => (
-            <li key={b} className="flex items-start gap-3">
-              <span className="mt-0.5 shrink-0 w-5 h-5 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              </span>
-              <span className="text-indigo-100 text-sm leading-relaxed">{b}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Trust bar */}
-      <div className="grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-white/10">
-        {[
-          { val: '14 dni', label: 'darmowych testów' },
-          { val: '24/7', label: 'dostępny bot' },
-          { val: '< 15 min', label: 'wdrożenie' },
-        ].map((s) => (
-          <div key={s.label}>
-            <p className="text-white text-lg font-extrabold">{s.val}</p>
-            <p className="text-indigo-300 text-xs">{s.label}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+import { AuthLeftPanel } from '../../../components/auth/AuthLeftPanel';
 
 function LoginForm() {
   const router = useRouter();
@@ -211,6 +148,7 @@ export default function LoginPage() {
       <AuthLeftPanel
         headline="Witaj z powrotem"
         sub="Zaloguj się i sprawdź co dziś przyniósł Twój bot."
+        badge="Program pilotażowy — miejsca limitowane"
       />
     </main>
   );
