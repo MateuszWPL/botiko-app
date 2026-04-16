@@ -25,7 +25,7 @@ export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez 
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'url(/blog/salon-beauty-24-7/hero.png)',
+          backgroundImage: 'url(/registerImage.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'right center',
         }}
