@@ -12,6 +12,7 @@ interface LeadFormState {
   consent: boolean;
   submitted: boolean;
   loading: boolean;
+  error: string | null;
 }
 
 interface ChatWindowProps {
@@ -145,6 +146,7 @@ export function ChatWindow({
     consent: false,
     submitted: initial.leadSubmitted,
     loading: false,
+    error: null,
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -254,10 +256,10 @@ export function ChatWindow({
 
   const submitLead = async () => {
     if (!lead.name.trim() || !lead.phone.trim() || !lead.consent) return;
-    setLead((s) => ({ ...s, loading: true }));
+    setLead((s) => ({ ...s, loading: true, error: null }));
 
     try {
-      await fetch(`${apiUrl}/api/v1/leads`, {
+      const res = await fetch(`${apiUrl}/api/v1/leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -267,13 +269,14 @@ export function ChatWindow({
           consentGiven: true,
         }),
       });
-      setLead((s) => ({ ...s, submitted: true, loading: false, visible: false }));
+      if (!res.ok) throw new Error(`HTTP ${String(res.status)}`);
+      setLead((s) => ({ ...s, submitted: true, loading: false, visible: false, error: null }));
       setMessages((prev) => [
         ...prev,
         { role: 'assistant', content: 'Dziękuję! Twoje dane zostały zapisane. Odezwiemy się wkrótce!' },
       ]);
     } catch {
-      setLead((s) => ({ ...s, loading: false }));
+      setLead((s) => ({ ...s, loading: false, error: 'Nie udało się zapisać. Spróbuj ponownie.' }));
     }
   };
 
@@ -555,12 +558,17 @@ export function ChatWindow({
               {lead.loading ? '...' : 'Wyślij'}
             </button>
             <button
-              onClick={() => setLead((s) => ({ ...s, visible: false }))}
+              onClick={() => setLead((s) => ({ ...s, visible: false, error: null }))}
               style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', backgroundColor: '#fff', fontSize: '13px', cursor: 'pointer', color: '#64748b' }}
             >
               Anuluj
             </button>
           </div>
+          {lead.error && (
+            <div style={{ marginTop: '6px', fontSize: '12px', color: '#dc2626' }}>
+              {lead.error}
+            </div>
+          )}
         </div>
       )}
 

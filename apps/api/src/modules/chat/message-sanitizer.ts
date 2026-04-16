@@ -111,7 +111,7 @@ const ACKNOWLEDGMENT_PATTERNS: RegExp[] = [
   /^(okej\s+(fajnie|super|spoko|dzięki|dzieki|cool|git|ekstra)|ok\s+(dzięki|dzieki|spoko)|okay\s+cool)[\s!.,?😊]*$/iu,
   /^(dzięki|dzieki|dziękuję|dziekuje|thx|thanks|thank\s+you)[\s!.,?😊]*$/iu,
   /^(super|fajnie|ekstra|świetnie|swietnie|spoko|git|cool|nice|bomba|rewelacja)[\s!.,?😊]*$/iu,
-  /^(rozumiem|jasne|no\s+tak|no\s+jasne|aha+|mhm+|uhm|yep|yup|tak|no)[\s!.,?😊]*$/iu,
+  /^(rozumiem|jasne|no\s+tak|no\s+jasne|aha+|mhm+|uhm|yep|yup|tak)[\s!.,?😊]*$/iu,
   /^(rozumiem\s+dzięki|jasne\s+dzięki|ok\s+rozumiem|super\s+dzięki|fajnie\s+dzięki)[\s!.,?😊]*$/iu,
 ];
 

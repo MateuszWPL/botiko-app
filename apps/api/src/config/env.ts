@@ -39,6 +39,8 @@ const envSchema = z.object({
   STRIPE_SECRET_KEY: z.string().min(1).optional(),
   STRIPE_WEBHOOK_SECRET: z.string().min(1).optional(),
   STRIPE_PRICE_ID: z.string().min(1).optional(),
+  // PRO plan price — add when launching PRO tier
+  STRIPE_PRO_PRICE_ID: z.string().min(1).optional(),
 
   // App
   APP_URL: z.string().url().default('http://localhost:3000'),
