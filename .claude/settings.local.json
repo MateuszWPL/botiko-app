@@ -29,7 +29,9 @@
       "Bash(mkdir -p /d/Prywatne/Botiko.pl/Aplikacja/apps/web/app/\\\\\\(marketing\\\\\\)/blog/kategoria/\\\\[slug\\\\])",
       "Bash(mkdir -p /d/Prywatne/Botiko.pl/Aplikacja/apps/web/app/\\\\\\(marketing\\\\\\)/blog/tag/\\\\[slug\\\\])",
       "Bash(pnpm tsc:*)",
-      "Bash(timeout 10 pnpm start:dev)"
+      "Bash(timeout 10 pnpm start:dev)",
+      "Bash(find D:\\\\\\\\Prywatne\\\\\\\\Botiko.pl\\\\\\\\Aplikacja\\\\\\\\apps\\\\\\\\api\\\\\\\\src\\\\\\\\common -type f -name \"*.ts\")",
+      "Bash(pnpm run *)"
     ]
   }
 }

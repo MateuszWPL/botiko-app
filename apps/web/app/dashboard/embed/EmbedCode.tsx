@@ -77,7 +77,7 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
         </div>
         {/* Code */}
         <div className="bg-slate-950 px-5 py-4 relative group">
-          <code className="text-emerald-400 text-xs sm:text-sm leading-relaxed break-all pr-24 block font-mono">
+          <code className="text-emerald-400 text-xs sm:text-sm leading-relaxed break-all pr-40 block font-mono">
             {embedCode}
           </code>
           <button

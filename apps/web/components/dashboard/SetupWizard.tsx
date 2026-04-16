@@ -262,7 +262,7 @@ function StepServices({ data, onChange }: { data: WizardData; onChange: (d: Part
               </div>
               <button
                 onClick={() => removeItem(idx)}
-                className="mt-1 w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0"
+                className="mt-1 w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0 cursor-pointer"
                 title="Usuń"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -273,7 +273,7 @@ function StepServices({ data, onChange }: { data: WizardData; onChange: (d: Part
 
         <button
           onClick={addItem}
-          className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-indigo-200 hover:border-indigo-400 text-indigo-500 hover:text-indigo-700 text-sm font-medium rounded-xl transition-all hover:bg-indigo-50/40"
+          className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-indigo-200 hover:border-indigo-400 text-indigo-500 hover:text-indigo-700 text-sm font-medium rounded-xl transition-all hover:bg-indigo-50/40 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           Dodaj usługę
@@ -328,7 +328,7 @@ function StepAppearance({ data, onChange }: { data: WizardData; onChange: (d: Pa
               type="button"
               onClick={() => onChange({ primaryColor: c.value })}
               title={c.label}
-              className={`w-8 h-8 rounded-full border-[3px] transition-all ${
+              className={`w-8 h-8 rounded-full border-[3px] transition-all cursor-pointer ${
                 data.primaryColor === c.value
                   ? 'border-slate-700 scale-110 shadow-md'
                   : 'border-white shadow hover:scale-105'
@@ -486,7 +486,7 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
 
         <button
           onClick={() => void create()}
-          className="w-full py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:opacity-90 text-white font-semibold rounded-xl transition-all hover:-translate-y-0.5 shadow-md shadow-indigo-200"
+          className="w-full py-3 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:opacity-90 text-white font-semibold rounded-xl transition-all hover:-translate-y-0.5 shadow-md shadow-indigo-200 cursor-pointer"
         >
           Utwórz bota →
         </button>
@@ -531,7 +531,7 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
         <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-xl px-4 py-3">{error}</p>
         <button
           onClick={() => void create()}
-          className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium"
+          className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium cursor-pointer"
         >
           Spróbuj ponownie
         </button>
@@ -557,10 +557,10 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
           Kod instalacyjny — wklej przed <code className="bg-slate-100 px-1 rounded">&lt;/body&gt;</code>
         </p>
         <div className="bg-slate-900 rounded-xl p-4 relative">
-          <code className="text-emerald-400 text-xs break-all leading-relaxed">{embedCode}</code>
+          <code className="text-emerald-400 text-xs break-all leading-relaxed pr-32 block">{embedCode}</code>
           <button
             onClick={() => void copy()}
-            className="absolute top-3 right-3 flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-2.5 py-1.5 rounded-lg transition-colors"
+            className="absolute top-3 right-3 flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer"
           >
             <Copy className="w-3 h-3" />
             {copied ? 'Skopiowano!' : 'Kopiuj'}
@@ -650,7 +650,7 @@ export function SetupWizard({ isOpen, onClose }: SetupWizardProps) {
           {!botCreated && (
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-all"
+              className="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-all cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -696,7 +696,7 @@ export function SetupWizard({ isOpen, onClose }: SetupWizardProps) {
             {step > 0 && (
               <button
                 onClick={back}
-                className="flex items-center gap-1.5 px-4 py-2.5 border border-slate-200 text-slate-600 rounded-xl text-sm font-medium hover:bg-slate-50 transition-all"
+                className="flex items-center gap-1.5 px-4 py-2.5 border border-slate-200 text-slate-600 rounded-xl text-sm font-medium hover:bg-slate-50 transition-all cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Wstecz
@@ -705,7 +705,7 @@ export function SetupWizard({ isOpen, onClose }: SetupWizardProps) {
             <button
               onClick={next}
               disabled={!canProceed}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:opacity-90 disabled:opacity-50 text-white font-semibold rounded-xl text-sm transition-all hover:-translate-y-0.5 shadow-sm shadow-indigo-200 disabled:hover:translate-y-0"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:opacity-90 disabled:opacity-50 text-white font-semibold rounded-xl text-sm transition-all hover:-translate-y-0.5 shadow-sm shadow-indigo-200 disabled:hover:translate-y-0 cursor-pointer disabled:cursor-not-allowed"
             >
               {step === 2 ? 'Dalej — utwórz bota' : 'Dalej'}
               <ChevronRight className="w-4 h-4" />
@@ -720,7 +720,7 @@ export function SetupWizard({ isOpen, onClose }: SetupWizardProps) {
                 onClose();
                 window.location.reload();
               }}
-              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-sm transition-all"
+              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-sm transition-all cursor-pointer"
             >
               Przejdź do panelu →
             </button>
