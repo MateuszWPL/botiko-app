@@ -112,9 +112,13 @@ export class KnowledgeService {
     } catch (err: unknown) {
       // Embedding failed — rollback the insert so we never leave a zero-vector chunk.
       // The client receives a 500 and can retry.
-      await this.prisma.knowledgeChunk.delete({ where: { id } }).catch(() => {});
+      await this.prisma.knowledgeChunk
+        .delete({ where: { id } })
+        .catch(() => {});
       const msg = err instanceof Error ? err.message : String(err);
-      this.logger.error(`Embedding failed for chunk ${id}, rolled back: ${msg}`);
+      this.logger.error(
+        `Embedding failed for chunk ${id}, rolled back: ${msg}`,
+      );
       throw err;
     }
 
