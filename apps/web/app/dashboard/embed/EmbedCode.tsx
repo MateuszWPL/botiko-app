@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Copy, Check, Code2, CheckCircle2, Rocket } from 'lucide-react';
 import { toast } from 'sonner';
-import { EmptyState } from '../../../components/ui/EmptyState';
+import { EmptyStateClient } from '../../../components/ui/EmptyStateClient';
 
 interface Bot {
   id: string;
@@ -26,7 +26,7 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
 
   if (bots.length === 0) {
     return (
-      <EmptyState
+      <EmptyStateClient
         icon={Code2}
         title="Najpierw utwórz bota"
         description="Kod instalacyjny jest dostępny po utworzeniu bota"

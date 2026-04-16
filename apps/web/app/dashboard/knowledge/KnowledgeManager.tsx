@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '../../../lib/supabase';
-import { EmptyState } from '../../../components/ui/EmptyState';
+import { EmptyStateClient } from '../../../components/ui/EmptyStateClient';
 
 interface Chunk {
   id: string;
@@ -639,7 +639,7 @@ export function KnowledgeManager({
         </h2>
 
         {chunks.length === 0 ? (
-          <EmptyState
+          <EmptyStateClient
             icon={BookOpen}
             title="Baza wiedzy jest pusta"
             description="Bot nie może odpowiadać na pytania bez wiedzy o Twojej firmie. Zacznij od zakładki Kontakt — dodaj telefon, adres i godziny otwarcia."

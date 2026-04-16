@@ -1,4 +1,8 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import ScrollReveal from './ScrollReveal';
 
 /* ─── Step visual mockups ──────────────────────────────────── */
@@ -47,6 +51,16 @@ function MockupBranch() {
     { label: 'Warsztat', color: '#64748B', Icon: IconWrench },
     { label: 'Inna branża', color: '#8B5CF6', Icon: IconClipboard },
   ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % INDUSTRIES.length);
+    }, 2500);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
       <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Wybierz branżę</p>
@@ -56,17 +70,17 @@ function MockupBranch() {
             key={ind.label}
             className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition-colors text-sm font-medium"
             style={
-              i === 0
+              i === activeIndex
                 ? { background: '#EEF2FF', color: '#4338CA', border: '1.5px solid #6366F1' }
                 : { background: '#F8FAFC', color: '#475569', border: '1px solid #E2E8F0' }
             }
           >
             <span className="w-4 h-4 flex items-center justify-center" aria-hidden>
-              <ind.Icon color={ind.color} />
+              <ind.Icon color={i === activeIndex ? ind.color : '#94A3B8'} />
             </span>
             <span>{ind.label}</span>
-            {i === 0 && (
-              <svg className="ml-auto" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+            {i === activeIndex && (
+              <motion.svg initial={{ scale: 0 }} animate={{ scale: 1 }} className="ml-auto" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></motion.svg>
             )}
           </div>
         ))}
@@ -133,7 +147,7 @@ function MockupChat() {
         </div>
         <div className="flex justify-start">
           <div className="rounded-2xl rounded-bl-sm px-3.5 py-2.5 bg-slate-100 text-slate-700 text-xs max-w-[85%] leading-relaxed">
-            Manicure hybrydowy to 90 zł ✨<br/>Mam wolny termin jutro o 14:30 — zainteresowana?
+            Manicure hybrydowy to 90 zł ✨<br/>Podaj swój numer telefonu, a nasza recepcja od razu oddzwoni z terminami!
           </div>
         </div>
         <div className="mt-1 flex items-center gap-1.5 px-3 py-2 rounded-full bg-slate-50 border border-slate-200">
@@ -167,7 +181,7 @@ const STEPS = [
   {
     num: '03',
     title: 'Bot pracuje za Ciebie',
-    desc: 'Jeden fragment kodu HTML na Twojej stronie. Bot odpowiada na pytania, zbiera leady i odsyła do rezerwacji 24/7.',
+    desc: 'Jeden fragment kodu HTML na Twojej stronie. Bot odpowiada na pytania i błyskawicznie zbiera numery telefonów od klientów 24/7.',
     badge: 'Leady w panelu od razu',
     Mockup: MockupChat,
   },
@@ -188,12 +202,52 @@ export default function HowItWorks() {
           </p>
         </ScrollReveal>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="relative grid lg:grid-cols-3 gap-8">
+          {/* SVG Arrow 1: Od kroku 1 do 2 */}
+          <div className="hidden lg:block absolute top-[15%] left-[30%] w-[10%] h-16 pointer-events-none z-10">
+            <svg viewBox="0 0 100 50" className="w-full h-full overflow-visible">
+              <motion.path
+                d="M 0,25 C 40,-15 60,65 100,25"
+                fill="none" stroke="#6366F1" strokeWidth="2" strokeDasharray="6,6" strokeLinecap="round"
+                initial={{ pathLength: 0, opacity: 0 }}
+                whileInView={{ pathLength: 1, opacity: 0.5 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 1.5, ease: 'easeInOut', delay: 0.4 }}
+              />
+              <motion.circle cx="100" cy="25" r="4" fill="#6366F1"
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 0.5 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 1.8 }}
+              />
+            </svg>
+          </div>
+
+          {/* SVG Arrow 2: Od kroku 2 do 3 */}
+          <div className="hidden lg:block absolute top-[20%] left-[64%] w-[10%] h-16 pointer-events-none z-10">
+            <svg viewBox="0 0 100 50" className="w-full h-full overflow-visible">
+              <motion.path
+                d="M 0,25 C 40,65 60,-15 100,25"
+                fill="none" stroke="#6366F1" strokeWidth="2" strokeDasharray="6,6" strokeLinecap="round"
+                initial={{ pathLength: 0, opacity: 0 }}
+                whileInView={{ pathLength: 1, opacity: 0.5 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 1.5, ease: 'easeInOut', delay: 0.8 }}
+              />
+              <motion.circle cx="100" cy="25" r="4" fill="#6366F1"
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 0.5 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 2.2 }}
+              />
+            </svg>
+          </div>
+
           {STEPS.map((step, i) => (
             <ScrollReveal key={step.num} delay={(i + 1) as 1 | 2 | 3}>
-              <div className="flex flex-col h-full">
+              <div className="flex flex-col h-full bg-white relative z-20">
                 {/* Visual mockup */}
-                <div className="mb-6 rounded-2xl overflow-hidden bg-slate-50 p-5 border border-slate-100">
+                <div className="mb-6 rounded-2xl overflow-hidden bg-slate-50 p-5 border border-slate-100 relative group transition-transform hover:-translate-y-1 hover:shadow-lg duration-300">
                   <step.Mockup />
                 </div>
 

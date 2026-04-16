@@ -25,28 +25,31 @@ function StatusDropdown({
   current,
   onUpdate,
   updating,
+  isOpen,
+  onToggle,
 }: {
   leadId: string;
   current: string;
   onUpdate: (id: string, status: string) => void;
   updating: boolean;
+  isOpen: boolean;
+  onToggle: (open: boolean) => void;
 }) {
-  const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!open) return;
+    if (!isOpen) return;
     const handler = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+      if (!ref.current?.contains(e.target as Node)) onToggle(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, [open]);
+  }, [isOpen, onToggle]);
 
   return (
     <div ref={ref} className="relative inline-block">
       <button
-        onClick={() => !updating && setOpen((o) => !o)}
+        onClick={() => !updating && onToggle(!isOpen)}
         disabled={updating}
         className="inline-flex items-center gap-1.5 group disabled:opacity-60"
         aria-label="Zmień status"
@@ -57,19 +60,19 @@ function StatusDropdown({
           <>
             <StatusBadge status={current} />
             <ChevronDown
-              className={`w-3 h-3 text-slate-400 transition-transform duration-150 ${open ? 'rotate-180' : ''}`}
+              className={`w-3 h-3 text-slate-400 transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`}
             />
           </>
         )}
       </button>
 
-      {open && (
-        <div className="absolute left-0 top-full mt-1.5 z-30 bg-white rounded-xl border border-slate-200 shadow-xl shadow-slate-200/60 p-1.5 min-w-[170px] animate-fade-in">
+      {isOpen && (
+        <div className="absolute left-0 top-full mt-1.5 z-30 bg-white rounded-xl border border-slate-200 shadow-xl shadow-slate-200/60 p-1.5 min-w-[170px] animate-fade-in animate-in slide-in-from-top-2">
           {STATUS_KEYS.map((key) => (
             <button
               key={key}
               onClick={() => {
-                setOpen(false);
+                onToggle(false);
                 if (key !== current) onUpdate(leadId, key);
               }}
               className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left transition-colors hover:bg-slate-50 ${key === current ? 'bg-slate-50' : ''}`}
@@ -89,6 +92,7 @@ function StatusDropdown({
 export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
   const [leads, setLeads] = useState(initialLeads);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
   const updateStatus = async (leadId: string, status: string) => {
     setUpdating(leadId);
@@ -122,23 +126,23 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 overflow-hidden shadow-sm">
-      <table className="w-full text-sm">
-        <thead className="bg-slate-50/80 border-b border-slate-200/60">
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 overflow-visible shadow-sm">
+      <table className="w-full text-sm border-separate border-spacing-0">
+        <thead className="bg-slate-50/80 [&_th:first-child]:rounded-tl-2xl [&_th:last-child]:rounded-tr-2xl">
           <tr>
-            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200/60">
               Kontakt
             </th>
-            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200/60">
               Telefon
             </th>
-            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden md:table-cell">
+            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden md:table-cell border-b border-slate-200/60">
               Wiadomość
             </th>
-            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200/60">
               Status
             </th>
-            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden sm:table-cell">
+            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden sm:table-cell border-b border-slate-200/60">
               Data
             </th>
           </tr>
@@ -147,7 +151,7 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
           {leads.map((lead, idx) => (
             <tr
               key={lead.id}
-              className="hover:bg-indigo-50/30 transition-colors animate-fade-in"
+              className={`hover:bg-indigo-50/30 transition-colors animate-fade-in relative ${openDropdownId === lead.id ? 'z-50' : 'z-0'}`}
               style={{ animationDelay: `${idx * 40}ms` }}
             >
               <td className="px-5 py-4 font-semibold text-slate-800">{lead.name}</td>
@@ -161,6 +165,8 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
                   current={lead.status}
                   onUpdate={(id, status) => void updateStatus(id, status)}
                   updating={updating === lead.id}
+                  isOpen={openDropdownId === lead.id}
+                  onToggle={(open) => setOpenDropdownId(open ? lead.id : null)}
                 />
               </td>
               <td className="px-5 py-4 text-slate-400 text-xs hidden sm:table-cell">

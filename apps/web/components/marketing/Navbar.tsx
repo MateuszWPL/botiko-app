@@ -13,13 +13,14 @@ const NAV_LINKS = [
   { label: 'Blog', href: '/blog' },
 ];
 
-export default function Navbar() {
+export default function Navbar({ forceScrolled = false }: { forceScrolled?: boolean } = {}) {
   const pathname = usePathname();
   const router = useRouter();
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(forceScrolled);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
+    if (forceScrolled) return;
     const onScroll = () => setScrolled(window.scrollY > 60);
     onScroll(); // set correct state on initial render / refresh
     window.addEventListener('scroll', onScroll, { passive: true });
