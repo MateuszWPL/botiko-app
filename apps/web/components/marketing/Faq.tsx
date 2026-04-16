@@ -5,42 +5,34 @@ import ScrollReveal from './ScrollReveal';
 
 const FAQS = [
   {
-    icon: '🚀',
     q: 'Czy muszę umieć programować?',
     a: 'Absolutnie nie. Botiko nie wymaga żadnej wiedzy technicznej. Konfigurujesz bota przez prosty panel — wklejasz cennik, godziny pracy, FAQ. Na koniec dostajesz jeden fragment kodu HTML, który wklejasz na stronę.',
   },
   {
-    icon: '⏱️',
     q: 'Jak długo trwa wdrożenie?',
     a: 'W wielu przypadkach da się uruchomić bota w 15–20 minut: wybierasz branżę, uzupełniasz dane o firmie, wklejasz cennik/FAQ i gotowe. Nie potrzebujesz agencji ani programisty.',
   },
   {
-    icon: '🔒',
     q: 'Co z RODO? Czy dane klientów są bezpieczne?',
     a: 'Tak. Dane przechowujemy na serwerach w UE. Imię i telefon klienta są szyfrowane (AES-256). Możemy podpisać umowę powierzenia danych (DPA). Botiko nie udostępnia danych osobom trzecim.',
   },
   {
-    icon: '✏️',
     q: 'Czy mogę zmieniać treści bota po wdrożeniu?',
     a: 'Tak, w każdej chwili. Panel pozwala edytować cennik, FAQ, godziny pracy i styl komunikacji. Zmiany wchodzą w życie natychmiast — bez żadnego wdrożenia.',
   },
   {
-    icon: '🤝',
     q: 'Czy bot zastąpi mnie lub moich pracowników?',
     a: 'Nie — bot uzupełnia Twoją pracę, nie zastępuje jej. Odpowiada na powtarzające się pytania, zbiera dane od klientów i odsyła do rezerwacji. Ty dostajesz gotowego leada zamiast tracić czas na telefony.',
   },
   {
-    icon: '💬',
     q: 'Co jeśli bot nie zna odpowiedzi?',
     a: 'Bot informuje klienta, że przekaże pytanie do Ciebie, i zapisuje dane kontaktowe (imię, telefon). Dostajesz powiadomienie — klient jest już "podgrzany" i czeka na Twój kontakt.',
   },
   {
-    icon: '💳',
     q: 'Czy mogę zrezygnować w każdej chwili?',
     a: 'Tak. Brak umowy długoterminowej — subskrypcja jest miesięczna i możesz anulować kiedy chcesz. Opłata za bieżący miesiąc nie jest zwracana, ale dostęp pozostaje aktywny do końca okresu rozliczeniowego.',
   },
   {
-    icon: '📱',
     q: 'Czy bot działa na Facebooku i Instagramie?',
     a: 'Aktualnie widget embeddujemy na stronie WWW klienta. Integracja z Meta Messengerem i Instagram Direct jest w roadmapie — daj znać że jesteś zainteresowany przez kontakt@botiko.pl.',
   },
@@ -81,7 +73,6 @@ function FaqItem({
         className="w-full flex items-center gap-3 px-5 py-4 text-left cursor-pointer"
         aria-expanded={isOpen}
       >
-        <span className="shrink-0 text-base leading-none">{faq.icon}</span>
         <span className="flex-1 font-semibold text-text text-sm pr-2">{faq.q}</span>
         <span
           className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center border transition-all duration-300"
@@ -102,7 +93,7 @@ function FaqItem({
         className="overflow-hidden transition-all duration-300 ease-in-out"
         style={{ maxHeight: isOpen ? `${contentRef.current?.scrollHeight ?? 400}px` : '0px' }}
       >
-        <p className="px-5 pb-4 pl-12 text-slate-500 text-sm leading-relaxed">{faq.a}</p>
+        <p className="px-5 pb-4 text-slate-500 text-sm leading-relaxed">{faq.a}</p>
       </div>
     </div>
   );
