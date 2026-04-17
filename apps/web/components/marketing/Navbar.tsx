@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: 'Cennik', href: '#cennik' },
   { label: 'FAQ', href: '#faq' },
   { label: 'Blog', href: '/blog' },
+  { label: 'Kontakt', href: '/kontakt' },
 ];
 
 export default function Navbar({ forceScrolled = false }: { forceScrolled?: boolean } = {}) {

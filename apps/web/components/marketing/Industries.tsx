@@ -91,7 +91,7 @@ const INDUSTRIES = [
     features: ['Odpowiada na pytania o usługi i ceny', 'Zbiera dane pojazdu i właściciela', 'Informuje o przybliżonym czasie naprawy', 'Odsyła do kalendarza wizyt', 'Obsługuje pytania o gwarancje i promocje'],
     sample: [
       { role: 'user', text: 'Ile kosztuje wymiana oleju i kiedy możecie przyjąć?' },
-      { role: 'bot', text: 'Wymiana oleju: 120–180 zł 🔧 Czas: ~45 min. Aby zarezerwować termin, podaj: imię, numer telefonu i matkę pojazdu. Odsyłamy do naszego kalendarza!' },
+      { role: 'bot', text: 'Wymiana oleju: 120–180 zł 🔧 Czas: ~45 min. Aby zarezerwować termin, podaj: imię, numer telefonu i markę pojazdu. Odsyłamy do naszego kalendarza!' },
     ],
   },
   {
