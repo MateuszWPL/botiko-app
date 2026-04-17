@@ -9,7 +9,6 @@ const LINKS = {
     { label: 'Demo', href: '/#demo' },
   ],
   Firma: [
-    { label: 'O nas', href: '/o-nas' },
     { label: 'Blog', href: '/blog' },
     { label: 'Kontakt', href: '/kontakt' },
   ],
