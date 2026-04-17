@@ -108,8 +108,17 @@ export class BotService {
   }
 
   async getPublicConfig(botId: string): Promise<BotPublicConfig> {
+    // Audit B6: gate on BOTH bot.isActive AND tenant.isActive. Without the
+    // tenant check, a widget belonging to a suspended / non-paying tenant
+    // still loads (fetches config, bootstraps UI) — only chat requests
+    // eventually fail. Filtering here means the widget simply stays hidden
+    // when the tenant is inactive, mirroring the behaviour of a missing bot.
     const bot = await this.prisma.bot.findFirst({
-      where: { id: botId, isActive: true },
+      where: {
+        id: botId,
+        isActive: true,
+        tenant: { isActive: true },
+      },
       select: {
         id: true,
         name: true,
