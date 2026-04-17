@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import {
   Plus, Trash2, Loader2, BookOpen, Phone, HelpCircle, FileText, FileUp,
-  Check, X, Pencil, AlertCircle,
+  Check, X, Pencil, AlertCircle, Search, Mail, MapPin, Clock, Globe,
+  Sparkles, Filter,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '../../../lib/supabase';
@@ -18,25 +19,107 @@ interface Chunk {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
+// ── Category visuals ───────────────────────────────────────────────────────────
 
-const CATEGORY_PALETTE = [
-  'bg-indigo-100 text-indigo-700',
-  'bg-emerald-100 text-emerald-700',
-  'bg-amber-100 text-amber-700',
-  'bg-rose-100 text-rose-700',
-  'bg-sky-100 text-sky-700',
-  'bg-purple-100 text-purple-700',
-  'bg-teal-100 text-teal-700',
-  'bg-orange-100 text-orange-700',
-];
+type CategoryKind = 'contact' | 'faq' | 'pdf' | 'text';
 
-function categoryStyle(category: string): string {
-  let hash = 0;
-  for (let i = 0; i < category.length; i++) {
-    hash = (hash * 31 + category.charCodeAt(i)) & 0xff;
+interface CategoryVisual {
+  kind: CategoryKind;
+  label: string;
+  icon: React.ElementType;
+  chipClass: string;
+  borderClass: string;
+  iconBgClass: string;
+  iconColorClass: string;
+}
+
+const CATEGORY_VISUALS: Record<CategoryKind, CategoryVisual> = {
+  contact: {
+    kind: 'contact',
+    label: 'Kontakt',
+    icon: Phone,
+    chipClass: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+    borderClass: 'border-l-indigo-400',
+    iconBgClass: 'bg-indigo-100',
+    iconColorClass: 'text-indigo-600',
+  },
+  faq: {
+    kind: 'faq',
+    label: 'FAQ',
+    icon: HelpCircle,
+    chipClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    borderClass: 'border-l-emerald-400',
+    iconBgClass: 'bg-emerald-100',
+    iconColorClass: 'text-emerald-600',
+  },
+  pdf: {
+    kind: 'pdf',
+    label: 'PDF',
+    icon: FileText,
+    chipClass: 'bg-rose-50 text-rose-700 border-rose-200',
+    borderClass: 'border-l-rose-400',
+    iconBgClass: 'bg-rose-100',
+    iconColorClass: 'text-rose-600',
+  },
+  text: {
+    kind: 'text',
+    label: 'Tekst',
+    icon: Sparkles,
+    chipClass: 'bg-amber-50 text-amber-700 border-amber-200',
+    borderClass: 'border-l-amber-400',
+    iconBgClass: 'bg-amber-100',
+    iconColorClass: 'text-amber-600',
+  },
+};
+
+function kindFromCategory(category: string | null): CategoryKind {
+  if (!category) return 'text';
+  const c = category.toLowerCase();
+  if (c === 'kontakt' || c === 'contact') return 'contact';
+  if (c === 'faq') return 'faq';
+  if (c.startsWith('pdf')) return 'pdf';
+  return 'text';
+}
+
+function categoryLabel(category: string | null): string {
+  if (!category) return 'Tekst';
+  if (category.toLowerCase().startsWith('pdf:')) {
+    return category.slice(4).trim() || 'PDF';
   }
-  return CATEGORY_PALETTE[hash % CATEGORY_PALETTE.length];
+  return category.charAt(0).toUpperCase() + category.slice(1);
+}
+
+// ── Content parsers ────────────────────────────────────────────────────────────
+
+interface ContactField {
+  icon: React.ElementType;
+  label: string;
+  value: string;
+}
+
+function parseContact(content: string): ContactField[] | null {
+  const lines = content.split('\n').map((l) => l.trim()).filter(Boolean);
+  if (lines.length === 0) return null;
+  const fields: ContactField[] = [];
+  for (const line of lines) {
+    const [rawKey, ...rest] = line.split(':');
+    const key = rawKey?.toLowerCase().trim() ?? '';
+    const value = rest.join(':').trim();
+    if (!value) continue;
+    if (key.startsWith('telefon')) fields.push({ icon: Phone, label: 'Telefon', value });
+    else if (key === 'email' || key === 'e-mail') fields.push({ icon: Mail, label: 'Email', value });
+    else if (key.startsWith('strona') || key.startsWith('www')) fields.push({ icon: Globe, label: 'Strona', value });
+    else if (key.startsWith('adres')) fields.push({ icon: MapPin, label: 'Adres', value });
+    else if (key.startsWith('godziny')) fields.push({ icon: Clock, label: 'Godziny', value });
+  }
+  return fields.length > 0 ? fields : null;
+}
+
+function parseFaq(content: string): { question: string; answer: string } | null {
+  const qMatch = /Pytanie:\s*(.+?)(?:\n|$)/s.exec(content);
+  const aMatch = /Odpowiedź:\s*(.+)$/s.exec(content);
+  if (!qMatch || !aMatch) return null;
+  return { question: qMatch[1]!.trim(), answer: aMatch[1]!.trim() };
 }
 
 const inputClass =
@@ -489,16 +572,37 @@ function ChunkItem({
     }
   };
 
-  return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 p-5 shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex items-start gap-3">
-        <div className="flex-1 min-w-0">
-          {chunk.category && (
-            <span className={`inline-block text-xs font-medium px-2.5 py-0.5 rounded-full mb-2 ${categoryStyle(chunk.category)}`}>
-              {chunk.category}
-            </span>
-          )}
+  const kind = kindFromCategory(chunk.category);
+  const visual = CATEGORY_VISUALS[kind];
+  const Icon = visual.icon;
+  const label = categoryLabel(chunk.category);
 
+  const contactFields = kind === 'contact' ? parseContact(chunk.content) : null;
+  const faq = kind === 'faq' ? parseFaq(chunk.content) : null;
+
+  return (
+    <div
+      className={`group bg-white rounded-2xl border border-slate-200/70 border-l-4 ${visual.borderClass} p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200`}
+      style={{ animation: 'botiko-chunk-in 0.3s ease both' }}
+    >
+      <div className="flex items-start gap-3">
+        {/* Source icon */}
+        <div className={`flex-shrink-0 w-10 h-10 rounded-xl ${visual.iconBgClass} flex items-center justify-center`}>
+          <Icon className={`w-5 h-5 ${visual.iconColorClass}`} />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          {/* Category chip + date */}
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
+            <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full border ${visual.chipClass}`}>
+              {label}
+            </span>
+            <span className="text-xs text-slate-400">
+              {new Date(chunk.createdAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </span>
+          </div>
+
+          {/* Content — parsed or raw */}
           {editing ? (
             <textarea
               value={draft}
@@ -507,16 +611,32 @@ function ChunkItem({
               className="w-full px-3 py-2 border border-indigo-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 resize-none bg-white"
               autoFocus
             />
+          ) : contactFields ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+              {contactFields.map((f, i) => {
+                const FIcon = f.icon;
+                return (
+                  <div key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                    <FIcon className="w-3.5 h-3.5 text-slate-400 flex-shrink-0 mt-0.5" />
+                    <div className="min-w-0">
+                      <span className="block text-[10px] uppercase tracking-wide text-slate-400 font-semibold">{f.label}</span>
+                      <span className="block truncate">{f.value}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : faq ? (
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-slate-800 leading-snug">{faq.question}</p>
+              <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">{faq.answer}</p>
+            </div>
           ) : (
             <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">{chunk.content}</p>
           )}
-
-          <p className="text-xs text-slate-400 mt-2">
-            {new Date(chunk.createdAt).toLocaleDateString('pl-PL')}
-          </p>
         </div>
 
-        <div className="flex gap-1 flex-shrink-0">
+        <div className="flex gap-1 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
           {editing ? (
             <>
               <button
@@ -590,6 +710,8 @@ export function KnowledgeManager({
 }) {
   const [chunks, setChunks] = useState(initialChunks);
   const [activeTab, setActiveTab] = useState<Tab>('contact');
+  const [search, setSearch] = useState('');
+  const [kindFilter, setKindFilter] = useState<CategoryKind | 'all'>('all');
 
   const addOne = (chunk: Chunk) => setChunks((prev) => [chunk, ...prev]);
   const addMany = (newChunks: Chunk[]) => setChunks((prev) => [...newChunks, ...prev]);
@@ -597,8 +719,33 @@ export function KnowledgeManager({
   const update = (id: string, content: string) =>
     setChunks((prev) => prev.map((c) => (c.id === id ? { ...c, content } : c)));
 
+  const counts = useMemo(() => {
+    const c: Record<CategoryKind, number> = { contact: 0, faq: 0, pdf: 0, text: 0 };
+    for (const chunk of chunks) c[kindFromCategory(chunk.category)]++;
+    return c;
+  }, [chunks]);
+
+  const filteredChunks = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return chunks.filter((c) => {
+      if (kindFilter !== 'all' && kindFromCategory(c.category) !== kindFilter) return false;
+      if (q && !c.content.toLowerCase().includes(q)) return false;
+      return true;
+    });
+  }, [chunks, search, kindFilter]);
+
   return (
     <div className="space-y-6">
+      <style>{`
+        @keyframes botiko-chunk-in {
+          from { opacity: 0; transform: translateY(6px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes botiko-tab-in {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
       {/* Add section */}
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
         {/* Tabs */}
@@ -624,7 +771,11 @@ export function KnowledgeManager({
         </div>
 
         {/* Tab content */}
-        <div className="p-6">
+        <div
+          key={activeTab}
+          className="p-6"
+          style={{ animation: 'botiko-tab-in 0.22s ease both' }}
+        >
           {activeTab === 'contact' && <ContactTab botId={botId} onAdd={addOne} />}
           {activeTab === 'faq' && <FaqTab botId={botId} onAdd={addOne} />}
           {activeTab === 'text' && <TextTab botId={botId} onAdd={addOne} />}
@@ -634,9 +785,58 @@ export function KnowledgeManager({
 
       {/* Chunks list */}
       <div>
-        <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
-          Baza wiedzy ({chunks.length} {chunks.length === 1 ? 'wpis' : chunks.length < 5 ? 'wpisy' : 'wpisów'})
-        </h2>
+        {/* Toolbar: search + filters */}
+        {chunks.length > 0 && (
+          <div className="mb-4 space-y-3">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Szukaj we wpisach bazy wiedzy..."
+                className="w-full pl-11 pr-10 py-3 bg-white rounded-2xl border border-slate-200/70 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all shadow-sm"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                  title="Wyczyść"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Filter pills */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <Filter className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+              <FilterPill
+                active={kindFilter === 'all'}
+                label="Wszystkie"
+                count={chunks.length}
+                onClick={() => setKindFilter('all')}
+                accentColor="bg-slate-700"
+              />
+              {(Object.keys(CATEGORY_VISUALS) as CategoryKind[]).map((k) => {
+                const v = CATEGORY_VISUALS[k];
+                if (counts[k] === 0) return null;
+                return (
+                  <FilterPill
+                    key={k}
+                    active={kindFilter === k}
+                    label={v.label}
+                    count={counts[k]}
+                    icon={v.icon}
+                    onClick={() => setKindFilter(k)}
+                    chipClass={v.chipClass}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {chunks.length === 0 ? (
           <EmptyStateClient
@@ -644,9 +844,17 @@ export function KnowledgeManager({
             title="Baza wiedzy jest pusta"
             description="Bot nie może odpowiadać na pytania bez wiedzy o Twojej firmie. Zacznij od zakładki Kontakt — dodaj telefon, adres i godziny otwarcia."
           />
+        ) : filteredChunks.length === 0 ? (
+          <div className="bg-white/60 rounded-2xl border border-slate-200/60 border-dashed p-10 text-center">
+            <Search className="w-8 h-8 text-slate-300 mx-auto mb-3" />
+            <p className="text-sm font-semibold text-slate-700 mb-1">Brak wyników</p>
+            <p className="text-xs text-slate-500">
+              Spróbuj zmienić filtr lub wyczyść frazę wyszukiwania.
+            </p>
+          </div>
         ) : (
           <div className="space-y-3">
-            {chunks.map((chunk) => (
+            {filteredChunks.map((chunk) => (
               <ChunkItem
                 key={chunk.id}
                 chunk={chunk}
@@ -658,5 +866,50 @@ export function KnowledgeManager({
         )}
       </div>
     </div>
+  );
+}
+
+// ── Filter pill ────────────────────────────────────────────────────────────────
+
+function FilterPill({
+  active,
+  label,
+  count,
+  onClick,
+  icon: Icon,
+  chipClass,
+  accentColor,
+}: {
+  active: boolean;
+  label: string;
+  count: number;
+  onClick: () => void;
+  icon?: React.ElementType;
+  chipClass?: string;
+  accentColor?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+        active
+          ? chipClass
+            ? `${chipClass} shadow-sm scale-105`
+            : 'bg-slate-900 text-white border-slate-900 shadow-sm scale-105'
+          : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+      }`}
+    >
+      {Icon && <Icon className="w-3.5 h-3.5" />}
+      {label}
+      <span className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-[10px] font-bold ${
+        active
+          ? 'bg-white/80 text-slate-800'
+          : accentColor
+            ? `${accentColor} text-white`
+            : 'bg-slate-100 text-slate-600'
+      }`}>
+        {count}
+      </span>
+    </button>
   );
 }
