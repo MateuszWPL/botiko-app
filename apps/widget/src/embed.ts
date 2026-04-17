@@ -63,6 +63,10 @@ function Widget({
 }
 
 async function init() {
+  // Skip known CMS admin panels — widget has no business appearing in /wp-admin etc.
+  const path = window.location.pathname;
+  if (['/wp-admin', '/wp-login.php', '/administrator'].some((p) => path.startsWith(p))) return;
+
   // Guard against double-init — synchronous flag na documentElement ustawiony PRZED
   // async init, odporny na race condition gdy dwa skrypty ładują się równolegle.
   // getElementById jest async i może przepuścić dwa równoległe init().
