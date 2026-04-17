@@ -19,8 +19,9 @@ export const metadata: Metadata = {
     'bot do odpowiadania na wiadomości',
     'automatyczne odpowiedzi klientom',
     'bot dla małej firmy Polska',
-    'bot do rezerwacji (link)',
     'bot dla firmy usługowej',
+    'chatbot Białystok',
+    'bot dla salonu beauty',
     'Botiko',
   ],
   openGraph: {
@@ -57,17 +58,36 @@ const JSON_LD_ORGANIZATION = {
   '@type': 'Organization',
   name: 'Botiko.pl',
   url: 'https://botiko.pl',
-  logo: 'https://botiko.pl/logo.png',
+  logo: 'https://botiko.pl/BotikoLogo.png',
   contactPoint: {
     '@type': 'ContactPoint',
     email: 'kontakt@botiko.pl',
     contactType: 'customer service',
     availableLanguage: 'Polish',
+    areaServed: 'PL',
   },
-  sameAs: [
-    'https://facebook.com/botiko',
-    'https://instagram.com/botiko.pl',
-    'https://linkedin.com/company/botiko',
+};
+
+const JSON_LD_LOCAL_BUSINESS = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': 'https://botiko.pl/#business',
+  name: 'Botiko.pl',
+  description:
+    'Bot obsługi klienta 24/7 dla firm usługowych — salony, gabinety, restauracje, warsztaty.',
+  url: 'https://botiko.pl',
+  email: 'kontakt@botiko.pl',
+  image: 'https://botiko.pl/BotikoLogo.png',
+  priceRange: '149 PLN',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Białystok',
+    addressRegion: 'Podlaskie',
+    addressCountry: 'PL',
+  },
+  areaServed: [
+    { '@type': 'Country', name: 'Polska' },
+    { '@type': 'City', name: 'Białystok' },
   ],
 };
 
@@ -142,6 +162,10 @@ export default function HomePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_ORGANIZATION) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_LOCAL_BUSINESS) }}
       />
       <script
         type="application/ld+json"

@@ -12,7 +12,9 @@ export default function robots(): MetadataRoute.Robots {
           '/dashboard/',
           '/onboarding/',
           '/login',
+          '/register',
           '/rejestracja',
+          '/forgot-password',
           '/api/',
         ],
       },
@@ -20,4 +22,3 @@ export default function robots(): MetadataRoute.Robots {
     sitemap: `${baseUrl}/sitemap.xml`,
   };
 }
-

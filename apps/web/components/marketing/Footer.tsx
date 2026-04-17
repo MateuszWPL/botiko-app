@@ -3,10 +3,10 @@ import Link from 'next/link';
 
 const LINKS = {
   Produkt: [
-    { label: 'Jak działa', href: '#jak-dziala' },
-    { label: 'Branże', href: '#branze' },
-    { label: 'Cennik', href: '#cennik' },
-    { label: 'Demo', href: '#demo' },
+    { label: 'Jak działa', href: '/#jak-dziala' },
+    { label: 'Branże', href: '/#branze' },
+    { label: 'Cennik', href: '/#cennik' },
+    { label: 'Demo', href: '/#demo' },
   ],
   Firma: [
     { label: 'O nas', href: '/o-nas' },
@@ -30,7 +30,7 @@ export default function Footer() {
             <Link href="/" className="inline-flex items-center gap-2 mb-4">
               <Image
                 src="/BotikoLogo.png"
-                alt="Botiko"
+                alt="Botiko.pl — bot obsługi klienta 24/7"
                 width={32}
                 height={32}
                 className="rounded-lg"
@@ -42,37 +42,23 @@ export default function Footer() {
             <p className="text-sm leading-relaxed mb-5">
               Bot obsługi klienta dla polskich firm usługowych. Odpowiada za Ciebie 24/7 — bez programowania, bez umowy.
             </p>
-            <div className="flex gap-3">
-              <a
-                href="https://facebook.com/botiko"
-                aria-label="Facebook"
-                className="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand transition-colors"
-              >
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+            <div className="text-xs leading-relaxed space-y-1">
+              <p className="flex items-center gap-2">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
                 </svg>
-              </a>
-              <a
-                href="https://instagram.com/botiko.pl"
-                aria-label="Instagram"
-                className="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand transition-colors"
-              >
-                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                  <circle cx="12" cy="12" r="4"/>
-                  <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+                Białystok, Polska
+              </p>
+              <p className="flex items-center gap-2">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
                 </svg>
-              </a>
-              <a
-                href="https://linkedin.com/company/botiko"
-                aria-label="LinkedIn"
-                className="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand transition-colors"
-              >
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
-                  <circle cx="4" cy="4" r="2"/>
-                </svg>
-              </a>
+                <a href="mailto:kontakt@botiko.pl" className="hover:text-white transition-colors">
+                  kontakt@botiko.pl
+                </a>
+              </p>
             </div>
           </div>
 
@@ -98,7 +84,7 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs">
-            © {new Date().getFullYear()} Botiko.pl — Wszelkie prawa zastrzeżone.
+            © {new Date().getFullYear()} Botiko.pl — Projekt z Białegostoku. Działamy w całej Polsce.
           </p>
           <div className="flex items-center gap-2 text-xs">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
