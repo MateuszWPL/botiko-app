@@ -212,7 +212,7 @@ export default function BeautyLandingPage() {
             </p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text">Jak bot odpowiada klientkom</h2>
             <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
-              To nie „chat AI w ogóle" — Botiko odpowiada na podstawie Twojego cennika i wiedzy.
+              To nie „chat AI w ogóle” — Botiko odpowiada na podstawie Twojego cennika i wiedzy.
             </p>
           </div>
 

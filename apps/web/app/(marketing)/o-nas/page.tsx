@@ -97,7 +97,7 @@ export default function AboutPage() {
           </h1>
 
           <p className="text-indigo-200 text-lg leading-relaxed max-w-2xl">
-            Bez zespołu sprzedażowego, bez inwestorów, bez „disrupt". Jeden produkt, który ma pomóc realnym właścicielom
+            Bez zespołu sprzedażowego, bez inwestorów, bez „disrupt”. Jeden produkt, który ma pomóc realnym właścicielom
             salonów, gabinetów, restauracji i warsztatów przestać tracić klientów, gdy nie patrzą w telefon.
           </p>
         </div>
@@ -116,9 +116,9 @@ export default function AboutPage() {
               salon beauty, warsztat, gabinet. Te same problemy wracały co tydzień:
             </p>
             <ul className="list-disc pl-6 space-y-2">
-              <li>„Klientka napisała o 22:30 i zapisała się do konkurencji, bo ja już spałam."</li>
-              <li>„Odbieram telefony podczas zabiegu — tracę na tym koncentrację i czas."</li>
-              <li>„Te same pytania: cennik, godziny, parking. Codziennie 20×."</li>
+              <li>„Klientka napisała o 22:30 i zapisała się do konkurencji, bo ja już spałam.”</li>
+              <li>„Odbieram telefony podczas zabiegu — tracę na tym koncentrację i czas.”</li>
+              <li>„Te same pytania: cennik, godziny, parking. Codziennie 20×.”</li>
             </ul>
             <p>
               Istniejące rozwiązania były albo za drogie (agencje za kilka tysięcy za wdrożenie), albo za generyczne
@@ -127,7 +127,7 @@ export default function AboutPage() {
             </p>
             <p>
               To nie jest startup z 50-osobowym zespołem. To projekt, który robię sam — i dlatego mogę sobie pozwolić
-              na odpowiadanie na Twoje pytania osobiście, bez „skieruj zapytanie do Customer Success Managera".
+              na odpowiadanie na Twoje pytania osobiście, bez „skieruj zapytanie do Customer Success Managera”.
             </p>
           </div>
         </div>

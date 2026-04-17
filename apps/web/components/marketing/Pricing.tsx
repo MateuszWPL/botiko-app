@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ScrollReveal from './ScrollReveal';
 import Link from 'next/link';
 
 const FEATURES = [
   { text: '1 bot AI odpowiadający 24/7 na Twojej stronie', strong: true },
-  { text: 'Nieograniczone rozmowy z klientami', strong: false },
+  { text: 'Do 1 000 rozmów z klientami miesięcznie', strong: false },
   { text: 'Gotowy szablon branżowy — beauty, health, food, auto', strong: false },
   { text: 'Własna baza wiedzy: cennik, FAQ, godziny pracy', strong: false },
   { text: 'Automatyczne zbieranie leadów (imię + telefon)', strong: true },
@@ -16,6 +16,19 @@ const FEATURES = [
   { text: 'Wsparcie e-mail — odpowiadamy w 24h', strong: false },
 ];
 
+// Presets auto-cycle co 4s żeby zademonstrować różne scenariusze
+const PRESETS = [
+  { clients: 4, avg: 150 },
+  { clients: 10, avg: 220 },
+  { clients: 6, avg: 350 },
+  { clients: 15, avg: 180 },
+  { clients: 8, avg: 290 },
+];
+
+const LERP = 0.09;
+const CYCLE_MS = 4000;
+const PAUSE_MS = 10_000;
+
 const CheckIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20 6 9 17 4 12" />
@@ -23,10 +36,68 @@ const CheckIcon = () => (
 );
 
 export default function Pricing() {
-  const [clientsPerMonth, setClientsPerMonth] = useState(4);
-  const [avgValue, setAvgValue] = useState(150);
   const planCost = 149;
-  const monthlyRevenue = clientsPerMonth * avgValue;
+
+  // targetRef — gdzie chcemy dojść (zmienia auto-cycle lub user)
+  const targetRef = useRef({ clients: PRESETS[0].clients, avg: PRESETS[0].avg });
+
+  // anim — płynne float wartości interpolowane do target
+  const [anim, setAnim] = useState({ clients: PRESETS[0].clients, avg: PRESETS[0].avg });
+
+  const pauseUntilRef = useRef(0);
+  const presetIdxRef = useRef(0);
+
+  // RAF lerp loop — działa przez cały czas, zatrzymuje się gdy prev === target
+  useEffect(() => {
+    let raf: number;
+    const tick = () => {
+      setAnim(prev => {
+        const tc = targetRef.current.clients;
+        const ta = targetRef.current.avg;
+        const cd = tc - prev.clients;
+        const ad = ta - prev.avg;
+        if (Math.abs(cd) < 0.05 && Math.abs(ad) < 0.5) {
+          // Zwróć ten sam obiekt → React pomija re-render
+          if (prev.clients === tc && prev.avg === ta) return prev;
+          return { clients: tc, avg: ta };
+        }
+        return { clients: prev.clients + cd * LERP, avg: prev.avg + ad * LERP };
+      });
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  // Auto-cycle między presetami
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (Date.now() < pauseUntilRef.current) return;
+      presetIdxRef.current = (presetIdxRef.current + 1) % PRESETS.length;
+      targetRef.current = PRESETS[presetIdxRef.current];
+    }, CYCLE_MS);
+    return () => clearInterval(id);
+  }, []);
+
+  const pauseAutoPlay = () => {
+    pauseUntilRef.current = Date.now() + PAUSE_MS;
+  };
+
+  const handleClientsChange = (v: number) => {
+    targetRef.current = { ...targetRef.current, clients: v };
+    setAnim(prev => ({ ...prev, clients: v })); // snap — brak opóźnienia przy dragowaniu
+    pauseAutoPlay();
+  };
+
+  const handleAvgChange = (v: number) => {
+    targetRef.current = { ...targetRef.current, avg: v };
+    setAnim(prev => ({ ...prev, avg: v }));
+    pauseAutoPlay();
+  };
+
+  const displayClients = Math.round(anim.clients);
+  const displayAvg = Math.round(anim.avg);
+  const monthlyRevenue = displayClients * displayAvg;
   const netProfit = monthlyRevenue - planCost;
   const roiX = (monthlyRevenue / planCost).toFixed(1);
 
@@ -89,7 +160,7 @@ export default function Pricing() {
                   href="/rejestracja"
                   className="block text-center py-4 rounded-full bg-white text-brand font-bold text-base shadow-xl hover:bg-brand-soft hover:-translate-y-0.5 transition-all"
                 >
-                  Zacznij za darmo — 14 dni bez karty
+                  Sprawdź Botiko przez 14 dni — bez karty
                 </Link>
                 <p className="text-center text-indigo-300 text-xs mt-3">
                   Konfiguracja w 15 minut · Bez umowy · Anulujesz kiedy chcesz
@@ -116,7 +187,13 @@ export default function Pricing() {
             {/* RIGHT — ROI Calculator */}
             <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm h-full flex flex-col">
               <div className="mb-8">
-                <p className="text-sm font-semibold text-brand uppercase tracking-widest mb-2">Kalkulator ROI</p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-semibold text-brand uppercase tracking-widest">Kalkulator ROI</p>
+                  <span className="flex items-center gap-1.5 text-xs text-slate-400">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    live
+                  </span>
+                </div>
                 <h3 className="text-2xl font-bold text-text">Czy 149 zł się zwróci?</h3>
                 <p className="text-slate-500 text-sm mt-1">Przeciągnij suwaki i sprawdź swój zwrot z inwestycji</p>
               </div>
@@ -127,14 +204,16 @@ export default function Pricing() {
                     <label className="text-sm font-semibold text-text">
                       Nowi klienci przez bota / miesiąc
                     </label>
-                    <span className="text-lg font-extrabold text-brand">{clientsPerMonth}</span>
+                    <span className="text-lg font-extrabold text-brand tabular-nums w-8 text-right">
+                      {displayClients}
+                    </span>
                   </div>
                   <input
                     type="range"
                     min={1}
                     max={20}
-                    value={clientsPerMonth}
-                    onChange={(e) => setClientsPerMonth(Number(e.target.value))}
+                    value={displayClients}
+                    onChange={(e) => handleClientsChange(Number(e.target.value))}
                     className="w-full cursor-pointer accent-brand h-2 rounded-full"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
@@ -147,15 +226,16 @@ export default function Pricing() {
                     <label className="text-sm font-semibold text-text">
                       Średnia wartość wizyty / zamówienia
                     </label>
-                    <span className="text-lg font-extrabold text-brand">{avgValue} zł</span>
+                    <span className="text-lg font-extrabold text-brand tabular-nums w-16 text-right">
+                      {displayAvg} zł
+                    </span>
                   </div>
                   <input
                     type="range"
                     min={50}
                     max={500}
-                    step={10}
-                    value={avgValue}
-                    onChange={(e) => setAvgValue(Number(e.target.value))}
+                    value={displayAvg}
+                    onChange={(e) => handleAvgChange(Number(e.target.value))}
                     className="w-full cursor-pointer accent-brand h-2 rounded-full"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
@@ -168,24 +248,30 @@ export default function Pricing() {
               <div className="grid grid-cols-2 gap-3 mt-auto">
                 <div className="col-span-2 rounded-2xl p-5 text-center" style={{ background: 'linear-gradient(135deg, #6366F1, #4338CA)' }}>
                   <p className="text-indigo-200 text-xs font-semibold uppercase tracking-wider mb-1">Zwrot z inwestycji</p>
-                  <p className="text-5xl font-extrabold text-white">{roiX}×</p>
+                  <p className="text-5xl font-extrabold text-white tabular-nums">{roiX}×</p>
                   <p className="text-indigo-200 text-xs mt-1">w pierwszym miesiącu</p>
                 </div>
 
                 <div className="rounded-2xl p-4 bg-emerald-50 border border-emerald-100 text-center">
-                  <p className="text-2xl font-extrabold text-emerald-600 whitespace-nowrap">{monthlyRevenue} zł</p>
+                  <p className="text-2xl font-extrabold text-emerald-600 whitespace-nowrap tabular-nums">
+                    {monthlyRevenue} zł
+                  </p>
                   <p className="text-xs text-slate-500 mt-1">Przychód / mies.</p>
                 </div>
 
                 <div className="rounded-2xl p-4 bg-slate-50 border border-slate-100 text-center">
-                  <p className="text-2xl font-extrabold text-slate-700 whitespace-nowrap">{planCost} zł</p>
+                  <p className="text-2xl font-extrabold text-slate-700 whitespace-nowrap tabular-nums">{planCost} zł</p>
                   <p className="text-xs text-slate-500 mt-1">Koszt Botiko / mies.</p>
                 </div>
 
-                <div className="col-span-2 rounded-2xl p-4 border text-center"
-                  style={{ backgroundColor: netProfit >= 0 ? '#f0fdf4' : '#fef2f2', borderColor: netProfit >= 0 ? '#bbf7d0' : '#fecaca' }}
+                <div
+                  className="col-span-2 rounded-2xl p-4 border text-center transition-colors duration-300"
+                  style={{
+                    backgroundColor: netProfit >= 0 ? '#f0fdf4' : '#fef2f2',
+                    borderColor: netProfit >= 0 ? '#bbf7d0' : '#fecaca',
+                  }}
                 >
-                  <p className={`text-3xl font-extrabold ${netProfit >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                  <p className={`text-3xl font-extrabold tabular-nums ${netProfit >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
                     {netProfit >= 0 ? '+' : ''}{netProfit} zł
                   </p>
                   <p className="text-xs text-slate-500 mt-1">Zysk netto / miesiąc</p>
