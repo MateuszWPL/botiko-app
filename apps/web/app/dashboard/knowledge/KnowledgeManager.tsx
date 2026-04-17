@@ -824,7 +824,7 @@ export function KnowledgeManager({
       </div>
 
       {/* ── RIGHT COLUMN: Search, filters, chunks list ── */}
-      <div className="min-w-0">
+      <div className="min-w-0 lg:sticky lg:top-6 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-1 lg:pb-4 rounded-2xl" style={{ scrollbarWidth: 'thin', scrollbarColor: '#e2e8f0 transparent' }}>
         {/* Toolbar: search + filters */}
         {chunks.length > 0 && (
           <div className="mb-4 space-y-3">
