@@ -22,6 +22,7 @@ import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
 import { DomainWhitelistGuard } from '../../common/guards/domain-whitelist.guard';
+import { BotThrottleGuard } from '../../common/guards/bot-throttle.guard';
 import { CurrentTenant } from '../../common/decorators/current-tenant.decorator';
 
 @Controller('api/v1/leads')
@@ -29,11 +30,11 @@ export class LeadController {
   constructor(private readonly leadService: LeadService) {}
 
   // Public endpoint — widget submits lead
-  // Stricter throttling: 5 req/min per IP to prevent spam
+  // 5 req/min per IP (antyspam) + 60 req/min per botId (BotThrottleGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
-  @UseGuards(DomainWhitelistGuard)
+  @UseGuards(BotThrottleGuard, DomainWhitelistGuard)
   @UsePipes(new ZodValidationPipe(createLeadSchema))
   create(@Body() dto: CreateLeadDto): Promise<{ id: string }> {
     return this.leadService.create(dto);

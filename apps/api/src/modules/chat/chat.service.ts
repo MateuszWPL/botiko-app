@@ -21,6 +21,21 @@ const PLAN_CONVERSATION_LIMITS: Record<string, number | null> = {
   STARTER: 1000,
 };
 
+/**
+ * Hard caps to prevent cost-DoS on OpenAI.
+ * Plan limit (conversations/month) alone is insufficient because a single
+ * conversation can carry unlimited messages. These caps defend against:
+ *   - A malicious user flooding one sessionId with thousands of messages
+ *   - A pool of proxies distributing messages across many conversations
+ *
+ * Numbers chosen to cover realistic use-case with generous margin:
+ *   - Real salon conversation: 5-15 messages typically
+ *   - Worst abusive session: would hit 50-msg cap quickly
+ *   - Bot-level cap of 10 000 msg/month caps OpenAI spend at ~$10/bot
+ */
+const MAX_USER_MESSAGES_PER_CONVERSATION = 50;
+const MAX_MESSAGES_PER_BOT_PER_MONTH = 10_000;
+
 const FALLBACK_RESPONSE =
   'Nie mam dokładnej odpowiedzi na to pytanie w swojej bazie wiedzy. ' +
   'Zostaw swój kontakt, a nasz zespół odezwie się do Ciebie jak najszybciej!';
@@ -123,12 +138,14 @@ export class ChatService {
     }
 
     if (!bot.tenant.isActive) {
-      throw new ForbiddenException(
-        'Your subscription has expired. Please renew to continue using the bot.',
-      );
+      // Generic message — never leak plan/billing state to the widget visitor.
+      // Widget will show a friendly fallback ("leave a contact") on 403.
+      throw new ForbiddenException('Service temporarily unavailable');
     }
 
     await this.checkPlanLimit(bot.tenant.id, bot.tenant.plan);
+    await this.checkBotMessageCap(req.botId);
+    await this.checkConversationMessageCap(req.botId, req.sessionId);
 
     // ── Step 2: escalation — user wants a human ────────────────────────────────
     if (isEscalationRequest(cleanMessage)) {
@@ -326,9 +343,64 @@ export class ChatService {
     });
 
     if (count >= limit) {
-      throw new ForbiddenException(
-        `Monthly conversation limit (${limit}) reached for the ${plan} plan. Please upgrade to continue.`,
+      // Log the business-level detail, but surface only a generic message
+      // to the end user (audit finding B5: don't leak plan name publicly).
+      this.logger.warn(
+        `Plan limit reached for tenant ${tenantId} (plan=${plan}, count=${count}, limit=${limit})`,
       );
+      throw new ForbiddenException('Service temporarily unavailable');
+    }
+  }
+
+  /**
+   * Hard cap: at most N messages per bot per calendar month.
+   * Protects against cost-DoS across many conversations
+   * (plan-level conversation cap is insufficient by itself).
+   */
+  private async checkBotMessageCap(botId: string): Promise<void> {
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const count = await this.prisma.message.count({
+      where: {
+        conversation: { botId },
+        createdAt: { gte: startOfMonth },
+      },
+    });
+
+    if (count >= MAX_MESSAGES_PER_BOT_PER_MONTH) {
+      this.logger.warn(
+        `Bot message cap reached for bot ${botId} (${count}/${MAX_MESSAGES_PER_BOT_PER_MONTH})`,
+      );
+      throw new ForbiddenException('Service temporarily unavailable');
+    }
+  }
+
+  /**
+   * Hard cap: at most N user messages per conversation.
+   * Prevents a single attacker from flooding one sessionId with
+   * thousands of messages (each one triggers an OpenAI call).
+   */
+  private async checkConversationMessageCap(
+    botId: string,
+    sessionId: string,
+  ): Promise<void> {
+    const conversation = await this.prisma.conversation.findFirst({
+      where: { botId, sessionId },
+      select: { id: true },
+    });
+    if (!conversation) return;
+
+    const count = await this.prisma.message.count({
+      where: { conversationId: conversation.id, role: 'USER' },
+    });
+
+    if (count >= MAX_USER_MESSAGES_PER_CONVERSATION) {
+      this.logger.warn(
+        `Conversation message cap reached (botId=${botId}, sessionId=${sessionId}, count=${count})`,
+      );
+      throw new ForbiddenException('Service temporarily unavailable');
     }
   }
 

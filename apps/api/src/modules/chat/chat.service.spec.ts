@@ -49,6 +49,7 @@ function buildPrismaMock(overrides: Record<string, unknown> = {}) {
     },
     message: {
       create: jest.fn().mockResolvedValue({}),
+      count: jest.fn().mockResolvedValue(0),
     },
     $transaction: jest.fn().mockResolvedValue([]),
     $executeRaw: jest.fn().mockResolvedValue(1),
