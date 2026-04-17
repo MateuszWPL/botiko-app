@@ -1,13 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   Copy,
   Check,
   Code2,
   CheckCircle2,
   ChevronDown,
-  ChevronUp,
   Terminal,
   HelpCircle,
 } from 'lucide-react';
@@ -22,6 +21,32 @@ interface Bot {
 const WIDGET_URL =
   process.env.NEXT_PUBLIC_WIDGET_URL ??
   (process.env.NODE_ENV === 'development' ? 'http://localhost:5173' : 'https://widget.botiko.pl');
+
+// ── FAQ animated answer ────────────────────────────────────────────────────
+
+function FaqAnswer({ open, text }: { open: boolean; text: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    setHeight(open ? ref.current.scrollHeight : 0);
+  }, [open]);
+
+  return (
+    <div
+      style={{
+        maxHeight: height,
+        overflow: 'hidden',
+        transition: 'max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
+    >
+      <div ref={ref} className="px-5 pb-4 pt-0 text-sm text-slate-600 leading-relaxed">
+        {text}
+      </div>
+    </div>
+  );
+}
 
 // ── Inline code block with copy ────────────────────────────────────────────
 
@@ -285,6 +310,7 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
   const [selectedBot, setSelectedBot] = useState(bots[0]?.id ?? '');
   const [mainCopied, setMainCopied] = useState(false);
   const [activePlatform, setActivePlatform] = useState<PlatformId>('wordpress');
+  const [platformKey, setPlatformKey] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   if (bots.length === 0) {
@@ -312,6 +338,12 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
 
   return (
     <div className="space-y-6 max-w-4xl">
+      <style>{`
+        @keyframes botiko-tab-in {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
 
       {/* Bot selector — tylko gdy > 1 */}
       {bots.length > 1 && (
@@ -404,7 +436,7 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
             {PLATFORMS.map((p) => (
               <button
                 key={p.id}
-                onClick={() => setActivePlatform(p.id)}
+                onClick={() => { setActivePlatform(p.id); setPlatformKey((k) => k + 1); }}
                 className={`flex items-center gap-2 px-4 py-3.5 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
                   activePlatform === p.id
                     ? 'border-indigo-500 text-indigo-600'
@@ -428,7 +460,11 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
         </div>
 
         {/* Steps */}
-        <div className="p-5 sm:p-6">
+        <div
+          key={platformKey}
+          className="p-5 sm:p-6"
+          style={{ animation: 'botiko-tab-in 0.22s ease both' }}
+        >
           {currentPlatform.warning && (
             <div className="mb-5 flex gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
               <svg
@@ -557,17 +593,12 @@ document.getElementById('moj-przycisk-cta').addEventListener('click', function (
                 className="w-full flex items-start justify-between gap-4 px-5 py-4 text-left hover:bg-slate-50/80 transition-colors"
               >
                 <span className="text-sm font-medium text-slate-800 leading-snug">{item.q}</span>
-                {openFaq === i ? (
-                  <ChevronUp className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
-                )}
+                <ChevronDown
+                className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5 transition-transform duration-300"
+                style={{ transform: openFaq === i ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              />
               </button>
-              {openFaq === i && (
-                <div className="px-5 pb-4 pt-0 text-sm text-slate-600 leading-relaxed">
-                  {item.a}
-                </div>
-              )}
+              <FaqAnswer open={openFaq === i} text={item.a} />
             </div>
           ))}
         </div>
