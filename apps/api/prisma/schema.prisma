@@ -7,18 +7,29 @@ datasource db {
 }
 
 model Tenant {
-  id                   String   @id @default(cuid())
-  name                 String
-  industry             Industry
-  plan                 Plan     @default(STARTER)
-  isActive             Boolean  @default(false)
-  stripeCustomerId     String?
-  stripeSubscriptionId String?
-  tokenUsage           Int      @default(0)
-  createdAt            DateTime @default(now())
-  bots                 Bot[]
-  users                User[]
-  leads                Lead[]
+  id                     String    @id @default(cuid())
+  name                   String
+  industry               Industry
+  plan                   Plan      @default(STARTER)
+  isActive               Boolean   @default(false)
+  stripeCustomerId       String?
+  stripeSubscriptionId   String?
+  tokenUsage             Int       @default(0)
+  lastTrialEmailSentAt   DateTime?
+  createdAt              DateTime  @default(now())
+  bots                   Bot[]
+  users                  User[]
+  leads                  Lead[]
+}
+
+/// Idempotency store for Stripe webhooks. Before processing any event
+/// we INSERT the event id; if it conflicts we silently return, guaranteeing
+/// that a retried webhook never causes duplicate tenant activation,
+/// duplicate emails, or overwritten subscription IDs.
+model ProcessedStripeEvent {
+  id        String   @id
+  type      String
+  createdAt DateTime @default(now())
 }
 
 model User {

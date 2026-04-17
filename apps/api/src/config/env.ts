@@ -62,6 +62,23 @@ function validateEnv(): Env {
     );
     process.exit(1);
   }
+
+  // Production hard-requirements.
+  // DomainWhitelistGuard relaxes checks when NODE_ENV !== 'production'
+  // (allows empty Origin header, allows bots with no allowedDomains).
+  // If NODE_ENV is silently defaulted to 'development' on a live deploy,
+  // those security checks are effectively disabled. Fail loudly instead.
+  if (
+    result.data.NODE_ENV === 'production' &&
+    (!result.data.STRIPE_SECRET_KEY ||
+      !result.data.STRIPE_WEBHOOK_SECRET ||
+      !result.data.STRIPE_PRICE_ID)
+  ) {
+    console.warn(
+      '⚠️  NODE_ENV=production but Stripe env vars are incomplete — billing endpoints will fail.',
+    );
+  }
+
   return result.data;
 }
 

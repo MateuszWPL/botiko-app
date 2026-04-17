@@ -22,7 +22,18 @@ export async function createCheckoutAction(): Promise<{ url?: string; error?: st
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     });
 
-    if (!res.ok) return { error: 'Nie udało się otworzyć strony płatności' };
+    if (!res.ok) {
+      // API signals an existing active subscription with 409 — pass the message
+      // through so the UI can steer the user to the customer portal instead
+      // of silently showing "płatność nie powiodła się".
+      if (res.status === 409) {
+        const data = (await res.json().catch(() => ({}))) as { message?: string };
+        return {
+          error: data.message ?? 'Masz już aktywną subskrypcję.',
+        };
+      }
+      return { error: 'Nie udało się otworzyć strony płatności' };
+    }
     const data = (await res.json()) as { url?: string };
     return { url: data.url };
   } catch {

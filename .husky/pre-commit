@@ -1,8 +1,12 @@
-# Prevent committing .env files with secrets
-# Matches: .env, .env.local, .env.production, apps/api/.env, apps/web/.env.local etc.
-if git diff --cached --name-only | grep -qE '(^|/)\.env(\.|$)'; then
+# Prevent committing .env files with secrets.
+# Matches: .env, .env.local, .env.production, apps/api/.env etc.
+# Explicitly allows .env.example and .env.sample (templates, no secrets).
+SECRETS=$(git diff --cached --name-only \
+  | grep -E '(^|/)\.env(\.|$)' \
+  | grep -vE '(^|/)\.env\.(example|sample)$' || true)
+if [ -n "$SECRETS" ]; then
   echo "ERROR: Próbujesz commitować plik .env z sekretami!"
   echo "Pasujące pliki:"
-  git diff --cached --name-only | grep -E '(^|/)\.env(\.|$)'
+  echo "$SECRETS"
   exit 1
 fi
