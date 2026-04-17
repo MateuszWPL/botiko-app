@@ -75,6 +75,7 @@ export class AuthService {
           data: {
             email: dto.email,
             tenantId: newTenant.id,
+            role: 'OWNER',
           },
         });
 

@@ -101,6 +101,21 @@ export class ChatService {
     // Runs BEFORE any DB or OpenAI calls — cheap and fast first line of defence.
     const preprocessed = preprocessMessage(req.message);
 
+    // Audit B7: always persist cleanMessage (sanitized text), never req.message.
+    // req.message may contain raw <script>, HTML entities, image data URIs, or
+    // prompt injection payloads. Storing those in the DB would:
+    //   1. Leak attacker payloads into conversation history (dashboard XSS risk
+    //      in any non-React renderer, CSV exports, third-party integrations).
+    //   2. Pollute Sentry / log aggregators with injection content.
+    // The sanitized form is what was actually processed, so it's the accurate
+    // record of what the user said (minus injected noise).
+    const cleanMessage =
+      preprocessed.action === 'respond' ? req.message.slice(0, 500) : preprocessed.text;
+    // Note: for blocked messages (action==='respond') we store a truncated
+    // version of the raw input because cleanMessage from the sanitizer might
+    // be empty (e.g. pure script injection). 500-char slice is safe — it won't
+    // be passed to OpenAI, only to DB and dashboard (which auto-escapes HTML).
+
     if (preprocessed.action === 'respond') {
       // Canned response (injection attempt, profanity, image, gibberish, farewell).
       // Still persist so the conversation history is intact.
@@ -110,7 +125,7 @@ export class ChatService {
       );
       await this.persistMessages(
         conversationId,
-        req.message,
+        cleanMessage,
         preprocessed.response,
       );
       return {
@@ -119,9 +134,6 @@ export class ChatService {
         showLeadForm: preprocessed.showLeadForm,
       };
     }
-
-    // Use the cleaned text (URLs stripped etc.) for all downstream steps.
-    const cleanMessage = preprocessed.text;
 
     // ── Step 1: load bot + tenant ──────────────────────────────────────────────
     const bot = await this.prisma.bot.findFirst({
@@ -155,7 +167,7 @@ export class ChatService {
       );
       await this.persistMessages(
         conversationId,
-        req.message,
+        cleanMessage,
         ESCALATION_RESPONSE,
       );
       return {
@@ -190,7 +202,7 @@ export class ChatService {
       );
       await this.persistMessages(
         conversationId,
-        req.message,
+        cleanMessage,
         greetingResult.content,
       );
       return { message: greetingResult.content, sessionId: req.sessionId };
@@ -216,7 +228,7 @@ export class ChatService {
       );
       await this.persistMessages(
         conversationId,
-        req.message,
+        cleanMessage,
         FALLBACK_RESPONSE,
       );
       return {
@@ -262,9 +274,6 @@ export class ChatService {
         role: m.role.toLowerCase() as 'user' | 'assistant',
         content: m.content,
       })),
-      // Separate block mitigates prompt injection via user content.
-      // We use cleanMessage (URLs stripped) for the AI but persist req.message
-      // so the conversation history shows what the user actually typed.
       {
         role: 'user',
         content: `<user_message>${cleanMessage}</user_message>`,
@@ -273,7 +282,7 @@ export class ChatService {
 
     const result = await this.aiService.chat(messages, 600);
 
-    await this.persistMessages(conversation.id, req.message, result.content);
+    await this.persistMessages(conversation.id, cleanMessage, result.content);
 
     // Non-blocking token usage tracking
     this.trackTokenUsage(bot.tenant.id, result.tokenUsage).catch(
