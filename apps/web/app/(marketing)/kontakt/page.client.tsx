@@ -159,10 +159,10 @@ export default function ContactPageClient() {
       }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="grid lg:grid-cols-2 gap-10 items-start">
+        <div className="grid lg:grid-cols-2 gap-10 items-stretch">
           {/* Left */}
-          <div className="text-white">
-            <p className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
+          <div className="text-white flex flex-col">
+            <p className="self-start inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5"
               style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.16)', color: 'rgba(199,210,254,0.95)' }}
             >
               Porozmawiajmy
@@ -174,11 +174,11 @@ export default function ContactPageClient() {
               <span style={{ color: '#A5B4FC' }}>bez tracenia zaufania.</span>
             </h1>
 
-            <p className="mt-5 text-indigo-200 text-lg leading-relaxed max-w-xl">
+            <p className="mt-4 text-indigo-200 text-base leading-relaxed max-w-xl">
               Napisz, z czym chcesz wystartować. Odpowiemy i podpowiemy, jak wdrożyć bota na Twojej stronie — szybko i sensownie.
             </p>
 
-            <ul className="mt-8 space-y-4 max-w-xl">
+            <ul className="mt-5 space-y-3 max-w-xl">
               {[
                 'Dobierzemy najlepszy szablon dla Twojej branży',
                 'Powiem Ci, co warto wrzucić do bazy wiedzy (żeby bot był konkretny)',
@@ -191,34 +191,98 @@ export default function ContactPageClient() {
               ))}
             </ul>
 
-            {/* Illustration (not a customer quote) */}
-            <div
-              className="mt-10 rounded-2xl p-6 max-w-xl"
-              style={{
-                background: 'rgba(255,255,255,0.06)',
-                border: '1px solid rgba(255,255,255,0.10)',
-                boxShadow: '0 18px 50px rgba(0,0,0,0.35)',
-              }}
-            >
-              <p className="text-xs font-semibold text-indigo-300 uppercase tracking-widest mb-3">
-                Przykład sytuacji (ilustracja)
-              </p>
-              <p className="text-indigo-100 leading-relaxed">
-                <span className="text-2xl mr-2 align-top">“</span>
-                Bot zebrał zapytania po 20:00, a rano miałam gotowe leady do oddzwonienia. W końcu nie czuję presji, że muszę być przy telefonie cały czas.
-              </p>
-              <div className="mt-4 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center font-bold text-white">
-                  D
+            {/* Founder card — honest, no fake testimonial */}
+            <div className="mt-6 max-w-xl" style={{ position: 'relative', zIndex: 0 }}>
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '-1px',
+                  borderRadius: '1rem',
+                  background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99,102,241,0.3) 0%, transparent 70%)',
+                  filter: 'blur(14px)',
+                  zIndex: -1,
+                  pointerEvents: 'none',
+                }}
+              />
+
+              <div
+                style={{
+                  borderRadius: '1rem',
+                  padding: '1.5rem',
+                  background: 'rgba(255,255,255,0.055)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255,255,255,0.13)',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.10)',
+                }}
+              >
+                <div style={{ marginBottom: '1rem' }}>
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '3px 12px',
+                      borderRadius: '9999px',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.08em',
+                      background: 'linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(6,182,212,0.25) 100%)',
+                      border: '1px solid rgba(110,231,183,0.3)',
+                      color: '#A7F3D0',
+                      boxShadow: '0 0 12px rgba(16,185,129,0.25)',
+                    }}
+                  >
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    Odpowiadam osobiście
+                  </span>
                 </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-white">Demo klientki</p>
-                  <p className="text-xs text-indigo-300 truncate">Firma usługowa (przykład)</p>
+
+                <p className="text-indigo-100 leading-relaxed" style={{ fontSize: '15px' }}>
+                  Botiko to jednoosobowy projekt z Białegostoku. Nie ma tu zespołu sprzedażowego ani bota filtrującego
+                  zapytania — piszesz, a odpowiedź dostajesz ode mnie. Zwykle w ciągu 1 dnia roboczego.
+                </p>
+
+                <div
+                  style={{
+                    height: '1px',
+                    margin: '1rem 0',
+                    background: 'linear-gradient(90deg, rgba(165,180,252,0.18) 0%, rgba(165,180,252,0.04) 100%)',
+                  }}
+                />
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      flexShrink: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 700,
+                      fontSize: '14px',
+                      background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
+                      boxShadow: '0 0 0 2px rgba(165,180,252,0.2)',
+                      color: '#fff',
+                    }}
+                  >
+                    B
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>Zespół Botiko</p>
+                    <p style={{ fontSize: '12px', color: '#A5B4FC' }}>Białystok · Polska</p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <p className="mt-6 text-sm text-indigo-300">
+            <p className="mt-auto pt-6 text-sm text-indigo-300">
               Wolisz od razu napisać mail?{' '}
               <a className="text-white font-semibold underline underline-offset-4" href={`mailto:${CONTACT_EMAIL}`}>
                 {CONTACT_EMAIL}
@@ -227,12 +291,12 @@ export default function ContactPageClient() {
           </div>
 
           {/* Right */}
-          <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col">
             <div className="px-7 py-6 border-b border-slate-100 bg-slate-50">
               <Stepper step={step} />
             </div>
 
-            <div className="p-7">
+            <div className="p-7 flex-1">
               {submitted ? (
                 <div className="py-8 text-center">
                   <div className="mx-auto w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 mb-4">
