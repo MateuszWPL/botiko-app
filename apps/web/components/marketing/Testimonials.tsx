@@ -15,9 +15,9 @@ type Scenario = {
 const SCENARIOS: Scenario[] = [
   {
     situation: 'Piątek, 22:15 — salon zamknięty od 2 godzin.',
-    customer: 'Jest jeszcze wolny termin na manicure hybrydowy w sobotę?',
-    bot: 'W sobotę mamy 2 wolne terminy: 11:00 i 15:30. Zostaw imię i telefon — oddzwonimy rano z potwierdzeniem.',
-    outcome: 'Lead zebrany o 22:17. Rano: telefon → termin zarezerwowany.',
+    customer: 'Ile kosztuje manicure hybrydowy i czy macie jeszcze wolne w sobotę?',
+    bot: 'Manicure hybrydowy to 90 zł, czas ok. 75 min. W soboty pracujemy 9:00–17:00. Zostaw imię i telefon — rano sprawdzimy wolne godziny i oddzwonimy z propozycją.',
+    outcome: 'Lead zebrany o 22:17. Rano oddzwaniasz do klientki, która czeka.',
     industry: 'Salon beauty',
     color: '#EC4899',
     bg: '#FDF2F8',
@@ -25,8 +25,8 @@ const SCENARIOS: Scenario[] = [
   {
     situation: 'Wtorek, 14:00 — gabinet fizjo, terapeuta na zabiegu.',
     customer: 'Czy przyjmujecie bez skierowania i ile to kosztuje?',
-    bot: 'Tak, bez skierowania. Pierwsza konsultacja 60 min to 150 zł. Chcesz się umówić? Potrzebuję imię, telefon i krótki opis problemu.',
-    outcome: 'Pacjent opisał problem. Terapeuta oddzwonił po zabiegu — gotowy kontekst.',
+    bot: 'Tak, bez skierowania. Pierwsza konsultacja 60 min to 150 zł. Zostaw imię, telefon i krótki opis problemu — terapeuta oddzwoni po zabiegu.',
+    outcome: 'Pacjent opisał problem. Terapeuta oddzwonił z gotowym kontekstem.',
     industry: 'Gabinet / SPA',
     color: '#06B6D4',
     bg: '#ECFEFF',
@@ -34,8 +34,8 @@ const SCENARIOS: Scenario[] = [
   {
     situation: 'Sobota, 19:45 — restauracja w szczycie obsługi.',
     customer: 'Czy są dania bez glutenu w dzisiejszym menu?',
-    bot: 'Tak — risotto z warzywami i grillowany łosoś są bez glutenu. Jeśli chcesz zarezerwować stolik, podaj imię, liczbę osób i godzinę.',
-    outcome: 'Kelnerzy nie przerywają obsługi, gość dostaje precyzyjną odpowiedź.',
+    bot: 'Tak — risotto z warzywami i grillowany łosoś są bez glutenu. Jeśli chcesz rezerwację stolika, podaj imię, liczbę osób i godzinę — obsługa oddzwoni z potwierdzeniem.',
+    outcome: 'Kelnerzy nie przerywają obsługi, gość dostaje konkretną odpowiedź.',
     industry: 'Restauracja',
     color: '#F97316',
     bg: '#FFF7ED',
@@ -43,22 +43,18 @@ const SCENARIOS: Scenario[] = [
   {
     situation: 'Niedziela wieczorem — warsztat zamknięty.',
     customer: 'Ile kosztuje wymiana rozrządu w Passacie B6 2.0 TDI?',
-    bot: 'Wymiana rozrządu w B6 2.0 TDI to orientacyjnie 1200–1600 zł (robocizna + części). Zostaw numer — w poniedziałek rano podam dokładną wycenę i wolny termin.',
-    outcome: 'Klient zaczął tydzień z gotową ofertą zamiast „oddzwonimy w tygodniu".',
+    bot: 'Wymiana rozrządu w B6 2.0 TDI to orientacyjnie 1200–1600 zł (robocizna + części). Zostaw numer i rok produkcji — w poniedziałek rano zadzwonimy z dokładną wyceną i wolnym terminem.',
+    outcome: 'Klient zaczął tydzień z gotową ofertą zamiast „oddzwonimy w tygodniu”.',
     industry: 'Warsztat',
     color: '#64748B',
     bg: '#F1F5F9',
   },
 ];
 
-// Duplicate for seamless infinite loop
-const ROW1 = [...SCENARIOS, ...SCENARIOS];
-const ROW2 = [
-  ...SCENARIOS.slice(2),
-  ...SCENARIOS.slice(0, 2),
-  ...SCENARIOS.slice(2),
-  ...SCENARIOS.slice(0, 2),
-];
+// 3× duplication + translateX(-33.33%) in globals.css → seamless loop wider than viewport
+const ROW1 = [...SCENARIOS, ...SCENARIOS, ...SCENARIOS];
+const ROW2_BASE = [...SCENARIOS.slice(2), ...SCENARIOS.slice(0, 2)];
+const ROW2 = [...ROW2_BASE, ...ROW2_BASE, ...ROW2_BASE];
 
 function ScenarioCard({ s }: { s: Scenario }) {
   return (
@@ -72,12 +68,12 @@ function ScenarioCard({ s }: { s: Scenario }) {
       {/* Industry badge + situation */}
       <div className="flex items-center gap-2 mb-3">
         <span
-          className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider"
+          className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0"
           style={{ background: `${s.color}25`, color: s.color, border: `1px solid ${s.color}40` }}
         >
           {s.industry}
         </span>
-        <span className="text-[11px] text-indigo-300">{s.situation}</span>
+        <span className="text-[11px] text-indigo-300 leading-snug">{s.situation}</span>
       </div>
 
       {/* Chat messages */}
@@ -140,7 +136,7 @@ export default function Testimonials() {
           </h2>
           <p className="text-indigo-200 text-sm mt-4 max-w-2xl mx-auto leading-relaxed">
             Nie mamy jeszcze cytatów od klientów (jesteśmy na etapie pilota).
-            Zamiast tego pokazujemy realne scenariusze z firm usługowych — takie, które Botiko może obsługiwać od pierwszego dnia.
+            Zamiast tego pokazujemy realne scenariusze z firm usługowych — bot odpowiada z Twojej bazy wiedzy i zbiera kontakt, Ty oddzwaniasz.
           </p>
         </ScrollReveal>
       </div>
@@ -155,7 +151,7 @@ export default function Testimonials() {
       >
         <div
           className="flex marquee-left"
-          style={{ animationDuration: '44s' }}
+          style={{ animationDuration: '60s' }}
           onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'paused'; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'running'; }}
         >
@@ -164,7 +160,7 @@ export default function Testimonials() {
 
         <div
           className="flex marquee-right"
-          style={{ animationDuration: '48s' }}
+          style={{ animationDuration: '66s' }}
           onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'paused'; }}
           onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.animationPlayState = 'running'; }}
         >

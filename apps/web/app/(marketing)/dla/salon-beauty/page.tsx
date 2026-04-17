@@ -53,8 +53,8 @@ const PAIN_POINTS = [
 
 const FEATURES = [
   'Odpowiada na pytania o cennik (hybryda, żel, manicure japoński, pedicure)',
-  'Zna czas trwania zabiegów i orientacyjne godziny rezerwacji',
-  'Zbiera imię + telefon klientki i odsyła do Booksy / Calendly / Twojego systemu',
+  'Zna czas trwania zabiegów i godziny otwarcia salonu',
+  'Zbiera imię + telefon klientki — oddzwaniasz rano z wolnym terminem',
   'Wyjaśnia różnice między usługami (np. henna pudrowa vs laminacja brwi)',
   'Informuje o promocjach i pakietach, które sama wprowadzasz',
   'Kolorowy widget dopasowany do Twojej marki — różowy, pastelowy, jakikolwiek',
@@ -63,11 +63,11 @@ const FEATURES = [
 const SAMPLE_QUESTIONS = [
   {
     q: 'Ile kosztuje manicure hybrydowy?',
-    a: 'Manicure hybrydowy to 90 zł (czas ok. 75 min). W pakiecie z pedicure — 160 zł. Chcesz się zapisać? Zostaw imię i telefon — oddzwonimy z wolnymi terminami!',
+    a: 'Manicure hybrydowy to 90 zł (czas ok. 75 min). W pakiecie z pedicure — 160 zł. Chcesz się zapisać? Zostaw imię i telefon — rano sprawdzę kalendarz i oddzwonię z wolnymi godzinami.',
   },
   {
     q: 'Macie wolny termin na rzęsy w sobotę?',
-    a: 'W sobotę mamy 2 okienka: 10:00 (stylizacja 1:1) i 14:30 (efekt naturalny/objętość). Zostaw numer — potwierdzimy termin i wyślemy SMS z przypomnieniem.',
+    a: 'W soboty pracujemy 9:00–17:00. Oferujemy stylizację 1:1, efekt naturalny i objętość (ceny 150–250 zł). Zostaw numer — właścicielka sprawdzi wolne okienko i oddzwoni z propozycją.',
   },
   {
     q: 'Jaka jest różnica między henną pudrową a klasyczną?',
@@ -323,7 +323,7 @@ export default function BeautyLandingPage() {
           </div>
 
           <p className="mt-5 text-center text-xs text-slate-400">
-            * Szacunki orientacyjne. Bot nie robi marketingu — zamienia zapytania, które masz, w rezerwacje.
+            * Szacunki orientacyjne. Bot nie robi marketingu — zamienia wiadomości od klientek w leady, które Ty zamykasz telefonem.
           </p>
         </div>
       </section>
