@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import {
   Plus, Trash2, Loader2, BookOpen, Phone, HelpCircle, FileText, FileUp,
   Check, X, Pencil, AlertCircle, Search, Mail, MapPin, Clock, Globe,
-  Sparkles, Filter,
+  Sparkles, Filter, ChevronDown,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '../../../lib/supabase';
@@ -515,6 +515,9 @@ function PdfTab({
 
 // ── Chunk list item with inline edit ──────────────────────────────────────────
 
+const COLLAPSED_MAX_PX = 180;
+
+
 function ChunkItem({
   chunk,
   onDelete,
@@ -528,7 +531,17 @@ function ChunkItem({
   const [draft, setDraft] = useState(chunk.content);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
   const getToken = useGetToken();
+
+  // Measure after render — if content is taller than threshold, show "Rozwiń" button.
+  useEffect(() => {
+    if (editing || !contentRef.current) return;
+    const el = contentRef.current;
+    setIsOverflowing(el.scrollHeight > COLLAPSED_MAX_PX + 4);
+  }, [editing, chunk.content]);
 
   const saveEdit = async () => {
     if (!draft.trim() || draft === chunk.content) { setEditing(false); return; }
@@ -609,28 +622,56 @@ function ChunkItem({
               className="w-full px-3 py-2 border border-indigo-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 resize-none bg-white"
               autoFocus
             />
-          ) : contactFields ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
-              {contactFields.map((f, i) => {
-                const FIcon = f.icon;
-                return (
-                  <div key={i} className="flex items-start gap-2 text-sm text-slate-700">
-                    <FIcon className="w-3.5 h-3.5 text-slate-400 flex-shrink-0 mt-0.5" />
-                    <div className="min-w-0">
-                      <span className="block text-[10px] uppercase tracking-wide text-slate-400 font-semibold">{f.label}</span>
-                      <span className="block truncate">{f.value}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : faq ? (
-            <div className="space-y-2">
-              <p className="text-sm font-semibold text-slate-800 leading-snug">{faq.question}</p>
-              <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">{faq.answer}</p>
-            </div>
           ) : (
-            <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">{chunk.content}</p>
+            <>
+              <div
+                ref={contentRef}
+                className="relative overflow-hidden transition-[max-height] duration-300 ease-in-out"
+                style={{ maxHeight: expanded || !isOverflowing ? '9999px' : `${COLLAPSED_MAX_PX}px` }}
+              >
+                {contactFields ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+                    {contactFields.map((f, i) => {
+                      const FIcon = f.icon;
+                      return (
+                        <div key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                          <FIcon className="w-3.5 h-3.5 text-slate-400 flex-shrink-0 mt-0.5" />
+                          <div className="min-w-0">
+                            <span className="block text-[10px] uppercase tracking-wide text-slate-400 font-semibold">{f.label}</span>
+                            <span className="block truncate">{f.value}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : faq ? (
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-slate-800 leading-snug">{faq.question}</p>
+                    <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">{faq.answer}</p>
+                  </div>
+                ) : (
+                  <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">{chunk.content}</p>
+                )}
+
+                {/* Gradient fade when collapsed */}
+                {isOverflowing && !expanded && (
+                  <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white via-white/90 to-transparent" />
+                )}
+              </div>
+
+              {isOverflowing && (
+                <button
+                  onClick={() => setExpanded((v) => !v)}
+                  className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 cursor-pointer transition-colors"
+                >
+                  <ChevronDown
+                    className="w-3.5 h-3.5 transition-transform duration-300"
+                    style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  />
+                  {expanded ? 'Zwiń' : 'Rozwiń'}
+                </button>
+              )}
+            </>
           )}
         </div>
 
@@ -733,7 +774,7 @@ export function KnowledgeManager({
   }, [chunks, search, kindFilter]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-[440px_1fr] xl:grid-cols-[480px_1fr] gap-6 items-start">
       <style>{`
         @keyframes botiko-chunk-in {
           from { opacity: 0; transform: translateY(6px); }
