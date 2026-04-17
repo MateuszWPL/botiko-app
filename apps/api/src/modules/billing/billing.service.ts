@@ -330,7 +330,7 @@ export class BillingService {
         // several times; reacting to the first failure kills service for
         // a customer whose 3DS timed out. Deactivation is handled by
         // `customer.subscription.updated` once the status flips to unpaid.
-        await this.onPaymentFailedLogOnly(event.data.object as StripeInvoice);
+        this.onPaymentFailedLogOnly(event.data.object as StripeInvoice);
         break;
       default:
         // Unhandled events — safe no-op, already recorded for idempotency.
@@ -495,7 +495,7 @@ export class BillingService {
   }
 
   /** Payment failure — log-only (deactivation handled by subscription.updated). */
-  private async onPaymentFailedLogOnly(invoice: StripeInvoice): Promise<void> {
+  private onPaymentFailedLogOnly(invoice: StripeInvoice): void {
     const customerId =
       typeof invoice.customer === 'string'
         ? invoice.customer
