@@ -187,15 +187,13 @@ function ContactTab({
         Te dane bot będzie podawał klientom gdy zapytają o kontakt, adres lub godziny.
       </p>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1.5">Telefon</label>
-          <input type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="+48 123 456 789" className={inputClass} />
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1.5">Email</label>
-          <input type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} placeholder="kontakt@firma.pl" className={inputClass} />
-        </div>
+      <div>
+        <label className="block text-xs font-semibold text-slate-600 mb-1.5">Telefon</label>
+        <input type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="+48 123 456 789" className={inputClass} />
+      </div>
+      <div>
+        <label className="block text-xs font-semibold text-slate-600 mb-1.5">Email</label>
+        <input type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} placeholder="kontakt@firma.pl" className={inputClass} />
       </div>
 
       <div>
@@ -735,7 +733,7 @@ export function KnowledgeManager({
   }, [chunks, search, kindFilter]);
 
   return (
-    <div className="space-y-6">
+    <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-start">
       <style>{`
         @keyframes botiko-chunk-in {
           from { opacity: 0; transform: translateY(6px); }
@@ -746,8 +744,9 @@ export function KnowledgeManager({
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-      {/* Add section */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
+
+      {/* ── LEFT COLUMN: Add section (sticky on desktop) ── */}
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden lg:sticky lg:top-6">
         {/* Tabs */}
         <div className="flex border-b border-slate-100">
           {TABS.map((tab) => {
@@ -783,8 +782,8 @@ export function KnowledgeManager({
         </div>
       </div>
 
-      {/* Chunks list */}
-      <div>
+      {/* ── RIGHT COLUMN: Search, filters, chunks list ── */}
+      <div className="min-w-0">
         {/* Toolbar: search + filters */}
         {chunks.length > 0 && (
           <div className="mb-4 space-y-3">
