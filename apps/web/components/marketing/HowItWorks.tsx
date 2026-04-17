@@ -279,12 +279,12 @@ export default function HowItWorks() {
             href="/rejestracja"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-brand text-white font-bold text-base shadow-lg hover:bg-brand-dark hover:-translate-y-0.5 transition-all"
           >
-            Zacznij za darmo — 14 dni
+            Uruchom bota w 15 minut
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </Link>
-          <p className="text-slate-400 text-sm mt-3">Bez karty kredytowej · Cancel kiedy chcesz</p>
+          <p className="text-slate-400 text-sm mt-3">14 dni za darmo · bez karty · cancel kiedy chcesz</p>
         </ScrollReveal>
       </div>
     </section>

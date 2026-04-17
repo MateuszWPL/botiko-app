@@ -13,16 +13,16 @@ const FAQS = [
     a: 'W wielu przypadkach da się uruchomić bota w 15–20 minut: wybierasz branżę, uzupełniasz dane o firmie, wklejasz cennik/FAQ i gotowe. Nie potrzebujesz agencji ani programisty.',
   },
   {
-    q: 'Czy bot zastąpi mnie lub moich pracowników?',
-    a: 'Nie — bot uzupełnia Twoją pracę, nie zastępuje jej. Odpowiada na powtarzające się pytania, zbiera dane od klientów i odsyła do rezerwacji. Ty dostajesz gotowego leada zamiast tracić czas na telefony.',
-  },
-  {
     q: 'Co z RODO? Czy dane klientów są bezpieczne?',
     a: 'Tak. Dane przechowujemy na serwerach w UE. Imię i telefon klienta są szyfrowane (AES-256). Możemy podpisać umowę powierzenia danych (DPA). Botiko nie udostępnia danych osobom trzecim.',
   },
   {
     q: 'Czy mogę zmieniać treści bota po wdrożeniu?',
     a: 'Tak, w każdej chwili. Panel pozwala edytować cennik, FAQ, godziny pracy i styl komunikacji. Zmiany wchodzą w życie natychmiast — bez żadnego wdrożenia.',
+  },
+  {
+    q: 'Czy bot zastąpi mnie lub moich pracowników?',
+    a: 'Nie — bot uzupełnia Twoją pracę, nie zastępuje jej. Odpowiada na powtarzające się pytania, zbiera dane od klientów i odsyła do rezerwacji. Ty dostajesz gotowego leada zamiast tracić czas na telefony.',
   },
   {
     q: 'Co jeśli bot nie zna odpowiedzi?',
@@ -38,36 +38,62 @@ const FAQS = [
   },
 ];
 
-function FaqItem({ faq, isOpen, onToggle }: { faq: typeof FAQS[0]; isOpen: boolean; onToggle: () => void }) {
+const FAQ_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+function FaqItem({
+  faq,
+  isOpen,
+  onToggle,
+}: {
+  faq: (typeof FAQS)[0];
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden hover:border-brand/20 transition-colors">
+    <div
+      className="rounded-2xl border overflow-hidden transition-all duration-200"
+      style={{
+        background: isOpen ? '#FAFBFF' : '#fff',
+        borderColor: isOpen ? 'rgba(99,102,241,0.25)' : '#F1F5F9',
+        boxShadow: isOpen ? '0 2px 16px rgba(99,102,241,0.08)' : 'none',
+      }}
+    >
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-slate-50/70 transition-colors cursor-pointer"
+        className="w-full flex items-center gap-3 px-5 py-4 text-left cursor-pointer"
         aria-expanded={isOpen}
       >
-        <span className="font-semibold text-text text-sm pr-4">{faq.q}</span>
+        <span className="flex-1 font-semibold text-text text-sm pr-2">{faq.q}</span>
         <span
-          className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center border border-slate-200 text-slate-500 transition-all duration-300"
-          style={{ transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)', color: isOpen ? '#6366F1' : undefined, borderColor: isOpen ? '#6366F1' : undefined }}
+          className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center border transition-all duration-300"
+          style={{
+            transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+            borderColor: isOpen ? '#6366F1' : '#E2E8F0',
+            color: isOpen ? '#6366F1' : '#94A3B8',
+          }}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <path d="M12 5v14M5 12h14" />
           </svg>
         </span>
       </button>
 
-      {/* Animated content using max-height */}
       <div
         ref={contentRef}
-        className="overflow-hidden transition-all duration-350 ease-in-out"
-        style={{ maxHeight: isOpen ? `${contentRef.current?.scrollHeight ?? 500}px` : '0px' }}
+        className="overflow-hidden transition-all duration-300 ease-in-out"
+        style={{ maxHeight: isOpen ? `${contentRef.current?.scrollHeight ?? 400}px` : '0px' }}
       >
-        <div className="px-6 pb-5">
-          <p className="text-slate-600 text-sm leading-relaxed">{faq.a}</p>
-        </div>
+        <p className="px-5 pb-4 text-slate-500 text-sm leading-relaxed">{faq.a}</p>
       </div>
     </div>
   );
@@ -76,24 +102,49 @@ function FaqItem({ faq, isOpen, onToggle }: { faq: typeof FAQS[0]; isOpen: boole
 export default function Faq() {
   const [open, setOpen] = useState<number | null>(null);
 
+  const left = FAQS.slice(0, 4);
+  const right = FAQS.slice(4);
+
   return (
     <section id="faq" className="py-24 bg-bg">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+      {/* JSON-LD FAQPage schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }}
+      />
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <ScrollReveal className="text-center mb-12">
           <p className="text-sm font-semibold text-brand uppercase tracking-widest mb-3">FAQ</p>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-text">Najczęstsze pytania</h2>
+          <p className="mt-3 text-slate-500 text-base max-w-lg mx-auto">
+            Wszystko co musisz wiedzieć przed uruchomieniem bota.
+          </p>
         </ScrollReveal>
 
-        <div className="flex flex-col gap-3">
-          {FAQS.map((faq, i) => (
-            <ScrollReveal key={i} delay={((i % 4) + 1) as 1 | 2 | 3 | 4}>
+        {/* 2-column grid */}
+        <div className="grid lg:grid-cols-2 gap-3">
+          <ScrollReveal className="flex flex-col gap-3">
+            {left.map((faq, i) => (
               <FaqItem
+                key={i}
                 faq={faq}
                 isOpen={open === i}
                 onToggle={() => setOpen(open === i ? null : i)}
               />
-            </ScrollReveal>
-          ))}
+            ))}
+          </ScrollReveal>
+
+          <ScrollReveal delay={2} className="flex flex-col gap-3">
+            {right.map((faq, i) => (
+              <FaqItem
+                key={i + 4}
+                faq={faq}
+                isOpen={open === i + 4}
+                onToggle={() => setOpen(open === i + 4 ? null : i + 4)}
+              />
+            ))}
+          </ScrollReveal>
         </div>
 
         <ScrollReveal className="mt-10 text-center">

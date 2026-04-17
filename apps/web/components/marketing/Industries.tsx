@@ -46,10 +46,10 @@ const INDUSTRIES = [
     bg: '#FDF2F8',
     headline: 'Bot dla salonu urody',
     description: 'Manicure, stylizacja rzęs, brwi — bot odpowiada na pytania o usługi i ceny, zbiera leady nawet o 23:00.',
-    features: ['Odpowiada na pytania o cennik i czas zabiegu', 'Zbiera dane klientki (imię, telefon, email)', 'Odsyła do Twojego systemu rezerwacji', 'Podpowiada najczęstsze pytania', 'Obsługuje pytania o promocje i pakiety'],
+    features: ['Odpowiada na pytania o cennik i czas zabiegu', 'Zbiera dane klientki (imię, telefon, email)', 'Podpowiada gdzie zapisać się online (link do Booksy / Twojego systemu)', 'Obsługuje pytania o promocje i pakiety', 'Przypomina o godzinach otwarcia salonu'],
     sample: [
       { role: 'user', text: 'Ile kosztuje manicure hybrydowy?' },
-      { role: 'bot', text: 'Manicure hybrydowy to 90 zł 💅 Czas ok. 75 min. Chcesz się zapisać? Podaj swoje imię i numer telefonu — zadzwonimy do Ciebie jutro!' },
+      { role: 'bot', text: 'Manicure hybrydowy to 90 zł. Czas ok. 75 min. Chcesz się zapisać? Podaj imię i numer — rano sprawdzimy wolne godziny i oddzwonimy z propozycją.' },
     ],
   },
   {
@@ -60,10 +60,10 @@ const INDUSTRIES = [
     bg: '#ECFEFF',
     headline: 'Bot dla gabinetu medycznego',
     description: 'Fizjoterapia, kosmetologia, stomatologia — bot odpowiada na pytania o zabiegi, zbiera dane pacjentów.',
-    features: ['Odpowiada na pytania o zabiegi i ceny', 'Wyjaśnia wymagania przed wizytą', 'Zbiera dane pacjenta do rejestracji', 'Odsyła do formularza rejestracji online', 'Informuje o specjalistach i godzinach'],
+    features: ['Odpowiada na pytania o zabiegi i ceny', 'Wyjaśnia wymagania przed wizytą', 'Zbiera dane pacjenta (imię, telefon, opis problemu)', 'Podsyła link do rejestracji online, jeśli masz', 'Informuje o specjalistach i godzinach pracy'],
     sample: [
       { role: 'user', text: 'Czy przyjmujecie bez skierowania na fizjo?' },
-      { role: 'bot', text: 'Tak, bez skierowania ✅ Pierwsza wizyta 60 min / 150 zł. Chcesz się umówić? Potrzebujemy imię, telefon i krótko o problemie.' },
+      { role: 'bot', text: 'Tak, bez skierowania. Pierwsza wizyta 60 min / 150 zł. Zostaw imię, telefon i krótki opis problemu — terapeuta oddzwoni po zabiegu z wolnym terminem.' },
     ],
   },
   {
@@ -74,10 +74,10 @@ const INDUSTRIES = [
     bg: '#FFF7ED',
     headline: 'Bot dla restauracji',
     description: 'Menu, godziny, pytania o alergie — bot obsługuje gości nawet gdy jesteś w kuchni.',
-    features: ['Informuje o menu i specjalnościach dnia', 'Zbiera rezerwacje (imię, liczba osób, godzina)', 'Odpowiada na pytania o alergie i składniki', 'Informuje o godzinach i lokalizacji', 'Odsyła do systemu rezerwacji online'],
+    features: ['Informuje o menu i specjalnościach dnia', 'Zbiera zapytania o rezerwacje (imię, liczba osób, godzina) do potwierdzenia przez obsługę', 'Odpowiada na pytania o alergie i składniki', 'Informuje o godzinach i lokalizacji', 'Podsyła link do systemu rezerwacji online, jeśli masz'],
     sample: [
       { role: 'user', text: 'Czy przyjmujecie rezerwacje na jutro wieczór dla 6 osób?' },
-      { role: 'bot', text: 'Oczywiście! 🍽️ Na jaką godzinę? Potrzebujemy: imię, numer telefonu i godzinę. Wtedy potwierdzimy rezerwację!' },
+      { role: 'bot', text: 'Zostaw imię, numer telefonu i preferowaną godzinę — obsługa oddzwoni z potwierdzeniem, jak tylko skończy się szczyt serwisu.' },
     ],
   },
   {
@@ -88,10 +88,10 @@ const INDUSTRIES = [
     bg: '#F8FAFC',
     headline: 'Bot dla warsztatu',
     description: 'Wyceny, usługi, terminy — bot odpowiada i zbiera leady gdy Ty naprawiasz auto.',
-    features: ['Odpowiada na pytania o usługi i ceny', 'Zbiera dane pojazdu i właściciela', 'Informuje o przybliżonym czasie naprawy', 'Odsyła do kalendarza wizyt', 'Obsługuje pytania o gwarancje i promocje'],
+    features: ['Odpowiada na pytania o usługi i ceny', 'Zbiera dane pojazdu i właściciela (marka, rocznik, problem)', 'Informuje o przybliżonym czasie naprawy', 'Obsługuje pytania o gwarancje i promocje', 'Zna godziny pracy warsztatu'],
     sample: [
       { role: 'user', text: 'Ile kosztuje wymiana oleju i kiedy możecie przyjąć?' },
-      { role: 'bot', text: 'Wymiana oleju: 120–180 zł 🔧 Czas: ~45 min. Aby zarezerwować termin, podaj: imię, numer telefonu i matkę pojazdu. Odsyłamy do naszego kalendarza!' },
+      { role: 'bot', text: 'Wymiana oleju: 120–180 zł, czas ~45 min. Pracujemy pn.–pt. 8:00–17:00. Zostaw imię, telefon i markę pojazdu — rano oddzwonimy z wolnym terminem.' },
     ],
   },
   {

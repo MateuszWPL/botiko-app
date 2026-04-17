@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import Image from 'next/image';
 import ScrollReveal from './ScrollReveal';
 
 const DEMO_BOT_ID = process.env.NEXT_PUBLIC_DEMO_BOT_ID;
@@ -44,6 +45,54 @@ const FEATURES = [
   },
 ];
 
+function LogoReveal() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold: 0.4 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="flex justify-center lg:justify-end items-center">
+      <div
+        style={{
+          opacity: inView ? 1 : 0,
+          transform: inView ? 'translateX(0)' : 'translateX(-45%)',
+          transition: 'opacity 0.7s ease-out, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
+        }}
+      >
+        <div className="relative">
+          {/* Outer glow ring */}
+          <div
+            className="absolute inset-0 rounded-[2rem] blur-2xl"
+            style={{ background: '#6366F1', opacity: 0.25, transform: 'scale(1.6)' }}
+          />
+          {/* Inner soft ring */}
+          <div
+            className="absolute -inset-3 rounded-[2.5rem]"
+            style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)' }}
+          />
+          <Image
+            src="/BotikoLogo.png"
+            alt="Botiko"
+            width={140}
+            height={140}
+            className="relative rounded-[1.75rem] shadow-2xl"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 declare global {
   interface Window {
     BotikoWidget?: { open: () => void; close: () => void; toggle: () => void };
@@ -61,28 +110,35 @@ export default function Demo() {
     <section ref={sectionRef} id="demo" className="py-24 bg-white">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
-        {/* Header */}
-        <ScrollReveal className="text-center mb-14">
-          <p className="text-sm font-semibold text-brand uppercase tracking-widest mb-3">Demo na żywo</p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text">
-            Sprawdź jak Botiko{' '}
-            <span className="gradient-text">działa w praktyce</span>
-          </h2>
-          <p className="mt-4 text-lg text-slate-500 max-w-xl mx-auto">
-            Kliknij ikonkę czatu w prawym dolnym rogu strony i porozmawiaj z prawdziwym botem Botiko — dokładnie takim, który możesz mieć na swojej stronie.
-          </p>
-          {DEMO_BOT_ID && (
-            <button
-              onClick={handleOpenBot}
-              className="mt-6 inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-brand text-white font-bold text-base shadow-xl hover:bg-brand-dark hover:-translate-y-0.5 transition-all cursor-pointer"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-              </svg>
-              Wypróbuj demo bota
-            </button>
-          )}
-        </ScrollReveal>
+        {/* Left / Right hero row */}
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-20">
+
+          {/* Left — text */}
+          <ScrollReveal>
+            <p className="text-sm font-semibold text-brand uppercase tracking-widest mb-3">Demo na żywo</p>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text leading-tight">
+              Sprawdź jak Botiko{' '}
+              <span className="gradient-text">działa w praktyce</span>
+            </h2>
+            <p className="mt-4 text-lg text-slate-500 max-w-lg">
+              Kliknij ikonkę czatu w prawym dolnym rogu strony i porozmawiaj z prawdziwym botem Botiko — dokładnie takim, który możesz mieć na swojej stronie.
+            </p>
+            {DEMO_BOT_ID && (
+              <button
+                onClick={handleOpenBot}
+                className="mt-8 inline-flex items-center gap-2.5 px-7 py-4 rounded-full bg-brand text-white font-bold text-base shadow-xl hover:bg-brand-dark hover:-translate-y-0.5 transition-all cursor-pointer"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                </svg>
+                Wypróbuj demo bota
+              </button>
+            )}
+          </ScrollReveal>
+
+          {/* Right — logo slides in from center */}
+          <LogoReveal />
+        </div>
 
         {/* Features grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -98,8 +154,8 @@ export default function Demo() {
             </ScrollReveal>
           ))}
         </div>
-      </div>
 
+      </div>
     </section>
   );
 }

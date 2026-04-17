@@ -124,12 +124,13 @@ body {
 }
 
 /* ── Testimonials infinite marquee ── */
+/* 3× duplication in JSX → translateX(-33.3333%) = exactly one set, seamless loop */
 @keyframes marquee-left {
   from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  to   { transform: translateX(-33.3333%); }
 }
 @keyframes marquee-right {
-  from { transform: translateX(-50%); }
+  from { transform: translateX(-33.3333%); }
   to   { transform: translateX(0); }
 }
 .marquee-left {

@@ -6,12 +6,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, changeFrequency: 'weekly', priority: 1 },
-    { url: `${baseUrl}/rejestracja`, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/blog`, changeFrequency: 'weekly', priority: 0.9 },
+{ url: `${baseUrl}/kontakt`, changeFrequency: 'yearly', priority: 0.5 },
+    { url: `${baseUrl}/dla/salon-beauty`, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/prywatnosc`, changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${baseUrl}/o-nas`, changeFrequency: 'yearly', priority: 0.4 },
     { url: `${baseUrl}/regulamin`, changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${baseUrl}/kontakt`, changeFrequency: 'yearly', priority: 0.5 },
   ];
 
   const posts = getAllPosts().map((post) => ({
