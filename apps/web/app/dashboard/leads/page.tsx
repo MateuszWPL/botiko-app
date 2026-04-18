@@ -1,8 +1,6 @@
-import { Users } from 'lucide-react';
 import { fetchWithAuth } from '../../../lib/api';
 import { LeadsTable } from './LeadsTable';
 import { PageHeader } from '../../../components/ui/PageHeader';
-import { EmptyState } from '../../../components/ui/EmptyState';
 
 interface Lead {
   id: string;
@@ -19,7 +17,7 @@ export default async function LeadsPage() {
   try {
     leads = await fetchWithAuth<Lead[]>('/api/v1/leads');
   } catch {
-    // handled below
+    // handled by empty state in LeadsTable
   }
 
   return (
@@ -29,16 +27,7 @@ export default async function LeadsPage() {
         description="Kontakty zebrane przez bota"
         badge={{ label: `${leads.length} kontaktów` }}
       />
-
-      {leads.length === 0 ? (
-        <EmptyState
-          icon={Users}
-          title="Brak leadów"
-          description="Leady pojawią się gdy klienci zostawią kontakt przez bota"
-        />
-      ) : (
-        <LeadsTable leads={leads} />
-      )}
+      <LeadsTable leads={leads} />
     </div>
   );
 }

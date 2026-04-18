@@ -10,6 +10,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { EncryptionService } from '../../common/services/encryption.service';
 import { NotificationService } from '../../common/services/notification.service';
 import type { CreateLeadDto } from './dto/create-lead.dto';
+import type { CreateLeadManualDto } from './dto/create-lead-manual.dto';
 
 export interface LeadResponse {
   id: string;
@@ -83,6 +84,34 @@ export class LeadService {
         });
     }
 
+    return { id };
+  }
+
+  async createManual(tenantId: string, dto: CreateLeadManualDto): Promise<{ id: string }> {
+    const bot = await this.prisma.bot.findFirst({
+      where: { tenantId, isActive: true },
+      select: { id: true },
+    });
+
+    if (!bot) {
+      throw new NotFoundException('No active bot found for tenant');
+    }
+
+    const id = randomUUID();
+
+    await this.prisma.lead.create({
+      data: {
+        id,
+        tenantId,
+        botId: bot.id,
+        name: this.encryption.encrypt(dto.name),
+        phone: this.encryption.encrypt(dto.phone),
+        message: dto.message ? this.encryption.encrypt(dto.message) : null,
+        status: 'NEW',
+      },
+    });
+
+    this.logger.log(`Manual lead created: ${id} by tenant: ${tenantId}`);
     return { id };
   }
 
