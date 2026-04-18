@@ -57,20 +57,29 @@ model User {
 }
 
 model Bot {
-  id                 String         @id @default(cuid())
-  tenantId           String
-  tenant             Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  name               String
-  welcomeMsg         String
-  primaryColor       String         @default("#6366F1")
-  allowedDomains     String[]
-  isActive           Boolean        @default(true)
-  offlineMessage     String?
-  businessHoursStart Int?
-  businessHoursEnd   Int?
-  businessDays       Int[]          @default([])
-  conversations      Conversation[]
-  knowledge          KnowledgeChunk[]
+  id                    String         @id @default(cuid())
+  tenantId              String
+  tenant                Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name                  String
+  welcomeMsg            String
+  primaryColor          String         @default("#6366F1")
+  allowedDomains        String[]
+  isActive              Boolean        @default(true)
+  offlineMessage        String?
+  businessHoursStart    Int?
+  businessHoursEnd      Int?
+  businessDays          Int[]          @default([])
+  /// Per-day schedule: [{enabled, start, end}] × 7, index 0=Mon … 6=Sun
+  businessSchedule      Json?
+  personality           String?
+  companyName           String?
+  companyPhone          String?
+  companyAddress        String?
+  suggestedQuestions    String[]       @default([])
+  leadFormAfterMessages Int            @default(3)
+  avatarEmoji           String         @default("")
+  conversations         Conversation[]
+  knowledge             KnowledgeChunk[]
 }
 
 model KnowledgeChunk {

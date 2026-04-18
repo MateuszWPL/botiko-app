@@ -1,75 +1,65 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Loader2, Save, Power, Bot, Palette, Globe, Clock, CheckCircle2 } from 'lucide-react';
+import {
+  Loader2,
+  Save,
+  Palette,
+  Globe,
+  User,
+  Plus,
+  X,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '../../../lib/supabase';
-
-interface Bot {
-  id: string;
-  name: string;
-  welcomeMsg: string;
-  primaryColor: string;
-  allowedDomains: string[];
-  isActive: boolean;
-  offlineMessage: string | null;
-  businessHoursStart: number | null;
-  businessHoursEnd: number | null;
-  businessDays: number[];
-}
-
-const DAY_LABELS = ['Nd', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob'];
+import type { BotData, DaySchedule } from './page';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+
+const INDUSTRY_LABELS: Record<string, string> = {
+  BEAUTY: 'Salon beauty',
+  HEALTH: 'Zdrowie / gabinet',
+  FOOD: 'Gastronomia',
+  AUTO: 'Motoryzacja',
+  OTHER: 'Inne',
+};
+
+const ACCENT_COLORS = [
+  '#6366F1',
+  '#EC4899',
+  '#06B6D4',
+  '#F97316',
+  '#10B981',
+  '#8B5CF6',
+  '#1E293B',
+  '#F59E0B',
+];
+
+const AVATAR_PRESETS = ['🤖', '💬', '⭐', '🌟', '💎', '🔥', '✨', '🎯'];
+
+const DAY_NAMES = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'];
+
+const DEFAULT_SCHEDULE: DaySchedule[] = [
+  { enabled: true, start: 9, end: 18 },
+  { enabled: true, start: 9, end: 18 },
+  { enabled: true, start: 9, end: 18 },
+  { enabled: true, start: 9, end: 18 },
+  { enabled: true, start: 9, end: 18 },
+  { enabled: true, start: 9, end: 14 },
+  { enabled: false, start: 9, end: 18 },
+];
 
 const inputClass =
   'w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition-shadow bg-white/60';
 
-function SectionCard({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 p-5 shadow-sm">
-      {children}
-    </div>
-  );
-}
-
-function SectionHeader({
-  icon: Icon,
-  label,
-  iconBg,
-  iconColor,
-}: {
-  icon: React.ElementType;
-  label: string;
-  iconBg: string;
-  iconColor: string;
-}) {
-  return (
-    <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100">
-      <div className={`w-7 h-7 rounded-lg ${iconBg} flex items-center justify-center`}>
-        <Icon className={`w-3.5 h-3.5 ${iconColor}`} />
-      </div>
-      <h3 className="text-sm font-semibold text-slate-700">{label}</h3>
-    </div>
-  );
-}
-
-function Toggle({
-  checked,
-  onChange,
-  activeColor,
-}: {
-  checked: boolean;
-  onChange: () => void;
-  activeColor: string;
-}) {
+function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void }) {
   return (
     <button
       role="switch"
       aria-checked={checked}
       onClick={onChange}
-      className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer ${
-        checked ? activeColor : 'bg-slate-200'
+      className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 cursor-pointer flex-shrink-0 ${
+        checked ? 'bg-indigo-500' : 'bg-slate-200'
       }`}
     >
       <span
@@ -81,23 +71,571 @@ function Toggle({
   );
 }
 
-export function SettingsForm({ bot }: { bot: Bot }) {
-  const initial = useMemo(() => ({
-    name: bot.name,
-    welcomeMsg: bot.welcomeMsg,
-    primaryColor: bot.primaryColor,
-    allowedDomain: bot.allowedDomains[0] ?? '',
-    isActive: bot.isActive,
-    hoursEnabled: bot.businessHoursStart !== null,
-    businessHoursStart: bot.businessHoursStart ?? 9,
-    businessHoursEnd: bot.businessHoursEnd ?? 18,
-    businessDays: (bot.businessDays ?? []).length > 0 ? bot.businessDays : [1, 2, 3, 4, 5],
-    offlineMessage: bot.offlineMessage ?? '',
-  }), [bot]);
+function SectionCard({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
+      <div>
+        <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+        {subtitle && <p className="text-xs text-indigo-500 mt-0.5">{subtitle}</p>}
+      </div>
+      {children}
+    </div>
+  );
+}
 
-  const [form, setForm] = useState(initial);
+function TimeInput({
+  value,
+  onChange,
+  disabled,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+  disabled?: boolean;
+}) {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return (
+    <input
+      type="text"
+      value={`${pad(value)}:00`}
+      disabled={disabled}
+      onChange={(e) => {
+        const h = parseInt(e.target.value.split(':')[0] ?? '0', 10);
+        if (!isNaN(h) && h >= 0 && h <= 23) onChange(h);
+      }}
+      className="w-20 px-2.5 py-1.5 border border-slate-200 rounded-lg text-sm text-center focus:outline-none focus:ring-2 focus:ring-indigo-500/40 disabled:opacity-40 disabled:bg-slate-50"
+    />
+  );
+}
+
+// --- Live Preview ---
+function WidgetPreview({
+  name,
+  color,
+  welcomeMsg,
+  suggestedQuestions,
+  avatarEmoji,
+}: {
+  name: string;
+  color: string;
+  welcomeMsg: string;
+  suggestedQuestions: string[];
+  avatarEmoji: string;
+}) {
+  return (
+    <div className="w-72 rounded-2xl border border-slate-200 overflow-hidden shadow-lg text-sm font-sans">
+      {/* Header */}
+      <div className="px-4 py-3 flex items-center gap-3" style={{ backgroundColor: color }}>
+        <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-lg flex-shrink-0">
+          {avatarEmoji || '🤖'}
+        </div>
+        <div className="min-w-0">
+          <p className="text-white font-semibold truncate">{name || 'Bot'}</p>
+          <p className="text-white/70 text-xs flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
+            Online · odpowiada 24/7
+          </p>
+        </div>
+      </div>
+
+      {/* Chat area */}
+      <div className="bg-slate-50 px-4 py-4 min-h-[160px]">
+        {/* Bot message bubble */}
+        <div className="flex gap-2 mb-3">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center text-base flex-shrink-0"
+            style={{ backgroundColor: color + '20' }}
+          >
+            {avatarEmoji || '🤖'}
+          </div>
+          <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-sm px-3 py-2 text-xs text-slate-700 max-w-[80%] shadow-sm">
+            {welcomeMsg || 'Cześć! W czym mogę pomóc?'}
+          </div>
+        </div>
+
+        {/* Suggested questions */}
+        {suggestedQuestions.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 ml-9">
+            {suggestedQuestions.slice(0, 3).map((q) => (
+              <button
+                key={q}
+                className="px-2.5 py-1 rounded-full border text-xs font-medium"
+                style={{ borderColor: color, color }}
+              >
+                {q}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Input area */}
+      <div className="bg-white border-t border-slate-100 px-3 py-2.5 flex items-center gap-2">
+        <span className="flex-1 text-xs text-slate-400">Napisz wiadomość...</span>
+        <div
+          className="w-7 h-7 rounded-full flex items-center justify-center"
+          style={{ backgroundColor: color }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
+            <path d="M2 21l21-9L2 3v7l15 2-15 2z" />
+          </svg>
+        </div>
+      </div>
+
+      <div className="bg-white text-center pb-2 text-[10px] text-slate-300">
+        Zasilane przez <span className="font-medium">Botiko.pl</span>
+      </div>
+    </div>
+  );
+}
+
+// --- Tab components ---
+
+function TabProfil({
+  form,
+  setForm,
+}: {
+  form: FormState;
+  setForm: React.Dispatch<React.SetStateAction<FormState>>;
+}) {
+  const updateSchedule = (dayIdx: number, patch: Partial<DaySchedule>) => {
+    setForm((f) => ({
+      ...f,
+      schedule: f.schedule.map((d, i) => (i === dayIdx ? { ...d, ...patch } : d)),
+    }));
+  };
+
+  return (
+    <div className="space-y-4">
+      <SectionCard title="Tożsamość bota" subtitle="Imię i osobowość jakie bot prezentuje klientom.">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Imię bota</label>
+            <input
+              type="text"
+              value={form.name}
+              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Branża</label>
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-2 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-lg">
+                {INDUSTRY_LABELS[form.industry ?? ''] ?? form.industry ?? '—'}
+              </span>
+              <span className="text-xs text-slate-400">Kontakt z supportem aby zmienić</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-1.5">Osobowość / ton wypowiedzi</label>
+          <textarea
+            value={form.personality ?? ''}
+            onChange={(e) => setForm((f) => ({ ...f, personality: e.target.value }))}
+            rows={4}
+            maxLength={1000}
+            placeholder="Przyjazna, ciepła, mówi po imieniu. Używa emoji umiarkowanie. Zawsze pyta o szczegóły przed rezerwacją. Nigdy nie obiecuje konkretnego terminu bez potwierdzenia."
+            className={inputClass + ' resize-none'}
+          />
+          <p className="text-xs text-amber-600 mt-1">
+            💡 Wskazówka: im konkretniej opiszesz styl, tym bot brzmi bardziej &quot;Twoje&quot;.
+          </p>
+        </div>
+      </SectionCard>
+
+      <SectionCard title="Dane firmy" subtitle='Bot używa tych danych aby odpowiadać na pytania "gdzie?", "kiedy?", "jak dojadę?".'>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Nazwa firmy</label>
+            <input
+              type="text"
+              value={form.companyName ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, companyName: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Telefon</label>
+            <input
+              type="tel"
+              value={form.companyPhone ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, companyPhone: e.target.value }))}
+              placeholder="+48 600 123 456"
+              className={inputClass}
+            />
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-1.5">Adres</label>
+          <input
+            type="text"
+            value={form.companyAddress ?? ''}
+            onChange={(e) => setForm((f) => ({ ...f, companyAddress: e.target.value }))}
+            placeholder="ul. Floriańska 12, 31-019 Kraków"
+            className={inputClass}
+          />
+        </div>
+      </SectionCard>
+
+      <SectionCard title="Godziny otwarcia" subtitle="Informacyjne — bot odpowiada 24/7, ale informuje klientów o godzinach.">
+        <div className="space-y-2">
+          {form.schedule.map((day, idx) => (
+            <div key={idx} className="flex items-center gap-3">
+              <Toggle
+                checked={day.enabled}
+                onChange={() => updateSchedule(idx, { enabled: !day.enabled })}
+              />
+              <span className="w-28 text-sm text-slate-700 font-medium">{DAY_NAMES[idx]}</span>
+              <TimeInput
+                value={day.start}
+                onChange={(v) => updateSchedule(idx, { start: v })}
+                disabled={!day.enabled}
+              />
+              <span className="text-slate-400 text-sm">—</span>
+              <TimeInput
+                value={day.end}
+                onChange={(v) => updateSchedule(idx, { end: v })}
+                disabled={!day.enabled}
+              />
+            </div>
+          ))}
+        </div>
+      </SectionCard>
+    </div>
+  );
+}
+
+function TabWyglad({
+  form,
+  setForm,
+}: {
+  form: FormState;
+  setForm: React.Dispatch<React.SetStateAction<FormState>>;
+}) {
+  const [questionInput, setQuestionInput] = useState('');
+
+  const addQuestion = () => {
+    const q = questionInput.trim();
+    if (!q || form.suggestedQuestions.length >= 5) return;
+    setForm((f) => ({ ...f, suggestedQuestions: [...f.suggestedQuestions, q] }));
+    setQuestionInput('');
+  };
+
+  const removeQuestion = (i: number) => {
+    setForm((f) => ({ ...f, suggestedQuestions: f.suggestedQuestions.filter((_, idx) => idx !== i) }));
+  };
+
+  return (
+    <div className="flex gap-6">
+      {/* Left column — settings */}
+      <div className="flex-1 space-y-4 min-w-0">
+        <SectionCard title="Kolor akcentu">
+          <div className="flex items-center gap-2 flex-wrap">
+            {ACCENT_COLORS.map((c) => (
+              <button
+                key={c}
+                onClick={() => setForm((f) => ({ ...f, primaryColor: c }))}
+                className={`w-9 h-9 rounded-lg cursor-pointer transition-all ${
+                  form.primaryColor === c ? 'ring-2 ring-offset-2 ring-indigo-500 scale-110' : 'hover:scale-105'
+                }`}
+                style={{ backgroundColor: c }}
+              />
+            ))}
+            <div className="flex items-center gap-2 ml-2">
+              <input
+                type="color"
+                value={form.primaryColor}
+                onChange={(e) => setForm((f) => ({ ...f, primaryColor: e.target.value }))}
+                className="w-9 h-9 rounded-lg cursor-pointer border border-slate-200 p-0.5 bg-white"
+              />
+              <span className="text-xs font-mono text-slate-500">{form.primaryColor}</span>
+            </div>
+          </div>
+        </SectionCard>
+
+        <SectionCard title="Awatar bota" subtitle="Wybierz gotowy lub wgraj własny.">
+          <div className="flex items-center gap-2 flex-wrap">
+            {AVATAR_PRESETS.map((emoji) => (
+              <button
+                key={emoji}
+                onClick={() => setForm((f) => ({ ...f, avatarEmoji: emoji }))}
+                className={`w-10 h-10 rounded-xl text-xl flex items-center justify-center transition-all cursor-pointer ${
+                  form.avatarEmoji === emoji
+                    ? 'ring-2 ring-offset-1 ring-indigo-500 bg-indigo-50'
+                    : 'bg-slate-100 hover:bg-slate-200'
+                }`}
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        </SectionCard>
+
+        <SectionCard title="Wiadomość powitalna" subtitle="Pierwsza wiadomość którą zobaczy klient.">
+          <textarea
+            value={form.welcomeMsg}
+            onChange={(e) => setForm((f) => ({ ...f, welcomeMsg: e.target.value }))}
+            rows={3}
+            maxLength={500}
+            className={inputClass + ' resize-none'}
+          />
+        </SectionCard>
+
+        <SectionCard
+          title="Sugerowane pytania"
+          subtitle="Pokazywane pod wiadomością powitalną. Max 5."
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-slate-400">{form.suggestedQuestions.length}/5</span>
+          </div>
+          {form.suggestedQuestions.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {form.suggestedQuestions.map((q, i) => (
+                <span
+                  key={i}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+                  style={{
+                    backgroundColor: form.primaryColor + '18',
+                    color: form.primaryColor,
+                    border: `1px solid ${form.primaryColor}40`,
+                  }}
+                >
+                  {q}
+                  <button onClick={() => removeQuestion(i)} className="hover:opacity-70 cursor-pointer">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+          {form.suggestedQuestions.length < 5 && (
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={questionInput}
+                onChange={(e) => setQuestionInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && addQuestion()}
+                placeholder="Dodaj pytanie..."
+                maxLength={100}
+                className={inputClass}
+              />
+              <button
+                onClick={addQuestion}
+                disabled={!questionInput.trim()}
+                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 text-slate-700 font-medium rounded-xl text-sm transition-colors cursor-pointer disabled:cursor-default flex items-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Dodaj
+              </button>
+            </div>
+          )}
+        </SectionCard>
+
+        <SectionCard title="Formularz kontaktowy" subtitle="Pokaż lead form po N wiadomościach od klienta.">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-slate-600">Po</span>
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={form.leadFormAfterMessages}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, leadFormAfterMessages: Math.max(1, Math.min(20, Number(e.target.value))) }))
+                }
+                className="w-16 px-2.5 py-1.5 border border-slate-200 rounded-lg text-sm text-center focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+              />
+              <span className="text-sm text-slate-600">wiadomościach od klienta</span>
+            </div>
+          </div>
+        </SectionCard>
+      </div>
+
+      {/* Right column — live preview */}
+      <div className="hidden xl:flex flex-col items-center gap-3 pt-1 flex-shrink-0">
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Podgląd na żywo</p>
+        <WidgetPreview
+          name={form.name}
+          color={form.primaryColor}
+          welcomeMsg={form.welcomeMsg}
+          suggestedQuestions={form.suggestedQuestions}
+          avatarEmoji={form.avatarEmoji}
+        />
+      </div>
+    </div>
+  );
+}
+
+function TabDomeny({
+  form,
+  setForm,
+}: {
+  form: FormState;
+  setForm: React.Dispatch<React.SetStateAction<FormState>>;
+}) {
+  const [domainInput, setDomainInput] = useState('');
+  const [domainError, setDomainError] = useState('');
+
+  const addDomain = () => {
+    const raw = domainInput.trim().toLowerCase();
+    if (!raw) return;
+
+    let url = raw;
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
+
+    try {
+      new URL(url);
+    } catch {
+      setDomainError('Nieprawidłowy adres domeny');
+      return;
+    }
+
+    if (form.allowedDomains.includes(url)) {
+      setDomainError('Ta domena jest już dodana');
+      return;
+    }
+
+    if (form.allowedDomains.length >= 5) {
+      setDomainError('Maksymalnie 5 domen');
+      return;
+    }
+
+    setDomainError('');
+    setForm((f) => ({ ...f, allowedDomains: [...f.allowedDomains, url] }));
+    setDomainInput('');
+  };
+
+  const removeDomain = (i: number) => {
+    setForm((f) => ({ ...f, allowedDomains: f.allowedDomains.filter((_, idx) => idx !== i) }));
+  };
+
+  return (
+    <div className="max-w-2xl space-y-4">
+      <SectionCard title="Dozwolone domeny" subtitle="Widget działa tylko na tych domenach — zabezpieczenie przed kradzieżą bota przez konkurencję.">
+        {form.allowedDomains.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-1">
+            {form.allowedDomains.map((d, i) => (
+              <span
+                key={i}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 rounded-lg text-sm text-slate-700 font-medium"
+              >
+                <Globe className="w-3.5 h-3.5 text-slate-400" />
+                {d.replace(/^https?:\/\//, '')}
+                <button onClick={() => removeDomain(i)} className="hover:text-red-500 cursor-pointer ml-0.5">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={domainInput}
+            onChange={(e) => { setDomainInput(e.target.value); setDomainError(''); }}
+            onKeyDown={(e) => e.key === 'Enter' && addDomain()}
+            placeholder="np. twojastrona.pl"
+            className={inputClass + (domainError ? ' border-red-300 focus:border-red-400 focus:ring-red-500/30' : '')}
+          />
+          <button
+            onClick={addDomain}
+            disabled={!domainInput.trim() || form.allowedDomains.length >= 5}
+            className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white font-medium rounded-xl text-sm transition-colors cursor-pointer disabled:cursor-default whitespace-nowrap"
+          >
+            Dodaj domenę
+          </button>
+        </div>
+        {domainError && <p className="text-xs text-red-500 -mt-1">{domainError}</p>}
+
+        <div className="flex gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+          <span className="text-amber-500 flex-shrink-0">⚠️</span>
+          <p className="text-xs text-amber-700">
+            <strong>Pamiętaj o obu wariantach</strong> — jeśli dodasz <code>salonkasi.pl</code>, dodaj też <code>www.salonkasi.pl</code>.
+          </p>
+        </div>
+
+        {form.allowedDomains.length === 0 && (
+          <p className="text-xs text-slate-400 italic">
+            Brak domen — widget działa na każdej stronie (tryb testowy). Dodaj domenę przed publikacją.
+          </p>
+        )}
+      </SectionCard>
+    </div>
+  );
+}
+
+// --- Main form state + component ---
+
+interface FormState {
+  name: string;
+  welcomeMsg: string;
+  primaryColor: string;
+  allowedDomains: string[];
+  isActive: boolean;
+  offlineMessage: string;
+  schedule: DaySchedule[];
+  personality: string;
+  companyName: string;
+  companyPhone: string;
+  companyAddress: string;
+  suggestedQuestions: string[];
+  leadFormAfterMessages: number;
+  avatarEmoji: string;
+  industry: string;
+}
+
+function initSchedule(bot: BotData): DaySchedule[] {
+  if (bot.businessSchedule && bot.businessSchedule.length === 7) {
+    return bot.businessSchedule;
+  }
+  // Migrate legacy fields to per-day schedule
+  const schedule = DEFAULT_SCHEDULE.map((d) => ({ ...d }));
+  if (bot.businessDays && bot.businessHoursStart != null && bot.businessHoursEnd != null) {
+    schedule.forEach((d, i) => {
+      d.enabled = bot.businessDays.includes(i);
+      d.start = bot.businessHoursStart ?? 9;
+      d.end = bot.businessHoursEnd ?? 18;
+    });
+  }
+  return schedule;
+}
+
+const TABS = [
+  { id: 'profil', label: 'Profil bota', icon: User },
+  { id: 'wyglad', label: 'Wygląd widgetu', icon: Palette },
+  { id: 'domeny', label: 'Domeny', icon: Globe },
+] as const;
+
+type TabId = (typeof TABS)[number]['id'];
+
+export function SettingsForm({ bot }: { bot: BotData }) {
+  const initial = useMemo<FormState>(
+    () => ({
+      name: bot.name,
+      welcomeMsg: bot.welcomeMsg,
+      primaryColor: bot.primaryColor,
+      allowedDomains: bot.allowedDomains,
+      isActive: bot.isActive,
+      offlineMessage: bot.offlineMessage ?? '',
+      schedule: initSchedule(bot),
+      personality: bot.personality ?? '',
+      companyName: bot.companyName ?? '',
+      companyPhone: bot.companyPhone ?? '',
+      companyAddress: bot.companyAddress ?? '',
+      suggestedQuestions: bot.suggestedQuestions ?? [],
+      leadFormAfterMessages: bot.leadFormAfterMessages ?? 3,
+      avatarEmoji: bot.avatarEmoji ?? '',
+      industry: bot.industry ?? '',
+    }),
+    [bot],
+  );
+
+  const [form, setForm] = useState<FormState>(initial);
+  const [activeTab, setActiveTab] = useState<TabId>('profil');
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
 
   const isDirty = JSON.stringify(form) !== JSON.stringify(initial);
 
@@ -120,20 +658,22 @@ export function SettingsForm({ bot }: { bot: Bot }) {
           name: form.name,
           welcomeMsg: form.welcomeMsg,
           primaryColor: form.primaryColor,
-          allowedDomains: form.allowedDomain.trim() ? [form.allowedDomain.trim()] : [],
+          allowedDomains: form.allowedDomains,
           isActive: form.isActive,
-          offlineMessage:
-            form.hoursEnabled && form.offlineMessage.trim() ? form.offlineMessage.trim() : null,
-          businessHoursStart: form.hoursEnabled ? form.businessHoursStart : null,
-          businessHoursEnd: form.hoursEnabled ? form.businessHoursEnd : null,
-          businessDays: form.hoursEnabled ? form.businessDays : [],
+          offlineMessage: form.offlineMessage.trim() || null,
+          businessSchedule: form.schedule,
+          personality: form.personality.trim() || null,
+          companyName: form.companyName.trim() || null,
+          companyPhone: form.companyPhone.trim() || null,
+          companyAddress: form.companyAddress.trim() || null,
+          suggestedQuestions: form.suggestedQuestions,
+          leadFormAfterMessages: form.leadFormAfterMessages,
+          avatarEmoji: form.avatarEmoji,
         }),
       });
 
       if (!res.ok) throw new Error('Save failed');
       toast.success('Zmiany zapisane');
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
     } catch {
       toast.error('Nie udało się zapisać zmian');
     } finally {
@@ -141,254 +681,53 @@ export function SettingsForm({ bot }: { bot: Bot }) {
     }
   };
 
+  const handleCancel = () => setForm(initial);
+
   return (
-    <div className="max-w-4xl">
-
-      {/* Sticky save bar — collapsed when no unsaved changes */}
-      <div className={`sticky top-0 z-10 overflow-hidden transition-all duration-200 ${
-        isDirty ? 'max-h-24 opacity-100 mb-4' : 'max-h-0 opacity-0 pointer-events-none'
-      }`}>
-        <div className="bg-white/95 backdrop-blur-sm border border-amber-200 rounded-2xl px-5 py-3 flex items-center justify-between shadow-sm shadow-amber-100">
-          <p className="text-sm text-amber-700 font-medium">Masz niezapisane zmiany</p>
+    <div className="max-w-5xl">
+      {/* Tabs */}
+      <div className="flex border-b border-slate-200 mb-6">
+        {TABS.map(({ id, label, icon: Icon }) => (
           <button
-            onClick={() => void handleSave()}
-            disabled={saving}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:opacity-90 disabled:opacity-60 text-white font-medium rounded-xl text-sm transition-all shadow-sm shadow-indigo-200"
+            key={id}
+            onClick={() => setActiveTab(id)}
+            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer -mb-px ${
+              activeTab === id
+                ? 'border-indigo-500 text-indigo-600'
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
           >
-            {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-            {saving ? 'Zapisywanie…' : 'Zapisz zmiany'}
+            <Icon className="w-4 h-4" />
+            {label}
           </button>
-        </div>
+        ))}
       </div>
 
-      {/* Potwierdzenie zapisu — collapsed when not saved */}
-      <div className={`overflow-hidden transition-all duration-300 ${
-        saved ? 'max-h-24 opacity-100 mb-4' : 'max-h-0 opacity-0 pointer-events-none'
-      }`}>
-        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-3 flex items-center gap-2.5">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-          <p className="text-sm text-emerald-700 font-medium">Zmiany zostały zapisane</p>
-        </div>
+      {/* Tab content */}
+      <div className="min-h-[400px]">
+        {activeTab === 'profil' && <TabProfil form={form} setForm={setForm} />}
+        {activeTab === 'wyglad' && <TabWyglad form={form} setForm={setForm} />}
+        {activeTab === 'domeny' && <TabDomeny form={form} setForm={setForm} />}
       </div>
 
-      {/* Grid 2 kolumny na desktop */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-
-        {/* Asystentka */}
-        <SectionCard>
-          <SectionHeader icon={Bot} label="Asystentka" iconBg="bg-indigo-100" iconColor="text-indigo-600" />
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Nazwa bota</label>
-              <input
-                type="text"
-                value={form.name}
-                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Wiadomość powitalna</label>
-              <input
-                type="text"
-                value={form.welcomeMsg}
-                onChange={(e) => setForm((f) => ({ ...f, welcomeMsg: e.target.value }))}
-                maxLength={200}
-                className={inputClass}
-              />
-              <p className="text-xs text-slate-400 mt-1">Pierwsza wiadomość widoczna w widgecie czatu</p>
-            </div>
-          </div>
-        </SectionCard>
-
-        {/* Wygląd */}
-        <SectionCard>
-          <SectionHeader icon={Palette} label="Wygląd" iconBg="bg-purple-100" iconColor="text-purple-600" />
-          <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-2">Kolor główny</label>
-            <div className="flex items-center gap-3">
-              <input
-                type="color"
-                value={form.primaryColor}
-                onChange={(e) => setForm((f) => ({ ...f, primaryColor: e.target.value }))}
-                className="w-10 h-10 rounded-xl cursor-pointer border border-slate-200 p-0.5 bg-white flex-shrink-0"
-              />
-              <input
-                type="text"
-                value={form.primaryColor}
-                onChange={(e) => setForm((f) => ({ ...f, primaryColor: e.target.value }))}
-                className="w-28 px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition-shadow bg-white/60"
-              />
-              {/* Live preview */}
-              <div className="flex items-end gap-2 ml-auto">
-                <div
-                  className="px-3 py-1.5 rounded-2xl rounded-br-sm text-xs text-white font-medium shadow-sm"
-                  style={{ backgroundColor: form.primaryColor }}
-                >
-                  Dzień dobry!
-                </div>
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center shadow-md flex-shrink-0"
-                  style={{ backgroundColor: form.primaryColor }}
-                >
-                  <Bot className="w-4 h-4 text-white" />
-                </div>
-              </div>
-            </div>
-            <p className="text-xs text-slate-400 mt-2">Kolor przycisku i wiadomości bota w widgecie</p>
-          </div>
-        </SectionCard>
-
-        {/* Domena */}
-        <SectionCard>
-          <SectionHeader icon={Globe} label="Domena strony" iconBg="bg-sky-100" iconColor="text-sky-600" />
-          <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Adres URL</label>
-            <input
-              type="url"
-              value={form.allowedDomain}
-              onChange={(e) => setForm((f) => ({ ...f, allowedDomain: e.target.value }))}
-              placeholder="https://twoja-strona.pl"
-              className={inputClass}
-            />
-            <p className="text-xs text-slate-400 mt-1.5">
-              Strona, na której osadzony jest widget. Pozostaw puste na czas testów lokalnych.
-            </p>
-          </div>
-        </SectionCard>
-
-        {/* Aktywność */}
-        <SectionCard>
-          <SectionHeader
-            icon={Power}
-            label="Aktywność"
-            iconBg={form.isActive ? 'bg-emerald-100' : 'bg-slate-100'}
-            iconColor={form.isActive ? 'text-emerald-600' : 'text-slate-400'}
-          />
-          <div className="flex items-center justify-between p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/60">
-            <div>
-              <p className="text-sm font-semibold text-slate-700">Bot aktywny</p>
-              <p className="text-xs text-slate-400 mt-0.5">
-                {form.isActive ? 'Odpowiada na wiadomości klientów' : 'Nie przyjmuje nowych rozmów'}
-              </p>
-            </div>
-            <Toggle
-              checked={form.isActive}
-              onChange={() => setForm((f) => ({ ...f, isActive: !f.isActive }))}
-              activeColor="bg-emerald-500"
-            />
-          </div>
-        </SectionCard>
+      {/* Footer actions */}
+      <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
+        <button
+          onClick={handleCancel}
+          disabled={!isDirty || saving}
+          className="px-5 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-800 disabled:opacity-40 transition-colors cursor-pointer disabled:cursor-default"
+        >
+          Anuluj
+        </button>
+        <button
+          onClick={() => void handleSave()}
+          disabled={!isDirty || saving}
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white font-medium rounded-xl text-sm transition-all shadow-sm shadow-indigo-200 cursor-pointer disabled:cursor-default"
+        >
+          {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+          {saving ? 'Zapisywanie…' : 'Zapisz zmiany'}
+        </button>
       </div>
-
-      {/* Godziny pracy — pełna szerokość bo może być duże */}
-      <div className="mt-4">
-      <SectionCard>
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center">
-              <Clock className="w-3.5 h-3.5 text-amber-600" />
-            </div>
-            <h3 className="text-sm font-semibold text-slate-700">Godziny pracy</h3>
-          </div>
-          <Toggle
-            checked={form.hoursEnabled}
-            onChange={() => setForm((f) => ({ ...f, hoursEnabled: !f.hoursEnabled }))}
-            activeColor="bg-amber-500"
-          />
-        </div>
-
-        {!form.hoursEnabled ? (
-          <p className="text-sm text-slate-400 italic">
-            Baner godzin wyłączony — bot odpowiada 24/7 bez żadnej informacji o godzinach.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            {/* Godziny */}
-            <div className="space-y-3">
-              <label className="block text-xs font-semibold text-slate-600">Godziny</label>
-              <div className="flex items-center gap-2">
-                <div className="flex-1">
-                  <p className="text-xs text-slate-400 mb-1">Od</p>
-                  <input
-                    type="number"
-                    min={0}
-                    max={23}
-                    value={form.businessHoursStart}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, businessHoursStart: Number(e.target.value) }))
-                    }
-                    className={inputClass}
-                  />
-                </div>
-                <span className="text-slate-400 text-sm mt-4">—</span>
-                <div className="flex-1">
-                  <p className="text-xs text-slate-400 mb-1">Do</p>
-                  <input
-                    type="number"
-                    min={0}
-                    max={23}
-                    value={form.businessHoursEnd}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, businessHoursEnd: Number(e.target.value) }))
-                    }
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Dni */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-2">Dni robocze</label>
-              <div className="flex gap-1.5 flex-wrap">
-                {DAY_LABELS.map((label, idx) => {
-                  const active = form.businessDays.includes(idx);
-                  return (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() =>
-                        setForm((f) => ({
-                          ...f,
-                          businessDays: active
-                            ? f.businessDays.filter((d) => d !== idx)
-                            : [...f.businessDays, idx],
-                        }))
-                      }
-                      className={`w-10 h-9 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
-                        active
-                          ? 'bg-amber-500 text-white shadow-sm'
-                          : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Wiadomość offline */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">
-                Wiadomość poza godzinami
-              </label>
-              <input
-                type="text"
-                value={form.offlineMessage}
-                onChange={(e) => setForm((f) => ({ ...f, offlineMessage: e.target.value }))}
-                placeholder="Jesteśmy zamknięci. Napisz a oddzwonimy rano!"
-                maxLength={300}
-                className={inputClass}
-              />
-              <p className="text-xs text-slate-400 mt-1">Żółty baner na górze widgetu czatu</p>
-            </div>
-          </div>
-        )}
-      </SectionCard>
-      </div>
-
     </div>
   );
 }
