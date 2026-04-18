@@ -19,6 +19,7 @@ import {
   Shield,
   Upload,
   TriangleAlert,
+  Lightbulb,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '../../../lib/supabase';
@@ -277,8 +278,9 @@ function TabProfil({
             placeholder="Przyjazna, ciepła, mówi po imieniu. Używa emoji umiarkowanie. Zawsze pyta o szczegóły przed rezerwacją. Nigdy nie obiecuje konkretnego terminu bez potwierdzenia."
             className={inputClass + ' resize-none'}
           />
-          <p className="text-xs text-amber-600 mt-1">
-            💡 Wskazówka: im konkretniej opiszesz styl, tym bot brzmi bardziej &quot;Twoje&quot;.
+          <p className="flex items-center gap-1.5 text-xs text-amber-600 mt-1">
+            <Lightbulb className="w-3.5 h-3.5 flex-shrink-0" />
+            Wskazówka: im konkretniej opiszesz styl, tym bot brzmi bardziej &quot;Twoje&quot;.
           </p>
         </div>
       </SectionCard>
@@ -483,8 +485,9 @@ function TabWyglad({
             />
           </div>
           {!CLOUDINARY_CLOUD && (
-            <p className="text-xs text-amber-600 mt-2">
-              ⚠️ Ustaw <code>NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME</code> i <code>NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET</code> aby włączyć upload.
+            <p className="flex items-center gap-1.5 text-xs text-amber-600 mt-2">
+              <TriangleAlert className="w-3.5 h-3.5 flex-shrink-0" />
+              Ustaw <code>NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME</code> i <code>NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET</code> aby włączyć upload.
             </p>
           )}
         </SectionCard>
