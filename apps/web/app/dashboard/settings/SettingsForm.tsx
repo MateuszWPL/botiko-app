@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import {
   Loader2,
   Save,
@@ -9,6 +9,16 @@ import {
   User,
   Plus,
   X,
+  Bot,
+  MessageCircle,
+  Star,
+  Zap,
+  Heart,
+  Smile,
+  Sparkles,
+  Shield,
+  Upload,
+  TriangleAlert,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '../../../lib/supabase';
@@ -35,7 +45,37 @@ const ACCENT_COLORS = [
   '#F59E0B',
 ];
 
-const AVATAR_PRESETS = ['🤖', '💬', '⭐', '🌟', '💎', '🔥', '✨', '🎯'];
+type AvatarPreset = { id: string; Icon: React.FC<{ className?: string }> };
+const AVATAR_PRESETS: AvatarPreset[] = [
+  { id: 'bot', Icon: Bot },
+  { id: 'message-circle', Icon: MessageCircle },
+  { id: 'star', Icon: Star },
+  { id: 'zap', Icon: Zap },
+  { id: 'heart', Icon: Heart },
+  { id: 'smile', Icon: Smile },
+  { id: 'sparkles', Icon: Sparkles },
+  { id: 'shield', Icon: Shield },
+];
+
+function AvatarIcon({
+  value,
+  className = 'w-5 h-5',
+}: {
+  value: string;
+  className?: string;
+}) {
+  if (value.startsWith('http')) {
+    return (
+      <img
+        src={value}
+        alt="avatar"
+        className="w-full h-full rounded-full object-cover"
+      />
+    );
+  }
+  const preset = AVATAR_PRESETS.find((p) => p.id === value) ?? AVATAR_PRESETS[0]!;
+  return <preset.Icon className={className} />;
+}
 
 const DAY_NAMES = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'];
 
@@ -125,8 +165,8 @@ function WidgetPreview({
     <div className="w-72 rounded-2xl border border-slate-200 overflow-hidden shadow-lg text-sm font-sans">
       {/* Header */}
       <div className="px-4 py-3 flex items-center gap-3" style={{ backgroundColor: color }}>
-        <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-lg flex-shrink-0">
-          {avatarEmoji || '🤖'}
+        <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center overflow-hidden flex-shrink-0">
+          <AvatarIcon value={avatarEmoji || 'bot'} className="w-5 h-5 text-white" />
         </div>
         <div className="min-w-0">
           <p className="text-white font-semibold truncate">{name || 'Bot'}</p>
@@ -142,10 +182,10 @@ function WidgetPreview({
         {/* Bot message bubble */}
         <div className="flex gap-2 mb-3">
           <div
-            className="w-7 h-7 rounded-full flex items-center justify-center text-base flex-shrink-0"
-            style={{ backgroundColor: color + '20' }}
+            className="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0"
+            style={{ backgroundColor: color + '20', color }}
           >
-            {avatarEmoji || '🤖'}
+            <AvatarIcon value={avatarEmoji || 'bot'} className="w-4 h-4" />
           </div>
           <div className="bg-white border border-slate-200 rounded-2xl rounded-tl-sm px-3 py-2 text-xs text-slate-700 max-w-[80%] shadow-sm">
             {welcomeMsg || 'Cześć! W czym mogę pomóc?'}
@@ -305,6 +345,25 @@ function TabProfil({
   );
 }
 
+const CLOUDINARY_CLOUD = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+async function uploadToCloudinary(file: File): Promise<string> {
+  if (!CLOUDINARY_CLOUD || !CLOUDINARY_PRESET) {
+    throw new Error('Cloudinary nie jest skonfigurowany');
+  }
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,
+    { method: 'POST', body: fd },
+  );
+  if (!res.ok) throw new Error('Upload failed');
+  const data = (await res.json()) as { secure_url: string };
+  return data.secure_url;
+}
+
 function TabWyglad({
   form,
   setForm,
@@ -313,6 +372,27 @@ function TabWyglad({
   setForm: React.Dispatch<React.SetStateAction<FormState>>;
 }) {
   const [questionInput, setQuestionInput] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Plik za duży — maks. 2 MB');
+      return;
+    }
+    setUploading(true);
+    try {
+      const url = await uploadToCloudinary(file);
+      setForm((f) => ({ ...f, avatarEmoji: url }));
+    } catch {
+      toast.error('Nie udało się wgrać zdjęcia');
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = '';
+    }
+  };
 
   const addQuestion = () => {
     const q = questionInput.trim();
@@ -355,20 +435,58 @@ function TabWyglad({
 
         <SectionCard title="Awatar bota" subtitle="Wybierz gotowy lub wgraj własny.">
           <div className="flex items-center gap-2 flex-wrap">
-            {AVATAR_PRESETS.map((emoji) => (
+            {AVATAR_PRESETS.map(({ id, Icon }) => (
               <button
-                key={emoji}
-                onClick={() => setForm((f) => ({ ...f, avatarEmoji: emoji }))}
-                className={`w-10 h-10 rounded-xl text-xl flex items-center justify-center transition-all cursor-pointer ${
-                  form.avatarEmoji === emoji
-                    ? 'ring-2 ring-offset-1 ring-indigo-500 bg-indigo-50'
-                    : 'bg-slate-100 hover:bg-slate-200'
+                key={id}
+                onClick={() => setForm((f) => ({ ...f, avatarEmoji: id }))}
+                className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+                  form.avatarEmoji === id
+                    ? 'ring-2 ring-offset-1 ring-indigo-500 bg-indigo-50 text-indigo-600'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
                 }`}
               >
-                {emoji}
+                <Icon className="w-5 h-5" />
               </button>
             ))}
+
+            {/* Custom upload preview */}
+            {form.avatarEmoji.startsWith('http') && (
+              <div className="relative w-10 h-10 rounded-xl overflow-hidden ring-2 ring-offset-1 ring-indigo-500">
+                <img src={form.avatarEmoji} alt="avatar" className="w-full h-full object-cover" />
+                <button
+                  onClick={() => setForm((f) => ({ ...f, avatarEmoji: 'bot' }))}
+                  className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer"
+                >
+                  <X className="w-4 h-4 text-white" />
+                </button>
+              </div>
+            )}
+
+            {/* Upload button */}
+            <button
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              className="w-10 h-10 rounded-xl border-2 border-dashed border-slate-300 hover:border-indigo-400 flex items-center justify-center text-slate-400 hover:text-indigo-500 transition-all cursor-pointer disabled:opacity-50"
+            >
+              {uploading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Upload className="w-4 h-4" />
+              )}
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => void handleUpload(e)}
+            />
           </div>
+          {!CLOUDINARY_CLOUD && (
+            <p className="text-xs text-amber-600 mt-2">
+              ⚠️ Ustaw <code>NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME</code> i <code>NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET</code> aby włączyć upload.
+            </p>
+          )}
         </SectionCard>
 
         <SectionCard title="Wiadomość powitalna" subtitle="Pierwsza wiadomość którą zobaczy klient.">
@@ -550,8 +668,8 @@ function TabDomeny({
         </div>
         {domainError && <p className="text-xs text-red-500 -mt-1">{domainError}</p>}
 
-        <div className="flex gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl">
-          <span className="text-amber-500 flex-shrink-0">⚠️</span>
+        <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+          <TriangleAlert className="w-4 h-4 text-amber-500 flex-shrink-0" />
           <p className="text-xs text-amber-700">
             <strong>Pamiętaj o obu wariantach</strong> — jeśli dodasz <code>salonkasi.pl</code>, dodaj też <code>www.salonkasi.pl</code>.
           </p>
