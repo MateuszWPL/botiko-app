@@ -245,7 +245,7 @@ function TabProfil({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" suppressHydrationWarning>
       <SectionCard title="Tożsamość bota" subtitle="Imię i osobowość jakie bot prezentuje klientom.">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
