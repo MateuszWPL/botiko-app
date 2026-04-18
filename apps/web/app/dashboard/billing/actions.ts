@@ -6,9 +6,17 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 async function getAuthToken(): Promise<string | null> {
   const supabase = await createServerSupabaseClient();
+  // Audit C6: use getUser() in SSR — it verifies the JWT against the Supabase
+  // Auth server on every call, preventing forged cookie attacks. getSession()
+  // only reads the cookie value without re-validating the signature.
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+  if (error || !user) return null;
+  // getUser() validates the token but doesn't return the raw access_token.
+  // Re-read the (now-validated) session to get the bearer token for API calls.
+  const { data: { session } } = await supabase.auth.getSession();
   return session?.access_token ?? null;
 }
 

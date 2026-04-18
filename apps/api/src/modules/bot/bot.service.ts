@@ -4,11 +4,18 @@ import {
   ForbiddenException,
   Logger,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { getBrandTemplate } from '../../brand-templates';
 import { KnowledgeService } from '../knowledge/knowledge.service';
 import type { CreateBotDto } from './dto/create-bot.dto';
 import type { UpdateBotDto } from './dto/update-bot.dto';
+
+export interface DaySchedule {
+  enabled: boolean;
+  start: number;
+  end: number;
+}
 
 export interface BotPublicConfig {
   id: string;
@@ -19,7 +26,10 @@ export interface BotPublicConfig {
   businessHoursStart: number | null;
   businessHoursEnd: number | null;
   businessDays: number[];
+  businessSchedule: DaySchedule[] | null;
   suggestedQuestions: string[];
+  leadFormAfterMessages: number;
+  avatarEmoji: string;
 }
 
 export interface BotDetail {
@@ -29,8 +39,42 @@ export interface BotDetail {
   primaryColor: string;
   allowedDomains: string[];
   isActive: boolean;
+  offlineMessage: string | null;
+  businessHoursStart: number | null;
+  businessHoursEnd: number | null;
+  businessDays: number[];
+  businessSchedule: DaySchedule[] | null;
+  personality: string | null;
+  companyName: string | null;
+  companyPhone: string | null;
+  companyAddress: string | null;
+  suggestedQuestions: string[];
+  leadFormAfterMessages: number;
+  avatarEmoji: string;
+  industry?: string;
   createdAt?: Date;
 }
+
+const BOT_SELECT = {
+  id: true,
+  name: true,
+  welcomeMsg: true,
+  primaryColor: true,
+  allowedDomains: true,
+  isActive: true,
+  offlineMessage: true,
+  businessHoursStart: true,
+  businessHoursEnd: true,
+  businessDays: true,
+  businessSchedule: true,
+  personality: true,
+  companyName: true,
+  companyPhone: true,
+  companyAddress: true,
+  suggestedQuestions: true,
+  leadFormAfterMessages: true,
+  avatarEmoji: true,
+} as const;
 
 @Injectable()
 export class BotService {
@@ -62,26 +106,16 @@ export class BotService {
         primaryColor: dto.primaryColor,
         allowedDomains: dto.allowedDomains,
       },
-      select: {
-        id: true,
-        name: true,
-        welcomeMsg: true,
-        primaryColor: true,
-        allowedDomains: true,
-        isActive: true,
-      },
+      select: BOT_SELECT,
     });
 
-    // Fire-and-forget: seed industry FAQ templates as initial knowledge chunks.
-    // Gives new users a working bot out of the box even before they add custom content.
-    // Errors are logged but never fail bot creation.
     if (tenant) {
       const template = getBrandTemplate(tenant.industry);
       void this.seedFaqTemplates(tenantId, bot.id, template.faqTemplates);
     }
 
     this.logger.log(`Bot created: ${bot.id} for tenant: ${tenantId}`);
-    return bot;
+    return this.castBot(bot);
   }
 
   private seedFaqTemplates(
@@ -108,11 +142,6 @@ export class BotService {
   }
 
   async getPublicConfig(botId: string): Promise<BotPublicConfig> {
-    // Audit B6: gate on BOTH bot.isActive AND tenant.isActive. Without the
-    // tenant check, a widget belonging to a suspended / non-paying tenant
-    // still loads (fetches config, bootstraps UI) — only chat requests
-    // eventually fail. Filtering here means the widget simply stays hidden
-    // when the tenant is inactive, mirroring the behaviour of a missing bot.
     const bot = await this.prisma.bot.findFirst({
       where: {
         id: botId,
@@ -120,14 +149,7 @@ export class BotService {
         tenant: { isActive: true },
       },
       select: {
-        id: true,
-        name: true,
-        welcomeMsg: true,
-        primaryColor: true,
-        offlineMessage: true,
-        businessHoursStart: true,
-        businessHoursEnd: true,
-        businessDays: true,
+        ...BOT_SELECT,
         tenant: { select: { industry: true } },
       },
     });
@@ -139,19 +161,33 @@ export class BotService {
     const { tenant, ...rest } = bot;
     const template = getBrandTemplate(tenant.industry);
 
-    return { ...rest, suggestedQuestions: template.suggestedResponses };
+    const suggestedQuestions =
+      rest.suggestedQuestions.length > 0
+        ? rest.suggestedQuestions
+        : template.suggestedResponses;
+
+    return {
+      id: rest.id,
+      name: rest.name,
+      welcomeMsg: rest.welcomeMsg,
+      primaryColor: rest.primaryColor,
+      offlineMessage: rest.offlineMessage,
+      businessHoursStart: rest.businessHoursStart,
+      businessHoursEnd: rest.businessHoursEnd,
+      businessDays: rest.businessDays,
+      businessSchedule: this.parseSchedule(rest.businessSchedule),
+      suggestedQuestions,
+      leadFormAfterMessages: rest.leadFormAfterMessages,
+      avatarEmoji: rest.avatarEmoji,
+    };
   }
 
   async findById(tenantId: string, botId: string): Promise<BotDetail> {
     const bot = await this.prisma.bot.findFirst({
       where: { id: botId, tenantId },
       select: {
-        id: true,
-        name: true,
-        welcomeMsg: true,
-        primaryColor: true,
-        allowedDomains: true,
-        isActive: true,
+        ...BOT_SELECT,
+        tenant: { select: { industry: true } },
       },
     });
 
@@ -159,22 +195,24 @@ export class BotService {
       throw new NotFoundException('Bot not found');
     }
 
-    return bot;
+    const { tenant, ...rest } = bot;
+    return { ...this.castBot(rest), industry: tenant.industry };
   }
 
   async findAllByTenant(tenantId: string): Promise<BotDetail[]> {
-    return await this.prisma.bot.findMany({
+    const bots = await this.prisma.bot.findMany({
       where: { tenantId },
       select: {
-        id: true,
-        name: true,
-        welcomeMsg: true,
-        primaryColor: true,
-        allowedDomains: true,
-        isActive: true,
+        ...BOT_SELECT,
+        tenant: { select: { industry: true } },
       },
       orderBy: { name: 'asc' },
     });
+
+    return bots.map(({ tenant, ...rest }) => ({
+      ...this.castBot(rest),
+      industry: tenant.industry,
+    }));
   }
 
   async update(
@@ -191,39 +229,87 @@ export class BotService {
       throw new ForbiddenException('Bot not found or access denied');
     }
 
-    return this.prisma.bot.update({
+    // Derive legacy business hours fields from businessSchedule for widget compat
+    let legacyFields: {
+      businessHoursStart?: number | null;
+      businessHoursEnd?: number | null;
+      businessDays?: number[];
+    } = {};
+
+    if (dto.businessSchedule) {
+      const enabledDays = dto.businessSchedule
+        .map((d, i) => ({ ...d, idx: i }))
+        .filter((d) => d.enabled);
+      legacyFields = {
+        businessHoursStart: enabledDays[0]?.start ?? null,
+        businessHoursEnd: enabledDays[0]?.end ?? null,
+        businessDays: enabledDays.map((d) => d.idx),
+      };
+    } else if (dto.businessSchedule === null) {
+      legacyFields = {
+        businessHoursStart: null,
+        businessHoursEnd: null,
+        businessDays: [],
+      };
+    }
+
+    await this.prisma.bot.update({
       where: { id: botId },
       data: {
         ...(dto.name !== undefined && { name: dto.name }),
         ...(dto.welcomeMsg !== undefined && { welcomeMsg: dto.welcomeMsg }),
-        ...(dto.primaryColor !== undefined && {
-          primaryColor: dto.primaryColor,
-        }),
-        ...(dto.allowedDomains !== undefined && {
-          allowedDomains: dto.allowedDomains,
-        }),
+        ...(dto.primaryColor !== undefined && { primaryColor: dto.primaryColor }),
+        ...(dto.allowedDomains !== undefined && { allowedDomains: dto.allowedDomains }),
         ...(dto.isActive !== undefined && { isActive: dto.isActive }),
-        ...(dto.offlineMessage !== undefined && {
-          offlineMessage: dto.offlineMessage,
+        ...(dto.offlineMessage !== undefined && { offlineMessage: dto.offlineMessage }),
+        ...(dto.businessHoursStart !== undefined && { businessHoursStart: dto.businessHoursStart }),
+        ...(dto.businessHoursEnd !== undefined && { businessHoursEnd: dto.businessHoursEnd }),
+        ...(dto.businessDays !== undefined && { businessDays: dto.businessDays }),
+        ...(dto.businessSchedule !== undefined && {
+          businessSchedule: dto.businessSchedule === null ? Prisma.DbNull : dto.businessSchedule,
         }),
-        ...(dto.businessHoursStart !== undefined && {
-          businessHoursStart: dto.businessHoursStart,
-        }),
-        ...(dto.businessHoursEnd !== undefined && {
-          businessHoursEnd: dto.businessHoursEnd,
-        }),
-        ...(dto.businessDays !== undefined && {
-          businessDays: dto.businessDays,
-        }),
-      },
-      select: {
-        id: true,
-        name: true,
-        welcomeMsg: true,
-        primaryColor: true,
-        allowedDomains: true,
-        isActive: true,
+        ...legacyFields,
+        ...(dto.personality !== undefined && { personality: dto.personality }),
+        ...(dto.companyName !== undefined && { companyName: dto.companyName }),
+        ...(dto.companyPhone !== undefined && { companyPhone: dto.companyPhone }),
+        ...(dto.companyAddress !== undefined && { companyAddress: dto.companyAddress }),
+        ...(dto.suggestedQuestions !== undefined && { suggestedQuestions: dto.suggestedQuestions }),
+        ...(dto.leadFormAfterMessages !== undefined && { leadFormAfterMessages: dto.leadFormAfterMessages }),
+        ...(dto.avatarEmoji !== undefined && { avatarEmoji: dto.avatarEmoji }),
       },
     });
+
+    return this.findById(tenantId, botId);
+  }
+
+  private parseSchedule(raw: unknown): DaySchedule[] | null {
+    if (!raw || !Array.isArray(raw)) return null;
+    return raw as DaySchedule[];
+  }
+
+  private castBot(raw: {
+    id: string;
+    name: string;
+    welcomeMsg: string;
+    primaryColor: string;
+    allowedDomains: string[];
+    isActive: boolean;
+    offlineMessage: string | null;
+    businessHoursStart: number | null;
+    businessHoursEnd: number | null;
+    businessDays: number[];
+    businessSchedule: unknown;
+    personality: string | null;
+    companyName: string | null;
+    companyPhone: string | null;
+    companyAddress: string | null;
+    suggestedQuestions: string[];
+    leadFormAfterMessages: number;
+    avatarEmoji: string;
+  }): BotDetail {
+    return {
+      ...raw,
+      businessSchedule: this.parseSchedule(raw.businessSchedule),
+    };
   }
 }

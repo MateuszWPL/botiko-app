@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import {
   BadRequestException,
   ConflictException,
@@ -26,10 +27,26 @@ type StripeInstance = ReturnType<typeof StripeLib>;
 /**
  * Subscription statuses we treat as "bot should serve traffic".
  *
- * Excluded from the previous `past_due` (security audit A3): we no longer
- * auto-activate a tenant on `past_due`. Deactivation only happens on
- * `unpaid` / `canceled` / `incomplete_expired`, giving Stripe time to
- * retry the card before the bot goes dark.
+ * Intentional omissions (audit A12):
+ * - `past_due` is NOT in this list. Stripe moves a subscription to `past_due`
+ *   after the first failed payment attempt and keeps retrying (smart retry)
+ *   for several days. During that window the subscription is still live
+ *   and the card may succeed on the next attempt. We do NOT deactivate on
+ *   `past_due` — the bot continues serving traffic during the grace period.
+ *   Deactivation only fires when Stripe gives up and sets status to `unpaid`
+ *   (after exhausting all retries) or `canceled`.
+ *
+ * - `incomplete` is NOT in this list. It means the initial payment hasn't
+ *   been confirmed yet (e.g. 3DS pending). We wait for Stripe to confirm.
+ *
+ * Grace period summary:
+ *   active / trialing → bot ON
+ *   past_due          → bot ON (Stripe still retrying — grace period)
+ *   incomplete        → bot ON (initial payment pending)
+ *   unpaid            → bot OFF (Stripe exhausted retries)
+ *   canceled          → bot OFF
+ *   incomplete_expired → bot OFF
+ *   paused            → bot OFF
  */
 const ACTIVE_STATUSES: string[] = ['active', 'trialing'];
 const DEACTIVATING_STATUSES: string[] = [
@@ -98,6 +115,11 @@ export class BillingService {
 
     if (!tenant) throw new NotFoundException('Tenant not found');
 
+    // Audit A11: do NOT auto-deactivate tenants here (race condition when
+    // dashboard is open in multiple tabs — each tab fires a parallel UPDATE,
+    // last-write wins in unexpected ways). Trial expiry is handled exclusively
+    // by the cron endpoint `POST /api/v1/billing/cron/trial-notifications`,
+    // which runs once per day. Read-only here.
     const trialEndsAt = tenant.stripeSubscriptionId
       ? null
       : (() => {
@@ -156,6 +178,9 @@ export class BillingService {
         await this.prisma.tenant.update({
           where: { id: tenant.id },
           data: { isActive: false },
+        });
+        await this.logBillingEvent(tenant.id, 'TRIAL_EXPIRED', {
+          trialEndDate: trialEnd.toISOString(),
         });
         this.logger.log(
           `Cron: trial expired — deactivated tenant: ${tenant.id}`,
@@ -313,16 +338,21 @@ export class BillingService {
 
     switch (event.type) {
       case 'checkout.session.completed':
-        await this.onCheckoutCompleted(event.data.object as StripeSession);
+        await this.onCheckoutCompleted(
+          event.data.object as StripeSession,
+          event.id,
+        );
         break;
       case 'customer.subscription.updated':
         await this.onSubscriptionUpdated(
           event.data.object as StripeSubscription,
+          event.id,
         );
         break;
       case 'customer.subscription.deleted':
         await this.onSubscriptionDeleted(
           event.data.object as StripeSubscription,
+          event.id,
         );
         break;
       case 'invoice.payment_failed':
@@ -363,7 +393,10 @@ export class BillingService {
     }
   }
 
-  private async onCheckoutCompleted(session: StripeSession): Promise<void> {
+  private async onCheckoutCompleted(
+    session: StripeSession,
+    stripeEventId: string,
+  ): Promise<void> {
     const tenantId = session.client_reference_id;
     if (!tenantId) {
       this.logger.warn(
@@ -436,6 +469,12 @@ export class BillingService {
       },
     });
 
+    await this.logBillingEvent(tenantId, 'ACTIVATED', {
+      stripeEventId,
+      stripeSessionId: session.id,
+      plan,
+    });
+
     this.logger.log(
       `Checkout completed — tenant activated: ${tenantId}, plan: ${plan}`,
     );
@@ -443,6 +482,7 @@ export class BillingService {
 
   private async onSubscriptionUpdated(
     subscription: StripeSubscription,
+    stripeEventId: string,
   ): Promise<void> {
     const tenant = await this.resolveTenantForSubscription(subscription);
     if (!tenant) {
@@ -475,6 +515,13 @@ export class BillingService {
       },
     });
 
+    const eventName = shouldActivate ? 'ACTIVATED' : 'DEACTIVATED';
+    await this.logBillingEvent(tenant.id, eventName, {
+      stripeEventId,
+      stripeSubscriptionId: subscription.id,
+      subscriptionStatus: subscription.status,
+    });
+
     this.logger.log(
       `Subscription ${subscription.id} updated → isActive: ${String(shouldActivate)} (status=${subscription.status})`,
     );
@@ -482,6 +529,7 @@ export class BillingService {
 
   private async onSubscriptionDeleted(
     subscription: StripeSubscription,
+    stripeEventId: string,
   ): Promise<void> {
     const tenant = await this.resolveTenantForSubscription(subscription);
     if (!tenant) return;
@@ -489,6 +537,12 @@ export class BillingService {
     await this.prisma.tenant.update({
       where: { id: tenant.id },
       data: { isActive: false },
+    });
+
+    await this.logBillingEvent(tenant.id, 'DEACTIVATED', {
+      stripeEventId,
+      stripeSubscriptionId: subscription.id,
+      reason: 'subscription_deleted',
     });
 
     this.logger.log(`Subscription deleted — tenant deactivated: ${tenant.id}`);
@@ -554,6 +608,33 @@ export class BillingService {
       return Plan.PRO;
     }
     return Plan.STARTER;
+  }
+
+  /**
+   * Appends an immutable record to the billing audit log (audit A13).
+   *
+   * Non-blocking: failures are caught and logged, never thrown. The audit
+   * log is a best-effort record — a write failure must not abort the main
+   * billing operation that triggered it.
+   */
+  private async logBillingEvent(
+    tenantId: string,
+    event: string,
+    meta?: Record<string, unknown>,
+  ): Promise<void> {
+    try {
+      await this.prisma.billingEvent.create({
+        data: {
+          id: randomUUID(),
+          tenantId,
+          event,
+          meta: meta ? JSON.stringify(meta) : undefined,
+        },
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Failed to write billing audit log: ${msg}`);
+    }
   }
 }
 

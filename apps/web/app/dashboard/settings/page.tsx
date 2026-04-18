@@ -4,7 +4,13 @@ import { SettingsForm } from './SettingsForm';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { EmptyState } from '../../../components/ui/EmptyState';
 
-interface Bot {
+export interface DaySchedule {
+  enabled: boolean;
+  start: number;
+  end: number;
+}
+
+export interface BotData {
   id: string;
   name: string;
   welcomeMsg: string;
@@ -15,12 +21,21 @@ interface Bot {
   businessHoursStart: number | null;
   businessHoursEnd: number | null;
   businessDays: number[];
+  businessSchedule: DaySchedule[] | null;
+  personality: string | null;
+  companyName: string | null;
+  companyPhone: string | null;
+  companyAddress: string | null;
+  suggestedQuestions: string[];
+  leadFormAfterMessages: number;
+  avatarEmoji: string;
+  industry?: string;
 }
 
 export default async function SettingsPage() {
-  let bots: Bot[] = [];
+  let bots: BotData[] = [];
   try {
-    bots = await fetchWithAuth<Bot[]>('/api/v1/bot');
+    bots = await fetchWithAuth<BotData[]>('/api/v1/bot');
   } catch {
     // handled below
   }

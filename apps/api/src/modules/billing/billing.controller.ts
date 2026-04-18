@@ -16,6 +16,7 @@ import {
   type AuthenticatedRequest,
 } from '../../common/guards/auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
+import { OwnerGuard } from '../../common/guards/owner.guard';
 import { CurrentTenant } from '../../common/decorators/current-tenant.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { BillingService, type BillingStatus } from './billing.service';
@@ -34,7 +35,7 @@ export class BillingController {
   /** Create Stripe Checkout session → returns redirect URL */
   @Post('checkout')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard, TenantGuard)
+  @UseGuards(AuthGuard, TenantGuard, OwnerGuard)
   createCheckout(
     @CurrentTenant() tenantId: string,
     @CurrentUser() user: AuthenticatedRequest['user'],
@@ -45,7 +46,7 @@ export class BillingController {
   /** Create Stripe Customer Portal session → returns redirect URL */
   @Post('portal')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard, TenantGuard)
+  @UseGuards(AuthGuard, TenantGuard, OwnerGuard)
   createPortal(@CurrentTenant() tenantId: string): Promise<{ url: string }> {
     return this.billingService.createPortalSession(tenantId);
   }
