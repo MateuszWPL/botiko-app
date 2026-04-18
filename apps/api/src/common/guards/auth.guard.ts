@@ -114,7 +114,9 @@ export class AuthGuard implements CanActivate {
     if (++gcCounter % 200 === 0) gcCache();
     // Evict oldest entry if at capacity
     if (JWT_CACHE.size >= CACHE_MAX_SIZE) {
-      const oldest = JWT_CACHE.keys().next().value;
+      const oldest: string | undefined = JWT_CACHE.keys().next().value as
+        | string
+        | undefined;
       if (oldest) JWT_CACHE.delete(oldest);
     }
     JWT_CACHE.set(token, entry);
