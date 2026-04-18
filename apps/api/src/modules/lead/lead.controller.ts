@@ -14,6 +14,7 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { LeadService, type LeadResponse } from './lead.service';
 import { createLeadSchema, type CreateLeadDto } from './dto/create-lead.dto';
+import { createLeadManualSchema, type CreateLeadManualDto } from './dto/create-lead-manual.dto';
 import {
   updateLeadStatusSchema,
   type UpdateLeadStatusDto,
@@ -38,6 +39,18 @@ export class LeadController {
   @UsePipes(new ZodValidationPipe(createLeadSchema))
   create(@Body() dto: CreateLeadDto): Promise<{ id: string }> {
     return this.leadService.create(dto);
+  }
+
+  // Protected endpoint — dashboard adds lead manually (without widget)
+  @Post('manual')
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(AuthGuard, TenantGuard)
+  @UsePipes(new ZodValidationPipe(createLeadManualSchema))
+  createManual(
+    @Body() dto: CreateLeadManualDto,
+    @CurrentTenant() tenantId: string,
+  ): Promise<{ id: string }> {
+    return this.leadService.createManual(tenantId, dto);
   }
 
   // Protected endpoint — dashboard fetches leads

@@ -30,11 +30,11 @@ const securityHeaders = [
       // WIDGET_URL: allow loading the embedded widget script from demo bot
       `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${WIDGET_URL}`,
       // Images: self + data URIs (for inline SVGs/avatars)
-      "img-src 'self' data: blob:",
+      "img-src 'self' data: blob: https://res.cloudinary.com",
       // Fonts: self
       "font-src 'self'",
       // API calls (configured at build time)
-      `connect-src 'self' ${API_URL} ${PROD_API_URL} https://*.supabase.co wss://*.supabase.co`,
+      `connect-src 'self' ${API_URL} ${PROD_API_URL} https://*.supabase.co wss://*.supabase.co https://api.cloudinary.com`,
       // Frames: Stripe billing portal + YouTube/Vimeo for blog video embeds
       "frame-src 'self' https://billing.stripe.com https://checkout.stripe.com https://www.youtube.com https://player.vimeo.com",
       // Strict object/media

@@ -1,8 +1,19 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { toast } from 'sonner';
-import { Loader2, ChevronDown } from 'lucide-react';
+import {
+  Loader2,
+  ChevronDown,
+  ChevronRight,
+  Search,
+  Download,
+  Plus,
+  Eye,
+  EyeOff,
+  Copy,
+  X,
+} from 'lucide-react';
 import { createClient } from '../../../lib/supabase';
 import { StatusBadge } from '../../../components/ui/StatusBadge';
 
@@ -17,8 +28,77 @@ interface Lead {
 }
 
 const STATUS_KEYS = ['NEW', 'CONTACTED', 'CONVERTED', 'LOST'] as const;
+type StatusKey = (typeof STATUS_KEYS)[number];
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+
+const MONTH_PL = ['sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paź', 'lis', 'gru'];
+
+function formatDate(iso: string): string {
+  const d = new Date(iso);
+  const h = d.getHours().toString().padStart(2, '0');
+  const m = d.getMinutes().toString().padStart(2, '0');
+  return `${d.getDate()} ${MONTH_PL[d.getMonth()]} ${h}:${m}`;
+}
+
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  return parts.length >= 2
+    ? (parts[0][0] + parts[1][0]).toUpperCase()
+    : name.slice(0, 2).toUpperCase();
+}
+
+const AVATAR_COLORS = [
+  'bg-indigo-100 text-indigo-700',
+  'bg-emerald-100 text-emerald-700',
+  'bg-violet-100 text-violet-700',
+  'bg-amber-100 text-amber-700',
+  'bg-rose-100 text-rose-700',
+  'bg-cyan-100 text-cyan-700',
+];
+
+function getAvatarColor(name: string): string {
+  let h = 0;
+  for (const c of name) h = c.charCodeAt(0) + ((h << 5) - h);
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+}
+
+function maskPhone(phone: string): string {
+  if (phone.length <= 3) return '***';
+  return '*'.repeat(Math.max(0, phone.length - 3)) + phone.slice(-3);
+}
+
+function exportCSV(leads: Lead[]) {
+  const rows = [
+    ['Imię i nazwisko', 'Telefon', 'Status', 'Wiadomość', 'Data'],
+    ...leads.map((l) => [l.name, l.phone, l.status, l.message ?? '', formatDate(l.createdAt)]),
+  ];
+  const csv = rows
+    .map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','))
+    .join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `leady-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+const STAT_CARDS: { key: StatusKey; label: string; dot: string; num: string; pill: string }[] = [
+  { key: 'NEW', label: 'Nowe', dot: 'bg-indigo-500', num: 'text-indigo-600', pill: 'bg-indigo-50 text-indigo-600' },
+  { key: 'CONTACTED', label: 'Skontaktowane', dot: 'bg-amber-500', num: 'text-amber-600', pill: 'bg-amber-50 text-amber-600' },
+  { key: 'CONVERTED', label: 'Skonwertowane', dot: 'bg-emerald-500', num: 'text-emerald-600', pill: 'bg-emerald-50 text-emerald-600' },
+  { key: 'LOST', label: 'Utracone', dot: 'bg-rose-500', num: 'text-rose-600', pill: 'bg-rose-50 text-rose-600' },
+];
+
+const FILTER_LABELS: Record<string, string> = {
+  ALL: 'Wszystkie statusy',
+  NEW: 'Nowe',
+  CONTACTED: 'Skontaktowane',
+  CONVERTED: 'Skonwertowane',
+  LOST: 'Utracone',
+};
 
 function StatusDropdown({
   leadId,
@@ -51,8 +131,7 @@ function StatusDropdown({
       <button
         onClick={() => !updating && onToggle(!isOpen)}
         disabled={updating}
-        className="inline-flex items-center gap-1.5 group disabled:opacity-60"
-        aria-label="Zmień status"
+        className="inline-flex items-center gap-1.5 disabled:opacity-60"
       >
         {updating ? (
           <Loader2 className="w-3.5 h-3.5 text-slate-400 animate-spin" />
@@ -65,9 +144,8 @@ function StatusDropdown({
           </>
         )}
       </button>
-
       {isOpen && (
-        <div className="absolute left-0 top-full mt-1.5 z-30 bg-white rounded-xl border border-slate-200 shadow-xl shadow-slate-200/60 p-1.5 min-w-[170px] animate-fade-in animate-in slide-in-from-top-2">
+        <div className="absolute left-0 top-full mt-1.5 z-30 bg-white rounded-xl border border-slate-200 shadow-xl p-1.5 min-w-[170px]">
           {STATUS_KEYS.map((key) => (
             <button
               key={key}
@@ -75,12 +153,10 @@ function StatusDropdown({
                 onToggle(false);
                 if (key !== current) onUpdate(leadId, key);
               }}
-              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left transition-colors hover:bg-slate-50 ${key === current ? 'bg-slate-50' : ''}`}
+              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left hover:bg-slate-50 ${key === current ? 'bg-slate-50' : ''}`}
             >
               <StatusBadge status={key} />
-              {key === current && (
-                <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400" />
-              )}
+              {key === current && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400" />}
             </button>
           ))}
         </div>
@@ -89,10 +165,153 @@ function StatusDropdown({
   );
 }
 
+function AddLeadModal({ onClose, onAdd }: { onClose: () => void; onAdd: (lead: Lead) => void }) {
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !phone.trim()) return;
+    setLoading(true);
+    const supabase = createClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    try {
+      const res = await fetch(`${API_URL}/api/v1/leads/manual`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token ?? ''}`,
+        },
+        body: JSON.stringify({
+          name: name.trim(),
+          phone: phone.trim(),
+          message: message.trim() || undefined,
+        }),
+      });
+      if (res.ok) {
+        const { id } = (await res.json()) as { id: string };
+        onAdd({
+          id,
+          name: name.trim(),
+          phone: phone.trim(),
+          message: message.trim() || null,
+          status: 'NEW',
+          botId: '',
+          createdAt: new Date().toISOString(),
+        });
+        toast.success('Lead dodany');
+        onClose();
+      } else {
+        toast.error('Nie udało się dodać leada');
+      }
+    } catch {
+      toast.error('Błąd połączenia');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-base font-semibold text-slate-800">Dodaj lead ręcznie</h2>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 cursor-pointer">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">Imię i nazwisko *</label>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Anna Kowalska"
+              className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">Telefon *</label>
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+48 600 123 456"
+              className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">Notatka (opcjonalnie)</label>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Np. skąd klient, o co pytał..."
+              rows={3}
+              className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none"
+            />
+          </div>
+          <div className="flex gap-3 pt-1">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 cursor-pointer"
+            >
+              Anuluj
+            </button>
+            <button
+              type="submit"
+              disabled={loading || !name.trim() || !phone.trim()}
+              className="flex-1 px-4 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+            >
+              {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+              Dodaj lead
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
   const [leads, setLeads] = useState(initialLeads);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('ALL');
+  const [revealedPhones, setRevealedPhones] = useState<Set<string>>(new Set());
   const [updating, setUpdating] = useState<string | null>(null);
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!filterOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (!filterRef.current?.contains(e.target as Node)) setFilterOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [filterOpen]);
+
+  const stats = {
+    NEW: leads.filter((l) => l.status === 'NEW').length,
+    CONTACTED: leads.filter((l) => l.status === 'CONTACTED').length,
+    CONVERTED: leads.filter((l) => l.status === 'CONVERTED').length,
+    LOST: leads.filter((l) => l.status === 'LOST').length,
+  };
+
+  const filtered = leads.filter((l) => {
+    const q = search.toLowerCase();
+    const matchSearch = !q || l.name.toLowerCase().includes(q) || l.phone.includes(q);
+    const matchStatus = statusFilter === 'ALL' || l.status === statusFilter;
+    return matchSearch && matchStatus;
+  });
 
   const updateStatus = async (leadId: string, status: string) => {
     setUpdating(leadId);
@@ -101,7 +320,6 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
       data: { session },
     } = await supabase.auth.getSession();
     const token = session?.access_token;
-
     try {
       const res = await fetch(`${API_URL}/api/v1/leads/${leadId}/status`, {
         method: 'PATCH',
@@ -111,7 +329,6 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
         },
         body: JSON.stringify({ status }),
       });
-
       if (res.ok) {
         setLeads((prev) => prev.map((l) => (l.id === leadId ? { ...l, status } : l)));
         toast.success('Status zaktualizowany');
@@ -125,57 +342,212 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
     }
   };
 
+  const togglePhone = (id: string) => {
+    setRevealedPhones((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const copyPhone = async (phone: string) => {
+    await navigator.clipboard.writeText(phone);
+    toast.success('Skopiowano do schowka');
+  };
+
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 overflow-visible shadow-sm">
-      <table className="w-full text-sm border-separate border-spacing-0">
-        <thead className="bg-slate-50/80 [&_th:first-child]:rounded-tl-2xl [&_th:last-child]:rounded-tr-2xl">
-          <tr>
-            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200/60">
-              Kontakt
-            </th>
-            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200/60">
-              Telefon
-            </th>
-            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden md:table-cell border-b border-slate-200/60">
-              Wiadomość
-            </th>
-            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200/60">
-              Status
-            </th>
-            <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden sm:table-cell border-b border-slate-200/60">
-              Data
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-100/80">
-          {leads.map((lead, idx) => (
-            <tr
-              key={lead.id}
-              className={`hover:bg-indigo-50/30 transition-colors animate-fade-in relative ${openDropdownId === lead.id ? 'z-50' : 'z-0'}`}
-              style={{ animationDelay: `${idx * 40}ms` }}
-            >
-              <td className="px-5 py-4 font-semibold text-slate-800">{lead.name}</td>
-              <td className="px-5 py-4 text-slate-600 font-mono text-xs">{lead.phone}</td>
-              <td className="px-5 py-4 text-slate-500 max-w-48 truncate hidden md:table-cell">
-                {lead.message ?? <span className="text-slate-300">—</span>}
-              </td>
-              <td className="px-5 py-4">
-                <StatusDropdown
-                  leadId={lead.id}
-                  current={lead.status}
-                  onUpdate={(id, status) => void updateStatus(id, status)}
-                  updating={updating === lead.id}
-                  isOpen={openDropdownId === lead.id}
-                  onToggle={(open) => setOpenDropdownId(open ? lead.id : null)}
-                />
-              </td>
-              <td className="px-5 py-4 text-slate-400 text-xs hidden sm:table-cell">
-                {new Date(lead.createdAt).toLocaleDateString('pl-PL')}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      {/* Stat cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {STAT_CARDS.map(({ key, label, dot, num, pill }) => (
+          <div key={key} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+            <p className="text-xs font-medium text-slate-500 mb-1">{label}</p>
+            <p className={`text-3xl font-bold ${num}`}>{stats[key]}</p>
+            <div className={`mt-3 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${pill}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${dot}`} />
+              {label}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Toolbar */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Szukaj po nazwie lub telefonie..."
+            className="w-full pl-9 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+          />
+        </div>
+
+        <div ref={filterRef} className="relative">
+          <button
+            onClick={() => setFilterOpen((o) => !o)}
+            className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 min-w-[190px] cursor-pointer"
+          >
+            <span className="flex-1 text-left">{FILTER_LABELS[statusFilter]}</span>
+            <ChevronDown className={`w-4 h-4 transition-transform ${filterOpen ? 'rotate-180' : ''}`} />
+          </button>
+          {filterOpen && (
+            <div className="absolute left-0 top-full mt-1.5 z-20 bg-white rounded-xl border border-slate-200 shadow-xl p-1.5 min-w-full">
+              {(['ALL', ...STATUS_KEYS] as const).map((key) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setStatusFilter(key);
+                    setFilterOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-left hover:bg-slate-50 cursor-pointer ${statusFilter === key ? 'bg-slate-50 font-medium' : ''}`}
+                >
+                  {key === 'ALL' ? (
+                    <span className="text-slate-600">Wszystkie statusy</span>
+                  ) : (
+                    <StatusBadge status={key} />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <button
+          onClick={() => exportCSV(filtered)}
+          className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 cursor-pointer"
+        >
+          <Download className="w-4 h-4" />
+          CSV
+        </button>
+
+        <button
+          onClick={() => setAddModalOpen(true)}
+          className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 cursor-pointer"
+        >
+          <Plus className="w-4 h-4" />
+          Dodaj ręcznie
+        </button>
+      </div>
+
+      {/* Table */}
+      {filtered.length === 0 ? (
+        <div className="flex items-center justify-center h-40 bg-white rounded-2xl border border-slate-200">
+          <p className="text-sm text-slate-400">
+            {leads.length === 0
+              ? 'Leady pojawią się gdy klienci zostawią kontakt przez bota'
+              : 'Brak wyników dla wybranych filtrów'}
+          </p>
+        </div>
+      ) : (
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-visible shadow-sm">
+          <table className="w-full text-sm border-separate border-spacing-0">
+            <thead className="bg-slate-50 [&_th:first-child]:rounded-tl-2xl [&_th:last-child]:rounded-tr-2xl">
+              <tr>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200">
+                  Kontakt
+                </th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200">
+                  Telefon
+                </th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200 hidden md:table-cell">
+                  Źródło rozmowy
+                </th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200">
+                  Status
+                </th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200 hidden sm:table-cell">
+                  Data
+                </th>
+                <th className="px-3 py-3.5 border-b border-slate-200 w-8" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {filtered.map((lead, idx) => {
+                const revealed = revealedPhones.has(lead.id);
+                return (
+                  <tr
+                    key={lead.id}
+                    className={`hover:bg-indigo-50/30 transition-colors relative ${openDropdownId === lead.id ? 'z-50' : 'z-0'}`}
+                    style={{ animationDelay: `${idx * 30}ms` }}
+                  >
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${getAvatarColor(lead.name)}`}
+                        >
+                          {getInitials(lead.name)}
+                        </div>
+                        <span className="font-semibold text-slate-800">{lead.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-slate-600 font-mono text-xs">
+                          {revealed ? lead.phone : maskPhone(lead.phone)}
+                        </span>
+                        <button
+                          onClick={() => togglePhone(lead.id)}
+                          className="text-slate-400 hover:text-slate-600 cursor-pointer"
+                          aria-label={revealed ? 'Ukryj telefon' : 'Pokaż telefon'}
+                        >
+                          {revealed ? (
+                            <EyeOff className="w-3.5 h-3.5" />
+                          ) : (
+                            <Eye className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                        {revealed && (
+                          <button
+                            onClick={() => void copyPhone(lead.phone)}
+                            className="text-slate-400 hover:text-slate-600 cursor-pointer"
+                            aria-label="Kopiuj telefon"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-5 py-4 hidden md:table-cell max-w-56">
+                      {lead.message ? (
+                        <span className="text-xs text-slate-500 italic truncate block">
+                          &bdquo;{lead.message}&rdquo;
+                        </span>
+                      ) : (
+                        <span className="text-slate-300 text-xs">—</span>
+                      )}
+                    </td>
+                    <td className="px-5 py-4">
+                      <StatusDropdown
+                        leadId={lead.id}
+                        current={lead.status}
+                        onUpdate={(id, status) => void updateStatus(id, status)}
+                        updating={updating === lead.id}
+                        isOpen={openDropdownId === lead.id}
+                        onToggle={(open) => setOpenDropdownId(open ? lead.id : null)}
+                      />
+                    </td>
+                    <td className="px-5 py-4 text-slate-400 text-xs hidden sm:table-cell whitespace-nowrap">
+                      {formatDate(lead.createdAt)}
+                    </td>
+                    <td className="px-3 py-4">
+                      <ChevronRight className="w-4 h-4 text-slate-300" />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {addModalOpen && (
+        <AddLeadModal
+          onClose={() => setAddModalOpen(false)}
+          onAdd={(lead) => setLeads((prev) => [lead, ...prev])}
+        />
+      )}
+    </>
   );
 }
