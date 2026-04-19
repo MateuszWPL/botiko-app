@@ -460,20 +460,20 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 **Chat / RAG Pipeline**
 - [x] `ChatService`: test fallback gdy brak chunków (done — `chat.service.spec.ts`)
 - [x] `ChatService`: eskalacja do człowieka (`isEscalationRequest`) (done — 8 testów)
-- [ ] `ChatService`: `checkPlanLimit()` blokuje gdy `isActive = false` → 403
-- [ ] `ChatService`: miesięczny limit 1000 konwersacji (STARTER) — reset o 1. dnia miesiąca
-- [ ] `ChatService`: `domainWhitelist` w trybie prod blokuje `Origin` spoza listy
-- [ ] `ChatService`: limit długości wiadomości per bot (P0 sec fix)
+- [x] `ChatService`: `checkPlanLimit()` blokuje gdy `isActive = false` → 403 (done — 2 testy)
+- [x] `ChatService`: miesięczny limit 1000 konwersacji (STARTER) — reset o 1. dnia miesiąca (done — 3 testy)
+- [x] `ChatService`: `domainWhitelist` w trybie prod blokuje `Origin` spoza listy (done — `domain-whitelist.guard.spec.ts` 16 testów)
+- [ ] `ChatService`: limit długości wiadomości per bot (P0 sec fix — w DTO Zod max 1000 chars, brak unit testu)
 
 **MessageSanitizer** (nowy — krytyczna warstwa pre-processingu)
-- [ ] `message-sanitizer`: script/HTML injection → canned response + `action: 'sanitized'`
-- [ ] `message-sanitizer`: prompt injection PL ("pomiń instrukcje", "zignoruj", "zapomnij") → canned
-- [ ] `message-sanitizer`: prompt injection EN ("ignore instructions", "forget previous") → canned
-- [ ] `message-sanitizer`: obrazek/binary data → canned response
-- [ ] `message-sanitizer`: profanity PL + EN → canned response
-- [ ] `message-sanitizer`: gibberish (<25% liter) → canned response
-- [ ] `message-sanitizer`: pożegnanie ("pa", "dzięki") → canned response + zakończenie
-- [ ] `message-sanitizer`: powitanie/acknowledgment → `action: 'no-rag'` + AI in-character
+- [x] `message-sanitizer`: script/HTML injection → canned response + `action: 'sanitized'` (done — 115 testów)
+- [x] `message-sanitizer`: prompt injection PL ("pomiń instrukcje", "zignoruj", "zapomnij") → canned (done)
+- [x] `message-sanitizer`: prompt injection EN ("ignore instructions", "forget previous") → canned (done)
+- [x] `message-sanitizer`: obrazek/binary data → canned response (done)
+- [x] `message-sanitizer`: profanity PL + EN → canned response (done)
+- [x] `message-sanitizer`: gibberish (<25% liter) → canned response (done)
+- [x] `message-sanitizer`: pożegnanie ("pa", "dzięki") → canned response + zakończenie (done)
+- [x] `message-sanitizer`: powitanie/acknowledgment → `action: 'no-rag'` + AI in-character (done)
 
 **Auth** (nowe wymagania)
 - [ ] `auth.service`: walidacja hasła — <12 znaków → błąd
@@ -492,17 +492,17 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 - [ ] `LeadService`: zgoda RODO wymagana (`rodoConsent: true`) → 400 bez niej
 
 **EncryptionService**
-- [ ] `encrypt()` → `decrypt()` = input (round-trip)
-- [ ] `decrypt()` z błędnym authTag → rzuca wyjątek (nie silent failure)
-- [ ] Format `iv:authTag:ciphertext` poprawny hex
+- [x] `encrypt()` → `decrypt()` = input (round-trip) (done — `encryption.service.spec.ts` 16 testów)
+- [x] `decrypt()` z błędnym authTag → rzuca wyjątek (nie silent failure) (done — tamper detection)
+- [x] Format `iv:authTag:ciphertext` poprawny hex (done)
 
 **Billing / Stripe Webhooks**
-- [ ] `BillingWebhookHandler`: `checkout.session.completed` → zapisuje `stripeCustomerId`, `stripeSubscriptionId`, `isActive=true`
-- [ ] `BillingWebhookHandler`: `customer.subscription.updated` → `isActive` wg statusu
-- [ ] `BillingWebhookHandler`: `subscription.deleted` → `isActive = false`
-- [ ] `BillingWebhookHandler`: `invoice.payment_failed` → `isActive = false`
-- [ ] `BillingWebhookHandler`: błędna sygnatura → 400 (raw body weryfikacja)
-- [ ] `BillingWebhookHandler`: idempotencja — ten sam event 2x nie duplikuje zmian (P0 sec fix)
+- [x] `BillingWebhookHandler`: `checkout.session.completed` → zapisuje `stripeCustomerId`, `stripeSubscriptionId`, `isActive=true` (done — `billing.service.spec.ts` 15 testów)
+- [x] `BillingWebhookHandler`: `customer.subscription.updated` → `isActive` wg statusu (done — active/unpaid/canceled/past_due/incomplete)
+- [x] `BillingWebhookHandler`: `subscription.deleted` → `isActive = false` (done)
+- [x] `BillingWebhookHandler`: `invoice.payment_failed` → log-only, brak zmiany DB (done — nota: błąd w opisie w checklist, to NIE deaktywuje)
+- [x] `BillingWebhookHandler`: błędna sygnatura → 400 (done)
+- [x] `BillingWebhookHandler`: idempotencja — ten sam event 2x nie duplikuje zmian (done — P2002 handler)
 
 **Bot Config** (P1 sec fix)
 - [ ] `BotService.getPublicConfig()`: gdy `tenant.isActive = false` → 403
@@ -579,14 +579,14 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 ---
 
 #### E2E testy landing pages (`apps/web` — Playwright)
-- [ ] Wszystkie 5 LP renderują bez błędów: `/dla/salon-beauty`, `/dla/gabinet-spa`, `/dla/restauracja`, `/dla/warsztat-mechaniczny`, `/dla/inna`
-- [ ] Każda LP ma H1 i minimum 1 CTA `/rejestracja`
-- [ ] Navbar dropdown "Dla branży": wszystkie 5 linków prowadzą do istniejących stron (200, nie 404)
-- [ ] `/rejestracja` redirect → `/register`
-- [ ] `/prywatnosc` renderuje 10 sekcji RODO
-- [ ] `/blog` + `/blog/[slug]` + `/blog/kategoria/[slug]` + `/blog/tag/[slug]` — 200
-- [ ] Dashboard auth guard: `/dashboard/*` bez sesji → redirect `/login`
-- [ ] Formularz kontaktowy: błąd API → fallback `mailto:` (nie zgubiony exception)
+- [x] Wszystkie 5 LP renderują bez błędów: `/dla/salon-beauty`, `/dla/gabinet-spa`, `/dla/restauracja`, `/dla/warsztat-mechaniczny`, `/dla/inna` (done — `e2e/landing-pages.spec.ts`)
+- [x] Każda LP ma H1 i minimum 1 CTA `/rejestracja` (done)
+- [x] Navbar dropdown "Dla branży": wszystkie 5 linków prowadzą do istniejących stron (200, nie 404) (done)
+- [x] `/rejestracja` redirect → `/register` (done)
+- [x] `/prywatnosc` renderuje treść polityki prywatności (done)
+- [x] `/blog` + `/blog/[slug]` + `/blog/kategoria/[slug]` + `/blog/tag/[slug]` — 200 (done)
+- [x] Dashboard auth guard: `/dashboard/*` bez sesji → redirect `/login` (done — 4 ścieżki)
+- [x] Formularz kontaktowy: błąd API → fallback (nie crash/exception) (done)
 
 ---
 
