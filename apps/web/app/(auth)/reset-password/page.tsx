@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '../../../lib/supabase';
 import { AuthLeftPanel } from '../../../components/auth/AuthLeftPanel';
+import { PasswordRequirements } from '../../../components/auth/PasswordRequirements';
+import { isPasswordValid } from '../../../lib/password';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -20,12 +22,12 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setError('');
 
-    if (password !== confirm) {
-      setError('Hasła nie są takie same');
+    if (!isPasswordValid(password)) {
+      setError('Hasło nie spełnia wymagań bezpieczeństwa');
       return;
     }
-    if (password.length < 8) {
-      setError('Hasło musi mieć co najmniej 8 znaków');
+    if (password !== confirm) {
+      setError('Hasła nie są takie same');
       return;
     }
 
@@ -80,7 +82,7 @@ export default function ResetPasswordPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       autoComplete="new-password"
-                      placeholder="min. 8 znaków"
+                      placeholder="min. 12 znaków"
                       className="w-full px-4 py-3 pr-11 border border-slate-200 rounded-xl text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
                     />
                     <button
@@ -96,6 +98,7 @@ export default function ResetPasswordPage() {
                       )}
                     </button>
                   </div>
+                  <PasswordRequirements password={password} />
                 </div>
 
                 <div>
