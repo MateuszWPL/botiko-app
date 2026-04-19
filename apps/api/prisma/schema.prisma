@@ -21,6 +21,7 @@ model Tenant {
   bots                   Bot[]
   users                  User[]
   leads                  Lead[]
+  reviews                Review[]
 }
 
 /// Idempotency store for Stripe webhooks. Before processing any event
@@ -127,6 +128,19 @@ model Message {
   role           MsgRole
   content        String
   createdAt      DateTime     @default(now())
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  rating    Int
+  message   String?
+  userName  String
+  userEmail String
+  createdAt DateTime @default(now())
+
+  @@index([tenantId])
 }
 
 enum Industry {

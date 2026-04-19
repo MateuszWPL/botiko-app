@@ -4,6 +4,7 @@ import { Sidebar } from '../../components/dashboard/Sidebar';
 import { SetupWizardProvider } from '../../components/dashboard/SetupWizard';
 import { TrialBanner } from '../../components/dashboard/TrialBanner';
 import { DashboardTopBar } from '../../components/dashboard/topbar/DashboardTopBar';
+import { ReviewBadge } from '../../components/dashboard/ReviewBadge';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
@@ -29,6 +30,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       />
       {/* Setup wizard — auto-opens for new users, reopenable from sidebar */}
       <SetupWizardProvider />
+      <ReviewBadge />
     </div>
   );
 }
