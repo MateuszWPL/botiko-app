@@ -56,10 +56,10 @@ type DropItem = { label: string; href: string; desc: string; color: string; icon
 
 const INDUSTRIES: DropItem[] = [
   { label: 'Salon beauty',  href: '/dla/salon-beauty', desc: 'Manicure, rzęsy, brwi, kosmetologia', color: '#EC4899', icon: <IcoScissors /> },
-  { label: 'Gabinet / SPA', href: '/dla/gabinet',       desc: 'Fizjoterapia, masaże, stomatologia',  color: '#06B6D4', icon: <IcoStethoscope /> },
+  { label: 'Gabinet / SPA', href: '/dla/gabinet-spa',    desc: 'Masaże, zabiegi, aromaterapia',       color: '#06B6D4', icon: <IcoStethoscope /> },
   { label: 'Restauracja',   href: '/dla/restauracja',   desc: 'Menu, alergie, pytania gości',         color: '#F97316', icon: <IcoUtensils /> },
-  { label: 'Warsztat',      href: '/dla/warsztat',      desc: 'Wyceny, terminy, obsługa klientów',   color: '#64748B', icon: <IcoWrench /> },
-  { label: 'Inna branża',   href: '/dla/inna',          desc: 'Konfigurowalny szablon 15 min',       color: '#8B5CF6', icon: <IcoStar /> },
+  { label: 'Warsztat',      href: '/dla/warsztat-mechaniczny', desc: 'Wyceny, terminy, obsługa klientów', color: '#64748B', icon: <IcoWrench /> },
+  { label: 'Inna branża',   href: '/dla/inna',           desc: 'Fryzjer, fizjo, fotograf i inne',     color: '#8B5CF6', icon: <IcoStar /> },
 ];
 
 const BLOG_ITEM: DropItem = {
@@ -276,6 +276,8 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
   const router = useRouter();
   const [scrolled, setScrolled] = useState(forceScrolled);
   const [menuOpen, setMenuOpen] = useState(false);
+  const isDlaSubpage = Boolean(pathname?.startsWith('/dla/'));
+  const navSolid = forceScrolled || scrolled || isDlaSubpage;
 
   useEffect(() => {
     if (forceScrolled) return;
@@ -311,15 +313,15 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
     <>
       <header
         className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-          scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
+          navSolid ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
         }`}
       >
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 font-bold text-xl cursor-pointer">
             <Image src="/BotikoLogo.png" alt="Botiko" width={32} height={32} className="rounded-lg" />
-            <span className={scrolled ? 'text-text' : 'text-white drop-shadow'}>
-              Botiko<span className={scrolled ? 'text-brand' : 'text-white/80'}>.pl</span>
+            <span className={navSolid ? 'text-text' : 'text-white drop-shadow'}>
+              Botiko<span className={navSolid ? 'text-brand' : 'text-white/80'}>.pl</span>
             </span>
           </Link>
 
@@ -327,7 +329,7 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
           <ul className="hidden md:flex items-center gap-6">
             {/* Dropdown */}
             <li>
-              <BranzeDropdown scrolled={scrolled} />
+              <BranzeDropdown scrolled={navSolid} />
             </li>
             {/* Regular links */}
             {NAV_LINKS.map((link) => (
@@ -336,7 +338,7 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
                   href={toAppHref(link.href)}
                   onClick={link.href.startsWith('#') ? (e) => onHashClick(e, link.href) : undefined}
                   className={`text-sm font-medium transition-colors cursor-pointer ${
-                    scrolled ? 'text-slate-600 hover:text-brand' : 'text-white/90 hover:text-white'
+                    navSolid ? 'text-slate-600 hover:text-brand' : 'text-white/90 hover:text-white'
                   }`}
                 >
                   {link.label}
@@ -350,7 +352,7 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
             <Link
               href="/login"
               className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-all cursor-pointer ${
-                scrolled
+                navSolid
                   ? 'text-slate-600 hover:text-brand hover:bg-slate-100'
                   : 'text-white/90 hover:text-white hover:bg-white/10'
               }`}
@@ -373,7 +375,7 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
             onClick={() => setMenuOpen(true)}
             aria-label="Otwórz menu"
             className={`md:hidden p-2 rounded-lg transition-colors cursor-pointer ${
-              scrolled ? 'text-slate-700 hover:bg-slate-100' : 'text-white hover:bg-white/10'
+              navSolid ? 'text-slate-700 hover:bg-slate-100' : 'text-white hover:bg-white/10'
             }`}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
