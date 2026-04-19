@@ -79,6 +79,15 @@ describe('EncryptionService', () => {
   });
 
   describe('decrypt — obsługa błędów', () => {
+    // XOR pierwszego bajtu z 0xff — gwarantuje że byte zawsze się zmieni
+    // (w odróżnieniu od replace(/^../, '00'), które jest no-op gdy pierwszy bajt to już 00)
+    const flipFirstByte = (hex: string) => {
+      const first = (parseInt(hex.slice(0, 2), 16) ^ 0xff)
+        .toString(16)
+        .padStart(2, '0');
+      return first + hex.slice(2);
+    };
+
     it('rzuca błąd dla niepoprawnego formatu (mniej niż 3 części)', () => {
       expect(() => service.decrypt('tylko-dwie:czesci')).toThrow(
         'Invalid ciphertext format',
@@ -92,22 +101,21 @@ describe('EncryptionService', () => {
     it('rzuca błąd gdy authTag został zmodyfikowany (tamper detection)', () => {
       const encrypted = service.encrypt('wrażliwe dane');
       const [iv, authTag, ciphertext] = encrypted.split(':');
-      // Zmień pierwszy bajt authTag
-      const tampered = `${iv}:${authTag.replace(/^../, '00')}:${ciphertext}`;
+      const tampered = `${iv}:${flipFirstByte(authTag)}:${ciphertext}`;
       expect(() => service.decrypt(tampered)).toThrow();
     });
 
     it('rzuca błąd gdy ciphertext został zmodyfikowany (tamper detection)', () => {
       const encrypted = service.encrypt('wrażliwe dane');
       const [iv, authTag, ciphertext] = encrypted.split(':');
-      const tampered = `${iv}:${authTag}:${ciphertext.replace(/^../, '00')}`;
+      const tampered = `${iv}:${authTag}:${flipFirstByte(ciphertext)}`;
       expect(() => service.decrypt(tampered)).toThrow();
     });
 
     it('rzuca błąd gdy IV został zmodyfikowany (tamper detection)', () => {
       const encrypted = service.encrypt('wrażliwe dane');
       const [iv, authTag, ciphertext] = encrypted.split(':');
-      const tampered = `${iv.replace(/^../, '00')}:${authTag}:${ciphertext}`;
+      const tampered = `${flipFirstByte(iv)}:${authTag}:${ciphertext}`;
       expect(() => service.decrypt(tampered)).toThrow();
     });
   });
