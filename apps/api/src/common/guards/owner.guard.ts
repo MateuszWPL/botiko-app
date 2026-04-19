@@ -36,9 +36,7 @@ export class OwnerGuard implements CanActivate {
     });
 
     if (user?.role !== 'OWNER') {
-      throw new ForbiddenException(
-        'Only the account owner can manage billing',
-      );
+      throw new ForbiddenException('Only the account owner can manage billing');
     }
 
     return true;

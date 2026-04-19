@@ -110,7 +110,9 @@ export class ChatService {
     // The sanitized form is what was actually processed, so it's the accurate
     // record of what the user said (minus injected noise).
     const cleanMessage =
-      preprocessed.action === 'respond' ? req.message.slice(0, 500) : preprocessed.text;
+      preprocessed.action === 'respond'
+        ? req.message.slice(0, 500)
+        : preprocessed.text;
     // Note: for blocked messages (action==='respond') we store a truncated
     // version of the raw input because cleanMessage from the sanitizer might
     // be empty (e.g. pure script injection). 500-char slice is safe — it won't
