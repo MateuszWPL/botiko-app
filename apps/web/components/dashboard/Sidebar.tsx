@@ -19,6 +19,7 @@ import {
   Rocket,
   Menu,
   X,
+  HelpCircle,
 } from 'lucide-react';
 import { createClient } from '../../lib/supabase';
 
@@ -30,6 +31,7 @@ const NAV_ITEMS = [
   { href: '/dashboard/settings', label: 'Ustawienia', icon: Settings },
   { href: '/dashboard/embed', label: 'Instalacja', icon: Code2 },
   { href: '/dashboard/billing', label: 'Płatności', icon: CreditCard },
+  { href: '/dashboard/help', label: 'Pomoc', icon: HelpCircle },
 ];
 
 function Tooltip({ label, show }: { label: string; show: boolean }) {
@@ -222,7 +224,7 @@ export function Sidebar() {
         </div>
       </aside>
 
-      {/* Mobile top header */}
+      {/* Mobile top header — tylko hamburger + logo (tytuł i ikony są w DashboardTopBar) */}
       <header className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/60 flex items-center px-4 gap-3">
         <button
           onClick={() => setMobileOpen(true)}
@@ -233,7 +235,7 @@ export function Sidebar() {
         </button>
         <Image src="/BotikoLogo.png" alt="Botiko" width={28} height={28} className="rounded-md" />
         <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-          {NAV_ITEMS.find((i) => pathname.startsWith(i.href))?.label ?? 'Botiko.pl'}
+          Botiko.pl
         </span>
       </header>
 
