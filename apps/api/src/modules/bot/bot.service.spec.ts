@@ -1,5 +1,7 @@
 jest.mock('../../prisma/prisma.service', () => ({ PrismaService: jest.fn() }));
-jest.mock('../knowledge/knowledge.service', () => ({ KnowledgeService: jest.fn() }));
+jest.mock('../knowledge/knowledge.service', () => ({
+  KnowledgeService: jest.fn(),
+}));
 jest.mock('../../brand-templates', () => ({
   getBrandTemplate: jest.fn().mockReturnValue({
     systemPrompt: 'You are a helpful assistant.',
@@ -66,7 +68,9 @@ describe('BotService.getPublicConfig — isActive gate', () => {
     // findFirst returns null when WHERE filters out inactive tenant/bot
     const { service } = await buildService(buildPrismaMock(null));
 
-    await expect(service.getPublicConfig('bot-1')).rejects.toThrow(NotFoundException);
+    await expect(service.getPublicConfig('bot-1')).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   it('zwraca config gdy bot i tenant są aktywni', async () => {
@@ -109,10 +113,12 @@ describe('BotService.getPublicConfig — suggestedQuestions', () => {
   });
 
   it('nie wywołuje getBrandTemplate dla suggestedQuestions gdy bot ma własną listę', async () => {
-    const { getBrandTemplate } = jest.requireMock('../../brand-templates') as {
-      getBrandTemplate: jest.Mock;
+    const brandTemplatesMock = jest.requireMock(
+      '../../brand-templates',
+    ) as unknown as {
+      getBrandTemplate: { mockClear: () => void };
     };
-    getBrandTemplate.mockClear();
+    brandTemplatesMock.getBrandTemplate.mockClear();
 
     const customBot = {
       ...mockBotRow,

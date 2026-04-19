@@ -73,7 +73,10 @@ async function buildService(prisma: object = makePrismaMock()) {
     providers: [
       BillingService,
       { provide: PrismaService, useValue: prisma },
-      { provide: NotificationService, useValue: { sendTrialNotificationEmail: jest.fn() } },
+      {
+        provide: NotificationService,
+        useValue: { sendTrialNotificationEmail: jest.fn() },
+      },
     ],
   }).compile();
   return { service: module.get(BillingService), prisma };
@@ -157,7 +160,7 @@ describe('BillingService — handleWebhook', () => {
       ).resolves.toBeUndefined();
 
       // tenant.update must NOT have been called
-      expect((prisma as ReturnType<typeof makePrismaMock>).tenant.update).not.toHaveBeenCalled();
+      expect(prisma.tenant.update).not.toHaveBeenCalled();
     });
 
     it('re-throws unexpected DB errors (not P2002)', async () => {
@@ -196,16 +199,18 @@ describe('BillingService — handleWebhook', () => {
         status: 'complete',
         payment_status: 'paid',
       };
-      const { rawBody } = stubWebhookEvent('checkout.session.completed', session);
+      const { rawBody } = stubWebhookEvent(
+        'checkout.session.completed',
+        session,
+      );
 
       const { service } = await buildService(prisma);
       await service.handleWebhook(rawBody, 'sig_valid');
 
-      expect(
-        (prisma as ReturnType<typeof makePrismaMock>).tenant.update,
-      ).toHaveBeenCalledWith(
+      expect(prisma.tenant.update).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: 'tenant-1' },
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           data: expect.objectContaining({
             isActive: true,
             stripeCustomerId: 'cus_abc',
@@ -226,14 +231,15 @@ describe('BillingService — handleWebhook', () => {
         status: 'open',
         payment_status: 'unpaid',
       };
-      const { rawBody } = stubWebhookEvent('checkout.session.completed', session);
+      const { rawBody } = stubWebhookEvent(
+        'checkout.session.completed',
+        session,
+      );
 
       const { service } = await buildService(prisma);
       await service.handleWebhook(rawBody, 'sig_valid');
 
-      expect(
-        (prisma as ReturnType<typeof makePrismaMock>).tenant.update,
-      ).not.toHaveBeenCalled();
+      expect(prisma.tenant.update).not.toHaveBeenCalled();
     });
 
     it('skips silently when client_reference_id is missing', async () => {
@@ -246,14 +252,15 @@ describe('BillingService — handleWebhook', () => {
         status: 'complete',
         payment_status: 'paid',
       };
-      const { rawBody } = stubWebhookEvent('checkout.session.completed', session);
+      const { rawBody } = stubWebhookEvent(
+        'checkout.session.completed',
+        session,
+      );
 
       const { service } = await buildService(prisma);
       await service.handleWebhook(rawBody, 'sig_valid');
 
-      expect(
-        (prisma as ReturnType<typeof makePrismaMock>).tenant.update,
-      ).not.toHaveBeenCalled();
+      expect(prisma.tenant.update).not.toHaveBeenCalled();
     });
   });
 
@@ -262,15 +269,17 @@ describe('BillingService — handleWebhook', () => {
     it('sets isActive = false when status is "unpaid" (Stripe exhausted retries)', async () => {
       const prisma = makePrismaMock();
       const sub = { id: 'sub_1', status: 'unpaid', customer: 'cus_1' };
-      const { rawBody } = stubWebhookEvent('customer.subscription.updated', sub);
+      const { rawBody } = stubWebhookEvent(
+        'customer.subscription.updated',
+        sub,
+      );
 
       const { service } = await buildService(prisma);
       await service.handleWebhook(rawBody, 'sig_valid');
 
-      expect(
-        (prisma as ReturnType<typeof makePrismaMock>).tenant.update,
-      ).toHaveBeenCalledWith(
+      expect(prisma.tenant.update).toHaveBeenCalledWith(
         expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           data: expect.objectContaining({ isActive: false }),
         }),
       );
@@ -279,15 +288,17 @@ describe('BillingService — handleWebhook', () => {
     it('sets isActive = false when status is "canceled"', async () => {
       const prisma = makePrismaMock();
       const sub = { id: 'sub_1', status: 'canceled', customer: 'cus_1' };
-      const { rawBody } = stubWebhookEvent('customer.subscription.updated', sub);
+      const { rawBody } = stubWebhookEvent(
+        'customer.subscription.updated',
+        sub,
+      );
 
       const { service } = await buildService(prisma);
       await service.handleWebhook(rawBody, 'sig_valid');
 
-      expect(
-        (prisma as ReturnType<typeof makePrismaMock>).tenant.update,
-      ).toHaveBeenCalledWith(
+      expect(prisma.tenant.update).toHaveBeenCalledWith(
         expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           data: expect.objectContaining({ isActive: false }),
         }),
       );
@@ -296,42 +307,46 @@ describe('BillingService — handleWebhook', () => {
     it('does NOT change isActive when status is "past_due" (grace period — bot stays ON)', async () => {
       const prisma = makePrismaMock();
       const sub = { id: 'sub_1', status: 'past_due', customer: 'cus_1' };
-      const { rawBody } = stubWebhookEvent('customer.subscription.updated', sub);
+      const { rawBody } = stubWebhookEvent(
+        'customer.subscription.updated',
+        sub,
+      );
 
       const { service } = await buildService(prisma);
       await service.handleWebhook(rawBody, 'sig_valid');
 
       // tenant.update must NOT be called because past_due is a no-op
-      expect(
-        (prisma as ReturnType<typeof makePrismaMock>).tenant.update,
-      ).not.toHaveBeenCalled();
+      expect(prisma.tenant.update).not.toHaveBeenCalled();
     });
 
     it('does NOT change isActive when status is "incomplete" (initial payment pending)', async () => {
       const prisma = makePrismaMock();
       const sub = { id: 'sub_1', status: 'incomplete', customer: 'cus_1' };
-      const { rawBody } = stubWebhookEvent('customer.subscription.updated', sub);
+      const { rawBody } = stubWebhookEvent(
+        'customer.subscription.updated',
+        sub,
+      );
 
       const { service } = await buildService(prisma);
       await service.handleWebhook(rawBody, 'sig_valid');
 
-      expect(
-        (prisma as ReturnType<typeof makePrismaMock>).tenant.update,
-      ).not.toHaveBeenCalled();
+      expect(prisma.tenant.update).not.toHaveBeenCalled();
     });
 
     it('sets isActive = true when status returns to "active" (e.g. payment recovered)', async () => {
       const prisma = makePrismaMock();
       const sub = { id: 'sub_1', status: 'active', customer: 'cus_1' };
-      const { rawBody } = stubWebhookEvent('customer.subscription.updated', sub);
+      const { rawBody } = stubWebhookEvent(
+        'customer.subscription.updated',
+        sub,
+      );
 
       const { service } = await buildService(prisma);
       await service.handleWebhook(rawBody, 'sig_valid');
 
-      expect(
-        (prisma as ReturnType<typeof makePrismaMock>).tenant.update,
-      ).toHaveBeenCalledWith(
+      expect(prisma.tenant.update).toHaveBeenCalledWith(
         expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           data: expect.objectContaining({ isActive: true }),
         }),
       );
@@ -343,15 +358,17 @@ describe('BillingService — handleWebhook', () => {
     it('sets tenant.isActive = false on subscription deletion', async () => {
       const prisma = makePrismaMock();
       const sub = { id: 'sub_1', status: 'canceled', customer: 'cus_1' };
-      const { rawBody } = stubWebhookEvent('customer.subscription.deleted', sub);
+      const { rawBody } = stubWebhookEvent(
+        'customer.subscription.deleted',
+        sub,
+      );
 
       const { service } = await buildService(prisma);
       await service.handleWebhook(rawBody, 'sig_valid');
 
-      expect(
-        (prisma as ReturnType<typeof makePrismaMock>).tenant.update,
-      ).toHaveBeenCalledWith(
+      expect(prisma.tenant.update).toHaveBeenCalledWith(
         expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           data: expect.objectContaining({ isActive: false }),
         }),
       );
@@ -368,9 +385,7 @@ describe('BillingService — handleWebhook', () => {
       const { service } = await buildService(prisma);
       await service.handleWebhook(rawBody, 'sig_valid');
 
-      expect(
-        (prisma as ReturnType<typeof makePrismaMock>).tenant.update,
-      ).not.toHaveBeenCalled();
+      expect(prisma.tenant.update).not.toHaveBeenCalled();
     });
   });
 
@@ -387,9 +402,7 @@ describe('BillingService — handleWebhook', () => {
         service.handleWebhook(rawBody, 'sig_valid'),
       ).resolves.toBeUndefined();
 
-      expect(
-        (prisma as ReturnType<typeof makePrismaMock>).tenant.update,
-      ).not.toHaveBeenCalled();
+      expect(prisma.tenant.update).not.toHaveBeenCalled();
     });
   });
 });

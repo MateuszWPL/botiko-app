@@ -64,8 +64,11 @@ describe('LeadService.create — PII encryption', () => {
 
     await service.create(validDto);
 
-    const createCall = (prisma.lead.create as jest.Mock).mock.calls[0][0];
-    const { name, phone } = createCall.data as { name: string; phone: string };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const createCall = prisma.lead.create.mock.calls[0][0] as unknown as {
+      data: { name: string; phone: string };
+    };
+    const { name, phone } = createCall.data;
 
     // Muszą być stringiem hex iv:authTag:ciphertext
     const encryptedPattern = /^[0-9a-f]{32}:[0-9a-f]{32}:[0-9a-f]+$/;
@@ -79,8 +82,11 @@ describe('LeadService.create — PII encryption', () => {
 
     await service.create(validDto);
 
-    const createCall = (prisma.lead.create as jest.Mock).mock.calls[0][0];
-    const { name, phone } = createCall.data as { name: string; phone: string };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const createCall = prisma.lead.create.mock.calls[0][0] as unknown as {
+      data: { name: string; phone: string };
+    };
+    const { name, phone } = createCall.data;
 
     expect(name).not.toContain('Jan Kowalski');
     expect(phone).not.toContain('+48 600 123 456');
@@ -92,8 +98,11 @@ describe('LeadService.create — PII encryption', () => {
 
     await service.create({ ...validDto, message: 'Chcę umówić się na wizytę' });
 
-    const createCall = (prisma.lead.create as jest.Mock).mock.calls[0][0];
-    const { message } = createCall.data as { message: string };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const createCall = prisma.lead.create.mock.calls[0][0] as unknown as {
+      data: { message: string };
+    };
+    const { message } = createCall.data;
 
     expect(message).toMatch(/^[0-9a-f]{32}:[0-9a-f]{32}:[0-9a-f]+$/);
     expect(message).not.toContain('Chcę');
@@ -105,7 +114,10 @@ describe('LeadService.create — PII encryption', () => {
 
     await service.create(validDto);
 
-    const createCall = (prisma.lead.create as jest.Mock).mock.calls[0][0];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const createCall = prisma.lead.create.mock.calls[0][0] as unknown as {
+      data: { message: string | null };
+    };
     expect(createCall.data.message).toBeNull();
   });
 
@@ -123,7 +135,7 @@ describe('LeadService.findAll — deszyfrowanie PII', () => {
     const encryptedPhone = encryption.encrypt('+48 500 999 888');
 
     const prisma = buildPrismaMock();
-    (prisma.lead.findMany as jest.Mock).mockResolvedValue([
+    prisma.lead.findMany.mockResolvedValue([
       {
         id: 'lead-1',
         name: encryptedName,
@@ -145,7 +157,7 @@ describe('LeadService.findAll — deszyfrowanie PII', () => {
 
   it('zwraca "[encrypted]" zamiast rzucać wyjątku gdy dane uszkodzone', async () => {
     const prisma = buildPrismaMock();
-    (prisma.lead.findMany as jest.Mock).mockResolvedValue([
+    prisma.lead.findMany.mockResolvedValue([
       {
         id: 'lead-2',
         name: 'uszkodzone_dane_bez_dwukropkow',

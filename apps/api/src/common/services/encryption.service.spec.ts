@@ -20,8 +20,13 @@ describe('EncryptionService', () => {
       jest.doMock('../../config/env', () => ({
         env: { ENCRYPTION_KEY: 'abc123' },
       }));
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { EncryptionService: BadService } = require('./encryption.service');
+
+      /* eslint-disable @typescript-eslint/no-require-imports */
+      const { EncryptionService: BadService } =
+        require('./encryption.service') as {
+          EncryptionService: typeof EncryptionService;
+        };
+      /* eslint-enable @typescript-eslint/no-require-imports */
       expect(() => new BadService()).toThrow(
         'ENCRYPTION_KEY must be a valid 64-character hex string (32 bytes)',
       );

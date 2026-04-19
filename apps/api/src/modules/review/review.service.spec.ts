@@ -46,6 +46,7 @@ describe('ReviewService.create', () => {
 
     expect(prisma.review.create).toHaveBeenCalledWith(
       expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         data: expect.objectContaining({
           tenantId: 'tenant-1',
           rating: 5,
@@ -92,13 +93,14 @@ describe('ReviewService.create', () => {
 
   it('używa pustego stringa jako userName gdy tenant nie istnieje', async () => {
     const prisma = buildPrismaMock();
-    (prisma.tenant.findUnique as jest.Mock).mockResolvedValue(null);
+    prisma.tenant.findUnique.mockResolvedValue(null);
     const { service } = await buildService(prisma);
 
     await service.create('tenant-unknown', 'owner@example.com', { rating: 2 });
 
     expect(prisma.review.create).toHaveBeenCalledWith(
       expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         data: expect.objectContaining({ userName: '' }),
       }),
     );

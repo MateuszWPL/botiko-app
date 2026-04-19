@@ -16,33 +16,38 @@ describe('createLeadSchema — walidacja telefonu', () => {
     '+1 (555) 000-1234',
     '0048600123456',
   ])('akceptuje poprawny numer: "%s"', (phone) => {
-    expect(createLeadSchema.safeParse({ ...validBase, phone }).success).toBe(true);
+    expect(createLeadSchema.safeParse({ ...validBase, phone }).success).toBe(
+      true,
+    );
   });
 
-  it.each([
-    'nie-numer',
-    'abc',
-    '!!@@##',
-    'telefon: 600',
-  ])('odrzuca niepoprawny numer: "%s"', (phone) => {
-    const result = createLeadSchema.safeParse({ ...validBase, phone });
-    expect(result.success).toBe(false);
-  });
+  it.each(['nie-numer', 'abc', '!!@@##', 'telefon: 600'])(
+    'odrzuca niepoprawny numer: "%s"',
+    (phone) => {
+      const result = createLeadSchema.safeParse({ ...validBase, phone });
+      expect(result.success).toBe(false);
+    },
+  );
 
   it('odrzuca numer krótszy niż 7 znaków', () => {
-    expect(createLeadSchema.safeParse({ ...validBase, phone: '12345' }).success).toBe(false);
+    expect(
+      createLeadSchema.safeParse({ ...validBase, phone: '12345' }).success,
+    ).toBe(false);
   });
 
   it('odrzuca numer dłuższy niż 20 znaków', () => {
     expect(
-      createLeadSchema.safeParse({ ...validBase, phone: '1'.repeat(21) }).success,
+      createLeadSchema.safeParse({ ...validBase, phone: '1'.repeat(21) })
+        .success,
     ).toBe(false);
   });
 });
 
 describe('createLeadSchema — zgoda RODO', () => {
   it('akceptuje consentGiven: true', () => {
-    expect(createLeadSchema.safeParse({ ...validBase, consentGiven: true }).success).toBe(true);
+    expect(
+      createLeadSchema.safeParse({ ...validBase, consentGiven: true }).success,
+    ).toBe(true);
   });
 
   it('odrzuca consentGiven: false', () => {
@@ -52,6 +57,7 @@ describe('createLeadSchema — zgoda RODO', () => {
   });
 
   it('odrzuca brak pola consentGiven', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { consentGiven: _, ...withoutConsent } = validBase;
     expect(createLeadSchema.safeParse(withoutConsent).success).toBe(false);
   });
@@ -64,7 +70,8 @@ describe('createLeadSchema — pola opcjonalne', () => {
 
   it('odrzuca message dłuższy niż 1000 znaków', () => {
     expect(
-      createLeadSchema.safeParse({ ...validBase, message: 'x'.repeat(1001) }).success,
+      createLeadSchema.safeParse({ ...validBase, message: 'x'.repeat(1001) })
+        .success,
     ).toBe(false);
   });
 });
