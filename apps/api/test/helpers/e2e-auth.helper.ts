@@ -18,7 +18,8 @@ interface LoginResponse {
  * Registers a unique test user via the real API, logs them in, and returns
  * an access token + a cleanup function that removes all created DB/Supabase records.
  *
- * Requires auth.service to confirm emails in non-production (email_confirm: NODE_ENV !== 'production').
+ * auth.service auto-confirms emails for every registration (email_confirm: true),
+ * so no Supabase admin step is needed here.
  */
 export async function setupTestUser(
   app: INestApplication<Server>,
@@ -28,7 +29,7 @@ export async function setupTestUser(
 
   await request(app.getHttpServer())
     .post('/api/v1/auth/register')
-    .send({ email, password, companyName: 'E2E Test Co', industry: 'OTHER' })
+    .send({ email, password, websiteUrl: 'https://e2e-test.botiko.pl', industry: 'OTHER' })
     .expect(201);
 
   const loginRes = await request(app.getHttpServer())

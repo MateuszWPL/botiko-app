@@ -1,6 +1,7 @@
 import {
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   UseGuards,
@@ -15,6 +16,11 @@ import { TenantService } from './tenant.service';
 @UseGuards(AuthGuard, TenantGuard)
 export class TenantController {
   constructor(private readonly tenantService: TenantService) {}
+
+  @Get('me')
+  getMe(@CurrentTenant() tenantId: string) {
+    return this.tenantService.getMe(tenantId);
+  }
 
   // RODO: right to erasure — permanently deletes all tenant data
   @Delete()

@@ -19,6 +19,7 @@ interface ServiceItem {
 
 interface WizardData {
   companyName: string;
+  websiteUrl: string;
   phone: string;
   email: string;
   address: string;
@@ -33,6 +34,7 @@ interface WizardData {
 
 const DEFAULTS: WizardData = {
   companyName: '',
+  websiteUrl: '',
   phone: '',
   email: '',
   address: '',
@@ -412,7 +414,8 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
           name: data.botName,
           welcomeMsg: data.welcomeMsg,
           primaryColor: data.primaryColor,
-          allowedDomains: [],
+          // URL from signup is already `https://<host>` — drop it straight in.
+          allowedDomains: data.websiteUrl ? [data.websiteUrl] : [],
         }),
       });
 
@@ -609,6 +612,49 @@ export function SetupWizard({ isOpen, onClose }: SetupWizardProps) {
   useEffect(() => {
     setData(loadWizard());
   }, []);
+
+  // Pull websiteUrl + tenant name from registration so user doesn't retype
+  // them. Only fills blank fields — keeps whatever the user has already edited.
+  useEffect(() => {
+    if (!isOpen) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const supabase = createClient();
+        const { data: session } = await supabase.auth.getSession();
+        const token = session.session?.access_token;
+        if (!token) return;
+
+        const res = await fetch(`${API_URL}/api/v1/tenant/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) return;
+        const tenant = (await res.json()) as {
+          name: string;
+          websiteUrl: string | null;
+        };
+        if (cancelled) return;
+
+        setData((prev) => {
+          const patch: Partial<WizardData> = {};
+          if (!prev.websiteUrl && tenant.websiteUrl) {
+            patch.websiteUrl = tenant.websiteUrl;
+          }
+          if (!prev.companyName && tenant.name) {
+            patch.companyName = tenant.name;
+          }
+          if (Object.keys(patch).length === 0) return prev;
+          saveWizard(patch);
+          return { ...prev, ...patch };
+        });
+      } catch {
+        // Non-fatal — wizard still works, user just types the domain manually
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen]);
 
   const update = useCallback((patch: Partial<WizardData>) => {
     setData((prev) => {
