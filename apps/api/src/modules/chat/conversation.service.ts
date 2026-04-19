@@ -1,13 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 
+export type ConversationStatus = 'Aktywna' | 'Lead' | 'Zakończona';
+
 export interface ConversationSummary {
   id: string;
   botId: string;
   sessionId: string;
   messageCount: number;
   firstMessage: string | null;
+  lastMessage: string | null;
   createdAt: Date;
+  updatedAt: Date;
+  durationSeconds: number;
+  status: ConversationStatus;
+  leadName: string | null;
 }
 
 export interface ConversationDetail {
@@ -23,13 +30,44 @@ export interface ConversationDetail {
   }[];
 }
 
+interface FindAllOptions {
+  search?: string;
+  statusFilter?: ConversationStatus;
+  daysBack?: number;
+  limit?: number;
+}
+
 @Injectable()
 export class ConversationService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(tenantId: string): Promise<ConversationSummary[]> {
+  private getStatus(
+    messageCount: number,
+    leadExists: boolean,
+    createdAt: Date,
+  ): ConversationStatus {
+    if (leadExists) return 'Lead';
+    const daysSinceCreated = Math.floor(
+      (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24),
+    );
+    if (daysSinceCreated > 30) return 'Zakończona';
+    return 'Aktywna';
+  }
+
+  async findAll(
+    tenantId: string,
+    options: FindAllOptions = {},
+  ): Promise<ConversationSummary[]> {
+    const { search = '', statusFilter, daysBack = 90, limit = 100 } = options;
+
+    const dateFrom = new Date();
+    dateFrom.setDate(dateFrom.getDate() - daysBack);
+
     const conversations = await this.prisma.conversation.findMany({
-      where: { bot: { tenantId } },
+      where: {
+        bot: { tenantId },
+        createdAt: { gte: dateFrom },
+      },
       select: {
         id: true,
         botId: true,
@@ -37,24 +75,55 @@ export class ConversationService {
         createdAt: true,
         _count: { select: { messages: true } },
         messages: {
-          where: { role: 'USER' },
-          select: { content: true },
+          select: { content: true, role: true, createdAt: true },
           orderBy: { createdAt: 'asc' },
-          take: 1,
         },
       },
       orderBy: { createdAt: 'desc' },
-      take: 100,
+      take: limit,
     });
 
-    return conversations.map((c) => ({
-      id: c.id,
-      botId: c.botId,
-      sessionId: c.sessionId,
-      messageCount: c._count.messages,
-      firstMessage: c.messages[0]?.content ?? null,
-      createdAt: c.createdAt,
-    }));
+    return conversations
+      .map((c) => {
+        const userMessages = c.messages.filter((m) => m.role === 'USER');
+        const firstMsg = userMessages[0]?.content ?? null;
+        const lastMsg = c.messages[c.messages.length - 1]?.content ?? null;
+
+        const status = this.getStatus(c._count.messages, false, c.createdAt);
+        const durationSeconds =
+          userMessages.length > 0
+            ? Math.floor(
+                (new Date(c.messages[c.messages.length - 1]?.createdAt || c.createdAt).getTime() -
+                  new Date(userMessages[0].createdAt).getTime()) /
+                  1000,
+              )
+            : 0;
+
+        return {
+          id: c.id,
+          botId: c.botId,
+          sessionId: c.sessionId,
+          messageCount: c._count.messages,
+          firstMessage: firstMsg,
+          lastMessage: lastMsg,
+          createdAt: c.createdAt,
+          updatedAt: c.messages[c.messages.length - 1]?.createdAt || c.createdAt,
+          durationSeconds,
+          status,
+          leadName: null, // Will be populated from leads if schema extended
+        };
+      })
+      .filter((c) => {
+        if (statusFilter && c.status !== statusFilter) return false;
+        if (search) {
+          const searchLower = search.toLowerCase();
+          return (
+            c.firstMessage?.toLowerCase().includes(searchLower) ||
+            c.sessionId.toLowerCase().includes(searchLower)
+          );
+        }
+        return true;
+      });
   }
 
   async findById(
