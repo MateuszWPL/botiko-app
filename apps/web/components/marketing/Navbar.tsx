@@ -112,19 +112,8 @@ function BranzeDropdown({ scrolled }: { scrolled: boolean }) {
           zIndex: 100,
         }}
       >
-        {/* Arrow */}
-        <div style={{
-          position: 'absolute', top: -6, left: '50%', transform: 'translateX(-50%)',
-          width: 12, height: 6, overflow: 'hidden',
-        }}>
-          <div style={{
-            width: 12, height: 12,
-            background: '#fff', border: '1px solid #e2e8f0',
-            transform: 'rotate(45deg) translate(-4px, -4px)',
-          }} />
-        </div>
 
-        <div className="rounded-2xl bg-white shadow-xl border border-slate-100 overflow-hidden flex">
+<div className="rounded-2xl bg-white shadow-xl border border-slate-100 overflow-hidden flex">
           {/* ── Lewa: lista branż ── */}
           <div className="flex-1 p-2">
             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-3 pt-2 pb-1.5">Dla branży</p>
