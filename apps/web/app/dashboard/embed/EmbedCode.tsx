@@ -337,7 +337,7 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
   const steps = currentPlatform.steps(embedCode);
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-6xl">
       <style>{`
         @keyframes botiko-tab-in {
           from { opacity: 0; transform: translateY(6px); }

@@ -14,7 +14,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <TrialBanner />
         </Suspense>
         <main className="flex-1">
-          <div className="max-w-5xl mx-auto p-4 md:p-8 pt-18 md:pt-8">{children}</div>
+          <div className="mx-auto w-full max-w-[1600px] 2xl:max-w-[2000px] min-[2200px]:max-w-[2400px] min-[2800px]:max-w-[2600px] p-4 md:p-8 pt-18 md:pt-8">{children}</div>
         </main>
       </div>
       <Toaster

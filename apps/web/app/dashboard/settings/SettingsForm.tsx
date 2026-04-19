@@ -805,7 +805,7 @@ export function SettingsForm({ bot }: { bot: BotData }) {
   const handleCancel = () => setForm(initial);
 
   return (
-    <div className="max-w-5xl">
+    <div className="max-w-7xl 2xl:max-w-[1400px]">
       {/* Tabs */}
       <div className="flex border-b border-slate-200 mb-6">
         {TABS.map(({ id, label, icon: Icon }) => (
