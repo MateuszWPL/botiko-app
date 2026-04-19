@@ -14,6 +14,23 @@ export class TenantService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
+   * Returns the current tenant's profile — used by the dashboard to prefill
+   * setup wizard fields (e.g. allowedDomains from websiteUrl).
+   */
+  async getMe(tenantId: string): Promise<{
+    id: string;
+    name: string;
+    websiteUrl: string | null;
+    industry: string;
+  }> {
+    const tenant = await this.prisma.tenant.findUniqueOrThrow({
+      where: { id: tenantId },
+      select: { id: true, name: true, websiteUrl: true, industry: true },
+    });
+    return tenant;
+  }
+
+  /**
    * Permanently deletes all tenant data (RODO: right to erasure).
    * Order matters — FK constraints require child records deleted first.
    */

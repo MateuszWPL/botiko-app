@@ -82,7 +82,7 @@ export default function RegisterPage() {
   const [form, setForm] = useState({
     email: '',
     password: '',
-    companyName: '',
+    websiteUrl: '',
     industry: 'BEAUTY',
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -102,11 +102,13 @@ export default function RegisterPage() {
       });
 
       if (!res.ok) {
-        setError(
-          res.status === 409
-            ? 'Konto z tym adresem email już istnieje'
-            : 'Rejestracja nie powiodła się. Spróbuj ponownie.',
-        );
+        if (res.status === 409) {
+          setError('Konto z tym adresem email już istnieje');
+        } else if (res.status === 400) {
+          setError('Sprawdź poprawność adresu WWW i pozostałych pól.');
+        } else {
+          setError('Rejestracja nie powiodła się. Spróbuj ponownie.');
+        }
         return;
       }
 
@@ -130,16 +132,19 @@ export default function RegisterPage() {
 
           <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Nazwa firmy</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Adres strony WWW</label>
               <input
                 type="text"
-                value={form.companyName}
-                onChange={(e) => setForm((f) => ({ ...f, companyName: e.target.value }))}
+                inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                value={form.websiteUrl}
+                onChange={(e) => setForm((f) => ({ ...f, websiteUrl: e.target.value }))}
                 required
-                minLength={2}
-                placeholder="Salon Piękności Ania"
+                placeholder="salonbeauty.pl"
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
               />
+              <p className="text-xs text-slate-400 mt-1.5">Domena, na której bot będzie działał — automatycznie dodamy ją do listy dozwolonych</p>
             </div>
 
             <div>

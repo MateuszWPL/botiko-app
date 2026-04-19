@@ -29,7 +29,7 @@ describe('Auth (e2e)', () => {
         .send({
           email: 'not-an-email',
           password: 'TestPass123!',
-          companyName: 'Test Co',
+          websiteUrl: 'https://testco.pl',
           industry: 'OTHER',
         })
         .expect(400);
@@ -41,7 +41,7 @@ describe('Auth (e2e)', () => {
         .send({
           email: 'valid@test.pl',
           password: 'Short1!',
-          companyName: 'Test Co',
+          websiteUrl: 'https://testco.pl',
           industry: 'OTHER',
         })
         .expect(400);
@@ -53,7 +53,7 @@ describe('Auth (e2e)', () => {
         .send({
           email: 'valid@test.pl',
           password: 'alllowercase123!',
-          companyName: 'Test Co',
+          websiteUrl: 'https://testco.pl',
           industry: 'OTHER',
         })
         .expect(400);
@@ -65,19 +65,31 @@ describe('Auth (e2e)', () => {
         .send({
           email: 'valid@test.pl',
           password: 'NoDigitsHere!!',
-          companyName: 'Test Co',
+          websiteUrl: 'https://testco.pl',
           industry: 'OTHER',
         })
         .expect(400);
     });
 
-    it('400 — company name too short', () => {
+    it('400 — invalid website URL', () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/register')
         .send({
           email: 'valid@test.pl',
           password: 'TestPass123!',
-          companyName: 'X',
+          websiteUrl: 'not a url',
+          industry: 'OTHER',
+        })
+        .expect(400);
+    });
+
+    it('400 — website URL without TLD', () => {
+      return request(app.getHttpServer())
+        .post('/api/v1/auth/register')
+        .send({
+          email: 'valid@test.pl',
+          password: 'TestPass123!',
+          websiteUrl: 'localhost',
           industry: 'OTHER',
         })
         .expect(400);
@@ -89,7 +101,7 @@ describe('Auth (e2e)', () => {
         .send({
           email: 'valid@test.pl',
           password: 'TestPass123!',
-          companyName: 'Test Co',
+          websiteUrl: 'https://testco.pl',
           industry: 'INVALID_INDUSTRY',
         })
         .expect(400);
