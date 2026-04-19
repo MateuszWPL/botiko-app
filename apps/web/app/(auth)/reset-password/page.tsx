@@ -1,48 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '../../../lib/supabase';
 import { AuthLeftPanel } from '../../../components/auth/AuthLeftPanel';
 
-type Stage = 'loading' | 'form' | 'success' | 'invalid';
-
 export default function ResetPasswordPage() {
   const router = useRouter();
-  const [stage, setStage] = useState<Stage>('loading');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // Supabase sends tokens in the URL hash for recovery flow:
-    // /reset-password#access_token=...&refresh_token=...&type=recovery
-    const hash = window.location.hash.slice(1);
-    const params = new URLSearchParams(hash);
-    const type = params.get('type');
-    const accessToken = params.get('access_token');
-    const refreshToken = params.get('refresh_token');
-
-    if (type !== 'recovery' || !accessToken || !refreshToken) {
-      setStage('invalid');
-      return;
-    }
-
-    const supabase = createClient();
-    supabase.auth
-      .setSession({ access_token: accessToken, refresh_token: refreshToken })
-      .then(({ error: err }) => {
-        if (err) {
-          setStage('invalid');
-        } else {
-          setStage('form');
-        }
-      });
-  }, []);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,12 +34,12 @@ export default function ResetPasswordPage() {
     const { error: updateError } = await supabase.auth.updateUser({ password });
 
     if (updateError) {
-      setError('Nie udało się zmienić hasła. Spróbuj ponownie.');
+      setError('Nie udało się zmienić hasła. Link mógł wygasnąć — wyślij nowy.');
       setLoading(false);
       return;
     }
 
-    setStage('success');
+    setSuccess(true);
     setTimeout(() => router.push('/dashboard/overview'), 2500);
   };
 
@@ -81,55 +53,17 @@ export default function ResetPasswordPage() {
             <span className="font-bold text-lg text-slate-900">Botiko<span className="text-brand">.pl</span></span>
           </Link>
 
-          {stage === 'loading' && (
-            <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="h-12 bg-slate-100 rounded-xl animate-pulse" />
-              ))}
-            </div>
-          )}
-
-          {stage === 'invalid' && (
+          {success ? (
             <>
-              <div className="mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 flex items-center justify-center mb-4">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="15" y1="9" x2="9" y2="15"/>
-                    <line x1="9" y1="9" x2="15" y2="15"/>
-                  </svg>
-                </div>
-                <h1 className="text-2xl font-extrabold text-slate-900">Link wygasł</h1>
-                <p className="text-slate-500 text-sm mt-2 leading-relaxed">
-                  Ten link do resetowania hasła jest nieważny lub już wygasł. Wyślij nowy.
-                </p>
+              <div className="w-12 h-12 rounded-2xl bg-green-50 border border-green-200 flex items-center justify-center mb-4">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
               </div>
-              <Link
-                href="/forgot-password"
-                className="w-full py-3.5 rounded-xl bg-brand text-white font-bold text-sm hover:bg-brand-dark transition-colors text-center"
-              >
-                Wyślij nowy link
-              </Link>
+              <h1 className="text-2xl font-extrabold text-slate-900 mb-2">Hasło zmienione</h1>
+              <p className="text-slate-500 text-sm">Za chwilę przeniesiemy Cię do dashboardu.</p>
             </>
-          )}
-
-          {stage === 'success' && (
-            <>
-              <div className="mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-green-50 border border-green-200 flex items-center justify-center mb-4">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                </div>
-                <h1 className="text-2xl font-extrabold text-slate-900">Hasło zmienione</h1>
-                <p className="text-slate-500 text-sm mt-2">
-                  Za chwilę przeniesiemy Cię do dashboardu.
-                </p>
-              </div>
-            </>
-          )}
-
-          {stage === 'form' && (
+          ) : (
             <>
               <div className="mb-8">
                 <h1 className="text-2xl font-extrabold text-slate-900">Nowe hasło</h1>
@@ -191,6 +125,13 @@ export default function ResetPasswordPage() {
                 >
                   {loading ? 'Zapisuję...' : 'Ustaw nowe hasło'}
                 </button>
+
+                <Link
+                  href="/forgot-password"
+                  className="block text-center text-sm text-slate-500 hover:text-slate-700 transition-colors"
+                >
+                  Wyślij nowy link reset
+                </Link>
               </form>
             </>
           )}
