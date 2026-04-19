@@ -40,7 +40,7 @@ Klientka: "Ile kosztuje botox?"
 Bot: "400 zł, efekty 3 tygodnie. Link do rezerwacji w Booksy: [tutaj]."
 
 Klientka: "Czy mogę jutro?"
-Bot: "Sprawdzam dostępność... Masz 14:00 lub 16:30. Zarezerwować w Booksy? [link]"
+Bot: "Napisz do nas przez Booksy lub zostaw numer — oddzwonimy i sprawdzimy dostępny termin! [link do Booksy]"
 
 **Czego bot NIE robi:**
 - Nie bierze płatności (Booksy to robi)
@@ -52,20 +52,20 @@ Bot: "Sprawdzam dostępność... Masz 14:00 lub 16:30. Zarezerwować w Booksy? [
 ## Razem: przepływ idealny
 
 ```
-Klientka na Messengerze (20:00):
+Klientka na stronie www (20:00):
 "Ile kosztuje manicure hybrydowy u was?"
 
 Bot (2 sekundy):
 "120 zł, 90 minut. 
-Dostępne jutro: 14:00, 16:30, 18:00.
-Zarezerwować w naszym systemie? [link do Booksy]"
+Zarezerwuj termin w Booksy: [link]
+Lub zostaw numer — oddzwonimy jutro rano!"
 
 Klientka:
-Klika link → Booksy → wybiera 16:30 → rezerwacja potwierdzana
+Klika link → Booksy → wybiera termin → rezerwacja potwierdzana
 
 Ty:
 Dostajesz rezerwację w Booksy (jak zawsze)
-PLUS: w nocie bota widzisz, że klientka najpierw miała pytanie ("ile kosztuje")
+PLUS: w panelu Botiko widzisz, że klientka najpierw miała pytanie ("ile kosztuje")
 PLUS: klientka już wie co ją czeka (zmniejsza no-show)
 ```
 
@@ -94,27 +94,23 @@ Klientka pisze o 21:00: "Ile kosztuje manicure?"
 Klientka pisze o 21:00: "Ile kosztuje manicure?"
 
 **Co się dzieje:**
-- 21:00: Bot: "120 zł, 90 minut. Zarezerwować?"
-- Klientka: "Jasne!"
-- Bot: "Super! [Link do Booksy]" (lub: "Zapisuję — będziesz o 14:00 jutro?")
-- Klientka: "OK, do jutro!"
+- 21:00: Bot: "120 zł, 90 minut. Zarezerwuj w Booksy: [link] — lub zostaw numer, oddzwonimy!"
+- Klientka zostawia numer
+- Ty rano: zadzwaniasz, umawiasz termin
 
-**Rezultat:** Rezerwacja + zadowolona klientka
+**Rezultat:** Ciepły lead gotowy do oddzwonienia zamiast utraconego pytania
 
-**Problem:** Jeśli bot linkuje do Booksy — niektóre klientki tego nie kliknę (zbyt wiele kliknięć). Idealne rozwiązanie = integracja.
-
-### Scenariusz C: Booksy + Bot (razem)
+### Scenariusz C: Booksy + Bot (razem — przepływ optymalny)
 
 Klientka pisze o 21:00: "Ile kosztuje manicure?"
 
 **Co się dzieje:**
-- 21:00: Bot: "120 zł, 90 minut. Dostępne jutro: 14:00, 16:30, 18:00. Co wybrać?"
-- Klientka: "16:30"
-- Bot: "Perfect! Rezerwuję na 16:30 w Booksy — gotowe! SMS z potwierdzeniem pójdzie za chwilę."
-- 21:01: Klientka dostaje SMS z Booksy: "Rezerwacja potwierdzana!"
-- Ty dostajesz rezerwację w Booksy + notę w bocie, że klientka miała pytanie
+- 21:00: Bot: "120 zł, 90 minut. Zarezerwuj termin w Booksy: [link]. Możesz też zostawić numer — oddzwonimy rano i pomożemy wybrać termin!"
+- Klientka klika link → Booksy → wybiera termin samodzielnie
+- 21:01: Klientka dostaje SMS z Booksy z potwierdzeniem
+- Ty dostajesz rezerwację w Booksy + notę w panelu Botiko, że klientka najpierw pytała o cenę
 
-**Rezultat:** Rezerwacja + dane o tym, jakie pytania klientki zadają + wyższa szansa, że klientka przyjdzie
+**Rezultat:** Rezerwacja + dane o tym, jakie pytania zadają klientki + wyższa szansa na przyjście (bo klientka wie czego się spodziewać)
 
 ## Czemu to ma znaczenie
 
@@ -133,29 +129,29 @@ Te dane dostajesz od bota, nigdy z Booksy.
 
 ## Jak je połączyć w praktyce
 
-### Krok 1: Bot ma informacje z Booksy
-Kiedy konfigurujesz bota, wpychasz dane z Booksy:
-- Usługi i ceny (z Booksy)
-- Godziny pracy (z Booksy)
-- Informacje o terapeuta/specjalistce (z Booksy)
+### Krok 1: Wpisz dane z Booksy do bazy wiedzy bota
+Kiedy konfigurujesz bota w Botiko, przepisz dane z Booksy:
+- Usługi i ceny
+- Godziny pracy
+- Specjalizacje i informacje o zespole
 
-Bot czyta te dane.
+Bot odpowiada na pytania na podstawie tej bazy — jest spójny z tym co widzą klientki na Booksy.
 
 ### Krok 2: Bot odsyła do Booksy
-W odpowiedzi bota jest link: "Zarezerwować w Booksy" lub "Zarezerwować online".
+W odpowiedzi bota dodaj link: "Zarezerwuj w Booksy" lub "Zarezerwuj online: [link]".
 
-Klientka klika → Booksy → rezerwacja.
+Klientka klika → Booksy → rezerwuje samodzielnie.
 
-Ty dostajesz rezerwację jak zawsze w Booksy, ale klientka już ma odpowiedź na pytanie.
+Ty dostajesz rezerwację jak zawsze w Booksy, ale klientka weszła przygotowana — już wie, ile kosztuje, ile trwa i czego się spodziewać.
 
-### Krok 3: Bot tworzy leady, które Booksy ignoruje
+### Krok 3: Bot zbiera leady, które Booksy ignoruje
 Klientka pyta, ale nie rezerwuje: "Ile kosztuje? Jeszcze się zastanawiam."
 
-Bot: "OK, zostawiam Ci swój numer — zadzwonimy jutro o 10:00, żeby potwierdzić. Zgoda?"
+Bot: "Oczywiście! Zostaw numer telefonu — zadzwonimy jutro i pomożemy wybrać najlepszą opcję dla Ciebie 😊"
 
 Ona: "Jasne, mam: 512345678"
 
-Ty: dostajesz "ciepłą" klientkę, która ma pytanie, ale jeszcze się wahает. **To lead, który Booksy nigdy by nie zbierał.**
+Ty: dostajesz "ciepłą" klientkę, która ma pytanie, ale jeszcze się waha. **To lead, który Booksy nigdy by nie zebrał.**
 
 ## Błędy, których nie chcesz popełnić
 
@@ -173,14 +169,12 @@ Problem: Booksy czat działa tylko na stronie Booksy, a większość klientek pi
 
 **Rozwiązanie:** Bot na wszystkich kanałach, Booksy dla rezerwacji.
 
-### Błąd 3: Bot bez integracji z Booksy
-Bot pyta "Ile czasu potrzebujemy?" — ale sąd to wie? Z Booksy.
+### Błąd 3: Sprzeczne informacje w bocie i Booksy
+W opisach usług na Booksy masz inną cenę niż w bazie wiedzy bota.
 
-Bot powinien czytać długość usługi z Booksy, aby dokładnie znać dostępność.
+Klientka widzi "120 zł" od bota → na Booksy jest "140 zł" → frustracja i rezygnacja.
 
-Bez tego — bot podaje dostępność, która wcale nie istnieje.
-
-**Rozwiązanie:** Integracja bot ↔ Booksy powinna być integralną częścią setupu.
+**Rozwiązanie:** Raz na jakiś czas sprawdź spójność: ceny i godziny w bazie wiedzy bota muszą zgadzać się z tym, co masz w Booksy i na stronie.
 
 ## Koszt: Booksy vs Bot
 
@@ -204,17 +198,17 @@ Razem: 149 zł/mies, efekt = 100% pokrycie obsługi klienta (od pytania do rezer
 
 ## FAQ
 
-**P: Czy bot może brać rezerwacje jak Booksy?**
-O: Nie w MVP. Bot może powiedzieć "zarezerwować?" i klientka linkuje do Booksy. Integracja pełna (bot rezerwuje bezpośrednio) to roadmap Q3 2026.
+**P: Czy bot może sam rezerwować termin jak Booksy?**
+O: Nie — bot nie rezerwuje bezpośrednio. Zbiera informacje i kontakt od klientki, a następnie odsyła ją do Booksy lub zostawia Ci lead do oddzwonienia. To celowe: Ty zarządzasz kalendarzem, bot zarządza pytaniami.
 
 **P: Czy bot będzie wysyłać SMS jak Booksy?**
-O: Bot wysyła wiadomości przez czat, SMS wysyła Booksy (lub inny system). Bot informuje "SMS pójdzie za chwilę".
+O: Nie — SMS z potwierdzeniem wysyła Booksy po rezerwacji. Bot prowadzi rozmowę na stronie i zbiera kontakt.
 
 **P: A jeśli nie mam Booksy?**
-O: Bot sprawdzi dostępność ręczną — "Sprawdzę w kalendarzu" → Ty odpowiadasz w dashboardzie bota. To wolniejsze, ale działa.
+O: Bot zbiera kontakt i odsyła do Twojego telefonu lub innego systemu. Możesz podać link do Google Calendar, Calendly lub po prostu numer telefonu — bot dostosuje komunikat do Twoich preferencji.
 
-**P: Jaki system rezerwacji integrujesz?**
-O: Booksy, Google Calendar, Calendly. Inne na request.
+**P: Jaki system rezerwacji obsługujesz?**
+O: Bot może linkować do dowolnego systemu — Booksy, Calendly, Google Calendar, Restaumatic, numeru telefonu. Bot nie integruje się bezpośrednio z żadnym z nich, ale odsyła klientkę jednym jasnym linkiem.
 
 ---
 

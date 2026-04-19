@@ -32,7 +32,7 @@ export default function CtaBanner() {
                 <span style={{ color: '#a5b4fc' }}>nawet kiedy śpisz.</span>
               </h2>
               <p className="text-indigo-200 text-lg mb-8 max-w-2xl mx-auto">
-                Dołącz do programu pilotażowego i zacznij zbierać leady, gdy inni śpią.
+                Zacznij zbierać leady, gdy inni śpią.
                 14 dni za darmo, bez karty kredytowej, bez umowy.
               </p>
 
