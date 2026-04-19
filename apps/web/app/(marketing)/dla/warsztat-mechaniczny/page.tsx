@@ -113,7 +113,7 @@ const SAMPLE_QUESTIONS = [
   },
   {
     q: 'Czy macie wolne w tym tygodniu na wymianę opon? 205/55 R16.',
-    a: 'W tym tygodniu mamy kilka wolnych okienek (wtorek–czwartek). Wymiana 4 opon na gotowych felgach to ok. 80 zł (20 zł/szt.). Przechowujemy też opony — 120 zł/sezon. Zostaw numer — zadzwonimy z dokładnym terminem, albo zarezerwuj przez Booksy.',
+    a: 'Wymiana 4 opon na gotowych felgach to ok. 80 zł (20 zł/szt.). Przechowujemy też opony — 120 zł/sezon. Wolnych terminów nie znam na bieżąco — zostaw numer, zadzwonimy z dostępnymi okienkami, albo zarezerwuj przez Booksy.',
   },
   {
     q: 'Coś stuka z przodu przy skręcaniu. Co to może być?',
