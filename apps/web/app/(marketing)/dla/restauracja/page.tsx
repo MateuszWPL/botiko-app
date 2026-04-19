@@ -3,14 +3,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Bot dla restauracji — odpowiada gościom 24/7 i zbiera rezerwacje',
+  title: 'Bot dla restauracji — odpowiada gościom 24/7 i zbiera leady',
   description:
-    'Botiko dla restauracji i bistro: menu, godziny, rezerwacje stolika, catering, eventy. Bot odpowiada o 23:00, zbiera telefon i odsyła do systemu rezerwacji. 149 zł/mies., 14 dni za darmo.',
+    'Botiko dla restauracji i bistro: menu, godziny, eventy, catering. Bot odpowiada o 23:00, zbiera telefon i odsyła do Booksy lub Twojego systemu rezerwacji. 149 zł/mies., 14 dni za darmo.',
   alternates: { canonical: 'https://botiko.pl/dla/restauracja' },
   openGraph: {
     title: 'Bot dla restauracji — odpowiada gościom 24/7',
     description:
-      'Goście piszą wieczorem. Bot odpowiada, zbiera kontakt i odsyła do rezerwacji stolika. 149 zł/mies.',
+      'Goście piszą wieczorem. Bot odpowiada, zbiera kontakt i odsyła do Booksy lub Twojego systemu rezerwacji. 149 zł/mies.',
     url: 'https://botiko.pl/dla/restauracja',
     type: 'website',
   },
@@ -102,7 +102,7 @@ const PAIN_POINTS = [
 const FEATURES = [
   'Opisuje dania — składniki, alergeny, opcje wegetariańskie i wegańskie',
   'Zna godziny otwarcia, lokalizację, parking i dojazd komunikacją',
-  'Zbiera rezerwację wstępną (data, godzina, liczba osób) + telefon do potwierdzenia',
+  'Zbiera imię, telefon i preferencje gościa — odsyła do Booksy lub Twojego systemu rezerwacji',
   'Odpowiada na pytania o eventy, urodziny, komunie i catering firmowy',
   'Informuje o aktualnych promocjach, menu dnia i specjałach sezonu',
   'Opisuje politykę wobec alergenów i diety bezglutenowej',
@@ -113,7 +113,7 @@ const FEATURES = [
 const SAMPLE_QUESTIONS = [
   {
     q: 'Czy macie opcję bezglutenową? Moja córka ma celiakię.',
-    a: 'Tak, przygotowujemy dania bezglutenowe — mamy oznaczenia przy każdym daniu w menu. Makarony i pizza dostępne w wersji bezglutenowej (+5 zł). Kucharz jest poinformowany o krzyżowym zanieczyszczeniu. Chcecie zarezerwować stolik? Zostaw numer — potwierdzimy i poinformujemy kucharkę o alergiach.',
+    a: 'Tak, przygotowujemy dania bezglutenowe — mamy oznaczenia przy każdym daniu w menu. Makarony i pizza dostępne w wersji bezglutenowej (+5 zł). Kucharz jest poinformowany o krzyżowym zanieczyszczeniu. Chcesz zarezerwować stolik? Zostaw numer — oddzwonimy i poinformujemy kucharkę o alergiach, albo od razu zarezerwuj przez Booksy.',
   },
   {
     q: 'Chcemy zorganizować urodziny dla 25 osób w sobotę. Czy to możliwe?',
@@ -121,14 +121,14 @@ const SAMPLE_QUESTIONS = [
   },
   {
     q: 'Jakie są godziny otwarcia w niedzielę? I czy jest parking?',
-    a: 'W niedzielę pracujemy 12:00–21:00 (kuchnia do 20:30). Parking bezpłatny na 20 miejsc przy wejściu od ul. Kwiatowej. Jeśli parking zajęty — płatny parking miejski 50 m dalej. Rezerwujesz stolik na niedzielę?',
+    a: 'W niedzielę pracujemy 12:00–21:00 (kuchnia do 20:30). Parking bezpłatny na 20 miejsc przy wejściu od ul. Kwiatowej. Jeśli parking zajęty — płatny parking miejski 50 m dalej. Planujesz przyjść w niedzielę? Zostaw numer albo zarezerwuj stolik przez Booksy.',
   },
 ];
 
 const ROI_ROWS = [
   { clients: 1, revenue: 300, note: 'Stolik dla 4 osób, kolacja' },
-  { clients: 3, revenue: 720, note: '3 rezerwacje weekendowe' },
-  { clients: 5, revenue: 1350, note: 'Regularne rezerwacje + jeden event' },
+  { clients: 3, revenue: 720, note: '3 leady weekendowe → Booksy' },
+  { clients: 5, revenue: 1350, note: 'Regularni goście + jeden event' },
   { clients: 1, revenue: 2500, note: '1 event urodzinowy 25 os.' },
 ] as const;
 
@@ -145,7 +145,7 @@ const TRUST_POINTS = [
   },
   {
     title: 'Wstępna rezerwacja, nie booking system',
-    text: 'Bot zbiera datę, godzinę i liczbę osób, po czym odsyła do Twojego systemu (Restaumatic, OpenTable, telefon). Ty masz kontrolę nad stolikami — bot nie blokuje miejsc.',
+    text: 'Bot zbiera preferencje i kontakt, po czym odsyła do Booksy, Restaumatic, OpenTable lub Twojego numeru telefonu. Ty masz kontrolę nad stolikami — bot nie blokuje miejsc.',
     svg: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -262,7 +262,7 @@ export default function RestaurantLandingPage() {
 
           <p className="text-orange-100 text-lg leading-relaxed max-w-xl mb-8">
             Botiko zna Twoje menu, godziny i politykę alergenów. Odpowiada gościom kiedy serwis pędzi albo lokal jest zamknięty —
-            i <strong className="text-white">zbiera kontakt do potwierdzenia rezerwacji rano</strong>.
+            i <strong className="text-white">zbiera kontakt, odsyłając do Booksy lub Twojego systemu</strong>.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 mb-10 items-stretch sm:items-center">
@@ -402,7 +402,7 @@ export default function RestaurantLandingPage() {
                 <span style={{ color: '#c2410c' }}>w jednym narzędziu</span>
               </h2>
               <p className="text-slate-500 leading-relaxed mb-6">
-                Od pytania o alergen, przez wstępną rezerwację stolika, po zapytanie o event dla 40 osób.
+                Od pytania o alergen, przez zebranie kontaktu i odesłanie do Booksy, po zapytanie o event dla 40 osób.
                 Bot prowadzi rozmowę i zbiera wszystko, czego potrzebujesz do oddzwonienia.
               </p>
               <div
@@ -515,10 +515,10 @@ export default function RestaurantLandingPage() {
               Zwrot z inwestycji
             </p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text">
-              Ile rezerwacji miesięcznie = Botiko się zwraca?
+              Ilu gości miesięcznie = Botiko się zwraca?
             </h2>
             <p className="mt-3 text-slate-500">
-              Koszt Botiko to <strong>149 zł/mies</strong>. Jedna potwierdzna rezerwacja stolika dla rodziny zwraca cały koszt.
+              Koszt Botiko to <strong>149 zł/mies</strong>. Jeden lead z wieczoru, który oddzwonisz rano, zwraca cały koszt.
             </p>
           </div>
 
@@ -526,7 +526,7 @@ export default function RestaurantLandingPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ background: '#FFF7ED' }} className="text-left">
-                  <th className="px-5 py-3 font-semibold text-slate-700">Nowe rezerwacje / mies.</th>
+                  <th className="px-5 py-3 font-semibold text-slate-700">Nowi goście / mies.</th>
                   <th className="px-5 py-3 font-semibold text-slate-700">Przychód</th>
                   <th className="px-5 py-3 font-semibold text-slate-700">Scenariusz</th>
                   <th className="px-5 py-3 font-semibold text-slate-700 text-right">Zysk netto</th>
@@ -616,7 +616,7 @@ export default function RestaurantLandingPage() {
               ['Odpowiedź w środku serwisu', true, false],
               ['Zna skład każdego dania', true, false],
               ['Obsługuje zapytania eventowe', true, false],
-              ['Zbiera kontakt do rezerwacji', true, false],
+              ['Zbiera kontakt, odsyła do Booksy', true, false],
               ['Odpowiada na pytania o alergeny', true, false],
               ['Koszt miesięczny', '149 zł', 'Twój czas'],
             ].map(([label, yes, no], i) => (
@@ -683,7 +683,7 @@ export default function RestaurantLandingPage() {
             {[
               {
                 q: 'Czy bot działa z moim systemem rezerwacji (Restaumatic, OpenTable)?',
-                a: 'Bot nie integruje się bezpośrednio z systemami rezerwacji — zbiera dane kontaktowe i preferencje gościa, a następnie odsyła do Twojego linku rezerwacyjnego lub numeru telefonu. Ty potwierdzasz rezerwację i zarządzasz stolikami.',
+                a: 'Bot nie integruje się bezpośrednio z systemami rezerwacji — zbiera dane kontaktowe i preferencje gościa, a następnie odsyła do Booksy, Restaumatic lub Twojego numeru telefonu. Ty potwierdzasz i zarządzasz stolikami.',
               },
               {
                 q: 'Czy bot może odpowiadać na pytania o alergeny i diety specjalne?',

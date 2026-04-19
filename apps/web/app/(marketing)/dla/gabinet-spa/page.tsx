@@ -5,12 +5,12 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Bot dla gabinetu SPA — odpowiada klientom 24/7 i zbiera leady',
   description:
-    'Botiko dla gabinetów SPA i wellness: masaż, zabiegi na twarz, aromaterapia, flotacja. Bot odpowiada o 22:00, zbiera telefon i odsyła do rezerwacji. 149 zł/mies., 14 dni za darmo.',
+    'Botiko dla gabinetów SPA i wellness: masaż, zabiegi na twarz, aromaterapia. Bot odpowiada o 22:00, zbiera telefon i odsyła do Booksy lub Calendly. 149 zł/mies., 14 dni za darmo.',
   alternates: { canonical: 'https://botiko.pl/dla/gabinet-spa' },
   openGraph: {
     title: 'Bot dla gabinetu SPA — odpowiada klientom 24/7',
     description:
-      'Klienci piszą o 22:00. Bot odpowiada, zbiera telefon i odsyła do rezerwacji. 149 zł/mies.',
+      'Klienci piszą o 22:00. Bot odpowiada, zbiera telefon i odsyła do Booksy lub Calendly. 149 zł/mies.',
     url: 'https://botiko.pl/dla/gabinet-spa',
     type: 'website',
   },
@@ -104,7 +104,7 @@ const FEATURES = [
   'Zna cały cennik: masaże, zabiegi na twarz, peelingi, zabiegi ciała, pary',
   'Poleca odpowiedni zabieg zależnie od potrzeby (relaks, ból pleców, odnowa)',
   'Promuje pakiety i vouchery prezentowe w odpowiednim momencie rozmowy',
-  'Zbiera imię i telefon — oddzwaniasz i zamykasz rezerwację w 2 minuty',
+  'Zbiera imię i telefon — odsyła do Booksy lub Calendly, Ty potwierdzasz termin',
   'Informuje o godzinach otwarcia, lokalizacji i sposobie dojazdu / parkowania',
   'Odpowiada na FAQ o przeciwwskazaniach (ciąża, alergie, schorzenia)',
   'Widget w kolorystyce Twojego SPA — spokojny, elegancki, niedyskretny',
@@ -113,15 +113,15 @@ const FEATURES = [
 const SAMPLE_QUESTIONS = [
   {
     q: 'Jaka różnica między masażem klasycznym a gorącymi kamieniami?',
-    a: 'Masaż klasyczny (90 min, 220 zł) rozluźnia napięte mięśnie rękami — świetny na codzienny stres. Gorące kamienie (75 min, 260 zł) działają głębiej: ciepło bazaltowych kamieni rozpuszcza napięcia, które trudno osiągnąć dłońmi. Przy bólach pleców i karku polecam kamienie. Chcesz się umówić? Zostaw numer — zadzwonimy z wolnymi terminami.',
+    a: 'Masaż klasyczny (90 min, 220 zł) rozluźnia napięte mięśnie rękami — świetny na codzienny stres. Gorące kamienie (75 min, 260 zł) działają głębiej: ciepło bazaltowych kamieni rozpuszcza napięcia, które trudno osiągnąć dłońmi. Przy bólach pleców i karku polecam kamienie. Chcesz się umówić? Zostaw numer albo zarezerwuj od razu przez Booksy — link na górze strony.',
   },
   {
     q: 'Czy macie coś specjalnego dla pary na rocznicę?',
-    a: 'Tak! Pakiet dla dwojga „Chwila tylko dla Was" to 2× masaż relaksacyjny w jednym gabinecie (90 min), lampka prosecco i olejki aromaterapeutyczne do wyboru — 480 zł za parę. Dostępny też jako voucher prezentowy (przesyłamy PDF). Chcesz zarezerwować konkretny termin albo kupić voucher? Zostaw kontakt — oddzwonimy dzisiaj.',
+    a: 'Tak! Pakiet dla dwojga „Chwila tylko dla Was" to 2× masaż relaksacyjny w jednym gabinecie (90 min), lampka prosecco i olejki aromaterapeutyczne do wyboru — 480 zł za parę. Dostępny też jako voucher prezentowy (przesyłamy PDF). Chcesz zarezerwować? Zostaw kontakt — oddzwonimy, albo zarezerwuj bezpośrednio przez Booksy.',
   },
   {
     q: 'Czy mogę przyjść na masaż będąc w ciąży?',
-    a: 'Oferujemy masaż prenatalny specjalnie dla przyszłych mam (od 2. trymestru). Wykonują go terapeuci z certyfikatem — 80 min, 210 zł. Masaż klasyczny i gorące kamienie w ciąży są przeciwwskazane. Chcesz umówić termin? Zostaw numer, a nasz terapeuta oddzwoni i odpowie na dodatkowe pytania.',
+    a: 'Oferujemy masaż prenatalny specjalnie dla przyszłych mam (od 2. trymestru). Wykonują go terapeuci z certyfikatem — 80 min, 210 zł. Masaż klasyczny i gorące kamienie w ciąży są przeciwwskazane. Zostaw numer — terapeuta oddzwoni i odpowie na dodatkowe pytania, a termin umówisz przez Booksy.',
   },
 ];
 
@@ -690,7 +690,7 @@ export default function SpaLandingPage() {
             {[
               {
                 q: 'Czy bot działa z moim systemem rezerwacji (Booksy, Calendly)?',
-                a: 'Bot nie łączy się bezpośrednio z systemem rezerwacji — zamiast tego zbiera dane kontaktowe klienta i odsyła go do Twojego linku rezerwacyjnego. Ty decydujesz, gdzie przyjmujesz zapisy.',
+                a: 'Bot nie łączy się bezpośrednio z systemem rezerwacji — zbiera dane kontaktowe klienta i odsyła go do Booksy, Calendly lub Twojego numeru telefonu. Ty decydujesz, gdzie przyjmujesz zapisy i masz pełną kontrolę nad kalendarzem.',
               },
               {
                 q: 'Co jeśli klient zapyta o coś, czego bot nie wie?',
