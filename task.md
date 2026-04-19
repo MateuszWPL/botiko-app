@@ -453,25 +453,164 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 ### 1A.7 — Testy Automatyczne (minimum przed deploy)
 
 > Nie musimy testować wszystkiego — testujemy to co nie ma szans działać jeśli się posypie.
+> Zaktualizowane 2026-04-19 o nowe funkcje: sanitizer, feedback, PKCE, widget error handling, landing pages, security P0-P3.
 
 #### Unit testy API (`apps/api`)
-- [ ] `ChatService`: test fallback gdy brak chunków
-- [ ] `ChatService`: test że `checkPlanLimit()` blokuje gdy `isActive = false`
-- [ ] `LeadService`: test że `create()` wywołuje `NotificationService.sendNewLeadEmail()`
-- [ ] `NotificationService`: test że błąd Resend nie rzuca wyjątku (graceful error)
-- [ ] `BillingWebhookHandler`: test `subscription.deleted` → `isActive = false`
-- [ ] `BillingWebhookHandler`: test że błędna sygnatura webhooka → 400
 
-#### Integration testy API
-- [ ] `POST /api/v1/chat` bez tokenu → 401
-- [ ] `POST /api/v1/chat` z nieaktywnym tenantem (`isActive = false`) → 403
-- [ ] `POST /api/v1/leads` bez `Origin` headera na produkcji → 403
+**Chat / RAG Pipeline**
+- [x] `ChatService`: test fallback gdy brak chunków (done — `chat.service.spec.ts`)
+- [x] `ChatService`: eskalacja do człowieka (`isEscalationRequest`) (done — 8 testów)
+- [ ] `ChatService`: `checkPlanLimit()` blokuje gdy `isActive = false` → 403
+- [ ] `ChatService`: miesięczny limit 1000 konwersacji (STARTER) — reset o 1. dnia miesiąca
+- [ ] `ChatService`: `domainWhitelist` w trybie prod blokuje `Origin` spoza listy
+- [ ] `ChatService`: limit długości wiadomości per bot (P0 sec fix)
+
+**MessageSanitizer** (nowy — krytyczna warstwa pre-processingu)
+- [ ] `message-sanitizer`: script/HTML injection → canned response + `action: 'sanitized'`
+- [ ] `message-sanitizer`: prompt injection PL ("pomiń instrukcje", "zignoruj", "zapomnij") → canned
+- [ ] `message-sanitizer`: prompt injection EN ("ignore instructions", "forget previous") → canned
+- [ ] `message-sanitizer`: obrazek/binary data → canned response
+- [ ] `message-sanitizer`: profanity PL + EN → canned response
+- [ ] `message-sanitizer`: gibberish (<25% liter) → canned response
+- [ ] `message-sanitizer`: pożegnanie ("pa", "dzięki") → canned response + zakończenie
+- [ ] `message-sanitizer`: powitanie/acknowledgment → `action: 'no-rag'` + AI in-character
+
+**Auth** (nowe wymagania)
+- [ ] `auth.service`: walidacja hasła — <12 znaków → błąd
+- [ ] `auth.service`: walidacja hasła — brak cyfry → błąd
+- [ ] `auth.service`: walidacja hasła — brak znaku specjalnego → błąd
+- [ ] `auth.service`: walidacja URL strony przy rejestracji (`z.string().url()`)
+- [ ] `auth.service`: `requestPasswordReset()` nie ujawnia czy email istnieje (same response dla istniejącego i nieistniejącego)
+- [ ] `auth.service`: PKCE callback — poprawna wymiana code na session
+
+**Lead + Notifications**
+- [x] `LeadService.create()` wywołuje `NotificationService.sendNewLeadEmail()` (done — `lead.service.spec.ts`)
+- [x] `NotificationService` — błąd Resend nie rzuca wyjątku (done)
+- [ ] `LeadService`: PII szyfrowane przed zapisem (imię + telefon format `iv:authTag:ciphertext`)
+- [ ] `LeadService`: `GET` deszyfruje PII przed zwrotem do klienta
+- [ ] `LeadService`: walidacja telefonu (PL format) → 400 przy błędnym
+- [ ] `LeadService`: zgoda RODO wymagana (`rodoConsent: true`) → 400 bez niej
+
+**EncryptionService**
+- [ ] `encrypt()` → `decrypt()` = input (round-trip)
+- [ ] `decrypt()` z błędnym authTag → rzuca wyjątek (nie silent failure)
+- [ ] Format `iv:authTag:ciphertext` poprawny hex
+
+**Billing / Stripe Webhooks**
+- [ ] `BillingWebhookHandler`: `checkout.session.completed` → zapisuje `stripeCustomerId`, `stripeSubscriptionId`, `isActive=true`
+- [ ] `BillingWebhookHandler`: `customer.subscription.updated` → `isActive` wg statusu
+- [ ] `BillingWebhookHandler`: `subscription.deleted` → `isActive = false`
+- [ ] `BillingWebhookHandler`: `invoice.payment_failed` → `isActive = false`
+- [ ] `BillingWebhookHandler`: błędna sygnatura → 400 (raw body weryfikacja)
+- [ ] `BillingWebhookHandler`: idempotencja — ten sam event 2x nie duplikuje zmian (P0 sec fix)
+
+**Bot Config** (P1 sec fix)
+- [ ] `BotService.getPublicConfig()`: gdy `tenant.isActive = false` → 403
+- [ ] `BotService.getPublicConfig()`: zwraca `suggestedQuestions` z brand template (nie hardcoded)
+
+**Feedback (nowy moduł — ocena gwiazdkowa)**
+- [ ] `FeedbackService.create()`: rating 1-5 zapisywany per konwersacja
+- [ ] `FeedbackService`: rating <1 lub >5 → 400
+- [ ] `FeedbackService`: wymaga `conversationId` → 400 bez niego
+- [ ] `FeedbackService`: jedna opinia per konwersacja (unique constraint)
+
+---
+
+#### Integration / E2E testy API (`apps/api/test`)
+
+**Chat endpoint**
+- [ ] `POST /api/v1/chat` bez `Origin` na produkcji → 403 (`DomainWhitelistGuard`)
+- [ ] `POST /api/v1/chat` z `botId` nieUUID → 400 (P2 sec fix)
+- [ ] `POST /api/v1/chat` z nieaktywnym tenantem → 403
+- [ ] `POST /api/v1/chat` z wiadomością zawierającą `<script>` → canned response
+- [ ] `POST /api/v1/chat` z prompt injection → canned response
+- [ ] `POST /api/v1/chat` z wiadomością >N znaków → 400
+- [ ] `POST /api/v1/chat` rate limit 20/min (21. request → 429)
+
+**Leads endpoint**
+- [ ] `POST /api/v1/leads` bez `Origin` na produkcji → 403
+- [ ] `POST /api/v1/leads` bez zgody RODO → 400
+- [ ] `POST /api/v1/leads` rate limit 5/min (6. → 429)
+- [ ] `POST /api/v1/leads` PII w DB zaszyfrowane (format `iv:authTag:ciphertext`)
+- [ ] `POST /api/v1/leads` z `botId` nieUUID → 400
+
+**Bot config endpoint**
+- [ ] `GET /api/v1/bot/:id/config` z nieaktywnym tenantem → 403 (P1 sec fix)
+- [ ] `GET /api/v1/bot/:id/config` z nieUUID → 400
+
+**Auth endpoints**
+- [ ] `POST /api/v1/auth/register` ze słabym hasłem (<12 znaków, bez cyfry lub bez znaku specjalnego) → 400
+- [ ] `POST /api/v1/auth/register` z błędnym URL strony → 400
+- [ ] `POST /api/v1/auth/register` z istniejącym emailem → 409 z czytelnym komunikatem
+- [ ] `POST /api/v1/auth/login` rate limit 10/min
+- [ ] `POST /api/v1/auth/forgot-password` dla nieistniejącego emaila → 200 (no enumeration)
+- [ ] `POST /api/v1/auth/reset-password` z niepoprawnym tokenem → 400
+- [ ] Anon-key nie pozwala ominąć AuthGuard (P0 sec fix — wcześniej bypass)
+
+**Contact endpoint**
+- [ ] `POST /api/v1/contact` z błędnym `website` URL → 400
+- [ ] `POST /api/v1/contact` rate limit 10/min
+- [ ] `POST /api/v1/contact` sanitizuje HTML w message przed wysłaniem emaila (escapeHtml z `'`)
+
+**Billing webhook**
 - [ ] `POST /api/v1/billing/webhook` z błędną sygnaturą → 400
+- [ ] `POST /api/v1/billing/webhook` z duplikatem event ID → 200, no-op (idempotencja)
+
+**Feedback endpoint**
+- [ ] `POST /api/v1/feedback` z rating 6 → 400
+- [ ] `POST /api/v1/feedback` dla nieistniejącej konwersacji → 404
+- [ ] `POST /api/v1/feedback` ten sam conversationId 2x → 409
+
+---
+
+#### Testy widgetu (`apps/widget`)
+- [ ] Bundle size <12KB gzip (CI już enforcuje — weryfikacja że plugin Vite blokuje merge)
+- [ ] Obsługa HTTP 400: wyświetla "zła wiadomość" (nie "błąd połączenia")
+- [ ] Obsługa HTTP 403: automatycznie otwiera lead form
+- [ ] Obsługa HTTP 429: wyświetla "za dużo wiadomości"
+- [ ] Obsługa HTTP 5xx: wyświetla "awaria techniczna"
+- [ ] `AbortError` (timeout 30s): wyświetla "przekroczono czas"
+- [ ] `sessionStorage` per `botiko_{botId}` — historia przetrwa odświeżenie
+- [ ] Historia znika po zamknięciu zakładki (sessionStorage, nie localStorage)
+- [ ] Widget nie ładuje się na `/wp-admin/*` (anti-abuse)
+- [ ] `BotikoWidget.open/close/toggle` — globalne API działa
+- [ ] Guard against double-init (2x `<script>` na stronie → jeden widget)
+
+---
+
+#### E2E testy landing pages (`apps/web` — Playwright)
+- [ ] Wszystkie 5 LP renderują bez błędów: `/dla/salon-beauty`, `/dla/gabinet-spa`, `/dla/restauracja`, `/dla/warsztat-mechaniczny`, `/dla/inna`
+- [ ] Każda LP ma H1 i minimum 1 CTA `/rejestracja`
+- [ ] Navbar dropdown "Dla branży": wszystkie 5 linków prowadzą do istniejących stron (200, nie 404)
+- [ ] `/rejestracja` redirect → `/register`
+- [ ] `/prywatnosc` renderuje 10 sekcji RODO
+- [ ] `/blog` + `/blog/[slug]` + `/blog/kategoria/[slug]` + `/blog/tag/[slug]` — 200
+- [ ] Dashboard auth guard: `/dashboard/*` bez sesji → redirect `/login`
+- [ ] Formularz kontaktowy: błąd API → fallback `mailto:` (nie zgubiony exception)
+
+---
+
+#### Security P0-P3 — testy regresji
+- [ ] P0: Anon-key nie bypassuje AuthGuard
+- [ ] P0: Stripe webhook idempotencja (ten sam `event.id` 2x → bez duplikacji)
+- [ ] P0: Domain whitelist w prod dla `/api/v1/chat` i `/api/v1/leads`
+- [ ] P0: Limit długości wiadomości per bot
+- [ ] P1: `tenant.isActive = false` blokuje `GET /api/v1/bot/:id/config`
+- [ ] P2: `botId` UUID validation na chat i leads
+- [ ] P2: `website` URL validation na contact form
+- [ ] P3: `escapeHtml` pokrywa `'` (attribute injection w email templateach)
+- [ ] Helmet headers obecne: `X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security`
+- [ ] CSP: Cloudinary na `img-src` i `connect-src` (awatary)
+- [ ] CSP: YouTube + Vimeo na `frame-src` (blog `VideoEmbed`)
+
+---
 
 #### CI check
-- [ ] Widget bundle size check działa w CI (już jest w `.github/workflows/ci.yml`)
-- [ ] API lint + test przechodzi w CI
-- [ ] Web lint + typecheck przechodzi w CI
+- [x] Widget bundle size check w CI (`.github/workflows/ci.yml`)
+- [x] API lint + test w CI
+- [x] Web lint + typecheck w CI
+- [ ] Dodać Playwright e2e job do CI (landing pages smoke + dashboard auth guard)
+- [ ] Dodać widget integration test job (headless puppeteer, sprawdza shadow DOM + error states)
 
 ---
 
