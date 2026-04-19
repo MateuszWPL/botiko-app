@@ -257,7 +257,7 @@ export default function RegisterPage() {
       </div>
       <AuthLeftPanel
         headline="Zacznij zbierać leady"
-        sub="Dołącz do programu pilotażowego i zacznij zbierać leady po godzinach."
+        sub="Zacznij zbierać leady po godzinach. 14 dni za darmo."
       />
     </main>
   );

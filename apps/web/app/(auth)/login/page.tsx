@@ -148,7 +148,7 @@ export default function LoginPage() {
       <AuthLeftPanel
         headline="Witaj z powrotem"
         sub="Zaloguj się i sprawdź co dziś przyniósł Twój bot."
-        badge="Program pilotażowy — miejsca limitowane"
+        badge="14 dni za darmo — bez karty kredytowej"
       />
     </main>
   );

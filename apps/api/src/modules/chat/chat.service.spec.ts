@@ -231,4 +231,238 @@ describe('ChatService', () => {
       ).rejects.toThrow(ForbiddenException);
     });
   });
+
+  // ── tenant.isActive gate ─────────────────────────────────────────────────────
+  describe('sendMessage — tenant isActive gate', () => {
+    it('throws ForbiddenException with generic message when tenant.isActive is false', async () => {
+      const inactiveBot = {
+        ...mockBot,
+        tenant: { ...mockBot.tenant, isActive: false },
+      };
+      const prisma = buildPrismaMock({
+        bot: { findFirst: jest.fn().mockResolvedValue(inactiveBot) },
+      });
+      const { service } = await buildService(prisma);
+
+      await expect(
+        service.sendMessage({
+          botId: 'bot-1',
+          sessionId: 's1',
+          message: 'Ile kosztuje strzyżenie?',
+        }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('does NOT leak plan/billing details in the error message', async () => {
+      const inactiveBot = {
+        ...mockBot,
+        tenant: { ...mockBot.tenant, isActive: false },
+      };
+      const prisma = buildPrismaMock({
+        bot: { findFirst: jest.fn().mockResolvedValue(inactiveBot) },
+      });
+      const { service } = await buildService(prisma);
+
+      let caught: Error | null = null;
+      try {
+        await service.sendMessage({
+          botId: 'bot-1',
+          sessionId: 's1',
+          message: 'Ile kosztuje strzyżenie?',
+        });
+      } catch (e) {
+        caught = e as Error;
+      }
+
+      expect(caught).not.toBeNull();
+      expect(caught!.message).not.toMatch(/plan|billing|STARTER|stripe/i);
+      expect(caught!.message).toMatch(/unavailable/i);
+    });
+  });
+
+  // ── checkPlanLimit ───────────────────────────────────────────────────────────
+  describe('sendMessage — checkPlanLimit (STARTER 1000/month)', () => {
+    it('passes when count is below limit (999)', async () => {
+      const prisma = buildPrismaMock({
+        conversation: {
+          findFirst: jest.fn().mockResolvedValue(null),
+          create: jest.fn().mockResolvedValue(mockConversation),
+          count: jest.fn().mockResolvedValue(999),
+        },
+      });
+      mockEmbeddingService.findRelevantChunks.mockResolvedValue([]);
+      const { service } = await buildService(prisma);
+
+      const result = await service.sendMessage({
+        botId: 'bot-1',
+        sessionId: 's1',
+        message: 'Ile kosztuje strzyżenie?',
+      });
+
+      expect(result.message).toBeDefined();
+      expect(result.message).toContain('Nie mam dokładnej odpowiedzi');
+    });
+
+    it('throws ForbiddenException exactly at limit (1000)', async () => {
+      const prisma = buildPrismaMock({
+        conversation: {
+          findFirst: jest.fn().mockResolvedValue(null),
+          create: jest.fn().mockResolvedValue(mockConversation),
+          count: jest.fn().mockResolvedValue(1000),
+        },
+      });
+      const { service } = await buildService(prisma);
+
+      await expect(
+        service.sendMessage({
+          botId: 'bot-1',
+          sessionId: 's1',
+          message: 'Ile kosztuje strzyżenie?',
+        }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('has no limit for plans not in PLAN_CONVERSATION_LIMITS (e.g. ENTERPRISE)', async () => {
+      const enterpriseBot = {
+        ...mockBot,
+        tenant: { ...mockBot.tenant, plan: 'ENTERPRISE' },
+      };
+      const prisma = buildPrismaMock({
+        bot: { findFirst: jest.fn().mockResolvedValue(enterpriseBot) },
+        conversation: {
+          findFirst: jest.fn().mockResolvedValue(null),
+          create: jest.fn().mockResolvedValue(mockConversation),
+          count: jest.fn().mockResolvedValue(99999),
+        },
+      });
+      mockEmbeddingService.findRelevantChunks.mockResolvedValue([]);
+      const { service } = await buildService(prisma);
+
+      const result = await service.sendMessage({
+        botId: 'bot-1',
+        sessionId: 's1',
+        message: 'Ile kosztuje strzyżenie?',
+      });
+      expect(result.message).toBeDefined();
+    });
+  });
+
+  // ── checkBotMessageCap ───────────────────────────────────────────────────────
+  describe('sendMessage — checkBotMessageCap (10 000 msg/month)', () => {
+    it('throws ForbiddenException when bot monthly message count hits 10 000', async () => {
+      const prisma = buildPrismaMock({
+        message: {
+          create: jest.fn().mockResolvedValue({}),
+          // First call is checkBotMessageCap — return 10 000 (cap exceeded)
+          count: jest.fn().mockResolvedValue(10_000),
+        },
+      });
+      const { service } = await buildService(prisma);
+
+      await expect(
+        service.sendMessage({
+          botId: 'bot-1',
+          sessionId: 's1',
+          message: 'Ile kosztuje strzyżenie?',
+        }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('passes when bot monthly message count is below 10 000 (9 999)', async () => {
+      const prisma = buildPrismaMock({
+        message: {
+          create: jest.fn().mockResolvedValue({}),
+          count: jest.fn().mockResolvedValue(9_999),
+        },
+      });
+      mockEmbeddingService.findRelevantChunks.mockResolvedValue([]);
+      const { service } = await buildService(prisma);
+
+      const result = await service.sendMessage({
+        botId: 'bot-1',
+        sessionId: 's1',
+        message: 'Ile kosztuje strzyżenie?',
+      });
+      expect(result.message).toBeDefined();
+    });
+  });
+
+  // ── checkConversationMessageCap ──────────────────────────────────────────────
+  describe('sendMessage — checkConversationMessageCap (50 msg/sesję)', () => {
+    it('throws ForbiddenException when user hits 50 messages in one session', async () => {
+      const prisma = buildPrismaMock({
+        conversation: {
+          // findFirst: existing conversation (so cap check can count its messages)
+          findFirst: jest.fn().mockResolvedValue(mockConversation),
+          create: jest.fn().mockResolvedValue(mockConversation),
+          count: jest.fn().mockResolvedValue(0), // plan limit OK
+        },
+        message: {
+          create: jest.fn().mockResolvedValue({}),
+          count: jest
+            .fn()
+            .mockResolvedValueOnce(0) // checkBotMessageCap — ok
+            .mockResolvedValueOnce(50), // checkConversationMessageCap — at limit
+        },
+      });
+      const { service } = await buildService(prisma);
+
+      await expect(
+        service.sendMessage({
+          botId: 'bot-1',
+          sessionId: 'session-1',
+          message: 'Ile kosztuje strzyżenie?',
+        }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('passes when session has 49 messages (one below cap)', async () => {
+      const prisma = buildPrismaMock({
+        conversation: {
+          findFirst: jest.fn().mockResolvedValue(mockConversation),
+          create: jest.fn().mockResolvedValue(mockConversation),
+          count: jest.fn().mockResolvedValue(0),
+        },
+        message: {
+          create: jest.fn().mockResolvedValue({}),
+          count: jest
+            .fn()
+            .mockResolvedValueOnce(0) // checkBotMessageCap — ok
+            .mockResolvedValueOnce(49), // checkConversationMessageCap — just under
+        },
+      });
+      mockEmbeddingService.findRelevantChunks.mockResolvedValue([]);
+      const { service } = await buildService(prisma);
+
+      const result = await service.sendMessage({
+        botId: 'bot-1',
+        sessionId: 'session-1',
+        message: 'Ile kosztuje strzyżenie?',
+      });
+      expect(result.message).toBeDefined();
+    });
+
+    it('does not throw when conversation does not exist yet (new session)', async () => {
+      const prisma = buildPrismaMock({
+        conversation: {
+          findFirst: jest.fn().mockResolvedValue(null), // new session
+          create: jest.fn().mockResolvedValue(mockConversation),
+          count: jest.fn().mockResolvedValue(0),
+        },
+        message: {
+          create: jest.fn().mockResolvedValue({}),
+          count: jest.fn().mockResolvedValue(0),
+        },
+      });
+      mockEmbeddingService.findRelevantChunks.mockResolvedValue([]);
+      const { service } = await buildService(prisma);
+
+      const result = await service.sendMessage({
+        botId: 'bot-1',
+        sessionId: 'new-session-xyz',
+        message: 'Ile kosztuje strzyżenie?',
+      });
+      expect(result.message).toBeDefined();
+    });
+  });
 });

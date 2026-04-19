@@ -453,25 +453,168 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 ### 1A.7 — Testy Automatyczne (minimum przed deploy)
 
 > Nie musimy testować wszystkiego — testujemy to co nie ma szans działać jeśli się posypie.
+> Zaktualizowane 2026-04-19 o nowe funkcje: sanitizer, feedback, PKCE, widget error handling, landing pages, security P0-P3.
 
 #### Unit testy API (`apps/api`)
-- [ ] `ChatService`: test fallback gdy brak chunków
-- [ ] `ChatService`: test że `checkPlanLimit()` blokuje gdy `isActive = false`
-- [ ] `LeadService`: test że `create()` wywołuje `NotificationService.sendNewLeadEmail()`
-- [ ] `NotificationService`: test że błąd Resend nie rzuca wyjątku (graceful error)
-- [ ] `BillingWebhookHandler`: test `subscription.deleted` → `isActive = false`
-- [ ] `BillingWebhookHandler`: test że błędna sygnatura webhooka → 400
 
-#### Integration testy API
-- [ ] `POST /api/v1/chat` bez tokenu → 401
-- [ ] `POST /api/v1/chat` z nieaktywnym tenantem (`isActive = false`) → 403
-- [ ] `POST /api/v1/leads` bez `Origin` headera na produkcji → 403
-- [ ] `POST /api/v1/billing/webhook` z błędną sygnaturą → 400
+**Chat / RAG Pipeline**
+- [x] `ChatService`: test fallback gdy brak chunków (done — `chat.service.spec.ts`)
+- [x] `ChatService`: eskalacja do człowieka (`isEscalationRequest`) (done — 8 testów)
+- [x] `ChatService`: `checkPlanLimit()` blokuje gdy `isActive = false` → 403 (done — 2 testy)
+- [x] `ChatService`: miesięczny limit 1000 konwersacji (STARTER) — reset o 1. dnia miesiąca (done — 3 testy)
+- [x] `ChatService`: `domainWhitelist` w trybie prod blokuje `Origin` spoza listy (done — `domain-whitelist.guard.spec.ts` 16 testów)
+- [ ] `ChatService`: limit długości wiadomości per bot (P0 sec fix — w DTO Zod max 1000 chars, brak unit testu)
+
+**MessageSanitizer** (nowy — krytyczna warstwa pre-processingu)
+- [x] `message-sanitizer`: script/HTML injection → canned response + `action: 'sanitized'` (done — 115 testów)
+- [x] `message-sanitizer`: prompt injection PL ("pomiń instrukcje", "zignoruj", "zapomnij") → canned (done)
+- [x] `message-sanitizer`: prompt injection EN ("ignore instructions", "forget previous") → canned (done)
+- [x] `message-sanitizer`: obrazek/binary data → canned response (done)
+- [x] `message-sanitizer`: profanity PL + EN → canned response (done)
+- [x] `message-sanitizer`: gibberish (<25% liter) → canned response (done)
+- [x] `message-sanitizer`: pożegnanie ("pa", "dzięki") → canned response + zakończenie (done)
+- [x] `message-sanitizer`: powitanie/acknowledgment → `action: 'no-rag'` + AI in-character (done)
+
+**Auth** (nowe wymagania)
+- [x] `auth.service`: walidacja hasła — <12 znaków → błąd (done — `register.dto.spec.ts`)
+- [x] `auth.service`: walidacja hasła — brak dużej litery → błąd (done; schema wymaga uppercase, nie znaku spec.)
+- [x] `auth.service`: walidacja hasła — brak cyfry → błąd (done)
+- [x] `auth.service`: walidacja URL strony przy rejestracji (done — localhost/brak kropki → błąd, normalizacja)
+- [ ] `auth.service`: `requestPasswordReset()` nie ujawnia czy email istnieje — metoda nie istnieje w kodzie, pominięte
+- [ ] `auth.service`: PKCE callback — poprawna wymiana code na session — wymaga Supabase integration, pominięte
+
+**Lead + Notifications**
+- [x] `LeadService.create()` wywołuje `NotificationService.sendNewLeadEmail()` (done — `lead.service.spec.ts`)
+- [x] `NotificationService` — błąd Resend nie rzuca wyjątku (done)
+- [x] `LeadService`: PII szyfrowane przed zapisem (imię + telefon format `iv:authTag:ciphertext`) (done — `lead.service.spec.ts`)
+- [x] `LeadService`: `GET` deszyfruje PII przed zwrotem do klienta (done — `findAll` round-trip)
+- [x] `LeadService`: walidacja telefonu → błędny format → 400 (done — `create-lead.dto.spec.ts`)
+- [x] `LeadService`: zgoda RODO wymagana (`consentGiven: true`) → 400 bez niej (done)
+
+**EncryptionService**
+- [x] `encrypt()` → `decrypt()` = input (round-trip) (done — `encryption.service.spec.ts` 16 testów)
+- [x] `decrypt()` z błędnym authTag → rzuca wyjątek (nie silent failure) (done — tamper detection)
+- [x] Format `iv:authTag:ciphertext` poprawny hex (done)
+
+**Billing / Stripe Webhooks**
+- [x] `BillingWebhookHandler`: `checkout.session.completed` → zapisuje `stripeCustomerId`, `stripeSubscriptionId`, `isActive=true` (done — `billing.service.spec.ts` 15 testów)
+- [x] `BillingWebhookHandler`: `customer.subscription.updated` → `isActive` wg statusu (done — active/unpaid/canceled/past_due/incomplete)
+- [x] `BillingWebhookHandler`: `subscription.deleted` → `isActive = false` (done)
+- [x] `BillingWebhookHandler`: `invoice.payment_failed` → log-only, brak zmiany DB (done — nota: błąd w opisie w checklist, to NIE deaktywuje)
+- [x] `BillingWebhookHandler`: błędna sygnatura → 400 (done)
+- [x] `BillingWebhookHandler`: idempotencja — ten sam event 2x nie duplikuje zmian (done — P2002 handler)
+
+**Bot Config** (P1 sec fix)
+- [x] `BotService.getPublicConfig()`: gdy `tenant.isActive = false` → NotFoundException (done — `bot.service.spec.ts`; kod rzuca 404 nie 403 — findFirst z WHERE zwraca null)
+- [x] `BotService.getPublicConfig()`: zwraca `suggestedQuestions` z brand template gdy bot ma pustą listę (done)
+
+**Review/Feedback (moduł ocen od właściciela)**
+- [x] `ReviewService.create()`: rating 1-5 zapisywany (done — `review.service.spec.ts`)
+- [x] `ReviewService`: rating 0 lub 6 → błąd Zod (done — `create-review.dto.spec.ts`)
+- [x] `ReviewService`: brak rating → 400 (done)
+- [x] `ReviewService`: email fallback gdy Resend padnie → nie rzuca wyjątku (done)
+- [ ] `FeedbackService` per konwersacja z unique constraint — moduł nie istnieje w kodzie, pominięte
+
+---
+
+#### Integration / E2E testy API (`apps/api/test`)
+
+> Uwaga: większość poniższych przypadków jest już pokryta przez testy jednostkowe warstwy niżej.
+> Oznaczono je `[unit ✓]` — integration test dodawałby wartość tylko jeśli testujemy routing/pipe razem.
+
+**Chat endpoint**
+- [x] `POST /api/v1/chat` bez `Origin` na produkcji → 403 [unit ✓ — `domain-whitelist.guard.spec.ts`]
+- [ ] `POST /api/v1/chat` z `botId` nie-CUID → 400 [unit pending — `chat-message.dto.spec.ts`]
+- [x] `POST /api/v1/chat` z nieaktywnym tenantem → 403 [unit ✓ — `chat.service.spec.ts`]
+- [x] `POST /api/v1/chat` z wiadomością zawierającą `<script>` → canned response [unit ✓ — `message-sanitizer.spec.ts`]
+- [x] `POST /api/v1/chat` z prompt injection → canned response [unit ✓ — `message-sanitizer.spec.ts`]
+- [ ] `POST /api/v1/chat` z wiadomością >1000 znaków → 400 [unit pending — `chat-message.dto.spec.ts`]
+- [ ] `POST /api/v1/chat` rate limit 20/min → pominięte (testuje bibliotekę Nest, nie nasz kod)
+
+**Leads endpoint**
+- [x] `POST /api/v1/leads` bez `Origin` na produkcji → 403 [unit ✓ — `domain-whitelist.guard.spec.ts`]
+- [x] `POST /api/v1/leads` bez zgody RODO → 400 [unit ✓ — `create-lead.dto.spec.ts`]
+- [ ] `POST /api/v1/leads` rate limit 5/min → pominięte (testuje bibliotekę Nest)
+- [x] `POST /api/v1/leads` PII w DB zaszyfrowane [unit ✓ — `lead.service.spec.ts`]
+- [ ] `POST /api/v1/leads` z `botId` nie-CUID → 400 [unit pending — `create-lead.dto.spec.ts` już to ma]
+
+**Bot config endpoint**
+- [x] `GET /api/v1/bot/:id/config` z nieaktywnym tenantem → 404 [unit ✓ — `bot.service.spec.ts`]
+- [ ] `GET /api/v1/bot/:id/config` z nie-CUID → pominięte (Zod + ZodValidationPipe — library behavior)
+
+**Auth endpoints**
+- [x] `POST /api/v1/auth/register` ze słabym hasłem → 400 [unit ✓ — `register.dto.spec.ts`]
+- [x] `POST /api/v1/auth/register` z błędnym URL strony → 400 [unit ✓ — `register.dto.spec.ts`]
+- [ ] `POST /api/v1/auth/register` z istniejącym emailem → 409 — wymaga prawdziwego Supabase, pominięte
+- [ ] `POST /api/v1/auth/login` rate limit → pominięte
+- [ ] `POST /api/v1/auth/forgot-password` — metoda nie istnieje w kodzie, pominięte
+- [ ] `POST /api/v1/auth/reset-password` — nie zaimplementowane, pominięte
+- [ ] Anon-key nie bypassuje AuthGuard [unit pending — `auth.guard.spec.ts`]
+
+**Contact endpoint**
+- [ ] `POST /api/v1/contact` z błędnym `website` URL → 400 [unit pending — `create-contact.dto.spec.ts`]
+- [ ] `POST /api/v1/contact` rate limit → pominięte
+- [ ] `POST /api/v1/contact` escapeHtml z `'` [unit pending — `notification.service.spec.ts`]
+
+**Billing webhook**
+- [x] `POST /api/v1/billing/webhook` z błędną sygnaturą → 400 [unit ✓ — `billing.service.spec.ts`]
+- [x] `POST /api/v1/billing/webhook` z duplikatem event ID → 200 no-op [unit ✓ — `billing.service.spec.ts`]
+
+**Feedback endpoint**
+- [x] Rating 6 → 400 [unit ✓ — `create-review.dto.spec.ts`]
+- [ ] `FeedbackService` per konwersacja — moduł nie istnieje, pominięte
+
+---
+
+#### Testy widgetu (`apps/widget`)
+- [ ] Bundle size <12KB gzip (CI już enforcuje — weryfikacja że plugin Vite blokuje merge)
+- [ ] Obsługa HTTP 400: wyświetla "zła wiadomość" (nie "błąd połączenia")
+- [ ] Obsługa HTTP 403: automatycznie otwiera lead form
+- [ ] Obsługa HTTP 429: wyświetla "za dużo wiadomości"
+- [ ] Obsługa HTTP 5xx: wyświetla "awaria techniczna"
+- [ ] `AbortError` (timeout 30s): wyświetla "przekroczono czas"
+- [ ] `sessionStorage` per `botiko_{botId}` — historia przetrwa odświeżenie
+- [ ] Historia znika po zamknięciu zakładki (sessionStorage, nie localStorage)
+- [ ] Widget nie ładuje się na `/wp-admin/*` (anti-abuse)
+- [ ] `BotikoWidget.open/close/toggle` — globalne API działa
+- [ ] Guard against double-init (2x `<script>` na stronie → jeden widget)
+
+---
+
+#### E2E testy landing pages (`apps/web` — Playwright)
+- [x] Wszystkie 5 LP renderują bez błędów: `/dla/salon-beauty`, `/dla/gabinet-spa`, `/dla/restauracja`, `/dla/warsztat-mechaniczny`, `/dla/inna` (done — `e2e/landing-pages.spec.ts`)
+- [x] Każda LP ma H1 i minimum 1 CTA `/rejestracja` (done)
+- [x] Navbar dropdown "Dla branży": wszystkie 5 linków prowadzą do istniejących stron (200, nie 404) (done)
+- [x] `/rejestracja` redirect → `/register` (done)
+- [x] `/prywatnosc` renderuje treść polityki prywatności (done)
+- [x] `/blog` + `/blog/[slug]` + `/blog/kategoria/[slug]` + `/blog/tag/[slug]` — 200 (done)
+- [x] Dashboard auth guard: `/dashboard/*` bez sesji → redirect `/login` (done — 4 ścieżki)
+- [x] Formularz kontaktowy: błąd API → fallback (nie crash/exception) (done)
+
+---
+
+#### Security P0-P3 — testy regresji
+
+- [ ] P0: Anon-key nie bypassuje AuthGuard [unit pending — `auth.guard.spec.ts`]
+- [x] P0: Stripe webhook idempotencja [unit ✓ — `billing.service.spec.ts` (P2002 handler)]
+- [x] P0: Domain whitelist w prod [unit ✓ — `domain-whitelist.guard.spec.ts`]
+- [ ] P0: Limit długości wiadomości >1000 znaków [unit pending — `chat-message.dto.spec.ts`]
+- [x] P1: `tenant.isActive = false` blokuje bot config [unit ✓ — `bot.service.spec.ts`]
+- [ ] P2: `botId` CUID validation [unit pending — `chat-message.dto.spec.ts`]
+- [x] P2: `website` URL validation na rejestracji [unit ✓ — `register.dto.spec.ts`]
+- [ ] P2: `website` URL validation na contact form [unit pending — `create-contact.dto.spec.ts`]
+- [ ] P3: `escapeHtml` pokrywa `'` [unit pending — `notification.service.spec.ts`]
+- [ ] Helmet headers — weryfikacja manualna w DevTools przed deploy (nie unit test)
+- [ ] CSP Cloudinary/YouTube — weryfikacja konfiguracji Next.js przed deploy (nie unit test)
+
+---
 
 #### CI check
-- [ ] Widget bundle size check działa w CI (już jest w `.github/workflows/ci.yml`)
-- [ ] API lint + test przechodzi w CI
-- [ ] Web lint + typecheck przechodzi w CI
+- [x] Widget bundle size check w CI (`.github/workflows/ci.yml`)
+- [x] API lint + test w CI
+- [x] Web lint + typecheck w CI
+- [x] Playwright e2e job w CI (landing pages smoke + dashboard auth guard) (done — job `e2e` w `ci.yml`)
+- [ ] Widget integration test job (headless puppeteer, shadow DOM + error states) — pominięte na tym etapie
 
 ---
 

@@ -135,7 +135,7 @@ export default function Testimonials() {
             <span style={{ color: '#a5b4fc' }}>Botiko ratuje klienta</span>
           </h2>
           <p className="text-indigo-200 text-sm mt-4 max-w-2xl mx-auto leading-relaxed">
-            Nie mamy jeszcze cytatów od klientów (jesteśmy na etapie pilota).
+            Nie mamy jeszcze cytatów od klientów (dopiero startujemy).
             Zamiast tego pokazujemy realne scenariusze z firm usługowych — bot odpowiada z Twojej bazy wiedzy i zbiera kontakt, Ty oddzwaniasz.
           </p>
         </ScrollReveal>
