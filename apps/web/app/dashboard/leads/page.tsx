@@ -9,6 +9,7 @@ interface Lead {
   message: string | null;
   status: string;
   botId: string;
+  sessionId: string | null;
   createdAt: string;
 }
 

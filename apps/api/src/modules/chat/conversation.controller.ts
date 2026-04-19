@@ -30,6 +30,14 @@ export class ConversationController {
     });
   }
 
+  @Get('by-session/:sessionId')
+  findBySession(
+    @Param('sessionId') sessionId: string,
+    @CurrentTenant() tenantId: string,
+  ): Promise<ConversationDetail | null> {
+    return this.conversationService.findBySession(tenantId, sessionId);
+  }
+
   @Get(':id')
   findById(
     @Param('id') id: string,

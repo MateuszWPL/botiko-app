@@ -19,6 +19,7 @@ export interface LeadResponse {
   message: string | null;
   status: string;
   botId: string;
+  sessionId: string | null;
   createdAt: Date;
 }
 
@@ -126,6 +127,7 @@ export class LeadService {
         message: true,
         status: true,
         botId: true,
+        sessionId: true,
         createdAt: true,
       },
       orderBy: { createdAt: 'desc' },

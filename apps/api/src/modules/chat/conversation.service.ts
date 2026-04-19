@@ -156,6 +156,28 @@ export class ConversationService {
       });
   }
 
+  async findBySession(
+    tenantId: string,
+    sessionId: string,
+  ): Promise<ConversationDetail | null> {
+    const conversation = await this.prisma.conversation.findFirst({
+      where: { sessionId, bot: { tenantId } },
+      select: {
+        id: true,
+        botId: true,
+        sessionId: true,
+        createdAt: true,
+        messages: {
+          select: { id: true, role: true, content: true, createdAt: true },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return conversation;
+  }
+
   async findById(
     tenantId: string,
     conversationId: string,
