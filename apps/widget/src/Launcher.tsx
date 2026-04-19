@@ -13,6 +13,7 @@ const BUBBLE_FADEOUT_MS  = 400;   // czas animacji fade-out
 
 export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: LauncherProps) {
   const [bubbleState, setBubbleState] = useState<'hidden' | 'visible' | 'fading'>('hidden');
+  const [showBadge, setShowBadge] = useState(false);
   // Reaktywne wykrywanie mobile — reaguje na resize/rotate urządzenia
   const [isMobile, setIsMobile] = useState(
     typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches,
@@ -26,10 +27,13 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // Pojawiaj bańkę po 3s — tylko jeśli czat nigdy nie był otwarty
+  // Pojawiaj bańkę + badge po 3s — tylko raz przy montowaniu
   useEffect(() => {
     if (isOpen) return;
-    const t = setTimeout(() => setBubbleState('visible'), BUBBLE_SHOW_DELAY);
+    const t = setTimeout(() => {
+      setBubbleState('visible');
+      setShowBadge(true);
+    }, BUBBLE_SHOW_DELAY);
     return () => clearTimeout(t);
   }, []); // tylko raz przy montowaniu
 
@@ -47,9 +51,12 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
     return () => clearTimeout(t);
   }, [bubbleState]);
 
-  // Ukryj bańkę natychmiast gdy czat się otwiera
+  // Ukryj bańkę i badge natychmiast gdy czat się otwiera
   useEffect(() => {
-    if (isOpen) setBubbleState('hidden');
+    if (isOpen) {
+      setBubbleState('hidden');
+      setShowBadge(false);
+    }
   }, [isOpen]);
 
   // Na mobile z otwartym chatem: ukryj cały launcher
@@ -105,75 +112,101 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
         </div>
       )}
 
-      {/* ── FAB button ────────────────────────────────────────────────────────── */}
-      <button
-        onClick={onClick}
-        aria-label={isOpen ? 'Zamknij czat' : 'Otwórz czat'}
-        style={{
-          width: '56px',
-          height: '56px',
-          borderRadius: '50%',
-          backgroundColor: `var(--botiko-primary, ${primaryColor})`,
-          border: 'none',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.22)',
-          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.08)';
-          (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(0,0,0,0.28)';
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
-          (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 16px rgba(0,0,0,0.22)';
-        }}
-      >
-        {/* Chat icon — fades out when open */}
-        <span
-          style={{
-            position: 'absolute',
-            display: 'flex',
-            transition: 'opacity 0.25s ease, transform 0.25s ease',
-            opacity: isOpen ? 0 : 1,
-            transform: isOpen ? 'rotate(90deg) scale(0.4)' : 'rotate(0deg) scale(1)',
-          }}
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </span>
+      {/* ── FAB button (wrapper for badge positioning) ─────────────────────── */}
+      <div style={{ position: 'relative' }}>
+        {/* Notification badge — pulses 3× via CSS then stays static */}
+        {showBadge && !isOpen && (
+          <span
+            style={{
+              position: 'absolute',
+              top: '-4px',
+              right: '-4px',
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              backgroundColor: '#ef4444',
+              color: '#fff',
+              fontSize: '11px',
+              fontWeight: 700,
+              lineHeight: '20px',
+              textAlign: 'center',
+              zIndex: 1,
+              animation: 'botiko-badge-pulse 0.7s ease 3',
+            }}
+          >
+            1
+          </span>
+        )}
 
-        {/* X icon — fades in when open */}
-        <span
+        <button
+          onClick={onClick}
+          aria-label={isOpen ? 'Zamknij czat' : 'Otwórz czat'}
           style={{
-            position: 'absolute',
+            width: '56px',
+            height: '56px',
+            borderRadius: '50%',
+            backgroundColor: `var(--botiko-primary, ${primaryColor})`,
+            border: 'none',
+            cursor: 'pointer',
             display: 'flex',
-            transition: 'opacity 0.25s ease, transform 0.25s ease',
-            opacity: isOpen ? 1 : 0,
-            transform: isOpen ? 'rotate(0deg) scale(1)' : 'rotate(-90deg) scale(0.4)',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.22)',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.08)';
+            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(0,0,0,0.28)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
+            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 16px rgba(0,0,0,0.22)';
           }}
         >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path
-              d="M15 5L5 15M5 5l10 10"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </span>
-      </button>
+          {/* Chat icon — fades out when open */}
+          <span
+            style={{
+              position: 'absolute',
+              display: 'flex',
+              transition: 'opacity 0.25s ease, transform 0.25s ease',
+              opacity: isOpen ? 0 : 1,
+              transform: isOpen ? 'rotate(90deg) scale(0.4)' : 'rotate(0deg) scale(1)',
+            }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+
+          {/* X icon — fades in when open */}
+          <span
+            style={{
+              position: 'absolute',
+              display: 'flex',
+              transition: 'opacity 0.25s ease, transform 0.25s ease',
+              opacity: isOpen ? 1 : 0,
+              transform: isOpen ? 'rotate(0deg) scale(1)' : 'rotate(-90deg) scale(0.4)',
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path
+                d="M15 5L5 15M5 5l10 10"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </span>
+        </button>
+      </div>
 
       {/* Keyframes — scoped to shadow root */}
       <style>{`
@@ -184,6 +217,10 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
         @keyframes botiko-bubble-out {
           from { opacity: 1; transform: translateY(0) scale(1); }
           to   { opacity: 0; transform: translateY(6px) scale(0.95); }
+        }
+        @keyframes botiko-badge-pulse {
+          0%, 100% { transform: scale(1); }
+          50%      { transform: scale(1.35); }
         }
       `}</style>
     </div>
