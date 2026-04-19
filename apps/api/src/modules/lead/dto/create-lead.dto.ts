@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const createLeadSchema = z.object({
   botId: z.string().cuid('botId must be a valid CUID'),
+  sessionId: z.string().max(128).optional(),
   name: z
     .string()
     .min(2, 'Name must be at least 2 characters')

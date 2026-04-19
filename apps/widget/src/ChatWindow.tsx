@@ -264,6 +264,7 @@ export function ChatWindow({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           botId,
+          sessionId,
           name: lead.name.trim(),
           phone: lead.phone.trim(),
           consentGiven: true,

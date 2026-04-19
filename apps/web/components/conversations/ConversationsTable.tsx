@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 import { StatusBadge } from './StatusBadge';
 
@@ -99,75 +99,90 @@ export function ConversationsTable({ conversations }: ConversationsTableProps) {
             <th className="w-8" />
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100/80">
-          {conversations.map((conv) => {
-            const preview =
-              conv.firstMessage && conv.firstMessage.length > 60
-                ? conv.firstMessage.slice(0, 60) + '…'
-                : conv.firstMessage || '—';
-            const clientName = formatClientName(conv.leadName);
-            const initials = clientName === 'Gość'
-              ? 'G'
-              : clientName.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase();
-
-            return (
-              <tr key={conv.id} className="hover:bg-slate-50/50 transition-colors group">
-                {/* Session ID */}
-                <td className="px-6 py-4">
-                  <code className="text-xs font-mono text-slate-500 bg-slate-50 px-2 py-1 rounded">
-                    {conv.sessionId.slice(0, 8)}
-                  </code>
-                </td>
-
-                {/* Client */}
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full ${avatarColor(conv.sessionId)} text-white text-xs font-semibold flex items-center justify-center flex-shrink-0`}>
-                      {initials}
-                    </div>
-                    <span className="text-sm font-medium text-slate-900">{clientName}</span>
-                  </div>
-                </td>
-
-                {/* First message */}
-                <td className="px-6 py-4">
-                  <p className="text-sm text-slate-600 truncate max-w-xs">{preview}</p>
-                </td>
-
-                {/* Message count */}
-                <td className="px-6 py-4 text-center">
-                  <span className="text-sm font-medium text-slate-700">{conv.messageCount}</span>
-                </td>
-
-                {/* Duration */}
-                <td className="px-6 py-4 text-center">
-                  <span className="text-sm text-slate-600">{formatDuration(conv.durationSeconds)}</span>
-                </td>
-
-                {/* Date */}
-                <td className="px-6 py-4">
-                  <span className="text-sm text-slate-600">{formatDate(conv.createdAt)}</span>
-                </td>
-
-                {/* Status */}
-                <td className="px-6 py-4">
-                  <StatusBadge status={conv.status} />
-                </td>
-
-                {/* Arrow */}
-                <td className="px-6 py-4">
-                  <Link
-                    href={`/dashboard/conversations/${conv.id}`}
-                    className="inline-flex items-center justify-center w-8 h-8 text-slate-400 group-hover:text-indigo-500 group-hover:bg-indigo-50 rounded-lg transition-colors"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </Link>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
+        <ConversationRows conversations={conversations} />
       </table>
     </div>
+  );
+}
+
+function ConversationRows({ conversations }: { conversations: Conversation[] }) {
+  const router = useRouter();
+
+  return (
+    <tbody className="divide-y divide-slate-100/80">
+      {conversations.map((conv) => {
+        const preview =
+          conv.firstMessage && conv.firstMessage.length > 60
+            ? conv.firstMessage.slice(0, 60) + '…'
+            : conv.firstMessage || '—';
+        const clientName = formatClientName(conv.leadName);
+        const initials =
+          clientName === 'Gość'
+            ? 'G'
+            : clientName
+                .split(' ')
+                .slice(0, 2)
+                .map((w) => w[0])
+                .join('')
+                .toUpperCase();
+
+        return (
+          <tr
+            key={conv.id}
+            onClick={() => router.push(`/dashboard/conversations/${conv.id}`)}
+            className="hover:bg-slate-50/80 transition-colors group cursor-pointer"
+          >
+            {/* Session ID */}
+            <td className="px-6 py-4">
+              <code className="text-xs font-mono text-slate-500 bg-slate-50 px-2 py-1 rounded">
+                {conv.sessionId.slice(0, 8)}
+              </code>
+            </td>
+
+            {/* Client */}
+            <td className="px-6 py-4">
+              <div className="flex items-center gap-3">
+                <div
+                  className={`w-8 h-8 rounded-full ${avatarColor(conv.sessionId)} text-white text-xs font-semibold flex items-center justify-center flex-shrink-0`}
+                >
+                  {initials}
+                </div>
+                <span className="text-sm font-medium text-slate-900">{clientName}</span>
+              </div>
+            </td>
+
+            {/* First message */}
+            <td className="px-6 py-4">
+              <p className="text-sm text-slate-600 truncate max-w-xs">{preview}</p>
+            </td>
+
+            {/* Message count */}
+            <td className="px-6 py-4 text-center">
+              <span className="text-sm font-medium text-slate-700">{conv.messageCount}</span>
+            </td>
+
+            {/* Duration */}
+            <td className="px-6 py-4 text-center">
+              <span className="text-sm text-slate-600">{formatDuration(conv.durationSeconds)}</span>
+            </td>
+
+            {/* Date */}
+            <td className="px-6 py-4 whitespace-nowrap">
+              <span className="text-sm text-slate-600">{formatDate(conv.createdAt)}</span>
+            </td>
+
+            {/* Status */}
+            <td className="px-6 py-4">
+              <StatusBadge status={conv.status} />
+            </td>
+
+            {/* Arrow */}
+            <td className="px-4 py-4">
+              <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-indigo-500 transition-colors" />
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
   );
 }

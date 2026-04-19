@@ -59,6 +59,7 @@ export class LeadService {
         id,
         tenantId: bot.tenantId,
         botId: dto.botId,
+        sessionId: dto.sessionId ?? null,
         name: this.encryption.encrypt(dto.name),
         phone: this.encryption.encrypt(dto.phone),
         message: dto.message ? this.encryption.encrypt(dto.message) : null,

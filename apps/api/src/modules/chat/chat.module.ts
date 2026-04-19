@@ -7,6 +7,7 @@ import { KnowledgeModule } from '../knowledge/knowledge.module';
 import { AiModule } from '../ai/ai.module';
 import { DomainWhitelistGuard } from '../../common/guards/domain-whitelist.guard';
 import { BotThrottleGuard } from '../../common/guards/bot-throttle.guard';
+import { EncryptionService } from '../../common/services/encryption.service';
 
 @Module({
   imports: [KnowledgeModule, AiModule],
@@ -16,6 +17,7 @@ import { BotThrottleGuard } from '../../common/guards/bot-throttle.guard';
     ConversationService,
     DomainWhitelistGuard,
     BotThrottleGuard,
+    EncryptionService,
   ],
   exports: [ChatService],
 })

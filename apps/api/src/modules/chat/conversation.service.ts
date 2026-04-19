@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { EncryptionService } from '../../common/services/encryption.service';
 
 export type ConversationStatus = 'Aktywna' | 'Lead' | 'Zakończona';
 
@@ -39,7 +40,10 @@ interface FindAllOptions {
 
 @Injectable()
 export class ConversationService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly encryption: EncryptionService,
+  ) {}
 
   private getStatus(
     messageCount: number,
@@ -63,25 +67,40 @@ export class ConversationService {
     const dateFrom = new Date();
     dateFrom.setDate(dateFrom.getDate() - daysBack);
 
-    const conversations = await this.prisma.conversation.findMany({
-      where: {
-        bot: { tenantId },
-        createdAt: { gte: dateFrom },
-      },
-      select: {
-        id: true,
-        botId: true,
-        sessionId: true,
-        createdAt: true,
-        _count: { select: { messages: true } },
-        messages: {
-          select: { content: true, role: true, createdAt: true },
-          orderBy: { createdAt: 'asc' },
+    const [conversations, leads] = await Promise.all([
+      this.prisma.conversation.findMany({
+        where: {
+          bot: { tenantId },
+          createdAt: { gte: dateFrom },
         },
-      },
-      orderBy: { createdAt: 'desc' },
-      take: limit,
-    });
+        select: {
+          id: true,
+          botId: true,
+          sessionId: true,
+          createdAt: true,
+          _count: { select: { messages: true } },
+          messages: {
+            select: { content: true, role: true, createdAt: true },
+            orderBy: { createdAt: 'asc' },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+      }),
+      this.prisma.lead.findMany({
+        where: { tenantId, sessionId: { not: null } },
+        select: { sessionId: true, name: true },
+      }),
+    ]);
+
+    // sessionId → decrypted lead name map (leads fetched raw, names encrypted)
+    // We store encrypted names so we pass them through — decryption happens in LeadService
+    // Here we just identify which sessions have a lead by sessionId
+    const leadBySession = new Map<string, string>(
+      leads
+        .filter((l) => l.sessionId !== null)
+        .map((l) => [l.sessionId as string, l.name]),
+    );
 
     return conversations
       .map((c) => {
@@ -89,7 +108,18 @@ export class ConversationService {
         const firstMsg = userMessages[0]?.content ?? null;
         const lastMsg = c.messages[c.messages.length - 1]?.content ?? null;
 
-        const status = this.getStatus(c._count.messages, false, c.createdAt);
+        const encryptedLeadName = leadBySession.get(c.sessionId) ?? null;
+        const leadExists = encryptedLeadName !== null;
+        let leadName: string | null = null;
+        if (encryptedLeadName) {
+          try {
+            leadName = this.encryption.decrypt(encryptedLeadName);
+          } catch {
+            leadName = null;
+          }
+        }
+
+        const status = this.getStatus(c._count.messages, leadExists, c.createdAt);
         const durationSeconds =
           userMessages.length > 0
             ? Math.floor(
@@ -110,7 +140,7 @@ export class ConversationService {
           updatedAt: c.messages[c.messages.length - 1]?.createdAt || c.createdAt,
           durationSeconds,
           status,
-          leadName: null, // Will be populated from leads if schema extended
+          leadName,
         };
       })
       .filter((c) => {
