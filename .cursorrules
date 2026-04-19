@@ -49,7 +49,7 @@ SaaS AI chatbot dla polskich mikrofirm usługowych. Widget na stronie klienta �
 `beauty: #EC4899` | `health: #06B6D4` | `food: #F97316` | `auto: #64748B`
 `text: #0F172A` | `bg: #F8FAFC`
 
-Mów: **"bot"** lub **"asystentka która odpowiada za Ciebie"** — NIE "chatbot AI".
+Mów: **"bot"** — NIE "chatbot AI", NIE "asystentka" (kojarzy się tylko z branżą beauty, a Botiko obsługuje wiele branż). Bot NIE obsługuje rezerwacji — odsyła do Booksy/Calendly.
 
 ---
 
