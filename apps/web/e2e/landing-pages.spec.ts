@@ -1,14 +1,14 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Page, type ConsoleMessage } from '@playwright/test';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
 /** Collect browser console errors during the action. */
 async function withConsoleErrors(
   page: Page,
-  action: () => Promise<void>,
+  action: () => Promise<unknown>,
 ): Promise<string[]> {
   const errors: string[] = [];
-  const handler = (msg: Parameters<Parameters<Page['on']>[1]>[0]) => {
+  const handler = (msg: ConsoleMessage) => {
     if (msg.type() === 'error') errors.push(msg.text());
   };
   page.on('console', handler);
