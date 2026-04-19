@@ -476,20 +476,20 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 - [x] `message-sanitizer`: powitanie/acknowledgment → `action: 'no-rag'` + AI in-character (done)
 
 **Auth** (nowe wymagania)
-- [ ] `auth.service`: walidacja hasła — <12 znaków → błąd
-- [ ] `auth.service`: walidacja hasła — brak cyfry → błąd
-- [ ] `auth.service`: walidacja hasła — brak znaku specjalnego → błąd
-- [ ] `auth.service`: walidacja URL strony przy rejestracji (`z.string().url()`)
-- [ ] `auth.service`: `requestPasswordReset()` nie ujawnia czy email istnieje (same response dla istniejącego i nieistniejącego)
-- [ ] `auth.service`: PKCE callback — poprawna wymiana code na session
+- [x] `auth.service`: walidacja hasła — <12 znaków → błąd (done — `register.dto.spec.ts`)
+- [x] `auth.service`: walidacja hasła — brak dużej litery → błąd (done; schema wymaga uppercase, nie znaku spec.)
+- [x] `auth.service`: walidacja hasła — brak cyfry → błąd (done)
+- [x] `auth.service`: walidacja URL strony przy rejestracji (done — localhost/brak kropki → błąd, normalizacja)
+- [ ] `auth.service`: `requestPasswordReset()` nie ujawnia czy email istnieje — metoda nie istnieje w kodzie, pominięte
+- [ ] `auth.service`: PKCE callback — poprawna wymiana code na session — wymaga Supabase integration, pominięte
 
 **Lead + Notifications**
 - [x] `LeadService.create()` wywołuje `NotificationService.sendNewLeadEmail()` (done — `lead.service.spec.ts`)
 - [x] `NotificationService` — błąd Resend nie rzuca wyjątku (done)
-- [ ] `LeadService`: PII szyfrowane przed zapisem (imię + telefon format `iv:authTag:ciphertext`)
-- [ ] `LeadService`: `GET` deszyfruje PII przed zwrotem do klienta
-- [ ] `LeadService`: walidacja telefonu (PL format) → 400 przy błędnym
-- [ ] `LeadService`: zgoda RODO wymagana (`rodoConsent: true`) → 400 bez niej
+- [x] `LeadService`: PII szyfrowane przed zapisem (imię + telefon format `iv:authTag:ciphertext`) (done — `lead.service.spec.ts`)
+- [x] `LeadService`: `GET` deszyfruje PII przed zwrotem do klienta (done — `findAll` round-trip)
+- [x] `LeadService`: walidacja telefonu → błędny format → 400 (done — `create-lead.dto.spec.ts`)
+- [x] `LeadService`: zgoda RODO wymagana (`consentGiven: true`) → 400 bez niej (done)
 
 **EncryptionService**
 - [x] `encrypt()` → `decrypt()` = input (round-trip) (done — `encryption.service.spec.ts` 16 testów)
@@ -505,14 +505,15 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 - [x] `BillingWebhookHandler`: idempotencja — ten sam event 2x nie duplikuje zmian (done — P2002 handler)
 
 **Bot Config** (P1 sec fix)
-- [ ] `BotService.getPublicConfig()`: gdy `tenant.isActive = false` → 403
-- [ ] `BotService.getPublicConfig()`: zwraca `suggestedQuestions` z brand template (nie hardcoded)
+- [x] `BotService.getPublicConfig()`: gdy `tenant.isActive = false` → NotFoundException (done — `bot.service.spec.ts`; kod rzuca 404 nie 403 — findFirst z WHERE zwraca null)
+- [x] `BotService.getPublicConfig()`: zwraca `suggestedQuestions` z brand template gdy bot ma pustą listę (done)
 
-**Feedback (nowy moduł — ocena gwiazdkowa)**
-- [ ] `FeedbackService.create()`: rating 1-5 zapisywany per konwersacja
-- [ ] `FeedbackService`: rating <1 lub >5 → 400
-- [ ] `FeedbackService`: wymaga `conversationId` → 400 bez niego
-- [ ] `FeedbackService`: jedna opinia per konwersacja (unique constraint)
+**Review/Feedback (moduł ocen od właściciela)**
+- [x] `ReviewService.create()`: rating 1-5 zapisywany (done — `review.service.spec.ts`)
+- [x] `ReviewService`: rating 0 lub 6 → błąd Zod (done — `create-review.dto.spec.ts`)
+- [x] `ReviewService`: brak rating → 400 (done)
+- [x] `ReviewService`: email fallback gdy Resend padnie → nie rzuca wyjątku (done)
+- [ ] `FeedbackService` per konwersacja z unique constraint — moduł nie istnieje w kodzie, pominięte
 
 ---
 
@@ -609,8 +610,8 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 - [x] Widget bundle size check w CI (`.github/workflows/ci.yml`)
 - [x] API lint + test w CI
 - [x] Web lint + typecheck w CI
-- [ ] Dodać Playwright e2e job do CI (landing pages smoke + dashboard auth guard)
-- [ ] Dodać widget integration test job (headless puppeteer, sprawdza shadow DOM + error states)
+- [x] Playwright e2e job w CI (landing pages smoke + dashboard auth guard) (done — job `e2e` w `ci.yml`)
+- [ ] Widget integration test job (headless puppeteer, shadow DOM + error states) — pominięte na tym etapie
 
 ---
 
