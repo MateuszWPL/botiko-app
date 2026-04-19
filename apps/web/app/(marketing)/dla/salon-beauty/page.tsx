@@ -1,15 +1,17 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
+import { Moon, PhoneOff, RefreshCw } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Bot dla salonu beauty — odpowiada klientkom 24/7 i zbiera leady',
   description:
-    'Botiko dla salonów urody: manicure, stylizacja rzęs, brwi, kosmetologia. Bot odpowiada o 22:00, zbiera numer i odsyła do Booksy. 149 zł/mies., 14 dni za darmo.',
+    'Botiko dla salonów urody: manicure, stylizacja rzęs, brwi, kosmetologia. Bot odpowiada o 22:00, zbiera numer i odsyła do Booksy. 99 zł/mies., 14 dni za darmo.',
   alternates: { canonical: 'https://botiko.pl/dla/salon-beauty' },
   openGraph: {
     title: 'Bot dla salonu beauty — odpowiada klientkom 24/7',
     description:
-      'Klientki piszą o 22:00. Bot odpowiada, zbiera telefon i odsyła do rezerwacji. 149 zł/mies.',
+      'Klientki piszą o 22:00. Bot odpowiada, zbiera telefon i odsyła do rezerwacji. 99 zł/mies.',
     url: 'https://botiko.pl/dla/salon-beauty',
     type: 'website',
   },
@@ -28,28 +30,30 @@ const JSON_LD_SERVICE = {
   serviceType: 'Customer service automation',
   offers: {
     '@type': 'Offer',
-    price: '149',
+    price: '99',
     priceCurrency: 'PLN',
   },
 };
 
+const PAIN_ICON_CLASS = 'w-5 h-5 text-pink-500';
+
 const PAIN_POINTS = [
   {
-    icon: '🌙',
+    Icon: Moon,
     title: 'Klientki piszą wieczorem',
     text: 'Najwięcej wiadomości o manicure i rzęsy spływa między 20:00 a 23:00. Ty już nie pracujesz, a klientka zapisuje się do sąsiedniej konkurencji.',
   },
   {
-    icon: '💅',
+    Icon: PhoneOff,
     title: 'Zabieg = nie odbierasz',
     text: 'Podczas manicure hybrydowego, henny brwi czy makijażu nie możesz przerwać. Telefon dzwoni 3× — klientka myśli, że salon zamknięty.',
   },
   {
-    icon: '🔁',
+    Icon: RefreshCw,
     title: 'Te same pytania co dzień',
     text: '„Ile kosztuje hybryda?", „Macie wolne w sobotę?", „Jak trafić?" — codziennie odpowiadasz 20× na te same rzeczy.',
   },
-];
+] as const;
 
 const FEATURES = [
   'Odpowiada na pytania o cennik (hybryda, żel, manicure japoński, pedicure)',
@@ -94,6 +98,28 @@ export default function BeautyLandingPage() {
         className="relative overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #831843 0%, #9d174d 30%, #be185d 70%, #EC4899 100%)' }}
       >
+        {/* Hero image (right) + left gradient cover */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden>
+          <div className="absolute inset-0">
+            <Image
+              src="/botik-beauty.webp"
+              alt=""
+              fill
+              priority
+              className="object-cover object-right opacity-95"
+              sizes="100vw"
+            />
+          </div>
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(90deg, rgba(131,24,67,1) 0%, rgba(157,23,77,1) 34%, rgba(190,24,93,0.92) 52%, rgba(236,72,153,0.0) 78%)',
+            }}
+          />
+          <div className="absolute inset-0 bg-black/10" />
+        </div>
+
         <div
           className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full opacity-20"
           style={{ background: 'radial-gradient(circle, #F9A8D4, transparent 70%)' }}
@@ -103,24 +129,49 @@ export default function BeautyLandingPage() {
           style={{ background: 'radial-gradient(circle, #FBBF24, transparent 70%)' }}
         />
 
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-20">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 mb-8 text-sm text-pink-100 hover:text-white transition-colors"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M19 12H5M12 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Botiko.pl
-          </Link>
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-20 z-10">
+          <div className="mb-8 w-full min-w-0">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-sm text-pink-100 hover:text-white transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 12H5M12 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Botiko.pl
+            </Link>
 
-          <span
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
-            style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)', color: '#FCE7F3' }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-pink-200 animate-pulse" />
-            Dla salonów urody · paznokcie · rzęsy · brwi · kosmetologia
-          </span>
+            <span
+              className="mt-4 block w-fit max-w-full rounded-full overflow-hidden"
+              style={{
+                background: 'rgba(251, 207, 232, 0.18)',
+                border: '1px solid rgba(252, 231, 243, 0.45)',
+                color: '#FDF2F8',
+              }}
+            >
+              <span className="inline-flex items-center gap-2 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-semibold min-w-0 max-w-full leading-snug">
+                <svg
+                  className="shrink-0 text-pink-100 w-3.5 h-3.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <circle cx="6" cy="6" r="3" />
+                  <circle cx="6" cy="18" r="3" />
+                  <line x1="20" y1="4" x2="8.12" y2="15.88" />
+                  <line x1="14.47" y1="14.48" x2="20" y2="20" />
+                  <line x1="8.12" y1="8.12" x2="12" y2="12" />
+                </svg>
+                <span className="min-w-0 text-left">
+                  Dla salonów urody · paznokcie · rzęsy · brwi · kosmetologia
+                </span>
+              </span>
+            </span>
+          </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.08] tracking-tight mb-6 max-w-3xl">
             Klientka pisze o hybrydę
@@ -163,7 +214,7 @@ export default function BeautyLandingPage() {
               <p className="text-pink-200 text-xs mt-1">Konfiguracja cennika</p>
             </div>
             <div>
-              <p className="text-3xl font-extrabold text-white">149 zł</p>
+              <p className="text-3xl font-extrabold text-white">99 zł</p>
               <p className="text-pink-200 text-xs mt-1">Miesięcznie, bez umowy</p>
             </div>
           </div>
@@ -189,16 +240,21 @@ export default function BeautyLandingPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">
-            {PAIN_POINTS.map((p) => (
-              <div
-                key={p.title}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow"
-              >
-                <div className="text-3xl mb-3">{p.icon}</div>
-                <h3 className="font-bold text-text mb-2">{p.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{p.text}</p>
-              </div>
-            ))}
+            {PAIN_POINTS.map((p) => {
+              const { Icon } = p;
+              return (
+                <div
+                  key={p.title}
+                  className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow"
+                >
+                  <div className="mb-3" aria-hidden>
+                    <Icon className={PAIN_ICON_CLASS} strokeWidth={2} />
+                  </div>
+                  <h3 className="font-bold text-text mb-2">{p.title}</h3>
+                  <p className="text-slate-500 text-sm leading-relaxed">{p.text}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -293,7 +349,7 @@ export default function BeautyLandingPage() {
             </p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text">Ile klientek miesięcznie = Botiko się zwraca?</h2>
             <p className="mt-3 text-slate-500">
-              Koszt Botiko to <strong>149 zł/mies</strong>. Jedna dogryziona klientka zwraca cały koszt.
+              Koszt Botiko to <strong>99 zł/mies</strong>. Jedna dogryziona klientka zwraca cały koszt.
             </p>
           </div>
 
@@ -314,7 +370,7 @@ export default function BeautyLandingPage() {
                     <td className="px-5 py-4 text-slate-600">{row.revenue} zł</td>
                     <td className="px-5 py-4 text-slate-500 text-xs">{row.note}</td>
                     <td className="px-5 py-4 text-right font-extrabold text-emerald-600">
-                      +{row.revenue - 149} zł
+                      +{row.revenue - 99} zł
                     </td>
                   </tr>
                 ))}
@@ -355,8 +411,58 @@ export default function BeautyLandingPage() {
                   <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </Link>
-              <p className="mt-5 text-pink-200 text-xs">
-                ✓ Bez karty kredytowej &nbsp;·&nbsp; ✓ 149 zł/mies. &nbsp;·&nbsp; ✓ Cancel w każdej chwili
+              <p className="mt-5 text-pink-200 text-xs flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+                <span className="inline-flex items-center gap-1.5">
+                  <svg
+                    className="w-3 h-3 shrink-0 text-pink-100"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Bez karty kredytowej
+                </span>
+                <span className="text-pink-300/70" aria-hidden>
+                  ·
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <svg
+                    className="w-3 h-3 shrink-0 text-pink-100"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  99 zł/mies.
+                </span>
+                <span className="text-pink-300/70" aria-hidden>
+                  ·
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <svg
+                    className="w-3 h-3 shrink-0 text-pink-100"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Cancel w każdej chwili
+                </span>
               </p>
             </div>
           </div>

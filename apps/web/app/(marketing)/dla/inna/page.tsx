@@ -4,12 +4,12 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Bot dla Twojej firmy usługowej — odpowiada klientom 24/7 i zbiera leady',
   description:
-    'Botiko dla każdej firmy usługowej: fryzjer, fizjoterapeuta, trener, fotograf, studio, kancelaria. Bot odpowiada na pytania i zbiera kontakty 24/7. 149 zł/mies., 14 dni za darmo.',
+    'Botiko dla każdej firmy usługowej: fryzjer, fizjoterapeuta, trener, fotograf, studio, kancelaria. Bot odpowiada na pytania i zbiera kontakty 24/7. 99 zł/mies., 14 dni za darmo.',
   alternates: { canonical: 'https://botiko.pl/dla/inna' },
   openGraph: {
     title: 'Bot dla Twojej firmy usługowej — odpowiada klientom 24/7',
     description:
-      'Klienci piszą wieczorem. Bot odpowiada, zbiera kontakt i odsyła do Booksy lub Twojego systemu. 149 zł/mies.',
+      'Klienci piszą wieczorem. Bot odpowiada, zbiera kontakt i odsyła do Booksy lub Twojego systemu. 99 zł/mies.',
     url: 'https://botiko.pl/dla/inna',
     type: 'website',
   },
@@ -28,7 +28,7 @@ const JSON_LD_SERVICE = {
   serviceType: 'Customer service automation',
   offers: {
     '@type': 'Offer',
-    price: '149',
+    price: '99',
     priceCurrency: 'PLN',
   },
 };
@@ -320,7 +320,7 @@ export default function InnaLandingPage() {
                   <p className="text-violet-300 text-xs mt-1">Konfiguracja oferty</p>
                 </div>
                 <div>
-                  <p className="text-3xl font-extrabold text-white">149 zł</p>
+                  <p className="text-3xl font-extrabold text-white">99 zł</p>
                   <p className="text-violet-300 text-xs mt-1">Miesięcznie, bez umowy</p>
                 </div>
               </div>
@@ -541,7 +541,7 @@ export default function InnaLandingPage() {
               Ilu klientów miesięcznie = Botiko się zwraca?
             </h2>
             <p className="mt-3 text-slate-500">
-              Koszt Botiko to <strong>149 zł/mies</strong>. W większości branż jeden lead z wieczoru zwraca cały koszt.
+              Koszt Botiko to <strong>99 zł/mies</strong>. W większości branż jeden lead z wieczoru zwraca cały koszt.
             </p>
           </div>
 
@@ -562,7 +562,7 @@ export default function InnaLandingPage() {
                     <td className="px-5 py-4 text-slate-600">{row.revenue} zł</td>
                     <td className="px-5 py-4 text-slate-500 text-xs">{row.note}</td>
                     <td className="px-5 py-4 text-right font-extrabold text-emerald-600">
-                      +{row.revenue - 149} zł
+                      +{row.revenue - 99} zł
                     </td>
                   </tr>
                 ))}
@@ -654,7 +654,7 @@ export default function InnaLandingPage() {
                 </svg>
               </Link>
               <p className="mt-5 text-violet-300 text-xs flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-                {['Bez karty kredytowej', '149 zł/mies.', 'Cancel w każdej chwili'].map((label) => (
+                {['Bez karty kredytowej', '99 zł/mies.', 'Cancel w każdej chwili'].map((label) => (
                   <span key={label} className="inline-flex items-center gap-1.5">
                     <svg
                       className="w-3 h-3 shrink-0 text-violet-200"

@@ -248,7 +248,7 @@ text: '#0F172A'     bg: '#F8FAFC'
 
 NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z branżą beauty, a Botiko obsługuje wiele branż. Bot NIE obsługuje rezerwacji — odsyła do Booksy/Calendly.
 - Ból: "tracisz klientki o 22:00 bo nie odbierasz"
-- ROI: "1 klientka = 150-300 zł. Bot = 149 zł/mies."
+- ROI: "1 klientka = 150-300 zł. Bot = 99 zł/mies."
 
 ## Aktualny stan projektu (2026-04-14)
 
@@ -258,7 +258,7 @@ NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z bran
 - Core bot (RAG + OpenAI) z pełnym pre-processingiem wiadomości
 - Widget embedded (<12KB, Shadow DOM, działa na WordPress/Shopify/Squarespace/Webflow/GTM)
 - Dashboard (8 stron: overview, leads, conversations, knowledge, settings, embed, billing)
-- Stripe billing (STARTER 149 zł/mies., 14 dni trial, webhooks)
+- Stripe billing (STARTER 99 zł/mies., 14 dni trial, webhooks)
 - Landing page + blog SEO + formularz kontaktowy
 - Security hardening (CORS, UUID validation, HTML escaping, HTTP error handling)
 

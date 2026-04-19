@@ -36,7 +36,7 @@ const CheckIcon = () => (
 );
 
 export default function Pricing() {
-  const planCost = 149;
+  const planCost = 99;
 
   // targetRef — gdzie chcemy dojść (zmienia auto-cycle lub user)
   const targetRef = useRef({ clients: PRESETS[0].clients, avg: PRESETS[0].avg });
@@ -108,7 +108,7 @@ export default function Pricing() {
         <ScrollReveal className="text-center mb-14">
           <p className="text-sm font-semibold text-brand uppercase tracking-widest mb-3">Cennik</p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text">
-            149 zł miesięcznie.{' '}
+            99 zł miesięcznie.{' '}
             <span className="gradient-text">Wszystko w środku.</span>
           </h2>
           <p className="mt-4 text-lg text-slate-500">
@@ -133,11 +133,11 @@ export default function Pricing() {
                   14 dni za darmo · bez karty kredytowej
                 </span>
 
-                <h3 className="text-6xl font-extrabold text-white mb-1">149 zł</h3>
+                <h3 className="text-6xl font-extrabold text-white mb-1">99 zł</h3>
                 <p className="text-indigo-200 text-sm mb-1">miesięcznie · bez umowy · cancel kiedy chcesz</p>
 
                 <div className="mt-3 mb-2 inline-block bg-white/15 rounded-xl px-4 py-2">
-                  <p className="text-white text-sm font-semibold">= 4,97 zł dziennie</p>
+                  <p className="text-white text-sm font-semibold">= 3,30 zł dziennie</p>
                   <p className="text-indigo-200 text-xs">1 klientka w miesiącu zwraca cały koszt</p>
                 </div>
               </div>
@@ -194,7 +194,7 @@ export default function Pricing() {
                     live
                   </span>
                 </div>
-                <h3 className="text-2xl font-bold text-text">Czy 149 zł się zwróci?</h3>
+                <h3 className="text-2xl font-bold text-text">Czy 99 zł się zwróci?</h3>
                 <p className="text-slate-500 text-sm mt-1">Przeciągnij suwaki i sprawdź swój zwrot z inwestycji</p>
               </div>
 

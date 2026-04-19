@@ -79,7 +79,7 @@ export default function OpenGraphImage() {
             fontWeight: 700,
           }}
         >
-          14 dni za darmo • 149 zł/mies. • Bez umowy
+          14 dni za darmo • 99 zł/mies. • Bez umowy
         </div>
       </div>
     ),

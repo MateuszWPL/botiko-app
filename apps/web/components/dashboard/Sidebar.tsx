@@ -105,7 +105,7 @@ export function Sidebar() {
         className={`hidden md:flex flex-col h-screen sticky top-0 flex-shrink-0 bg-gradient-to-b from-slate-950 to-slate-900 border-r border-slate-800/50 overflow-hidden transition-[width] duration-300 ease-in-out ${sidebarWidth}`}
       >
         {/* Logo */}
-        <div className="flex items-center justify-between gap-2 p-4 border-b border-slate-800/60 flex-shrink-0">
+        <div className="h-[65px] flex items-center justify-between gap-2 px-4 border-b border-slate-800/60 flex-shrink-0">
           {!collapsed && (
             <div className="flex items-center gap-3 min-w-0">
               <Image
@@ -203,10 +203,10 @@ export function Sidebar() {
             {!collapsed && (
               <div className="min-w-0">
                 <p className="text-xs font-semibold text-slate-300">Starter</p>
-                <p className="text-xs text-slate-500 truncate">149 zł / mies.</p>
+                <p className="text-xs text-slate-500 truncate">99 zł / mies.</p>
               </div>
             )}
-            <Tooltip label="Plan Starter · 149 zł/mies." show={collapsed} />
+            <Tooltip label="Plan Starter · 99 zł/mies." show={collapsed} />
           </div>
 
           <div className="relative group/tip">
@@ -318,7 +318,7 @@ export function Sidebar() {
               </div>
               <div className="min-w-0">
                 <p className="text-xs font-semibold text-slate-300">Plan Starter</p>
-                <p className="text-xs text-slate-500">149 zł / mies.</p>
+                <p className="text-xs text-slate-500">99 zł / mies.</p>
               </div>
             </div>
             <button

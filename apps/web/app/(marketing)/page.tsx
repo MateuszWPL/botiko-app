@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych',
     description:
-      'Klienci piszą o 22:00. Bot odpowiada za Ciebie. 149 zł/mies. 14 dni za darmo.',
+      'Klienci piszą o 22:00. Bot odpowiada za Ciebie. 99 zł/mies. 14 dni za darmo.',
     url: 'https://botiko.pl',
     siteName: 'Botiko.pl',
     images: [
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych',
     description:
-      'Klienci piszą o 22:00. Bot odpowiada za Ciebie. 149 zł/mies. 14 dni za darmo.',
+      'Klienci piszą o 22:00. Bot odpowiada za Ciebie. 99 zł/mies. 14 dni za darmo.',
     images: ['https://botiko.pl/twitter-image'],
   },
   alternates: {
@@ -78,7 +78,7 @@ const JSON_LD_LOCAL_BUSINESS = {
   url: 'https://botiko.pl',
   email: 'kontakt@botiko.pl',
   image: 'https://botiko.pl/BotikoLogo.png',
-  priceRange: '149 PLN',
+  priceRange: '99 PLN',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Białystok',
@@ -100,7 +100,7 @@ const JSON_LD_SOFTWARE = {
   offers: {
     '@type': 'Offer',
     name: 'Botiko',
-    price: '149',
+    price: '99',
     priceCurrency: 'PLN',
     description: '14 dni za darmo, bez karty kredytowej',
   },
@@ -133,7 +133,7 @@ const JSON_LD_FAQ = {
       name: 'Ile kosztuje Botiko?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Botiko kosztuje 149 zł miesięcznie. Każde konto ma 14 dni za darmo bez karty kredytowej. Brak umowy długoterminowej — możesz anulować kiedy chcesz.',
+        text: 'Botiko kosztuje 99 zł miesięcznie. Każde konto ma 14 dni za darmo bez karty kredytowej. Brak umowy długoterminowej — możesz anulować kiedy chcesz.',
       },
     },
     {

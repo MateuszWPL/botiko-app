@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     siteName: 'Botiko.pl',
     title: 'Botiko.pl — Bot obsługi klienta 24/7',
     description:
-      'Klienci piszą po godzinach. Bot odpowiada za Ciebie. 1 klient = 150–300 zł. Bot = 149 zł/mies.',
+      'Klienci piszą po godzinach. Bot odpowiada za Ciebie. 1 klient = 150–300 zł. Bot = 99 zł/mies.',
     images: [
       {
         url: '/opengraph-image',

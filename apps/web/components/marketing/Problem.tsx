@@ -54,7 +54,7 @@ const PAINS = [
     description:
       'Sąsiedni salon, warsztat czy restauracja ma bota na stronie. Klient pisze o 23:00 — ta firma dostaje rezerwację, Ty nie.',
     stat: '1 klient',
-    statLabel: '= 150–300 zł. Bot kosztuje 149 zł/mies.',
+    statLabel: '= 150–300 zł. Bot kosztuje 99 zł/mies.',
     color: '#F97316',
     bg: '#FFF7ED',
     border: '#FED7AA',
