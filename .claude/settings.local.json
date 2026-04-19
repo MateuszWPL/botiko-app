@@ -31,7 +31,14 @@
       "Bash(pnpm tsc:*)",
       "Bash(timeout 10 pnpm start:dev)",
       "Bash(find D:\\\\\\\\Prywatne\\\\\\\\Botiko.pl\\\\\\\\Aplikacja\\\\\\\\apps\\\\\\\\api\\\\\\\\src\\\\\\\\common -type f -name \"*.ts\")",
-      "Bash(pnpm run *)"
+      "Bash(pnpm run *)",
+      "Bash(Remove-Item -Recurse -Force \"D:/Prywatne/Botiko.pl/Aplikacja/apps/web/.next/types\")",
+      "Bash(xargs head *)",
+      "Bash(npx prisma *)",
+      "Bash(pnpm exec *)",
+      "Bash(pnpm dev *)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(taskkill //F //FI \"WINDOWTITLE eq *next dev*\")"
     ]
   }
 }

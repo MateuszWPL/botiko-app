@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AuthLeftPanel } from '../../../components/auth/AuthLeftPanel';
+import { PasswordRequirements } from '../../../components/auth/PasswordRequirements';
+import { isPasswordValid } from '../../../lib/password';
 
 const INDUSTRIES = [
   {
@@ -92,6 +94,12 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (!isPasswordValid(form.password)) {
+      setError('Hasło nie spełnia wymagań bezpieczeństwa');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -197,7 +205,7 @@ export default function RegisterPage() {
                   required
                   minLength={12}
                   autoComplete="new-password"
-                  placeholder="min. 12 znaków, wielka litera, cyfra"
+                  placeholder="min. 12 znaków"
                   className="w-full px-4 py-3 pr-11 border border-slate-200 rounded-xl text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
                 />
                 <button
@@ -213,7 +221,7 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
-              <p className="text-xs text-slate-400 mt-1.5">Min. 12 znaków, wielka litera i cyfra</p>
+              <PasswordRequirements password={form.password} />
             </div>
 
             {error && (

@@ -35,7 +35,11 @@ export const updateBotSchema = z
     businessHoursStart: z.number().int().min(0).max(23).nullable().optional(),
     businessHoursEnd: z.number().int().min(0).max(23).nullable().optional(),
     businessDays: z.array(z.number().int().min(0).max(6)).optional(),
-    businessSchedule: z.array(dayScheduleSchema).length(7).optional().nullable(),
+    businessSchedule: z
+      .array(dayScheduleSchema)
+      .length(7)
+      .optional()
+      .nullable(),
     personality: z.string().max(1000).trim().optional().nullable(),
     companyName: z.string().max(100).trim().optional().nullable(),
     companyPhone: z.string().max(30).trim().optional().nullable(),

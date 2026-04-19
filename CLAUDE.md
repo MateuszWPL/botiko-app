@@ -246,7 +246,7 @@ text: '#0F172A'     bg: '#F8FAFC'
 
 ## Język marketingowy
 
-NIE mów "chatbot AI". Mów **"asystentka która odpowiada za Ciebie"** lub po prostu **"bot"** — "asystentka" kojarzy się tylko z branżą beauty.
+NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z branżą beauty, a Botiko obsługuje wiele branż. Bot NIE obsługuje rezerwacji — odsyła do Booksy/Calendly.
 - Ból: "tracisz klientki o 22:00 bo nie odbierasz"
 - ROI: "1 klientka = 150-300 zł. Bot = 149 zł/mies."
 

@@ -16,6 +16,13 @@ export interface TrialNotificationData {
   daysLeft: number; // 3, 1, or 0 (expired)
 }
 
+export interface ReviewNotificationData {
+  rating: number;
+  message?: string;
+  userName: string;
+  userEmail: string;
+}
+
 export interface ContactFormData {
   topic: 'DEMO' | 'WDROZENIE' | 'CENNIK' | 'WSPOLPRACA' | 'INNE';
   message: string;
@@ -139,6 +146,68 @@ export class NotificationService {
         err,
       );
     }
+  }
+
+  async sendReviewEmail(data: ReviewNotificationData): Promise<void> {
+    if (!this.resend) return;
+
+    const stars = '★'.repeat(data.rating) + '☆'.repeat(5 - data.rating);
+    const safeName = escapeHtml(data.userName);
+    const safeEmail = escapeHtml(data.userEmail);
+    const safeMessage = data.message ? escapeHtml(data.message) : '';
+    const date = new Date().toLocaleString('pl-PL', {
+      timeZone: 'Europe/Warsaw',
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+
+    const html = `<!DOCTYPE html>
+<html lang="pl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+        <tr>
+          <td style="background:#6366F1;border-radius:10px 10px 0 0;padding:24px 28px;">
+            <p style="margin:0;font-size:13px;color:#c7d2fe;letter-spacing:0.05em;text-transform:uppercase;">Botiko.pl</p>
+            <h1 style="margin:6px 0 0;font-size:20px;font-weight:700;color:#fff;">Nowa opinia od klienta</h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#fff;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 10px 10px;padding:28px;">
+            <p style="margin:0 0 16px;font-size:28px;letter-spacing:4px;">${stars}</p>
+            <table width="100%" cellpadding="0" cellspacing="0"
+              style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;font-size:14px;margin-bottom:16px;">
+              <tr style="background:#f8fafc;">
+                <td style="padding:12px 16px;color:#64748b;width:100px;border-bottom:1px solid #e2e8f0;">Firma</td>
+                <td style="padding:12px 16px;font-weight:600;color:#0f172a;border-bottom:1px solid #e2e8f0;">${safeName}</td>
+              </tr>
+              <tr>
+                <td style="padding:12px 16px;color:#64748b;border-bottom:1px solid #e2e8f0;">E-mail</td>
+                <td style="padding:12px 16px;color:#0f172a;border-bottom:1px solid #e2e8f0;">${safeEmail}</td>
+              </tr>
+              <tr style="background:#f8fafc;">
+                <td style="padding:12px 16px;color:#64748b;">Ocena</td>
+                <td style="padding:12px 16px;font-weight:700;color:#6366F1;">${data.rating}/5</td>
+              </tr>
+            </table>
+            ${safeMessage ? `<div style="padding:14px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:16px;"><p style="margin:0 0 6px;font-size:13px;color:#64748b;">Komentarz</p><p style="margin:0;font-size:14px;color:#0f172a;line-height:1.6;">${safeMessage}</p></div>` : ''}
+            <p style="margin:0;font-size:13px;color:#94a3b8;text-align:center;border-top:1px solid #f1f5f9;padding-top:20px;">${escapeHtml(date)}</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+    await this.resend.emails.send({
+      from: `Botiko.pl <${env.RESEND_FROM_EMAIL}>`,
+      to: 'kontakt@botiko.pl',
+      subject: `Nowa opinia ${data.rating}/5 — ${data.userName}`,
+      html,
+    });
   }
 
   async sendContactEmail(data: ContactFormData): Promise<void> {

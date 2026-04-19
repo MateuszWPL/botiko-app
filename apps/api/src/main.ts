@@ -24,7 +24,8 @@ import cors from 'cors';
  * not the full request, so path-differentiation requires a raw Express
  * middleware applied before NestJS's CORS handler.
  */
-const WIDGET_PATH = /^\/api\/v1\/(chat|leads|bot\/[^/]+\/config|contact|billing\/webhook)/;
+const WIDGET_PATH =
+  /^\/api\/v1\/(chat|leads|bot\/[^/]+\/config|contact|billing\/webhook)/;
 
 function buildCorsMiddleware(appUrl: string) {
   const openCors = cors({ origin: true, credentials: true });

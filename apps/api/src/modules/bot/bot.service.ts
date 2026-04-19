@@ -258,23 +258,46 @@ export class BotService {
       data: {
         ...(dto.name !== undefined && { name: dto.name }),
         ...(dto.welcomeMsg !== undefined && { welcomeMsg: dto.welcomeMsg }),
-        ...(dto.primaryColor !== undefined && { primaryColor: dto.primaryColor }),
-        ...(dto.allowedDomains !== undefined && { allowedDomains: dto.allowedDomains }),
+        ...(dto.primaryColor !== undefined && {
+          primaryColor: dto.primaryColor,
+        }),
+        ...(dto.allowedDomains !== undefined && {
+          allowedDomains: dto.allowedDomains,
+        }),
         ...(dto.isActive !== undefined && { isActive: dto.isActive }),
-        ...(dto.offlineMessage !== undefined && { offlineMessage: dto.offlineMessage }),
-        ...(dto.businessHoursStart !== undefined && { businessHoursStart: dto.businessHoursStart }),
-        ...(dto.businessHoursEnd !== undefined && { businessHoursEnd: dto.businessHoursEnd }),
-        ...(dto.businessDays !== undefined && { businessDays: dto.businessDays }),
+        ...(dto.offlineMessage !== undefined && {
+          offlineMessage: dto.offlineMessage,
+        }),
+        ...(dto.businessHoursStart !== undefined && {
+          businessHoursStart: dto.businessHoursStart,
+        }),
+        ...(dto.businessHoursEnd !== undefined && {
+          businessHoursEnd: dto.businessHoursEnd,
+        }),
+        ...(dto.businessDays !== undefined && {
+          businessDays: dto.businessDays,
+        }),
         ...(dto.businessSchedule !== undefined && {
-          businessSchedule: dto.businessSchedule === null ? Prisma.DbNull : dto.businessSchedule,
+          businessSchedule:
+            dto.businessSchedule === null
+              ? Prisma.DbNull
+              : dto.businessSchedule,
         }),
         ...legacyFields,
         ...(dto.personality !== undefined && { personality: dto.personality }),
         ...(dto.companyName !== undefined && { companyName: dto.companyName }),
-        ...(dto.companyPhone !== undefined && { companyPhone: dto.companyPhone }),
-        ...(dto.companyAddress !== undefined && { companyAddress: dto.companyAddress }),
-        ...(dto.suggestedQuestions !== undefined && { suggestedQuestions: dto.suggestedQuestions }),
-        ...(dto.leadFormAfterMessages !== undefined && { leadFormAfterMessages: dto.leadFormAfterMessages }),
+        ...(dto.companyPhone !== undefined && {
+          companyPhone: dto.companyPhone,
+        }),
+        ...(dto.companyAddress !== undefined && {
+          companyAddress: dto.companyAddress,
+        }),
+        ...(dto.suggestedQuestions !== undefined && {
+          suggestedQuestions: dto.suggestedQuestions,
+        }),
+        ...(dto.leadFormAfterMessages !== undefined && {
+          leadFormAfterMessages: dto.leadFormAfterMessages,
+        }),
         ...(dto.avatarEmoji !== undefined && { avatarEmoji: dto.avatarEmoji }),
       },
     });

@@ -56,10 +56,10 @@ type DropItem = { label: string; href: string; desc: string; color: string; icon
 
 const INDUSTRIES: DropItem[] = [
   { label: 'Salon beauty',  href: '/dla/salon-beauty', desc: 'Manicure, rzęsy, brwi, kosmetologia', color: '#EC4899', icon: <IcoScissors /> },
-  { label: 'Gabinet / SPA', href: '/dla/gabinet',       desc: 'Fizjoterapia, masaże, stomatologia',  color: '#06B6D4', icon: <IcoStethoscope /> },
+  { label: 'Gabinet / SPA', href: '/dla/gabinet-spa',    desc: 'Masaże, zabiegi, aromaterapia',       color: '#06B6D4', icon: <IcoStethoscope /> },
   { label: 'Restauracja',   href: '/dla/restauracja',   desc: 'Menu, alergie, pytania gości',         color: '#F97316', icon: <IcoUtensils /> },
-  { label: 'Warsztat',      href: '/dla/warsztat',      desc: 'Wyceny, terminy, obsługa klientów',   color: '#64748B', icon: <IcoWrench /> },
-  { label: 'Inna branża',   href: '/dla/inna',          desc: 'Konfigurowalny szablon 15 min',       color: '#8B5CF6', icon: <IcoStar /> },
+  { label: 'Warsztat',      href: '/dla/warsztat-mechaniczny', desc: 'Wyceny, terminy, obsługa klientów', color: '#64748B', icon: <IcoWrench /> },
+  { label: 'Inna branża',   href: '/dla/inna',           desc: 'Fryzjer, fizjo, fotograf i inne',     color: '#8B5CF6', icon: <IcoStar /> },
 ];
 
 const BLOG_ITEM: DropItem = {
@@ -108,31 +108,20 @@ function BranzeDropdown({ scrolled }: { scrolled: boolean }) {
           opacity: open ? 1 : 0,
           pointerEvents: open ? 'auto' : 'none',
           transition: 'opacity 0.18s ease, transform 0.18s ease',
-          width: 360,
+          width: 560,
           zIndex: 100,
         }}
       >
-        {/* Arrow */}
-        <div style={{
-          position: 'absolute', top: -6, left: '50%', transform: 'translateX(-50%)',
-          width: 12, height: 6, overflow: 'hidden',
-        }}>
-          <div style={{
-            width: 12, height: 12,
-            background: '#fff', border: '1px solid #e2e8f0',
-            transform: 'rotate(45deg) translate(-4px, -4px)',
-          }} />
-        </div>
 
-        <div className="rounded-2xl bg-white shadow-xl border border-slate-100 overflow-hidden">
-          {/* Industries */}
-          <div className="p-2">
+<div className="rounded-2xl bg-white shadow-xl border border-slate-100 overflow-hidden flex">
+          {/* ── Lewa: lista branż ── */}
+          <div className="flex-1 p-2">
             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-3 pt-2 pb-1.5">Dla branży</p>
             {INDUSTRIES.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 transition-colors group"
+                className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors group"
               >
                 <span
                   className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-110"
@@ -153,27 +142,66 @@ function BranzeDropdown({ scrolled }: { scrolled: boolean }) {
                 </svg>
               </Link>
             ))}
+
+            {/* Blog */}
+            <div className="border-t border-slate-100 mt-1 pt-1">
+              <Link
+                href={BLOG_ITEM.href}
+                className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-indigo-50 transition-colors group"
+              >
+                <span
+                  className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-110"
+                  style={{ background: '#EEF2FF', color: '#6366F1' }}
+                >
+                  {BLOG_ITEM.icon}
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-semibold text-slate-800 leading-snug">{BLOG_ITEM.label}</span>
+                  <span className="block text-xs text-slate-400 leading-snug">{BLOG_ITEM.desc}</span>
+                </span>
+                <span className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand text-white shrink-0">
+                  Nowe
+                </span>
+              </Link>
+            </div>
           </div>
 
-          {/* Blog */}
-          <div className="border-t border-slate-100 p-2">
+          {/* ── Prawa: featured panel ── */}
+          <div
+            className="w-48 shrink-0 flex flex-col justify-between p-5 rounded-r-2xl"
+            style={{ background: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%)' }}
+          >
+            {/* ROI */}
+            <div>
+              <div className="flex gap-0.5 mb-3">
+                {[0,1,2,3,4].map((i) => (
+                  <svg key={i} width="13" height="13" viewBox="0 0 24 24" fill="#fbbf24" stroke="none">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-white font-bold text-sm leading-snug mb-1">
+                Bot zarabia na siebie już po jednej klientce
+              </p>
+              <p className="text-indigo-200 text-xs leading-relaxed">
+                1 wizyta = 150–300 zł.<br />Bot = 149 zł/mies.
+              </p>
+            </div>
+
+            {/* Social proof */}
+            <div className="my-4 border-t border-white/10 pt-4">
+              <p className="text-indigo-300 text-[11px] leading-relaxed italic">
+                &ldquo;W pierwszy weekend bot umówił 3 klientki, gdy spałam.&rdquo;
+              </p>
+              <p className="text-indigo-400 text-[10px] mt-1.5 font-medium">— Monika, salon beauty</p>
+            </div>
+
+            {/* CTA */}
             <Link
-              href={BLOG_ITEM.href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-indigo-50 transition-colors group"
+              href="/rejestracja"
+              className="block text-center text-xs font-bold px-3 py-2.5 rounded-xl bg-white text-indigo-700 hover:bg-indigo-50 transition-colors"
             >
-              <span
-                className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform group-hover:scale-110"
-                style={{ background: '#EEF2FF', color: '#6366F1' }}
-              >
-                {BLOG_ITEM.icon}
-              </span>
-              <span className="min-w-0">
-                <span className="block text-sm font-semibold text-slate-800 leading-snug">{BLOG_ITEM.label}</span>
-                <span className="block text-xs text-slate-400 leading-snug">{BLOG_ITEM.desc}</span>
-              </span>
-              <span className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand text-white shrink-0">
-                Nowe
-              </span>
+              Zacznij za darmo
             </Link>
           </div>
         </div>
@@ -248,6 +276,8 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
   const router = useRouter();
   const [scrolled, setScrolled] = useState(forceScrolled);
   const [menuOpen, setMenuOpen] = useState(false);
+  const isDlaSubpage = Boolean(pathname?.startsWith('/dla/'));
+  const navSolid = forceScrolled || scrolled || isDlaSubpage;
 
   useEffect(() => {
     if (forceScrolled) return;
@@ -283,15 +313,15 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
     <>
       <header
         className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-          scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
+          navSolid ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
         }`}
       >
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 font-bold text-xl cursor-pointer">
             <Image src="/BotikoLogo.png" alt="Botiko" width={32} height={32} className="rounded-lg" />
-            <span className={scrolled ? 'text-text' : 'text-white drop-shadow'}>
-              Botiko<span className={scrolled ? 'text-brand' : 'text-white/80'}>.pl</span>
+            <span className={navSolid ? 'text-text' : 'text-white drop-shadow'}>
+              Botiko<span className={navSolid ? 'text-brand' : 'text-white/80'}>.pl</span>
             </span>
           </Link>
 
@@ -299,7 +329,7 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
           <ul className="hidden md:flex items-center gap-6">
             {/* Dropdown */}
             <li>
-              <BranzeDropdown scrolled={scrolled} />
+              <BranzeDropdown scrolled={navSolid} />
             </li>
             {/* Regular links */}
             {NAV_LINKS.map((link) => (
@@ -308,7 +338,7 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
                   href={toAppHref(link.href)}
                   onClick={link.href.startsWith('#') ? (e) => onHashClick(e, link.href) : undefined}
                   className={`text-sm font-medium transition-colors cursor-pointer ${
-                    scrolled ? 'text-slate-600 hover:text-brand' : 'text-white/90 hover:text-white'
+                    navSolid ? 'text-slate-600 hover:text-brand' : 'text-white/90 hover:text-white'
                   }`}
                 >
                   {link.label}
@@ -322,7 +352,7 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
             <Link
               href="/login"
               className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-all cursor-pointer ${
-                scrolled
+                navSolid
                   ? 'text-slate-600 hover:text-brand hover:bg-slate-100'
                   : 'text-white/90 hover:text-white hover:bg-white/10'
               }`}
@@ -345,7 +375,7 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
             onClick={() => setMenuOpen(true)}
             aria-label="Otwórz menu"
             className={`md:hidden p-2 rounded-lg transition-colors cursor-pointer ${
-              scrolled ? 'text-slate-700 hover:bg-slate-100' : 'text-white hover:bg-white/10'
+              navSolid ? 'text-slate-700 hover:bg-slate-100' : 'text-white hover:bg-white/10'
             }`}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

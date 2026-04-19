@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import {
   Loader2,
   Save,
@@ -20,6 +20,7 @@ import {
   Upload,
   TriangleAlert,
   Lightbulb,
+  UserCircle,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '../../../lib/supabase';
@@ -724,7 +725,82 @@ function initSchedule(bot: BotData): DaySchedule[] {
   return schedule;
 }
 
+function TabKonto() {
+  const [firstName, setFirstName] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      const name =
+        (user?.user_metadata?.full_name as string | undefined) ??
+        (user?.user_metadata?.name as string | undefined) ??
+        '';
+      setFirstName(name);
+      setLoaded(true);
+    };
+    void load();
+  }, []);
+
+  const handleSave = async () => {
+    if (!firstName.trim()) return;
+    setSaving(true);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.updateUser({
+        data: { full_name: firstName.trim() },
+      });
+      if (error) throw error;
+      toast.success('Imię zapisane');
+    } catch {
+      toast.error('Nie udało się zapisać imienia');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4 max-w-lg">
+      <SectionCard
+        title="Twój profil"
+        subtitle="Imię wyświetlane w powitaniu na panelu zarządzania."
+      >
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+            Imię
+          </label>
+          <input
+            type="text"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder={loaded ? 'Wpisz swoje imię…' : 'Ładowanie…'}
+            disabled={!loaded}
+            maxLength={50}
+            className={inputClass}
+          />
+          <p className="text-xs text-slate-400 mt-1.5">
+            Np.&nbsp;<span className="font-medium text-slate-600">Mateusz</span> &mdash; pojawi się jako &bdquo;Dzień dobry, Mateusz&rdquo; w nagłówku dashboardu.
+          </p>
+        </div>
+        <div className="flex justify-end">
+          <button
+            onClick={() => void handleSave()}
+            disabled={!loaded || saving || !firstName.trim()}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white font-medium rounded-xl text-sm transition-all shadow-sm shadow-indigo-200 cursor-pointer disabled:cursor-default"
+          >
+            {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+            {saving ? 'Zapisywanie…' : 'Zapisz imię'}
+          </button>
+        </div>
+      </SectionCard>
+    </div>
+  );
+}
+
 const TABS = [
+  { id: 'konto', label: 'Konto', icon: UserCircle },
   { id: 'profil', label: 'Profil bota', icon: User },
   { id: 'wyglad', label: 'Wygląd widgetu', icon: Palette },
   { id: 'domeny', label: 'Domeny', icon: Globe },
@@ -755,7 +831,7 @@ export function SettingsForm({ bot }: { bot: BotData }) {
   );
 
   const [form, setForm] = useState<FormState>(initial);
-  const [activeTab, setActiveTab] = useState<TabId>('profil');
+  const [activeTab, setActiveTab] = useState<TabId>('konto');
   const [saving, setSaving] = useState(false);
 
   const isDirty = JSON.stringify(form) !== JSON.stringify(initial);
@@ -805,7 +881,7 @@ export function SettingsForm({ bot }: { bot: BotData }) {
   const handleCancel = () => setForm(initial);
 
   return (
-    <div className="max-w-5xl">
+    <div className="max-w-7xl 2xl:max-w-[1400px]">
       {/* Tabs */}
       <div className="flex border-b border-slate-200 mb-6">
         {TABS.map(({ id, label, icon: Icon }) => (
@@ -826,13 +902,14 @@ export function SettingsForm({ bot }: { bot: BotData }) {
 
       {/* Tab content */}
       <div className="min-h-[400px]">
+        {activeTab === 'konto'  && <TabKonto />}
         {activeTab === 'profil' && <TabProfil form={form} setForm={setForm} />}
         {activeTab === 'wyglad' && <TabWyglad form={form} setForm={setForm} />}
         {activeTab === 'domeny' && <TabDomeny form={form} setForm={setForm} />}
       </div>
 
-      {/* Footer actions */}
-      <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
+      {/* Footer actions — hidden on Konto tab (has its own Save button) */}
+      <div className={`flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100 ${activeTab === 'konto' ? 'hidden' : ''}`}>
         <button
           onClick={handleCancel}
           disabled={!isDirty || saving}
