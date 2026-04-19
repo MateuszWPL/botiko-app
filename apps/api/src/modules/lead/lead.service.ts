@@ -19,6 +19,7 @@ export interface LeadResponse {
   message: string | null;
   status: string;
   botId: string;
+  sessionId: string | null;
   createdAt: Date;
 }
 
@@ -59,6 +60,7 @@ export class LeadService {
         id,
         tenantId: bot.tenantId,
         botId: dto.botId,
+        sessionId: dto.sessionId ?? null,
         name: this.encryption.encrypt(dto.name),
         phone: this.encryption.encrypt(dto.phone),
         message: dto.message ? this.encryption.encrypt(dto.message) : null,
@@ -125,6 +127,7 @@ export class LeadService {
         message: true,
         status: true,
         botId: true,
+        sessionId: true,
         createdAt: true,
       },
       orderBy: { createdAt: 'desc' },

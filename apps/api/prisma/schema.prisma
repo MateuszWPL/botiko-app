@@ -97,6 +97,7 @@ model Lead {
   tenantId  String
   tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   botId     String
+  sessionId String?
   /// @encrypted AES-256-GCM — format {iv}:{authTag}:{ciphertext} (hex)
   name      String
   /// @encrypted AES-256-GCM — format {iv}:{authTag}:{ciphertext} (hex)
@@ -105,6 +106,8 @@ model Lead {
   message   String?
   status    LeadStatus @default(NEW)
   createdAt DateTime   @default(now())
+
+  @@index([botId, sessionId])
 }
 
 model Conversation {

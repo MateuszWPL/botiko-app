@@ -1,5 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { EncryptionService } from '../../common/services/encryption.service';
+
+export type ConversationStatus = 'Aktywna' | 'Lead' | 'Zakończona';
 
 export interface ConversationSummary {
   id: string;
@@ -7,7 +10,12 @@ export interface ConversationSummary {
   sessionId: string;
   messageCount: number;
   firstMessage: string | null;
+  lastMessage: string | null;
   createdAt: Date;
+  updatedAt: Date;
+  durationSeconds: number;
+  status: ConversationStatus;
+  leadName: string | null;
 }
 
 export interface ConversationDetail {
@@ -23,38 +31,151 @@ export interface ConversationDetail {
   }[];
 }
 
+interface FindAllOptions {
+  search?: string;
+  statusFilter?: ConversationStatus;
+  daysBack?: number;
+  limit?: number;
+}
+
 @Injectable()
 export class ConversationService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly encryption: EncryptionService,
+  ) {}
 
-  async findAll(tenantId: string): Promise<ConversationSummary[]> {
-    const conversations = await this.prisma.conversation.findMany({
-      where: { bot: { tenantId } },
+  private getStatus(
+    messageCount: number,
+    leadExists: boolean,
+    createdAt: Date,
+  ): ConversationStatus {
+    if (leadExists) return 'Lead';
+    const daysSinceCreated = Math.floor(
+      (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24),
+    );
+    if (daysSinceCreated > 30) return 'Zakończona';
+    return 'Aktywna';
+  }
+
+  async findAll(
+    tenantId: string,
+    options: FindAllOptions = {},
+  ): Promise<ConversationSummary[]> {
+    const { search = '', statusFilter, daysBack = 90, limit = 100 } = options;
+
+    const dateFrom = new Date();
+    dateFrom.setDate(dateFrom.getDate() - daysBack);
+
+    const [conversations, leads] = await Promise.all([
+      this.prisma.conversation.findMany({
+        where: {
+          bot: { tenantId },
+          createdAt: { gte: dateFrom },
+        },
+        select: {
+          id: true,
+          botId: true,
+          sessionId: true,
+          createdAt: true,
+          _count: { select: { messages: true } },
+          messages: {
+            select: { content: true, role: true, createdAt: true },
+            orderBy: { createdAt: 'asc' },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+      }),
+      this.prisma.lead.findMany({
+        where: { tenantId, sessionId: { not: null } },
+        select: { sessionId: true, name: true },
+      }),
+    ]);
+
+    // sessionId → decrypted lead name map (leads fetched raw, names encrypted)
+    // We store encrypted names so we pass them through — decryption happens in LeadService
+    // Here we just identify which sessions have a lead by sessionId
+    const leadBySession = new Map<string, string>(
+      leads
+        .filter((l) => l.sessionId !== null)
+        .map((l) => [l.sessionId as string, l.name]),
+    );
+
+    return conversations
+      .map((c) => {
+        const userMessages = c.messages.filter((m) => m.role === 'USER');
+        const firstMsg = userMessages[0]?.content ?? null;
+        const lastMsg = c.messages[c.messages.length - 1]?.content ?? null;
+
+        const encryptedLeadName = leadBySession.get(c.sessionId) ?? null;
+        const leadExists = encryptedLeadName !== null;
+        let leadName: string | null = null;
+        if (encryptedLeadName) {
+          try {
+            leadName = this.encryption.decrypt(encryptedLeadName);
+          } catch {
+            leadName = null;
+          }
+        }
+
+        const status = this.getStatus(c._count.messages, leadExists, c.createdAt);
+        const durationSeconds =
+          userMessages.length > 0
+            ? Math.floor(
+                (new Date(c.messages[c.messages.length - 1]?.createdAt || c.createdAt).getTime() -
+                  new Date(userMessages[0].createdAt).getTime()) /
+                  1000,
+              )
+            : 0;
+
+        return {
+          id: c.id,
+          botId: c.botId,
+          sessionId: c.sessionId,
+          messageCount: c._count.messages,
+          firstMessage: firstMsg,
+          lastMessage: lastMsg,
+          createdAt: c.createdAt,
+          updatedAt: c.messages[c.messages.length - 1]?.createdAt || c.createdAt,
+          durationSeconds,
+          status,
+          leadName,
+        };
+      })
+      .filter((c) => {
+        if (statusFilter && c.status !== statusFilter) return false;
+        if (search) {
+          const searchLower = search.toLowerCase();
+          return (
+            c.firstMessage?.toLowerCase().includes(searchLower) ||
+            c.sessionId.toLowerCase().includes(searchLower)
+          );
+        }
+        return true;
+      });
+  }
+
+  async findBySession(
+    tenantId: string,
+    sessionId: string,
+  ): Promise<ConversationDetail | null> {
+    const conversation = await this.prisma.conversation.findFirst({
+      where: { sessionId, bot: { tenantId } },
       select: {
         id: true,
         botId: true,
         sessionId: true,
         createdAt: true,
-        _count: { select: { messages: true } },
         messages: {
-          where: { role: 'USER' },
-          select: { content: true },
+          select: { id: true, role: true, content: true, createdAt: true },
           orderBy: { createdAt: 'asc' },
-          take: 1,
         },
       },
       orderBy: { createdAt: 'desc' },
-      take: 100,
     });
 
-    return conversations.map((c) => ({
-      id: c.id,
-      botId: c.botId,
-      sessionId: c.sessionId,
-      messageCount: c._count.messages,
-      firstMessage: c.messages[0]?.content ?? null,
-      createdAt: c.createdAt,
-    }));
+    return conversation;
   }
 
   async findById(

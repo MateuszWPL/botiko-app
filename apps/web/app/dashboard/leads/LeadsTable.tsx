@@ -5,7 +5,6 @@ import { toast } from 'sonner';
 import {
   Loader2,
   ChevronDown,
-  ChevronRight,
   Search,
   Download,
   Plus,
@@ -16,6 +15,7 @@ import {
 } from 'lucide-react';
 import { createClient } from '../../../lib/supabase';
 import { StatusBadge } from '../../../components/ui/StatusBadge';
+import { LeadSidebar } from '../../../components/leads/LeadSidebar';
 
 interface Lead {
   id: string;
@@ -24,6 +24,7 @@ interface Lead {
   message: string | null;
   status: string;
   botId: string;
+  sessionId: string | null;
   createdAt: string;
 }
 
@@ -202,6 +203,7 @@ function AddLeadModal({ onClose, onAdd }: { onClose: () => void; onAdd: (lead: L
           message: message.trim() || null,
           status: 'NEW',
           botId: '',
+          sessionId: null,
           createdAt: new Date().toISOString(),
         });
         toast.success('Lead dodany');
@@ -288,6 +290,7 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -452,7 +455,7 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
                   Telefon
                 </th>
                 <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200 hidden md:table-cell">
-                  Źródło rozmowy
+                  Wiadomość
                 </th>
                 <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200">
                   Status
@@ -460,7 +463,6 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
                 <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200 hidden sm:table-cell">
                   Data
                 </th>
-                <th className="px-3 py-3.5 border-b border-slate-200 w-8" />
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -469,7 +471,8 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
                 return (
                   <tr
                     key={lead.id}
-                    className={`hover:bg-indigo-50/30 transition-colors relative ${openDropdownId === lead.id ? 'z-50' : 'z-0'}`}
+                    onClick={() => setSelectedLead(lead)}
+                    className={`hover:bg-indigo-50/30 transition-colors relative cursor-pointer ${openDropdownId === lead.id ? 'z-50' : 'z-0'}`}
                     style={{ animationDelay: `${idx * 30}ms` }}
                   >
                     <td className="px-5 py-4">
@@ -509,10 +512,10 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
                         )}
                       </div>
                     </td>
-                    <td className="px-5 py-4 hidden md:table-cell max-w-56">
+                    <td className="px-5 py-4 hidden md:table-cell" style={{ maxWidth: '220px' }}>
                       {lead.message ? (
-                        <span className="text-xs text-slate-500 italic truncate block">
-                          &bdquo;{lead.message}&rdquo;
+                        <span className="text-xs text-slate-500 italic block overflow-hidden text-ellipsis whitespace-nowrap">
+                          {lead.message}
                         </span>
                       ) : (
                         <span className="text-slate-300 text-xs">—</span>
@@ -531,9 +534,6 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
                     <td className="px-5 py-4 text-slate-400 text-xs hidden sm:table-cell whitespace-nowrap">
                       {formatDate(lead.createdAt)}
                     </td>
-                    <td className="px-3 py-4">
-                      <ChevronRight className="w-4 h-4 text-slate-300" />
-                    </td>
                   </tr>
                 );
               })}
@@ -548,6 +548,15 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
           onAdd={(lead) => setLeads((prev) => [lead, ...prev])}
         />
       )}
+
+      <LeadSidebar
+        lead={selectedLead}
+        onClose={() => setSelectedLead(null)}
+        onStatusChange={(id, status) => {
+          setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
+          void updateStatus(id, status);
+        }}
+      />
     </>
   );
 }
