@@ -184,7 +184,7 @@ function BranzeDropdown({ scrolled }: { scrolled: boolean }) {
                 Bot zarabia na siebie już po jednej klientce
               </p>
               <p className="text-indigo-200 text-xs leading-relaxed">
-                1 wizyta = 150–300 zł.<br />Bot = 149 zł/mies.
+                1 wizyta = 150–300 zł.<br />Bot = 99 zł/mies.
               </p>
             </div>
 

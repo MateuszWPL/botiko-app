@@ -5,12 +5,12 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Bot dla restauracji — odpowiada gościom 24/7 i zbiera leady',
   description:
-    'Botiko dla restauracji i bistro: menu, godziny, eventy, catering. Bot odpowiada o 23:00, zbiera telefon i odsyła do Booksy lub Twojego systemu rezerwacji. 149 zł/mies., 14 dni za darmo.',
+    'Botiko dla restauracji i bistro: menu, godziny, eventy, catering. Bot odpowiada o 23:00, zbiera telefon i odsyła do Booksy lub Twojego systemu rezerwacji. 99 zł/mies., 14 dni za darmo.',
   alternates: { canonical: 'https://botiko.pl/dla/restauracja' },
   openGraph: {
     title: 'Bot dla restauracji — odpowiada gościom 24/7',
     description:
-      'Goście piszą wieczorem. Bot odpowiada, zbiera kontakt i odsyła do Booksy lub Twojego systemu rezerwacji. 149 zł/mies.',
+      'Goście piszą wieczorem. Bot odpowiada, zbiera kontakt i odsyła do Booksy lub Twojego systemu rezerwacji. 99 zł/mies.',
     url: 'https://botiko.pl/dla/restauracja',
     type: 'website',
   },
@@ -29,7 +29,7 @@ const JSON_LD_SERVICE = {
   serviceType: 'Customer service automation',
   offers: {
     '@type': 'Offer',
-    price: '149',
+    price: '99',
     priceCurrency: 'PLN',
   },
 };
@@ -298,7 +298,7 @@ export default function RestaurantLandingPage() {
               <p className="text-orange-200 text-xs mt-1">Konfiguracja menu i FAQ</p>
             </div>
             <div>
-              <p className="text-3xl font-extrabold text-white">149 zł</p>
+              <p className="text-3xl font-extrabold text-white">99 zł</p>
               <p className="text-orange-200 text-xs mt-1">Miesięcznie, bez umowy</p>
             </div>
           </div>
@@ -518,7 +518,7 @@ export default function RestaurantLandingPage() {
               Ilu gości miesięcznie = Botiko się zwraca?
             </h2>
             <p className="mt-3 text-slate-500">
-              Koszt Botiko to <strong>149 zł/mies</strong>. Jeden lead z wieczoru, który oddzwonisz rano, zwraca cały koszt.
+              Koszt Botiko to <strong>99 zł/mies</strong>. Jeden lead z wieczoru, który oddzwonisz rano, zwraca cały koszt.
             </p>
           </div>
 
@@ -539,7 +539,7 @@ export default function RestaurantLandingPage() {
                     <td className="px-5 py-4 text-slate-600">{row.revenue} zł</td>
                     <td className="px-5 py-4 text-slate-500 text-xs">{row.note}</td>
                     <td className="px-5 py-4 text-right font-extrabold text-emerald-600">
-                      +{row.revenue - 149} zł
+                      +{row.revenue - 99} zł
                     </td>
                   </tr>
                 ))}
@@ -618,7 +618,7 @@ export default function RestaurantLandingPage() {
               ['Obsługuje zapytania eventowe', true, false],
               ['Zbiera kontakt, odsyła do Booksy', true, false],
               ['Odpowiada na pytania o alergeny', true, false],
-              ['Koszt miesięczny', '149 zł', 'Twój czas'],
+              ['Koszt miesięczny', '99 zł', 'Twój czas'],
             ].map(([label, yes, no], i) => (
               <div
                 key={String(label)}
@@ -747,7 +747,7 @@ export default function RestaurantLandingPage() {
                 </svg>
               </Link>
               <p className="mt-5 text-orange-200 text-xs flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-                {['Bez karty kredytowej', '149 zł/mies.', 'Cancel w każdej chwili'].map((label) => (
+                {['Bez karty kredytowej', '99 zł/mies.', 'Cancel w każdej chwili'].map((label) => (
                   <span key={label} className="inline-flex items-center gap-1.5">
                     <svg
                       className="w-3 h-3 shrink-0 text-orange-100"

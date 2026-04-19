@@ -52,7 +52,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Jeden plan, zero trików',
-    desc: '149 zł/mies. i już. Bez ukrytych tierów, bez „skontaktuj się w sprawie ceny", bez rocznych umów. Cancel kiedy chcesz.',
+    desc: '99 zł/mies. i już. Bez ukrytych tierów, bez „skontaktuj się w sprawie ceny", bez rocznych umów. Cancel kiedy chcesz.',
   },
 ];
 

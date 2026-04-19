@@ -395,7 +395,7 @@ function ChatMockup() {
             <svg width="12" height="12" viewBox="0 0 24 24" fill="#f97316" stroke="none">
               <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm1 14.5h-2V11h2v5.5zm0-7.5h-2V7h2v2z" />
             </svg>
-            <p className="text-white text-[11px] font-bold leading-none">149 zł / mies.</p>
+            <p className="text-white text-[11px] font-bold leading-none">99 zł / mies.</p>
           </div>
           <p className="text-white/45 text-[10px] leading-none">oszczędza 2h dziennie</p>
         </div>

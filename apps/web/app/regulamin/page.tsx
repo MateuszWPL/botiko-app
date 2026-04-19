@@ -87,7 +87,7 @@ export default function TermsPage() {
             <h2 className="text-xl font-bold text-slate-900 mb-3">§4. Plany i płatności</h2>
             <ol className="text-slate-600 text-sm leading-relaxed list-decimal pl-5 space-y-2">
               <li>
-                Botiko.pl oferuje plan <strong>Starter: 149 zł brutto/miesiąc</strong> z limitem 1000 konwersacji
+                Botiko.pl oferuje plan <strong>Starter: 99 zł brutto/miesiąc</strong> z limitem 1000 konwersacji
                 miesięcznie. Aktualna oferta dostępna jest na stronie głównej botiko.pl.
               </li>
               <li>

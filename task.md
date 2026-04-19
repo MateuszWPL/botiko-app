@@ -72,7 +72,7 @@
 ## Faza 1A — Gotowe do Pilotu
 
 > Cel: działający produkt na produkcji, który można pokazać pierwszym 3-5 klientom.
-> Jeden plan: **149 zł/mies, 14 dni trial**. Zero feature gating na razie — wszyscy mają to samo.
+> Jeden plan: **99 zł/mies, 14 dni trial**. Zero feature gating na razie — wszyscy mają to samo.
 > Każdy punkt: implementacja → test → zabezpieczenie.
 
 ---
@@ -146,7 +146,7 @@
 
 #### Implementacja ✅
 - [x] Zainstalować: `stripe` w `apps/api`
-- [x] Stworzyć w Stripe Dashboard: produkt "Botiko MVP" — cena 149 zł/mies PLN, recurring, 14-day trial (`STRIPE_PRICE_ID`)
+- [x] Stworzyć w Stripe Dashboard: produkt "Botiko MVP" — cena 99 zł/mies PLN, recurring, 14-day trial (`STRIPE_PRICE_ID`)
 - [x] `POST /api/v1/billing/checkout` (chroniony AuthGuard) → Stripe Checkout Session (mode: `subscription`, `trial_period_days: 14`, `client_reference_id: tenantId`) → zwraca URL
 - [x] Stripe Webhook handler `POST /api/v1/billing/webhook` (publiczny, bez AuthGuard):
   - `checkout.session.completed` → `tenant.stripeCustomerId`, `tenant.stripeSubscriptionId`, `tenant.isActive = true`
@@ -279,7 +279,7 @@
 > Zaimplementowane 2026-04-12
 
 #### Implementacja ✅
-- [x] Sekcja cennik: jeden plan "149 zł/mies, 14 dni gratis" — karta gradientowa, lista 9 funkcji, kalkulator ROI
+- [x] Sekcja cennik: jeden plan "99 zł/mies, 14 dni gratis" — karta gradientowa, lista 9 funkcji, kalkulator ROI
 - [x] Przycisk CTA "Zacznij za darmo" → `/rejestracja` (nowa strona z server-side redirect na `/register`)
 - [x] Demo bot na LP: `DemoWidget.tsx` ładuje widget przez `useEffect` — aktywuje się gdy ustawiony `NEXT_PUBLIC_DEMO_BOT_ID`
 - [x] SEO: `og:image`, `twitter:card`, `canonical` URL, zaktualizowany JSON-LD (jeden plan), sitemap `/rejestracja` + `/prywatnosc`
@@ -405,48 +405,48 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 > Kod vibecoded = nie ufamy że działa bez ręcznego przetestowania każdej ścieżki.
 
 #### Auth flow
-- [ ] Rejestracja: nowy email + hasło → redirect do onboardingu
-- [ ] Rejestracja: słabe hasło (<12 znaków) → błąd walidacji widoczny
-- [ ] Rejestracja: istniejący email → czytelny komunikat błędu
-- [ ] Login: poprawne dane → dashboard
-- [ ] Login: złe hasło → komunikat błędu (bez szczegółów technicznych)
-- [ ] Wylogowanie → redirect do login
-- [ ] Dostęp do `/dashboard` bez sesji → redirect do `/login`
+- [x] Rejestracja: nowy email + hasło → redirect do onboardingu
+- [x] Rejestracja: słabe hasło (<12 znaków) → błąd walidacji widoczny
+- [x] Rejestracja: istniejący email → czytelny komunikat błędu
+- [x] Login: poprawne dane → dashboard
+- [x] Login: złe hasło → komunikat błędu (bez szczegółów technicznych)
+- [x] Wylogowanie → redirect do login
+- [x] Dostęp do `/dashboard` bez sesji → redirect do `/login`
 
 #### Onboarding flow
-- [ ] Przejście przez wszystkie 5 kroków bez błędu
-- [ ] Auto-save: wypełnij step 2, odśwież → dane zachowane
-- [ ] Step 3 (oferta): wpisz tekst, przejdź do step 4, wróć → tekst zachowany
-- [ ] Step 5: kod embed wyświetlony, przycisk "Kopiuj" działa
-- [ ] Po ukończeniu onboardingu: bot widoczny w dashboardzie
-- [ ] Po ukończeniu onboardingu: KnowledgeChunks istnieją w DB (sprawdź w Supabase Table Editor)
+- [x] Przejście przez wszystkie 5 kroków bez błędu
+- [x] Auto-save: wypełnij step 2, odśwież → dane zachowane
+- [x] Step 3 (oferta): wpisz tekst, przejdź do step 4, wróć → tekst zachowany
+- [x] Step 5: kod embed wyświetlony, przycisk "Kopiuj" działa
+- [x] Po ukończeniu onboardingu: bot widoczny w dashboardzie
+- [x] Po ukończeniu onboardingu: KnowledgeChunks istnieją w DB (sprawdź w Supabase Table Editor)
 
 #### Widget flow
-- [ ] Widget ładuje się na stronie testowej (`localhost` lub testowa domena)
-- [ ] Otwieranie/zamykanie widgetu działa płynnie
-- [ ] Wyślij wiadomość → odpowiedź pojawia się po chwili z typing indicator
-- [ ] Zadaj pytanie z bazy wiedzy → bot odpowiada trafnie
-- [ ] Zadaj pytanie poza bazą → bot zwraca fallback z telefonem (nie hallucynuje)
-- [ ] Po 2 wiadomościach: formularz lead pojawia się
-- [ ] Wypełnij formularz (imię + telefon) + zaznacz RODO → lead zapisany
-- [ ] Email do właściciela dotarł po submicie leada
-- [ ] Odśwież stronę po 3 wiadomościach → historia zachowana
+- [x] Widget ładuje się na stronie testowej (`localhost` lub testowa domena)
+- [x] Otwieranie/zamykanie widgetu działa płynnie
+- [x] Wyślij wiadomość → odpowiedź pojawia się po chwili z typing indicator
+- [x] Zadaj pytanie z bazy wiedzy → bot odpowiada trafnie
+- [x] Zadaj pytanie poza bazą → bot zwraca fallback z telefonem (nie hallucynuje)
+- [x] Po 2 wiadomościach: formularz lead pojawia się
+- [x] Wypełnij formularz (imię + telefon) + zaznacz RODO → lead zapisany
+- [x] Email do właściciela dotarł po submicie leada
+- [x] Odśwież stronę po 3 wiadomościach → historia zachowana
 
 #### Dashboard flow
-- [ ] Overview: liczby się zgadzają z DB
-- [ ] Leads: wszystkie leady widoczne, zmiana statusu działa
-- [ ] Conversations: lista rozmów, kliknięcie → pełna historia
-- [ ] Knowledge base: dodaj wpis → bot go używa (test w widgecie po dodaniu)
-- [ ] Knowledge base: usuń wpis → bot go nie używa
-- [ ] Settings: zmień kolor widgetu → kolor zmieniony w widgecie
-- [ ] Settings: dodaj domenę do whitelist → widget działa tylko na tej domenie
-- [ ] Embed: skopiuj kod → widget działa po wklejeniu na testowej stronie
+- [x] Overview: liczby się zgadzają z DB
+- [x] Leads: wszystkie leady widoczne, zmiana statusu działa
+- [x] Conversations: lista rozmów, kliknięcie → pełna historia
+- [x] Knowledge base: dodaj wpis → bot go używa (test w widgecie po dodaniu)
+- [x] Knowledge base: usuń wpis → bot go nie używa
+- [x] Settings: zmień kolor widgetu → kolor zmieniony w widgecie
+- [x] Settings: dodaj domenę do whitelist → widget działa tylko na tej domenie
+- [x] Embed: skopiuj kod → widget działa po wklejeniu na testowej stronie
 
 #### Billing flow
-- [ ] Strona billing: wyświetla "Trial" lub status planu
-- [ ] Kliknięcie "Kup plan" → Stripe Checkout (test mode)
-- [ ] Po udanej płatności: status zmieniony w dashboardzie
-- [ ] Stripe Portal: faktury dostępne
+- [x] Strona billing: wyświetla "Trial" lub status planu
+- [x] Kliknięcie "Kup plan" → Stripe Checkout (test mode)
+- [x] Po udanej płatności: status zmieniony w dashboardzie
+- [x] Stripe Portal: faktury dostępne
 
 ---
 
@@ -480,7 +480,6 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 - [x] `auth.service`: walidacja hasła — brak dużej litery → błąd (done; schema wymaga uppercase, nie znaku spec.)
 - [x] `auth.service`: walidacja hasła — brak cyfry → błąd (done)
 - [x] `auth.service`: walidacja URL strony przy rejestracji (done — localhost/brak kropki → błąd, normalizacja)
-- [ ] `auth.service`: `requestPasswordReset()` nie ujawnia czy email istnieje — metoda nie istnieje w kodzie, pominięte
 - [ ] `auth.service`: PKCE callback — poprawna wymiana code na session — wymaga Supabase integration, pominięte
 
 **Lead + Notifications**
@@ -621,24 +620,35 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 ### 1A.8 — Security Final Check (przed deploy na prod)
 
 #### Supabase / baza danych
-- [ ] Uruchomić `supabase/migrations/001_rls_policies.sql` na produkcyjnej bazie Supabase
+- [ ] Uruchomić wszystkie 3 migracje na produkcyjnej bazie Supabase: `001_rls_policies.sql`, `002_bot_business_hours.sql`, `003_remove_public_insert_policies.sql`
 - [ ] Weryfikacja RLS: zaloguj się jako tenant A, sprawdź że nie widzisz danych tenanta B (przez Supabase Table Editor lub test API)
 - [ ] pgvector extension włączone na prod Supabase
 
 #### API hardening
-- [ ] Throttler rate limits przetestowane: `curl` 21 razy pod rząd na `/api/v1/chat` → 21. powinno zwrócić 429
-- [ ] Helmet headers: sprawdź w DevTools → Network → Response Headers że są `X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security`
-- [ ] CORS: otwarty dla wszystkich originów (widgetowy design) — weryfikacja że `DomainWhitelistGuard` blokuje requesty z domen spoza `bot.allowedDomains`: wyślij POST `/api/v1/chat` z `Origin: https://obcadomena.pl` dla bota z wypełnionym `allowedDomains` → powinno zwrócić 403
-- [ ] Env vars nie są w logach: przejrzyj `console.log` w kodzie — żadnego logowania sekretów
+- [ ] Throttler rate limits przetestowane — są DWA niezależne systemy:
+  - **Per-IP** (`ThrottlerModule`): domyślnie 100 req/min — ustaw `RATE_LIMIT_MAX` i `RATE_LIMIT_WINDOW_MS` w env Railway
+  - **Per-botId** (`BotThrottleGuard`): 60 req/min na bota — wbudowane, nie wymaga konfiguracji
+  - Test: `curl` 101 razy pod rząd na `/api/v1/chat` → 101. powinno zwrócić 429
+- [ ] Helmet headers: sprawdź w DevTools → Network → Response Headers że są `X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security` (Helmet skonfigurowany w `main.ts`, automatycznie na prod)
+- [ ] CORS: widget paths (`/chat`, `/leads`, `/bot/*/config`, `/contact`) mają otwarty CORS — to prawidłowe, gate'owanie robi `DomainWhitelistGuard`. Dashboard paths (`/auth`, `/knowledge`, `/tenant`, `/billing/checkout|portal|status`) mają CORS ograniczony do `APP_URL`.
+  - Weryfikacja DomainWhitelistGuard: wyślij POST `/api/v1/chat` z `Origin: https://obcadomena.pl` dla bota z wypełnionym `allowedDomains` → powinno zwrócić 403
+- [x] Env vars nie są w logach: `console.log` w kodzie → tylko `API running on port X` w `main.ts`, błędy env w `env.ts` (nie loguje wartości, tylko nazwy pól) — **OK**
 
 #### Widget / RODO
 - [ ] Checkbox RODO widoczny przed submitem formularza — nie można wysłać leada bez zgody
 - [ ] Link do polityki prywatności działa
-- [ ] PII encryption: sprawdź w DB że `lead.name` i `lead.phone` są zaszyfrowane (format `iv:authTag:ciphertext`)
+- [ ] PII encryption: sprawdź w DB że `lead.name`, `lead.phone` i `lead.message` są zaszyfrowane (format `hex:hex:hex` — AES-256-GCM)
 
 #### Stripe
-- [ ] Webhook secret (`STRIPE_WEBHOOK_SECRET`) w env — nie w kodzie
-- [ ] Signature verification działa (test z Stripe CLI)
+- [x] Webhook secret (`STRIPE_WEBHOOK_SECRET`) w env — nie w kodzie (pobierany przez `env.ts`)
+- [ ] Signature verification działa lokalnie: `stripe listen --forward-to localhost:3001/api/v1/billing/webhook`, skopiuj `whsec_...` do `.env`, wyślij `stripe trigger checkout.session.completed`
+- [ ] Na produkcji: webhook URL w Stripe Dashboard → `https://api.botiko.pl/api/v1/billing/webhook`, nowy `STRIPE_WEBHOOK_SECRET` wpisany do Railway env
+
+#### Cron (nowe — nie było w pierwotnym checkliście)
+- [ ] Skonfigurować cron wywołujący `POST /api/v1/billing/cron/trial-notifications` codziennie o 9:00 z headerem `x-cron-secret: <CRON_SECRET>` — dezaktywuje wygasłe triale i wysyła emaile przypominające
+  - Opcja A: Vercel Cron (jeśli API na Vercel) — `vercel.json`
+  - Opcja B: Railway Cron (jeśli API na Railway) — w panelu projektu → Cron Jobs
+  - Opcja C: Upstash QStash (zewnętrzny, działa niezależnie od platformy)
 
 ---
 
@@ -822,7 +832,7 @@ Wdrożyć gdy: klient pyta o Google Docs/Notion sync lub API.
 | Bot fallback rate | <20% | <15% | <10% |
 | Lead capture rate | >8% rozmów | >12% | >15% |
 
-> Przelicznik MRR: mix 60% Starter (149 zł) + 30% Pro (249 zł) + 10% Premium (449 zł) = ~207 zł ARPU
+> Przelicznik MRR: mix 60% Starter (99 zł) + 30% Pro (199 zł) + 10% Premium (349 zł) = ~144 zł ARPU
 
 ---
 
