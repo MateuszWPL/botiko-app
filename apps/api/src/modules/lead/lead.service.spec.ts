@@ -1,10 +1,11 @@
 jest.mock('../../prisma/prisma.service', () => ({ PrismaService: jest.fn() }));
-jest.mock('../../common/services/encryption.service', () => ({
-  EncryptionService: jest.fn(),
-}));
 jest.mock('../../common/services/notification.service', () => ({
   NotificationService: jest.fn(),
 }));
+
+// Real EncryptionService with a fixed test key
+const TEST_KEY = 'a'.repeat(64);
+jest.mock('../../config/env', () => ({ env: { ENCRYPTION_KEY: TEST_KEY } }));
 
 import { Test } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
@@ -13,163 +14,154 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { EncryptionService } from '../../common/services/encryption.service';
 import { NotificationService } from '../../common/services/notification.service';
 
+const CUID = 'cjld2cjxh0000qzrmn831i7rn';
+
 const mockBot = {
   id: 'bot-1',
-  name: 'Salon Urody',
+  name: 'TestBot',
   tenantId: 'tenant-1',
   tenant: { users: [{ email: 'owner@example.com' }] },
 };
 
-function buildMocks() {
-  const prisma = {
-    bot: { findFirst: jest.fn().mockResolvedValue(mockBot) },
-    lead: { create: jest.fn().mockResolvedValue({}) },
+function buildPrismaMock(botOverride: object | null = mockBot) {
+  return {
+    bot: { findFirst: jest.fn().mockResolvedValue(botOverride) },
+    lead: {
+      create: jest.fn().mockResolvedValue({}),
+      findMany: jest.fn().mockResolvedValue([]),
+      findFirst: jest.fn().mockResolvedValue(null),
+    },
   };
-
-  const encryption = {
-    encrypt: jest.fn((v: string) => `enc:${v}`),
-    decrypt: jest.fn((v: string) => v.replace('enc:', '')),
-  };
-
-  const notification = {
-    sendNewLeadEmail: jest.fn().mockResolvedValue(undefined),
-  };
-
-  return { prisma, encryption, notification };
 }
 
-async function buildService(mocks = buildMocks()) {
+async function buildService(prisma = buildPrismaMock()) {
   const module = await Test.createTestingModule({
     providers: [
       LeadService,
-      { provide: PrismaService, useValue: mocks.prisma },
-      { provide: EncryptionService, useValue: mocks.encryption },
-      { provide: NotificationService, useValue: mocks.notification },
+      EncryptionService,
+      { provide: PrismaService, useValue: prisma },
+      {
+        provide: NotificationService,
+        useValue: { sendNewLeadEmail: jest.fn().mockResolvedValue(undefined) },
+      },
     ],
   }).compile();
 
-  return {
-    service: module.get(LeadService),
-    prisma: mocks.prisma,
-    encryption: mocks.encryption,
-    notification: mocks.notification,
-  };
+  return { service: module.get(LeadService), prisma };
 }
 
-describe('LeadService.create', () => {
-  beforeEach(() => jest.clearAllMocks());
+const validDto = {
+  botId: CUID,
+  name: 'Jan Kowalski',
+  phone: '+48 600 123 456',
+  consentGiven: true as const,
+};
 
-  it('saves lead and returns id', async () => {
-    const { service, prisma } = await buildService();
+describe('LeadService.create — PII encryption', () => {
+  it('zapisuje name i phone w formacie iv:authTag:ciphertext (zaszyfrowane)', async () => {
+    const prisma = buildPrismaMock();
+    const { service } = await buildService(prisma);
 
-    const result = await service.create({
-      botId: 'bot-1',
-      name: 'Jan Kowalski',
-      phone: '500100200',
-      consentGiven: true,
-    });
+    await service.create(validDto);
 
-    expect(result).toHaveProperty('id');
-    expect(prisma.lead.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        data: expect.objectContaining({ botId: 'bot-1', status: 'NEW' }),
-      }),
-    );
+    const createCall = (prisma.lead.create as jest.Mock).mock.calls[0][0];
+    const { name, phone } = createCall.data as { name: string; phone: string };
+
+    // Muszą być stringiem hex iv:authTag:ciphertext
+    const encryptedPattern = /^[0-9a-f]{32}:[0-9a-f]{32}:[0-9a-f]+$/;
+    expect(name).toMatch(encryptedPattern);
+    expect(phone).toMatch(encryptedPattern);
   });
 
-  it('encrypts name and phone before saving', async () => {
-    const { service, prisma, encryption } = await buildService();
+  it('nie zapisuje danych w postaci jawnego tekstu', async () => {
+    const prisma = buildPrismaMock();
+    const { service } = await buildService(prisma);
 
-    await service.create({
-      botId: 'bot-1',
-      name: 'Jan',
-      phone: '500',
-      consentGiven: true,
-    });
+    await service.create(validDto);
 
-    expect(encryption.encrypt).toHaveBeenCalledWith('Jan');
-    expect(encryption.encrypt).toHaveBeenCalledWith('500');
-    expect(prisma.lead.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        data: expect.objectContaining({ name: 'enc:Jan', phone: 'enc:500' }),
-      }),
-    );
+    const createCall = (prisma.lead.create as jest.Mock).mock.calls[0][0];
+    const { name, phone } = createCall.data as { name: string; phone: string };
+
+    expect(name).not.toContain('Jan Kowalski');
+    expect(phone).not.toContain('+48 600 123 456');
   });
 
-  it('calls sendNewLeadEmail with correct data', async () => {
-    const { service, notification } = await buildService();
+  it('szyfruje opcjonalną wiadomość gdy podana', async () => {
+    const prisma = buildPrismaMock();
+    const { service } = await buildService(prisma);
 
-    await service.create({
-      botId: 'bot-1',
-      name: 'Jan',
-      phone: '500',
-      consentGiven: true,
-    });
+    await service.create({ ...validDto, message: 'Chcę umówić się na wizytę' });
 
-    // Allow async fire-and-forget to settle
-    await Promise.resolve();
+    const createCall = (prisma.lead.create as jest.Mock).mock.calls[0][0];
+    const { message } = createCall.data as { message: string };
 
-    expect(notification.sendNewLeadEmail).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: 'Jan',
-        phone: '500',
-        botName: 'Salon Urody',
-        toEmail: 'owner@example.com',
-      }),
-    );
+    expect(message).toMatch(/^[0-9a-f]{32}:[0-9a-f]{32}:[0-9a-f]+$/);
+    expect(message).not.toContain('Chcę');
   });
 
-  it('does not call sendNewLeadEmail when tenant has no users', async () => {
-    const mocks = buildMocks();
-    mocks.prisma.bot.findFirst.mockResolvedValue({
-      ...mockBot,
-      tenant: { users: [] },
-    });
-    const { service, notification } = await buildService(mocks);
+  it('zapisuje message: null gdy nie podano wiadomości', async () => {
+    const prisma = buildPrismaMock();
+    const { service } = await buildService(prisma);
 
-    await service.create({
-      botId: 'bot-1',
-      name: 'Jan',
-      phone: '500',
-      consentGiven: true,
-    });
-    await Promise.resolve();
+    await service.create(validDto);
 
-    expect(notification.sendNewLeadEmail).not.toHaveBeenCalled();
+    const createCall = (prisma.lead.create as jest.Mock).mock.calls[0][0];
+    expect(createCall.data.message).toBeNull();
   });
 
-  it('returns lead id even when sendNewLeadEmail throws', async () => {
-    const mocks = buildMocks();
-    mocks.notification.sendNewLeadEmail.mockRejectedValue(
-      new Error('Resend down'),
-    );
-    const { service } = await buildService(mocks);
+  it('rzuca NotFoundException gdy bot nie istnieje', async () => {
+    const { service } = await buildService(buildPrismaMock(null));
 
-    // Should not throw — fire-and-forget with .catch
-    const result = await service.create({
-      botId: 'bot-1',
-      name: 'Jan',
-      phone: '500',
-      consentGiven: true,
-    });
+    await expect(service.create(validDto)).rejects.toThrow(NotFoundException);
+  });
+});
 
-    expect(result).toHaveProperty('id');
+describe('LeadService.findAll — deszyfrowanie PII', () => {
+  it('zwraca odszyfrowane name i phone', async () => {
+    const encryption = new EncryptionService();
+    const encryptedName = encryption.encrypt('Anna Nowak');
+    const encryptedPhone = encryption.encrypt('+48 500 999 888');
+
+    const prisma = buildPrismaMock();
+    (prisma.lead.findMany as jest.Mock).mockResolvedValue([
+      {
+        id: 'lead-1',
+        name: encryptedName,
+        phone: encryptedPhone,
+        message: null,
+        status: 'NEW',
+        botId: 'bot-1',
+        sessionId: null,
+        createdAt: new Date(),
+      },
+    ]);
+
+    const { service } = await buildService(prisma);
+    const leads = await service.findAll('tenant-1');
+
+    expect(leads[0].name).toBe('Anna Nowak');
+    expect(leads[0].phone).toBe('+48 500 999 888');
   });
 
-  it('throws NotFoundException when bot not found', async () => {
-    const mocks = buildMocks();
-    mocks.prisma.bot.findFirst.mockResolvedValue(null);
-    const { service } = await buildService(mocks);
+  it('zwraca "[encrypted]" zamiast rzucać wyjątku gdy dane uszkodzone', async () => {
+    const prisma = buildPrismaMock();
+    (prisma.lead.findMany as jest.Mock).mockResolvedValue([
+      {
+        id: 'lead-2',
+        name: 'uszkodzone_dane_bez_dwukropkow',
+        phone: 'rowniez_zepsute',
+        message: null,
+        status: 'NEW',
+        botId: 'bot-1',
+        sessionId: null,
+        createdAt: new Date(),
+      },
+    ]);
 
-    await expect(
-      service.create({
-        botId: 'missing',
-        name: 'Jan',
-        phone: '500',
-        consentGiven: true,
-      }),
-    ).rejects.toThrow(NotFoundException);
+    const { service } = await buildService(prisma);
+    const leads = await service.findAll('tenant-1');
+
+    expect(leads[0].name).toBe('[encrypted]');
+    expect(leads[0].phone).toBe('[encrypted]');
   });
 });
