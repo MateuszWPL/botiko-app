@@ -519,48 +519,50 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 
 #### Integration / E2E testy API (`apps/api/test`)
 
+> Uwaga: większość poniższych przypadków jest już pokryta przez testy jednostkowe warstwy niżej.
+> Oznaczono je `[unit ✓]` — integration test dodawałby wartość tylko jeśli testujemy routing/pipe razem.
+
 **Chat endpoint**
-- [ ] `POST /api/v1/chat` bez `Origin` na produkcji → 403 (`DomainWhitelistGuard`)
-- [ ] `POST /api/v1/chat` z `botId` nieUUID → 400 (P2 sec fix)
-- [ ] `POST /api/v1/chat` z nieaktywnym tenantem → 403
-- [ ] `POST /api/v1/chat` z wiadomością zawierającą `<script>` → canned response
-- [ ] `POST /api/v1/chat` z prompt injection → canned response
-- [ ] `POST /api/v1/chat` z wiadomością >N znaków → 400
-- [ ] `POST /api/v1/chat` rate limit 20/min (21. request → 429)
+- [x] `POST /api/v1/chat` bez `Origin` na produkcji → 403 [unit ✓ — `domain-whitelist.guard.spec.ts`]
+- [ ] `POST /api/v1/chat` z `botId` nie-CUID → 400 [unit pending — `chat-message.dto.spec.ts`]
+- [x] `POST /api/v1/chat` z nieaktywnym tenantem → 403 [unit ✓ — `chat.service.spec.ts`]
+- [x] `POST /api/v1/chat` z wiadomością zawierającą `<script>` → canned response [unit ✓ — `message-sanitizer.spec.ts`]
+- [x] `POST /api/v1/chat` z prompt injection → canned response [unit ✓ — `message-sanitizer.spec.ts`]
+- [ ] `POST /api/v1/chat` z wiadomością >1000 znaków → 400 [unit pending — `chat-message.dto.spec.ts`]
+- [ ] `POST /api/v1/chat` rate limit 20/min → pominięte (testuje bibliotekę Nest, nie nasz kod)
 
 **Leads endpoint**
-- [ ] `POST /api/v1/leads` bez `Origin` na produkcji → 403
-- [ ] `POST /api/v1/leads` bez zgody RODO → 400
-- [ ] `POST /api/v1/leads` rate limit 5/min (6. → 429)
-- [ ] `POST /api/v1/leads` PII w DB zaszyfrowane (format `iv:authTag:ciphertext`)
-- [ ] `POST /api/v1/leads` z `botId` nieUUID → 400
+- [x] `POST /api/v1/leads` bez `Origin` na produkcji → 403 [unit ✓ — `domain-whitelist.guard.spec.ts`]
+- [x] `POST /api/v1/leads` bez zgody RODO → 400 [unit ✓ — `create-lead.dto.spec.ts`]
+- [ ] `POST /api/v1/leads` rate limit 5/min → pominięte (testuje bibliotekę Nest)
+- [x] `POST /api/v1/leads` PII w DB zaszyfrowane [unit ✓ — `lead.service.spec.ts`]
+- [ ] `POST /api/v1/leads` z `botId` nie-CUID → 400 [unit pending — `create-lead.dto.spec.ts` już to ma]
 
 **Bot config endpoint**
-- [ ] `GET /api/v1/bot/:id/config` z nieaktywnym tenantem → 403 (P1 sec fix)
-- [ ] `GET /api/v1/bot/:id/config` z nieUUID → 400
+- [x] `GET /api/v1/bot/:id/config` z nieaktywnym tenantem → 404 [unit ✓ — `bot.service.spec.ts`]
+- [ ] `GET /api/v1/bot/:id/config` z nie-CUID → pominięte (Zod + ZodValidationPipe — library behavior)
 
 **Auth endpoints**
-- [ ] `POST /api/v1/auth/register` ze słabym hasłem (<12 znaków, bez cyfry lub bez znaku specjalnego) → 400
-- [ ] `POST /api/v1/auth/register` z błędnym URL strony → 400
-- [ ] `POST /api/v1/auth/register` z istniejącym emailem → 409 z czytelnym komunikatem
-- [ ] `POST /api/v1/auth/login` rate limit 10/min
-- [ ] `POST /api/v1/auth/forgot-password` dla nieistniejącego emaila → 200 (no enumeration)
-- [ ] `POST /api/v1/auth/reset-password` z niepoprawnym tokenem → 400
-- [ ] Anon-key nie pozwala ominąć AuthGuard (P0 sec fix — wcześniej bypass)
+- [x] `POST /api/v1/auth/register` ze słabym hasłem → 400 [unit ✓ — `register.dto.spec.ts`]
+- [x] `POST /api/v1/auth/register` z błędnym URL strony → 400 [unit ✓ — `register.dto.spec.ts`]
+- [ ] `POST /api/v1/auth/register` z istniejącym emailem → 409 — wymaga prawdziwego Supabase, pominięte
+- [ ] `POST /api/v1/auth/login` rate limit → pominięte
+- [ ] `POST /api/v1/auth/forgot-password` — metoda nie istnieje w kodzie, pominięte
+- [ ] `POST /api/v1/auth/reset-password` — nie zaimplementowane, pominięte
+- [ ] Anon-key nie bypassuje AuthGuard [unit pending — `auth.guard.spec.ts`]
 
 **Contact endpoint**
-- [ ] `POST /api/v1/contact` z błędnym `website` URL → 400
-- [ ] `POST /api/v1/contact` rate limit 10/min
-- [ ] `POST /api/v1/contact` sanitizuje HTML w message przed wysłaniem emaila (escapeHtml z `'`)
+- [ ] `POST /api/v1/contact` z błędnym `website` URL → 400 [unit pending — `create-contact.dto.spec.ts`]
+- [ ] `POST /api/v1/contact` rate limit → pominięte
+- [ ] `POST /api/v1/contact` escapeHtml z `'` [unit pending — `notification.service.spec.ts`]
 
 **Billing webhook**
-- [ ] `POST /api/v1/billing/webhook` z błędną sygnaturą → 400
-- [ ] `POST /api/v1/billing/webhook` z duplikatem event ID → 200, no-op (idempotencja)
+- [x] `POST /api/v1/billing/webhook` z błędną sygnaturą → 400 [unit ✓ — `billing.service.spec.ts`]
+- [x] `POST /api/v1/billing/webhook` z duplikatem event ID → 200 no-op [unit ✓ — `billing.service.spec.ts`]
 
 **Feedback endpoint**
-- [ ] `POST /api/v1/feedback` z rating 6 → 400
-- [ ] `POST /api/v1/feedback` dla nieistniejącej konwersacji → 404
-- [ ] `POST /api/v1/feedback` ten sam conversationId 2x → 409
+- [x] Rating 6 → 400 [unit ✓ — `create-review.dto.spec.ts`]
+- [ ] `FeedbackService` per konwersacja — moduł nie istnieje, pominięte
 
 ---
 
@@ -592,17 +594,18 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 ---
 
 #### Security P0-P3 — testy regresji
-- [ ] P0: Anon-key nie bypassuje AuthGuard
-- [ ] P0: Stripe webhook idempotencja (ten sam `event.id` 2x → bez duplikacji)
-- [ ] P0: Domain whitelist w prod dla `/api/v1/chat` i `/api/v1/leads`
-- [ ] P0: Limit długości wiadomości per bot
-- [ ] P1: `tenant.isActive = false` blokuje `GET /api/v1/bot/:id/config`
-- [ ] P2: `botId` UUID validation na chat i leads
-- [ ] P2: `website` URL validation na contact form
-- [ ] P3: `escapeHtml` pokrywa `'` (attribute injection w email templateach)
-- [ ] Helmet headers obecne: `X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security`
-- [ ] CSP: Cloudinary na `img-src` i `connect-src` (awatary)
-- [ ] CSP: YouTube + Vimeo na `frame-src` (blog `VideoEmbed`)
+
+- [ ] P0: Anon-key nie bypassuje AuthGuard [unit pending — `auth.guard.spec.ts`]
+- [x] P0: Stripe webhook idempotencja [unit ✓ — `billing.service.spec.ts` (P2002 handler)]
+- [x] P0: Domain whitelist w prod [unit ✓ — `domain-whitelist.guard.spec.ts`]
+- [ ] P0: Limit długości wiadomości >1000 znaków [unit pending — `chat-message.dto.spec.ts`]
+- [x] P1: `tenant.isActive = false` blokuje bot config [unit ✓ — `bot.service.spec.ts`]
+- [ ] P2: `botId` CUID validation [unit pending — `chat-message.dto.spec.ts`]
+- [x] P2: `website` URL validation na rejestracji [unit ✓ — `register.dto.spec.ts`]
+- [ ] P2: `website` URL validation na contact form [unit pending — `create-contact.dto.spec.ts`]
+- [ ] P3: `escapeHtml` pokrywa `'` [unit pending — `notification.service.spec.ts`]
+- [ ] Helmet headers — weryfikacja manualna w DevTools przed deploy (nie unit test)
+- [ ] CSP Cloudinary/YouTube — weryfikacja konfiguracji Next.js przed deploy (nie unit test)
 
 ---
 
