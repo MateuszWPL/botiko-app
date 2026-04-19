@@ -24,9 +24,11 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm dev',
+    // CI: build then start (production mode, faster test run)
+    // Local: reuse the already-running dev server — no extra startup cost
+    command: process.env.CI ? 'pnpm build && pnpm start' : 'pnpm dev',
     url: BASE_URL,
-    reuseExistingServer: true,
-    timeout: 120_000,
+    reuseExistingServer: !process.env.CI,
+    timeout: 180_000,
   },
 });
