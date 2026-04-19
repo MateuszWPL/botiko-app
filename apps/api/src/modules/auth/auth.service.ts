@@ -40,7 +40,9 @@ export class AuthService {
       await this.supabase.auth.admin.createUser({
         email: dto.email,
         password: dto.password,
-        email_confirm: env.NODE_ENV !== 'production',
+        // Skip email confirmation — trial + Stripe card capture is the real
+        // verification step; adding a confirm-email click only adds friction.
+        email_confirm: true,
       });
 
     if (authError || !authData.user) {
@@ -61,10 +63,16 @@ export class AuthService {
     const supabaseUserId = authData.user.id;
 
     try {
+      // websiteUrl arrives normalized as `https://<host>` from the DTO.
+      // Use the bare hostname as the initial tenant.name; user can rename
+      // anytime in Ustawienia.
+      const hostname = new URL(dto.websiteUrl).hostname.replace(/^www\./, '');
+
       const tenant = await this.prisma.$transaction(async (tx) => {
         const newTenant = await tx.tenant.create({
           data: {
-            name: dto.companyName,
+            name: hostname,
+            websiteUrl: dto.websiteUrl,
             industry: dto.industry,
             plan: 'STARTER',
             isActive: true,
@@ -95,12 +103,7 @@ export class AuthService {
       }
 
       this.logger.log(`New tenant registered: ${tenant.id}`);
-      return {
-        message:
-          env.NODE_ENV !== 'production'
-            ? 'Account created successfully.'
-            : 'Account created. Please check your email to confirm.',
-      };
+      return { message: 'Account created successfully.' };
     } catch (error) {
       // Rollback Supabase user if Prisma transaction failed
       await this.supabase.auth.admin

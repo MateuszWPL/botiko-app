@@ -9,6 +9,7 @@ datasource db {
 model Tenant {
   id                     String    @id @default(cuid())
   name                   String
+  websiteUrl             String?
   industry               Industry
   plan                   Plan      @default(STARTER)
   isActive               Boolean   @default(false)
