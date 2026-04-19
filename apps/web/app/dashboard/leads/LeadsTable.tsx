@@ -5,7 +5,6 @@ import { toast } from 'sonner';
 import {
   Loader2,
   ChevronDown,
-  ChevronRight,
   Search,
   Download,
   Plus,
@@ -452,7 +451,7 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
                   Telefon
                 </th>
                 <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200 hidden md:table-cell">
-                  Źródło rozmowy
+                  Wiadomość
                 </th>
                 <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200">
                   Status
@@ -460,7 +459,6 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
                 <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200 hidden sm:table-cell">
                   Data
                 </th>
-                <th className="px-3 py-3.5 border-b border-slate-200 w-8" />
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -530,9 +528,6 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
                     </td>
                     <td className="px-5 py-4 text-slate-400 text-xs hidden sm:table-cell whitespace-nowrap">
                       {formatDate(lead.createdAt)}
-                    </td>
-                    <td className="px-3 py-4">
-                      <ChevronRight className="w-4 h-4 text-slate-300" />
                     </td>
                   </tr>
                 );
