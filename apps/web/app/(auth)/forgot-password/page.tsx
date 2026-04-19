@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '../../../lib/supabase';
+import { AuthLeftPanel } from '../../../components/auth/AuthLeftPanel';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -25,70 +26,88 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-          <div className="text-center mb-8">
-            <Link href="/" className="inline-flex items-center gap-2 mb-6">
-              <Image src="/BotikoLogo.png" alt="Botiko" width={36} height={36} className="rounded-xl" />
-              <span className="font-bold text-lg text-slate-900">Botiko<span className="text-brand">.pl</span></span>
-            </Link>
-            <h1 className="text-2xl font-bold text-slate-900">Reset hasła</h1>
-            <p className="text-slate-500 mt-1 text-sm">
-              Wyślemy link do resetowania hasła
-            </p>
-          </div>
+    <main className="min-h-screen flex flex-col lg:grid lg:grid-cols-[45%_55%]">
+      <div className="flex items-center justify-center bg-white order-1 lg:order-2">
+        <div className="flex flex-col justify-center w-full max-w-sm mx-auto px-6 lg:px-0 py-12 lg:py-0 min-h-screen lg:min-h-0">
+          {/* Mobile logo */}
+          <Link href="/" className="flex items-center gap-2 mb-8 lg:hidden">
+            <Image src="/BotikoLogo.png" alt="Botiko" width={32} height={32} className="rounded-lg" />
+            <span className="font-bold text-lg text-slate-900">Botiko<span className="text-brand">.pl</span></span>
+          </Link>
 
           {sent ? (
-            <div className="text-center">
-              <div className="text-4xl mb-4">✉️</div>
-              <p className="text-slate-700 font-medium">
-                Sprawdź swoją skrzynkę
-              </p>
-              <p className="text-slate-500 text-sm mt-2">
-                Jeśli konto z tym adresem istnieje, wysłaliśmy link do resetowania hasła.
-              </p>
+            <>
+              <div className="mb-8">
+                <div className="w-12 h-12 rounded-2xl bg-green-50 border border-green-200 flex items-center justify-center mb-4">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </div>
+                <h1 className="text-2xl font-extrabold text-slate-900">Sprawdź skrzynkę</h1>
+                <p className="text-slate-500 text-sm mt-2 leading-relaxed">
+                  Jeśli konto z tym adresem istnieje, wysłaliśmy link do zresetowania hasła.
+                </p>
+              </div>
               <Link
                 href="/login"
-                className="mt-6 inline-block text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+                className="inline-flex items-center gap-2 text-sm text-brand hover:text-brand-dark font-semibold transition-colors"
               >
-                ← Wróć do logowania
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="15 18 9 12 15 6"/>
+                </svg>
+                Wróć do logowania
               </Link>
-            </div>
+            </>
           ) : (
-            <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  placeholder="twoj@email.pl"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                />
+            <>
+              <div className="mb-8">
+                <h1 className="text-2xl font-extrabold text-slate-900">Reset hasła</h1>
+                <p className="text-slate-500 text-sm mt-1">Wyślemy Ci link do ustawienia nowego hasła</p>
               </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white font-medium rounded-lg text-sm transition-colors"
-              >
-                {loading ? 'Wysyłanie...' : 'Wyślij link do resetu'}
-              </button>
+              <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    autoComplete="email"
+                    placeholder="twoj@email.pl"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3.5 rounded-xl bg-brand text-white font-bold text-sm hover:bg-brand-dark disabled:opacity-60 transition-colors mt-2"
+                >
+                  {loading ? 'Wysyłanie...' : 'Wyślij link do resetu'}
+                </button>
+              </form>
 
               <Link
                 href="/login"
-                className="block text-center text-sm text-slate-500 hover:text-slate-700"
+                className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 font-medium transition-colors mt-6"
               >
-                ← Wróć do logowania
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="15 18 9 12 15 6"/>
+                </svg>
+                Wróć do logowania
               </Link>
-            </form>
+            </>
           )}
         </div>
       </div>
+
+      <AuthLeftPanel
+        headline="Zdarza się"
+        sub="Wyślemy Ci link — nowe hasło ustawisz w kilka sekund."
+        badge="14 dni za darmo — bez karty"
+      />
     </main>
   );
 }
