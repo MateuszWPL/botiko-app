@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Projekt
 
-Botiko.pl — polska SaaS platforma AI chatbot B2B dla mikro/małych firm usługowych (salony beauty, gabinety, restauracje, warsztaty). Jeden produkt, wiele branż. Klient wybiera branżę w onboardingu → dostaje gotowy szablon asystentki AI.
+Botiko.pl — polska SaaS platforma AI chatbot B2B dla mikro/małych firm usługowych. Jeden produkt, wiele branż. Klient wybiera branżę w onboardingu → dostaje gotowy szablon bota.
+
+**Główny fokus (gotowe szablony branżowe):** salony beauty, gabinety zdrowia/SPA, restauracje, warsztaty samochodowe. **Szerzej:** każda inna mikro/mała firma usługowa — fryzjer, kosmetyczka, fizjoterapeuta, korepetytor, fotograf, coach, trener personalny, sklep lokalny itp. → w onboardingu wybiera `OTHER` i dostaje generyczny szablon bota.
 
 **Cel MVP:** 15 płacących klientów w 6 miesięcy.
 
@@ -23,11 +25,20 @@ Botiko.pl — polska SaaS platforma AI chatbot B2B dla mikro/małych firm usług
 ## Struktura repo
 
 ```
-apps/web/      → Next.js 14 App Router + Tailwind v4 (dashboard, port 3000)
+apps/web/      → Next.js 14 App Router + Tailwind v4 (dashboard + landing pages, port 3000)
 apps/api/      → NestJS + Prisma (REST API, port 3001)
 apps/widget/   → Preact + Vite (embed script, port 5173, target <12KB gzip)
-supabase/      → SQL migrations (RLS policies)
+supabase/      → SQL migrations + RLS policies
+docs/CODEMAPS/ → 6 plików architektonicznych (ENG): INDEX, backend, frontend, widget, database, integrations
+.github/workflows/ → ci.yml (4 joby: API lint+test, Web lint+tsc, Widget size, E2E Playwright)
+apps/api/src/brand-templates/ → szablony promptów per branża (beauty, health, food, auto + generyczny)
 ```
+
+**Dokumentacja pomocnicza w root:**
+- `TASK.md` — szczegółowy checklist faz (1A, 1B…) — tu szukaj deployment checklist (§1A.6)
+- `AI-COMMANDS.md` — quick reference komend Claude Code / MCP
+- `DOCUMENTATION_SUMMARY.md` — indeks wszystkich dokumentów
+- `README.md` — setup instructions + architecture overview
 
 ---
 
@@ -53,14 +64,18 @@ pnpm test -- --testPathPattern=chat.service
 ### Web (`apps/web`)
 ```bash
 pnpm dev             # Next.js dev server
+pnpm dev:turbo       # Next.js dev server z Turbopack
 pnpm build           # Production build
 pnpm lint            # ESLint
+pnpm e2e             # Playwright E2E (headless)
+pnpm e2e:ui          # Playwright E2E z UI
 ```
 
 ### Widget (`apps/widget`)
 ```bash
 pnpm dev             # Vite dev server
 pnpm build           # Build dist/embed.js — rzuca błąd jeśli >12KB gzip
+pnpm build:watch     # Build w trybie watch
 pnpm preview         # Preview zbudowanego bundle
 ```
 
@@ -143,9 +158,11 @@ CORS jest **otwarty dla wszystkich originów** — widget musi działać na dowo
 - `suggestedQuestions` z `GET /api/v1/bot/:id/config` — branżowe, nie hardcoded
 
 ### Database Schema (Prisma — `apps/api/prisma/schema.prisma`)
-Główne modele: `Tenant`, `User`, `Bot`, `KnowledgeChunk` (pgvector), `Lead` (PII encrypted), `Conversation`, `Message`
+Główne modele: `Tenant`, `User`, `Bot`, `KnowledgeChunk` (pgvector), `Lead` (PII encrypted), `Conversation`, `Message`, `Review`, `ProcessedStripeEvent` (idempotency guard webhooków), `BillingEvent` (audit trail: ACTIVATED/DEACTIVATED/PLAN_CHANGED/TRIAL_EXPIRED)
 
-Enums: `Industry` (BEAUTY/HEALTH/FOOD/AUTO/OTHER), `Plan` (STARTER/PRO/PREMIUM — w MVP używamy tylko STARTER), `LeadStatus` (NEW/CONTACTED/CONVERTED/LOST), `MsgRole` (USER/ASSISTANT)
+Enums: `Industry` (BEAUTY/HEALTH/FOOD/AUTO/OTHER), `Plan` (STARTER/PRO/PREMIUM — w MVP używamy tylko STARTER), `LeadStatus` (NEW/CONTACTED/CONVERTED/LOST), `MsgRole` (USER/ASSISTANT), `UserRole` (OWNER/MEMBER)
+
+**Industry templates:** BEAUTY/HEALTH/FOOD/AUTO mają własne pliki w `apps/api/src/brand-templates/`. `OTHER` korzysta z generycznego szablonu — obsługuje każdą branżę usługową bez dedykowanego prompta.
 
 ### Moduły API (`apps/api/src/modules/`)
 | Moduł | Endpointy | Auth |
@@ -158,6 +175,8 @@ Enums: `Industry` (BEAUTY/HEALTH/FOOD/AUTO/OTHER), `Plan` (STARTER/PRO/PREMIUM �
 | `contact` | `POST /api/v1/contact` | publiczny, rate limit 10/min |
 | `billing` | `/api/v1/billing/*` | AuthGuard (checkout/portal/status); webhook publiczny |
 | `tenant` | `/api/v1/tenant/*` | AuthGuard+TenantGuard |
+| `review` | `/api/v1/reviews/*` | AuthGuard+TenantGuard |
+| `ai` | — (wewnętrzny provider OpenAI, bez endpointów publicznych) | — |
 
 ---
 
@@ -229,11 +248,12 @@ git add apps/api/src/...    # jawnie, żeby nie commitować .env przez pomyłkę
 - Sekrety, klucze API, tokeny
 
 ### CI (GitHub Actions) — uruchamia się automatycznie na każdym PR
-- `API (lint + test)` — ESLint + Jest
+- `API (lint + test)` — ESLint + Jest (~297 testów jednostkowych + Supertest E2E)
 - `Web (lint + type-check)` — ESLint + tsc
-- `Widget (build + size check)` — Vite build z limitem <12KB
+- `Widget (build + size check)` — Vite build z limitem <12KB gzip
+- `Web E2E (Playwright)` — smoke testy landing pages (24 testy, chromium only)
 
-Merge możliwy tylko gdy wszystkie 3 przechodzą. Claude informuje o statusie CI.
+Merge możliwy tylko gdy wszystkie 4 przechodzą. Claude informuje o statusie CI.
 
 ## Brand Colors
 
@@ -250,19 +270,23 @@ NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z bran
 - Ból: "tracisz klientki o 22:00 bo nie odbierasz"
 - ROI: "1 klientka = 150-300 zł. Bot = 99 zł/mies."
 
-## Aktualny stan projektu (2026-04-14)
+## Aktualny stan projektu (2026-04-22)
 
 **Faza:** 1A — Gotowe do pilotu. Brakuje: deploy infra.
 
 **Co działa:**
 - Core bot (RAG + OpenAI) z pełnym pre-processingiem wiadomości
 - Widget embedded (<12KB, Shadow DOM, działa na WordPress/Shopify/Squarespace/Webflow/GTM)
-- Dashboard (8 stron: overview, leads, conversations, knowledge, settings, embed, billing)
-- Stripe billing (STARTER 99 zł/mies., 14 dni trial, webhooks)
+- Dashboard (10 stron: overview, leads, conversations, knowledge, knowledge-base, settings, embed, billing, help + strony onboardingu)
+- Onboarding wizard 5-krokowy (`/onboarding/step-1` … `/step-5`)
+- 5 landing pages branżowych (`/dla/salon-beauty`, `/dla/gabinet-spa`, `/dla/restauracja`, `/dla/warsztat-mechaniczny`, `/dla/inna`)
+- Stripe billing (STARTER 99 zł/mies., 14 dni trial, webhooks, idempotency guard, audit trail BillingEvent)
+- System recenzji (`Review` model + moduł API)
 - Landing page + blog SEO + formularz kontaktowy
-- Security hardening (CORS, UUID validation, HTML escaping, HTTP error handling)
+- Security hardening (CORS, UUID validation, HTML escaping, HTTP error handling, walidacja hasła: 12 znaków + cyfra + znak specjalny)
+- Pokrycie testami: 297+ testów jednostkowych (Jest) + 24 E2E landing pages (Playwright) + E2E API (Supertest); 4-jobowy CI zielony
 
 **Co zostało przed deployem:**
 - Railway/Vercel infra setup + DNS + env vars
-- Ręczna QA (checklist w TASK.md § 1A.6)
+- Ręczna QA (szczegółowy checklist: `TASK.md §1A.6`)
 - Weryfikacja Wix HTML Embed compatibility (czy `querySelector` działa w sandboxed iframe)
