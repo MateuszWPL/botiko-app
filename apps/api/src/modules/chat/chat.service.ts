@@ -142,7 +142,14 @@ export class ChatService {
       where: { id: req.botId, isActive: true },
       include: {
         tenant: {
-          select: { id: true, industry: true, plan: true, isActive: true },
+          select: {
+            id: true,
+            industry: true,
+            plan: true,
+            isActive: true,
+            createdAt: true,
+            stripeSubscriptionId: true,
+          },
         },
       },
     });
@@ -155,6 +162,16 @@ export class ChatService {
       // Generic message — never leak plan/billing state to the widget visitor.
       // Widget will show a friendly fallback ("leave a contact") on 403.
       throw new ForbiddenException('Service temporarily unavailable');
+    }
+
+    // Defense in depth: even if the daily trial-expiry cron didn't run yet,
+    // refuse chat once the 14-day trial has lapsed and no subscription exists.
+    if (!bot.tenant.stripeSubscriptionId) {
+      const trialEnd = new Date(bot.tenant.createdAt);
+      trialEnd.setDate(trialEnd.getDate() + 14);
+      if (trialEnd.getTime() <= Date.now()) {
+        throw new ForbiddenException('Service temporarily unavailable');
+      }
     }
 
     await this.checkPlanLimit(bot.tenant.id, bot.tenant.plan);
@@ -200,7 +217,7 @@ export class ChatService {
             content: `<user_message>${cleanMessage}</user_message>`,
           },
         ],
-        150,
+        { maxTokens: 150 },
       );
       await this.persistMessages(
         conversationId,
@@ -282,7 +299,7 @@ export class ChatService {
       },
     ];
 
-    const result = await this.aiService.chat(messages, 600);
+    const result = await this.aiService.chat(messages, { maxTokens: 600 });
 
     await this.persistMessages(conversation.id, cleanMessage, result.content);
 

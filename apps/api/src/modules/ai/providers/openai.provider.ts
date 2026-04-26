@@ -4,6 +4,7 @@ import { env } from '../../../config/env';
 import type {
   AIService,
   ChatMessage,
+  ChatOptions,
   ChatResult,
   EmbeddingResult,
 } from '../ai.service.interface';
@@ -39,12 +40,14 @@ export class OpenAIProvider implements AIService {
     };
   }
 
-  async chat(messages: ChatMessage[], maxTokens = 600): Promise<ChatResult> {
+  async chat(messages: ChatMessage[], options: ChatOptions = {}): Promise<ChatResult> {
+    const { maxTokens = 600, temperature = 0.3, responseFormat } = options;
     const response = await this.client.chat.completions.create({
       model: 'gpt-4o-mini',
       messages,
       max_tokens: maxTokens,
-      temperature: 0.3,
+      temperature,
+      ...(responseFormat && { response_format: responseFormat }),
     });
 
     const content = response.choices[0]?.message?.content;
