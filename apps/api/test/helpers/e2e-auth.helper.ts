@@ -29,7 +29,12 @@ export async function setupTestUser(
 
   await request(app.getHttpServer())
     .post('/api/v1/auth/register')
-    .send({ email, password, websiteUrl: 'https://e2e-test.botiko.pl', industry: 'OTHER' })
+    .send({
+      email,
+      password,
+      websiteUrl: 'https://e2e-test.botiko.pl',
+      industry: 'OTHER',
+    })
     .expect(201);
 
   const loginRes = await request(app.getHttpServer())
@@ -92,10 +97,13 @@ export async function setupTestUser(
     }
 
     try {
-      const { data } = await supabase.auth.admin.listUsers({ perPage: 1000 });
-      const supabaseUser = data?.users.find((u) => u.email === email);
-      if (supabaseUser) {
-        await supabase.auth.admin.deleteUser(supabaseUser.id);
+      const { data: userList, error: listError } =
+        await supabase.auth.admin.listUsers({ perPage: 1000 });
+      if (!listError) {
+        const supabaseUser = userList.users.find((u) => u.email === email);
+        if (supabaseUser) {
+          await supabase.auth.admin.deleteUser(supabaseUser.id);
+        }
       }
     } catch {
       // Non-fatal

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { X, ChevronRight, ChevronLeft, Check, Bot, Copy, Loader2, Plus, Trash2 } from 'lucide-react';
 import { createClient } from '../../lib/supabase';
+import { WebsiteImportButton } from '../knowledge/WebsiteImportButton';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 const WIDGET_URL = process.env.NEXT_PUBLIC_WIDGET_URL ?? 'https://cdn.botiko.pl';
@@ -23,7 +24,6 @@ interface WizardData {
   phone: string;
   email: string;
   address: string;
-  hours: string;
   serviceItems: ServiceItem[];
   additionalInfo: string;
   botName: string;
@@ -38,7 +38,6 @@ const DEFAULTS: WizardData = {
   phone: '',
   email: '',
   address: '',
-  hours: '',
   serviceItems: [],
   additionalInfo: '',
   botName: '',
@@ -103,7 +102,6 @@ function buildKnowledgeChunks(data: WizardData): { content: string; category: st
     data.phone && `Telefon: ${data.phone}`,
     data.email && `Email: ${data.email}`,
     data.address && `Adres: ${data.address}`,
-    data.hours && `Godziny otwarcia: ${data.hours}`,
   ].filter(Boolean);
 
   if (contactLines.length > 0) {
@@ -187,16 +185,9 @@ function StepContact({ data, onChange }: { data: WizardData; onChange: (d: Parti
         />
       </div>
 
-      <div>
-        <label className="block text-xs font-semibold text-slate-600 mb-1.5">Godziny otwarcia</label>
-        <input
-          type="text"
-          value={data.hours}
-          onChange={(e) => onChange({ hours: e.target.value })}
-          placeholder="Pon–Pt: 9:00–18:00, Sob: 10:00–15:00"
-          className={inputClass}
-        />
-      </div>
+      <p className="text-xs text-slate-400 pt-1">
+        Godziny otwarcia ustawisz w sekcji Ustawienia → dzień po dniu z godzinami od–do.
+      </p>
     </div>
   );
 }
@@ -581,6 +572,23 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
         </ol>
       </div>
 
+      {data.websiteUrl && botId && (
+        <div className="border border-slate-200 rounded-xl p-4 space-y-3">
+          <div>
+            <p className="text-xs font-semibold text-slate-700 mb-1">Importuj wiedzę ze strony WWW</p>
+            <p className="text-xs text-slate-500">
+              Automatycznie pobierz usługi, FAQ i cennik z{' '}
+              <span className="font-medium text-slate-700">{data.websiteUrl}</span>.
+            </p>
+          </div>
+          <WebsiteImportButton
+            botId={botId}
+            tenantWebsiteUrl={data.websiteUrl}
+            onComplete={() => {}}
+          />
+        </div>
+      )}
+
       <p className="text-xs text-slate-400 text-center">
         Dodaj domenę w <strong>Ustawienia → Domena strony</strong>, aby zabezpieczyć bota.
       </p>
@@ -591,7 +599,7 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
 // ── Steps config ───────────────────────────────────────────────────────────────
 
 const STEPS = [
-  { label: 'Dane firmy', description: 'Kontakt i godziny otwarcia' },
+  { label: 'Dane firmy', description: 'Kontakt do firmy' },
   { label: 'Oferta', description: 'Usługi i cennik' },
   { label: 'Wygląd', description: 'Imię bota, kolor, powitanie' },
   { label: 'Gotowe', description: 'Utwórz bota i pobierz kod' },

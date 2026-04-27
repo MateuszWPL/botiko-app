@@ -10,11 +10,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { EmbeddingService } from './embedding.service';
 import type { AddChunkDto } from './dto/add-chunk.dto';
 
-/**
- * Strip HTML tags and normalize whitespace from raw knowledge content.
- * Clients often paste from Word, Google Docs or websites — we want plain text only.
- */
-function sanitizeContent(raw: string): string {
+export function sanitizeContent(raw: string): string {
   return raw
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // strip script blocks first
     .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '') // strip style blocks
@@ -29,8 +25,7 @@ function sanitizeContent(raw: string): string {
     .trim();
 }
 
-/** Patterns that indicate an attempt to inject instructions via the knowledge base */
-const KNOWLEDGE_INJECTION_PATTERNS: RegExp[] = [
+export const KNOWLEDGE_INJECTION_PATTERNS: RegExp[] = [
   /ignore\s+(all\s+)?previous\s+instructions?/i,
   /forget\s+(everything|instructions?)/i,
   /you\s+are\s+now/i,
@@ -43,7 +38,7 @@ const KNOWLEDGE_INJECTION_PATTERNS: RegExp[] = [
   /jeste[sś]\s+teraz/i,
 ];
 
-function detectKnowledgeInjection(content: string): boolean {
+export function detectKnowledgeInjection(content: string): boolean {
   return KNOWLEDGE_INJECTION_PATTERNS.some((p) => p.test(content));
 }
 
@@ -51,6 +46,7 @@ export interface KnowledgeChunkResponse {
   id: string;
   content: string;
   category: string | null;
+  source: string | null;
   createdAt: Date;
 }
 
@@ -67,6 +63,7 @@ export class KnowledgeService {
     tenantId: string,
     botId: string,
     dto: AddChunkDto,
+    source = 'manual',
   ): Promise<{ id: string }> {
     const bot = await this.prisma.bot.findFirst({
       where: { id: botId, tenantId },
@@ -96,13 +93,14 @@ export class KnowledgeService {
     const id = randomUUID();
 
     await this.prisma.$executeRaw`
-      INSERT INTO "KnowledgeChunk" (id, "botId", content, embedding, category, "createdAt")
+      INSERT INTO "KnowledgeChunk" (id, "botId", content, embedding, category, source, "createdAt")
       VALUES (
         ${id},
         ${botId},
         ${cleanContent},
         ${Prisma.raw(`array_fill(0::float4, ARRAY[1536])::vector(1536)`)},
         ${dto.category ?? null},
+        ${source},
         NOW()
       )
     `;
@@ -145,6 +143,7 @@ export class KnowledgeService {
         id: true,
         content: true,
         category: true,
+        source: true,
         createdAt: true,
       },
       orderBy: { createdAt: 'desc' },

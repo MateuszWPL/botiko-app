@@ -13,9 +13,15 @@ export interface ChatResult {
   tokenUsage: number;
 }
 
+export interface ChatOptions {
+  maxTokens?: number;
+  temperature?: number;
+  responseFormat?: { type: 'json_object' };
+}
+
 export interface AIService {
   generateEmbedding(text: string): Promise<EmbeddingResult>;
-  chat(messages: ChatMessage[], maxTokens?: number): Promise<ChatResult>;
+  chat(messages: ChatMessage[], options?: ChatOptions): Promise<ChatResult>;
 }
 
 export const AI_SERVICE = Symbol('AIService');

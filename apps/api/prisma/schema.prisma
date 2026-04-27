@@ -82,6 +82,7 @@ model Bot {
   avatarEmoji           String         @default("")
   conversations         Conversation[]
   knowledge             KnowledgeChunk[]
+  importJobs            KnowledgeImportJob[]
 }
 
 model KnowledgeChunk {
@@ -91,7 +92,10 @@ model KnowledgeChunk {
   content   String
   embedding Unsupported("vector(1536)")
   category  String?
+  source    String?                @default("manual")
   createdAt DateTime               @default(now())
+
+  @@index([botId, source])
 }
 
 model Lead {
@@ -141,6 +145,38 @@ model Review {
   createdAt DateTime @default(now())
 
   @@index([tenantId])
+}
+
+enum ImportJobStatus {
+  PENDING
+  SCRAPING
+  EXTRACTING
+  READY_FOR_REVIEW
+  CONFIRMING
+  CONFIRMED
+  FAILED
+  CANCELLED
+}
+
+model KnowledgeImportJob {
+  id               String          @id @default(cuid())
+  tenantId         String
+  botId            String
+  bot              Bot             @relation(fields: [botId], references: [id], onDelete: Cascade)
+  status           ImportJobStatus @default(PENDING)
+  sourceUrl        String
+  scrapedPages     String[]        @default([])
+  failedPages      String[]        @default([])
+  extractedPayload Json?
+  chunksCreated    Int             @default(0)
+  errorCode        String?
+  errorMessage     String?
+  tokenUsage       Int             @default(0)
+  createdAt        DateTime        @default(now())
+  completedAt      DateTime?
+
+  @@index([tenantId, createdAt])
+  @@index([botId, status])
 }
 
 enum Industry {
