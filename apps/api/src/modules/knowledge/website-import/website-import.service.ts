@@ -83,7 +83,6 @@ export class WebsiteImportService {
         sourceUrl,
         bot.tenant.websiteUrl,
         bot.tenant.industry,
-        bot.tenant.plan,
       ).catch((err: unknown) => {
         const msg = err instanceof Error ? err.message : String(err);
         this.logger.error(`Import job ${job.id} failed unexpectedly: ${msg}`);
@@ -229,7 +228,6 @@ export class WebsiteImportService {
     sourceUrl: string,
     tenantWebsiteUrl: string | null,
     industry: Industry,
-    _plan: Plan,
   ): Promise<void> {
     try {
       // Update status to SCRAPING
