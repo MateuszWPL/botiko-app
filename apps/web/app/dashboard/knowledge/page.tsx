@@ -13,16 +13,22 @@ interface Chunk {
   id: string;
   content: string;
   category: string | null;
+  source: string | null;
   createdAt: string;
 }
 
+interface Tenant {
+  websiteUrl: string | null;
+}
+
 export default async function KnowledgePage() {
-  let bots: Bot[] = [];
-  try {
-    bots = await fetchWithAuth<Bot[]>('/api/v1/bot');
-  } catch {
-    // handled below
-  }
+  const [botsResult, tenantResult] = await Promise.allSettled([
+    fetchWithAuth<Bot[]>('/api/v1/bot'),
+    fetchWithAuth<Tenant>('/api/v1/tenant/me'),
+  ]);
+
+  const bots = botsResult.status === 'fulfilled' ? botsResult.value : [];
+  const tenant = tenantResult.status === 'fulfilled' ? tenantResult.value : null;
 
   const firstBot = bots[0];
   let chunks: Chunk[] = [];
@@ -50,7 +56,11 @@ export default async function KnowledgePage() {
           action={{ label: 'Utwórz bota', openWizard: true }}
         />
       ) : (
-        <KnowledgeManager botId={firstBot.id} initialChunks={chunks} />
+        <KnowledgeManager
+          botId={firstBot.id}
+          initialChunks={chunks}
+          tenantWebsiteUrl={tenant?.websiteUrl}
+        />
       )}
     </div>
   );

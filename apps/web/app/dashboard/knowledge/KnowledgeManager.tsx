@@ -4,16 +4,18 @@ import { useState, useRef, useMemo, useEffect } from 'react';
 import {
   Plus, Trash2, Loader2, BookOpen, Phone, HelpCircle, FileText, FileUp,
   Check, X, Pencil, AlertCircle, Search, Mail, MapPin, Clock, Globe,
-  Sparkles, Filter, ChevronDown,
+  Sparkles, Filter, ChevronDown, AlertTriangle,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '../../../lib/supabase';
 import { EmptyStateClient } from '../../../components/ui/EmptyStateClient';
+import { WebsiteImportButton } from '../../../components/knowledge/WebsiteImportButton';
 
 interface Chunk {
   id: string;
   content: string;
   category: string | null;
+  source: string | null;
   createdAt: string;
 }
 
@@ -125,7 +127,7 @@ function parseFaq(content: string): { question: string; answer: string } | null 
 const inputClass =
   'w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 bg-white/70 transition-shadow';
 
-type Tab = 'contact' | 'faq' | 'text' | 'pdf';
+type Tab = 'contact' | 'faq' | 'text' | 'pdf' | 'web';
 
 // ── Tab: Contact info ──────────────────────────────────────────────────────────
 
@@ -171,7 +173,7 @@ function ContactTab({
       });
       if (!res.ok) throw new Error();
       const { id } = (await res.json()) as { id: string };
-      onAdd({ id, content, category: 'kontakt', createdAt: new Date().toISOString() });
+      onAdd({ id, content, category: 'kontakt', source: null, createdAt: new Date().toISOString() });
       setForm({ phone: '', email: '', address: '', hours: '', website: '' });
       toast.success('Dane kontaktowe dodane do bazy wiedzy');
     } catch {
@@ -253,7 +255,7 @@ function FaqTab({
       });
       if (!res.ok) throw new Error();
       const { id } = (await res.json()) as { id: string };
-      onAdd({ id, content, category: 'faq', createdAt: new Date().toISOString() });
+      onAdd({ id, content, category: 'faq', source: null, createdAt: new Date().toISOString() });
       setQuestion('');
       setAnswer('');
       toast.success('Pytanie i odpowiedź dodane');
@@ -329,7 +331,7 @@ function TextTab({
       });
       if (!res.ok) throw new Error();
       const { id } = (await res.json()) as { id: string };
-      onAdd({ id, content: content.trim(), category: category.trim() || null, createdAt: new Date().toISOString() });
+      onAdd({ id, content: content.trim(), category: category.trim() || null, source: null, createdAt: new Date().toISOString() });
       setContent('');
       setCategory('');
       toast.success('Wpis dodany do bazy wiedzy');
@@ -437,8 +439,9 @@ function PdfTab({
           const { id } = (await res.json()) as { id: string };
           added.push({
             id,
-            content: chunks[i],
+            content: chunks[i]!,
             category: `pdf: ${file.name}`,
+            source: null,
             createdAt: new Date().toISOString(),
           });
         }
@@ -736,6 +739,7 @@ const TABS: { id: Tab; label: string; icon: React.ElementType; description: stri
   { id: 'faq', label: 'FAQ', icon: HelpCircle, description: 'Pytania i odpowiedzi' },
   { id: 'text', label: 'Tekst', icon: FileText, description: 'Dowolna informacja o firmie' },
   { id: 'pdf', label: 'PDF', icon: FileUp, description: 'Wgraj dokument' },
+  { id: 'web', label: 'Web', icon: Globe, description: 'Importuj ze strony' },
 ];
 
 // ── Main export ────────────────────────────────────────────────────────────────
@@ -743,14 +747,17 @@ const TABS: { id: Tab; label: string; icon: React.ElementType; description: stri
 export function KnowledgeManager({
   botId,
   initialChunks,
+  tenantWebsiteUrl,
 }: {
   botId: string;
   initialChunks: Chunk[];
+  tenantWebsiteUrl?: string | null;
 }) {
   const [chunks, setChunks] = useState(initialChunks);
   const [activeTab, setActiveTab] = useState<Tab>('contact');
   const [search, setSearch] = useState('');
   const [kindFilter, setKindFilter] = useState<CategoryKind | 'all'>('all');
+  const [hasImported, setHasImported] = useState(false);
 
   const addOne = (chunk: Chunk) => setChunks((prev) => [chunk, ...prev]);
   const addMany = (newChunks: Chunk[]) => setChunks((prev) => [...newChunks, ...prev]);
@@ -820,14 +827,17 @@ export function KnowledgeManager({
           {activeTab === 'faq' && <FaqTab botId={botId} onAdd={addOne} />}
           {activeTab === 'text' && <TextTab botId={botId} onAdd={addOne} />}
           {activeTab === 'pdf' && <PdfTab botId={botId} onAdd={addMany} />}
+          {activeTab === 'web' && (
+            <WebTab botId={botId} tenantWebsiteUrl={tenantWebsiteUrl} onAdd={addMany} onImport={(n) => setHasImported(n > 0)} />
+          )}
         </div>
       </div>
 
       {/* ── RIGHT COLUMN: Search, filters, chunks list ── */}
-      <div className="min-w-0 lg:sticky lg:top-6 lg:max-h-[calc(100vh-14rem)] lg:overflow-y-auto lg:pr-1 lg:pb-4 rounded-2xl" style={{ scrollbarWidth: 'thin', scrollbarColor: '#e2e8f0 transparent' }}>
-        {/* Toolbar: search + filters */}
+      <div className="min-w-0 lg:sticky lg:top-6 lg:max-h-[calc(100vh-14rem)] flex flex-col rounded-2xl">
+        {/* Toolbar: search + filters (sticky, always visible) */}
         {chunks.length > 0 && (
-          <div className="mb-4 space-y-3">
+          <div className="mb-4 space-y-3 flex-shrink-0">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
@@ -878,32 +888,37 @@ export function KnowledgeManager({
           </div>
         )}
 
-        {chunks.length === 0 ? (
-          <EmptyStateClient
-            icon={BookOpen}
-            title="Baza wiedzy jest pusta"
-            description="Bot nie może odpowiadać na pytania bez wiedzy o Twojej firmie. Zacznij od zakładki Kontakt — dodaj telefon, adres i godziny otwarcia."
-          />
-        ) : filteredChunks.length === 0 ? (
-          <div className="bg-white/60 rounded-2xl border border-slate-200/60 border-dashed p-10 text-center">
-            <Search className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-            <p className="text-sm font-semibold text-slate-700 mb-1">Brak wyników</p>
-            <p className="text-xs text-slate-500">
-              Spróbuj zmienić filtr lub wyczyść frazę wyszukiwania.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {filteredChunks.map((chunk) => (
-              <ChunkItem
-                key={chunk.id}
-                chunk={chunk}
-                onDelete={remove}
-                onUpdate={update}
-              />
-            ))}
-          </div>
-        )}
+        <div
+          className="lg:flex-1 lg:overflow-y-auto lg:pr-1 lg:pb-4"
+          style={{ scrollbarWidth: 'thin', scrollbarColor: '#e2e8f0 transparent' }}
+        >
+          {chunks.length === 0 ? (
+            <EmptyStateClient
+              icon={BookOpen}
+              title="Baza wiedzy jest pusta"
+              description="Bot nie może odpowiadać na pytania bez wiedzy o Twojej firmie. Zacznij od zakładki Kontakt — dodaj telefon, adres i godziny otwarcia."
+            />
+          ) : filteredChunks.length === 0 ? (
+            <div className="bg-white/60 rounded-2xl border border-slate-200/60 border-dashed p-10 text-center">
+              <Search className="w-8 h-8 text-slate-300 mx-auto mb-3" />
+              <p className="text-sm font-semibold text-slate-700 mb-1">Brak wyników</p>
+              <p className="text-xs text-slate-500">
+                Spróbuj zmienić filtr lub wyczyść frazę wyszukiwania.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {filteredChunks.map((chunk) => (
+                <ChunkItem
+                  key={chunk.id}
+                  chunk={chunk}
+                  onDelete={remove}
+                  onUpdate={update}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -951,5 +966,47 @@ function FilterPill({
         {count}
       </span>
     </button>
+  );
+}
+
+// ── Tab: Web import ────────────────────────────────────────────────────────────
+
+function WebTab({
+  botId,
+  tenantWebsiteUrl,
+  onAdd,
+  onImport,
+}: {
+  botId: string;
+  tenantWebsiteUrl?: string | null;
+  onAdd: (chunks: Chunk[]) => void;
+  onImport: (count: number) => void;
+}) {
+  void onAdd;
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-xs font-semibold text-slate-600 mb-2">
+          Automatyczny import danych
+        </label>
+        <p className="text-xs text-slate-500 mb-4">
+          Bot automatycznie pobierze informacje ze Twojej strony: usługi, FAQ, kontakt i cennik.
+        </p>
+        {!tenantWebsiteUrl && (
+          <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5 mb-4">
+            Dodaj URL strony w{' '}
+            <a href="/dashboard/settings" className="underline font-semibold">
+              Ustawieniach
+            </a>{' '}
+            aby odblokować import.
+          </p>
+        )}
+        <WebsiteImportButton
+          botId={botId}
+          tenantWebsiteUrl={tenantWebsiteUrl}
+          onComplete={(n) => onImport(n)}
+        />
+      </div>
+    </div>
   );
 }
