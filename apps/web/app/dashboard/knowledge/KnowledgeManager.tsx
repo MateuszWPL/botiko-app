@@ -4,7 +4,7 @@ import { useState, useRef, useMemo, useEffect } from 'react';
 import {
   Plus, Trash2, Loader2, BookOpen, Phone, HelpCircle, FileText, FileUp,
   Check, X, Pencil, AlertCircle, Search, Mail, MapPin, Clock, Globe,
-  Sparkles, Filter, ChevronDown, AlertTriangle,
+  Sparkles, Filter, ChevronDown,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '../../../lib/supabase';
@@ -757,7 +757,6 @@ export function KnowledgeManager({
   const [activeTab, setActiveTab] = useState<Tab>('contact');
   const [search, setSearch] = useState('');
   const [kindFilter, setKindFilter] = useState<CategoryKind | 'all'>('all');
-  const [hasImported, setHasImported] = useState(false);
 
   const addOne = (chunk: Chunk) => setChunks((prev) => [chunk, ...prev]);
   const addMany = (newChunks: Chunk[]) => setChunks((prev) => [...newChunks, ...prev]);
@@ -828,7 +827,7 @@ export function KnowledgeManager({
           {activeTab === 'text' && <TextTab botId={botId} onAdd={addOne} />}
           {activeTab === 'pdf' && <PdfTab botId={botId} onAdd={addMany} />}
           {activeTab === 'web' && (
-            <WebTab botId={botId} tenantWebsiteUrl={tenantWebsiteUrl} onAdd={addMany} onImport={(n) => setHasImported(n > 0)} />
+            <WebTab botId={botId} tenantWebsiteUrl={tenantWebsiteUrl} />
           )}
         </div>
       </div>
@@ -974,15 +973,10 @@ function FilterPill({
 function WebTab({
   botId,
   tenantWebsiteUrl,
-  onAdd,
-  onImport,
 }: {
   botId: string;
   tenantWebsiteUrl?: string | null;
-  onAdd: (chunks: Chunk[]) => void;
-  onImport: (count: number) => void;
 }) {
-  void onAdd;
   return (
     <div className="space-y-4">
       <div>
@@ -1004,7 +998,6 @@ function WebTab({
         <WebsiteImportButton
           botId={botId}
           tenantWebsiteUrl={tenantWebsiteUrl}
-          onComplete={(n) => onImport(n)}
         />
       </div>
     </div>

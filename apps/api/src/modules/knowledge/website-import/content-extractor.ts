@@ -12,11 +12,14 @@ export interface ExtractedPage {
 const POLISH_PHONE_RE =
   /(?:\+?48[\s.-]?)?(?:\d{3}[\s.-]?\d{3}[\s.-]?\d{3}|\d{2}[\s.-]?\d{3}[\s.-]?\d{2}[\s.-]?\d{2})/g;
 
-const EMAIL_RE = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g;
+const EMAIL_RE = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 
 const MAX_TEXT_LENGTH = 30_000;
 
-export function extractMainContent(html: string, url: string): ExtractedPage | null {
+export function extractMainContent(
+  html: string,
+  url: string,
+): ExtractedPage | null {
   const $ = cheerio.load(html);
 
   // Remove noise elements
@@ -25,7 +28,8 @@ export function extractMainContent(html: string, url: string): ExtractedPage | n
   ).remove();
 
   // Title
-  const title = $('title').first().text().trim() || $('h1').first().text().trim();
+  const title =
+    $('title').first().text().trim() || $('h1').first().text().trim();
 
   // Headings for structure hints
   const headings: string[] = [];

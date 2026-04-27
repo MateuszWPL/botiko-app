@@ -1,29 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Loader2, Trash2, ChevronDown, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import * as api from '../../../lib/website-import';
 import type { ImportJob } from '../../../lib/website-import';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
-
 interface Props {
   botId?: string;
 }
 
-export function KnowledgeBasePage({ botId: initialBotId }: Props) {
-  const [botId, setBotId] = useState(initialBotId || '');
+export function KnowledgeBasePage({ botId }: Props) {
   const [jobs, setJobs] = useState<ImportJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadJobs = useCallback(async () => {
     if (!botId) return;
-    loadJobs();
-  }, [botId]);
-
-  const loadJobs = async () => {
     try {
       setLoading(true);
       const data = await api.listImportJobs(botId);
@@ -34,15 +27,19 @@ export function KnowledgeBasePage({ botId: initialBotId }: Props) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [botId]);
+
+  useEffect(() => {
+    void loadJobs();
+  }, [loadJobs]);
 
   const handleDelete = async (jobId: string) => {
     if (!confirm('Na pewno usunąć ten import?')) return;
     try {
-      await api.cancelImport(botId, jobId);
+      await api.cancelImport(botId!, jobId);
       setJobs((prev) => prev.filter((j) => j.id !== jobId));
       toast.success('Import usunięty');
-    } catch (err) {
+    } catch {
       toast.error('Nie udało się usunąć importu');
     }
   };
@@ -105,7 +102,7 @@ export function KnowledgeBasePage({ botId: initialBotId }: Props) {
           <Globe className="w-10 h-10 text-slate-300 mx-auto mb-3" />
           <p className="font-semibold text-slate-700 mb-1">Brak importów</p>
           <p className="text-sm text-slate-500">
-            Zacznij od zakładki "Web" w sekcji Wiedza — importuj dane ze swojej strony.
+            Zacznij od zakładki &quot;Web&quot; w sekcji Wiedza &mdash; importuj dane ze swojej strony.
           </p>
         </div>
       ) : (
@@ -160,7 +157,7 @@ export function KnowledgeBasePage({ botId: initialBotId }: Props) {
                   )}
                   <div className="flex gap-2 pt-2">
                     <button
-                      onClick={() => handleDelete(job.id)}
+                      onClick={() => void handleDelete(job.id)}
                       className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     >
                       <Trash2 className="w-3.5 h-3.5" />

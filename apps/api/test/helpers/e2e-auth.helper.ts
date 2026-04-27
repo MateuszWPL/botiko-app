@@ -97,12 +97,13 @@ export async function setupTestUser(
     }
 
     try {
-      const listResult = await supabase.auth.admin.listUsers({ perPage: 1000 });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const users: { id: string; email?: string }[] = (listResult.data as any)?.users ?? [];
-      const supabaseUser = users.find((u) => u.email === email);
-      if (supabaseUser) {
-        await supabase.auth.admin.deleteUser(supabaseUser.id);
+      const { data: userList, error: listError } =
+        await supabase.auth.admin.listUsers({ perPage: 1000 });
+      if (!listError) {
+        const supabaseUser = userList.users.find((u) => u.email === email);
+        if (supabaseUser) {
+          await supabase.auth.admin.deleteUser(supabaseUser.id);
+        }
       }
     } catch {
       // Non-fatal

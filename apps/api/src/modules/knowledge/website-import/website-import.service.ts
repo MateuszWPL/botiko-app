@@ -14,7 +14,10 @@ import { AI_SERVICE, type AIService } from '../../ai/ai.service.interface';
 import { EmbeddingService } from '../embedding.service';
 import { validateAndNormalizeImportUrl } from './url-validator';
 import { WebsiteScraperService } from './website-scraper.service';
-import { buildExtractionMessages, buildRetryMessages } from './extraction-prompt';
+import {
+  buildExtractionMessages,
+  buildRetryMessages,
+} from './extraction-prompt';
 import {
   extractedPayloadSchema,
   parseAndSanitizePayload,
@@ -50,7 +53,9 @@ export class WebsiteImportService {
   ): Promise<{ jobId: string }> {
     const bot = await this.prisma.bot.findFirst({
       where: { id: botId, tenantId },
-      include: { tenant: { select: { websiteUrl: true, plan: true, industry: true } } },
+      include: {
+        tenant: { select: { websiteUrl: true, plan: true, industry: true } },
+      },
     });
 
     if (!bot) throw new NotFoundException('Bot not found');
@@ -224,7 +229,7 @@ export class WebsiteImportService {
     sourceUrl: string,
     tenantWebsiteUrl: string | null,
     industry: Industry,
-    plan: Plan,
+    _plan: Plan,
   ): Promise<void> {
     try {
       // Update status to SCRAPING
