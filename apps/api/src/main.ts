@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { env } from './config/env';
 import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
 import helmet from 'helmet';
 import { type Request, type Response, type NextFunction } from 'express';
@@ -67,8 +68,7 @@ async function bootstrap() {
 
   // Apply path-aware CORS before NestJS processes the request.
   // We disable NestJS's built-in CORS and manage it manually.
-  const appUrl = process.env.APP_URL ?? 'http://localhost:3000';
-  app.use(buildCorsMiddleware(appUrl));
+  app.use(buildCorsMiddleware(env.APP_URL));
 
   app.useGlobalFilters(new GlobalExceptionFilter());
 

@@ -42,10 +42,10 @@ const envSchema = z.object({
   // PRO plan price — add when launching PRO tier
   STRIPE_PRO_PRICE_ID: z.string().min(1).optional(),
 
-  // App
-  APP_URL: z.string().url().default('http://localhost:3000'),
-  API_URL: z.string().url().default('http://localhost:3001'),
-  WIDGET_URL: z.string().url().default('http://localhost:5173'),
+  // App — required; no localhost defaults so production misconfiguration fails loudly
+  APP_URL: z.string().url(),
+  API_URL: z.string().url(),
+  WIDGET_URL: z.string().url(),
 
   // Cron — secret key for internal scheduled endpoints (trial notifications etc.)
   CRON_SECRET: z.string().min(16).optional(),
@@ -68,15 +68,32 @@ function validateEnv(): Env {
   // (allows empty Origin header, allows bots with no allowedDomains).
   // If NODE_ENV is silently defaulted to 'development' on a live deploy,
   // those security checks are effectively disabled. Fail loudly instead.
-  if (
-    result.data.NODE_ENV === 'production' &&
-    (!result.data.STRIPE_SECRET_KEY ||
-      !result.data.STRIPE_WEBHOOK_SECRET ||
-      !result.data.STRIPE_PRICE_ID)
-  ) {
-    console.warn(
-      '⚠️  NODE_ENV=production but Stripe env vars are incomplete — billing endpoints will fail.',
+  if (result.data.NODE_ENV === 'production') {
+    const localhostUrls = ['APP_URL', 'API_URL', 'WIDGET_URL'] as const;
+    const bad = localhostUrls.filter((key) =>
+      /localhost|127\.0\.0\.1/.test(result.data[key]),
     );
+    if (bad.length > 0) {
+      console.error(
+        `❌ Production misconfiguration: ${bad.join(', ')} point to localhost. Set real URLs in your hosting env.`,
+      );
+      process.exit(1);
+    }
+
+    if (!result.data.STRIPE_SECRET_KEY ||
+        !result.data.STRIPE_WEBHOOK_SECRET ||
+        !result.data.STRIPE_PRICE_ID) {
+      console.warn(
+        '⚠️  NODE_ENV=production but Stripe env vars are incomplete — billing endpoints will fail.',
+      );
+    }
+
+    if (process.env.DEV_ALLOW_LOCALHOST === 'true') {
+      console.error(
+        '❌ DEV_ALLOW_LOCALHOST=true must NOT be set in production — it opens SSRF to cloud metadata endpoints.',
+      );
+      process.exit(1);
+    }
   }
 
   return result.data;
