@@ -5,6 +5,11 @@ import ImageGallery from './ImageGallery';
 import VideoEmbed from './VideoEmbed';
 import CallToAction from './CallToAction';
 import DownloadPdf from './DownloadPdf';
+import { Callout } from './Callout';
+import { CTABlock } from './CTABlock';
+import { ComparisonTable } from './ComparisonTable';
+import { FAQ } from './FAQ';
+import { ROICalculator } from './ROICalculator';
 
 // Custom blog components available inside MDX files
 export const mdxComponents = {
@@ -13,6 +18,11 @@ export const mdxComponents = {
   VideoEmbed,
   CallToAction,
   DownloadPdf,
+  Callout,
+  CTABlock,
+  ComparisonTable,
+  FAQ,
+  ROICalculator,
 
   img: ({ src, alt }: ComponentPropsWithoutRef<'img'>) => (
     <figure className="my-8">

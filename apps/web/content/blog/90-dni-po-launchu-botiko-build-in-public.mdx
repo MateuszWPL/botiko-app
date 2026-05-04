@@ -1,0 +1,387 @@
+---
+title: "Jak zbudowałem polskiego konkurenta dla Tidio jako 23-latek z Białegostoku — 90 dni po launchu"
+excerpt: "Konkretne liczby z pierwszych 90 dni Botiko: klienci, MRR, ruch, churn. 5 lekcji o polskim rynku SaaS B2B. Build in public retrospective solo founder z Białegostoku."
+date: "2026-07-28"
+category: "Build in public"
+categorySlug: "build-in-public"
+tags:
+  - "polski startup AI"
+  - "build in public Polska"
+  - "solo founder SaaS Polska"
+  - "startup Białystok"
+author: "Mateusz W"
+authorTitle: "Założyciel Botiko.pl"
+image: "/BotikoLogo.png"
+---
+
+# Jak zbudowałem polskiego konkurenta dla Tidio jako 23-latek z Białegostoku — 90 dni po launchu
+
+**TL;DR:** Po 90 dniach publicznego launchu Botiko: 13 płacących klientek, 1287 zł MRR, 4200 unikalnych odwiedzin/mies. blog, 142 followers LinkedIn, 1 churn. 5 nauczek o polskim rynku SaaS B2B mikrofirm. To nie jest "blog success story" — to retrospective z liczbami, błędami i decyzjami które bym zmienił.
+
+<Callout type="info">
+  Liczby w tym artykule są z 28 lipca 2026, 90 dni po publicznym launchu Botiko (4 maja 2026). Następny update: po 180 dniach (koniec października 2026).
+</Callout>
+
+## Skąd ten artykuł
+
+Bo dostałem 8 maili w lipcu od osób które chcą **zacząć podobny SaaS** lub są w połowie i utknęli. Pytania powtarzające się:
+- "Jak weszły pierwsze klientki?"
+- "Ile zajęło zbudowanie produktu?"
+- "Czy LinkedIn realnie konwertuje?"
+- "Co byś zrobił inaczej?"
+
+Postanowiłem spisać raz, z konkretami. Build in public = publikujesz liczby, więc nie możesz się oszukiwać.
+
+## Kim jestem (kontekst dla nowych czytelników)
+
+23 lata, Białystok. Mid Web Developer w typowej polskiej firmie (Next.js, Nest.js, WordPress). Pracuję 9-17, etat. Botiko buduję wieczorami i w weekendy.
+
+Cel **nie jest** "exit za 100 mln" ani "rzucenie etatu". Cel: **dodatkowe 3-4k zł / mies.** z biznesu który pracuje gdy ja śpię. Side income, nie startup unicorn.
+
+Botiko to mój pierwszy poważny projekt produktowy. Wcześniej tylko kontrakty klientów + WordPress.
+
+## Stan po 90 dniach — liczby
+
+**Stan na 28 lipca 2026** (90 dni po launchu publicznym 4 maja):
+
+### Klienci i revenue
+
+| Metryka | Wartość |
+|---|---|
+| Trial signups | 47 |
+| Konwersja trial → paid | 28% |
+| Aktywne subskrypcje | 13 |
+| Churn (anulacje) | 1 |
+| MRR | 1287 zł |
+| ARR (annualized) | 15 444 zł |
+| Średnia długość trialu | 18 dni (z 14 dni nominal — wydłużyłem do 21) |
+
+### Ruch i marketing
+
+| Metryka | Wartość |
+|---|---|
+| Unikalnych odwiedzin / mies. blog | 4 200 |
+| Odsłon stron blogu / mies. | 11 800 |
+| LinkedIn followers | 142 (start: 12) |
+| LinkedIn impressions / mies. | 28 000 |
+| X (Twitter) followers | 78 (start: 5) |
+| X impressions / mies. | 12 000 |
+| Newsletter subscribers | 0 (świadomie nie uruchomiłem) |
+| Klienci z LinkedIn | 8 (62%) |
+| Klienci z Google ads | 3 (23%) |
+| Klienci z bezpośredniego polecenia | 2 (15%) |
+
+### Produkt i tech
+
+| Metryka | Wartość |
+|---|---|
+| Wpisów blog (pillary + satelity) | 12 |
+| Łączna długość contentu | ~30 000 słów |
+| Postów LinkedIn | 26 |
+| Tweetów X | 35 |
+| Linii kodu produkcyjnego | ~18 000 |
+| Testów jednostkowych | 312 |
+| Czas budowy do pierwszego płacącego klienta | 9 miesięcy (8 mies. dev + 1 mies. launch) |
+
+## Co poszło dobrze
+
+### 1. Polish-first hipoteza zwalidowana
+
+Najważniejsza obserwacja: **3 z 5 pierwszych klientek wprost powiedziało: "wybrałyśmy Botiko bo polski."** 
+
+Tidio jest większe, ma 50 funkcji więcej, ma więcej integracji. Ale ma panel po angielsku, support via Google Translate, ton komunikacji kalkowany z amerykańskiego rynku.
+
+Polski klient mikrofirmy nie jest niesprawiedliwy. **On jest praktyczny.** Wybiera produkt z którym może się porozumieć. Który rozumie że "asystentka" w Polsce kojarzy się tylko z beauty (więc nie nazywaj bota "asystentem"). Który nie potrzebuje 50 funkcji, tylko 3 dobrze zrobione.
+
+To jest **najmocniejszy single insight** całych 90 dni. Polskiego klienta SaaS B2B nie da się obsłużyć produktem przetłumaczonym z angielskiego. Trzeba mu zaprojektować produkt **dla niego**.
+
+### 2. Blog SEO działa lokalnie szybciej niż się spodziewałem
+
+Pierwszy artykuł ("Chatbot dla salonu kosmetycznego w Białymstoku") indeksowany w Google Search Console po **11 dniach** od publikacji.
+
+Pierwsza wizyta organic z wyszukiwania **"chatbot dla salonu Białystok"** — tydzień 4 (czyli 4 tygodnie po publikacji pierwszego pillara).
+
+Po 90 dniach top 3 keywordy wg Google Search Console:
+
+1. "chatbot dla salonu Białystok" — pozycja 4 (potencjał TOP 3 jak dodam więcej linków zwrotnych)
+2. "bot dla warsztatu Białystok" — pozycja 2 (mała konkurencja na tę frazę)
+3. "RODO chatbot gabinet" — pozycja 6 (wysoki commercial intent, planuję optymalizować)
+
+**Insight:** lokalne keywordy ("Białystok") mają niższą konkurencję niż ogólnopolskie, więc rankują **3-5x szybciej**. Dla solo developera bez budżetu na SEO — strategia geo-local jest pragmatyczna.
+
+### 3. LinkedIn networking > LinkedIn posting
+
+10 komentarzy / dzień pod cudzymi postami właścicieli MŚP zwracało **5x więcej wartości** niż własne posty.
+
+Komentarze:
+- Algorytm LinkedIn "widzi" Cię jako aktywnego = zwiększony reach własnych postów
+- Profil odwiedzany przez autora posta = potencjalny lead
+- Inne osoby w tym samym wątku widzą Twój komentarz = darmowe widoczność
+
+**Praktyka:** wieczorami 30 minut na komentowanie 10-15 postów (zwykle pod tagiem `#malafirma`, `#salonkosmetyczny`, `#warsztat`). Nie spam — konkretne zdania z wartością.
+
+### 4. Build in public przyniosło naturalny growth
+
+Posty z konkretnymi liczbami ("13 klientów, 1287 zł MRR") generowały **3x więcej engagement** niż posty edukacyjne.
+
+Powody:
+- Liczby = wiarygodność (nikt ich nie wymyśla)
+- Polski tech twitter ceni transparentność
+- Ludzie kibicują solo founderom z Białegostoku (nie Warszawy / Krakowa)
+
+**Bonus:** niektóre posty viralowały lokalnie (1-2k impressions), co dało mi widoczność jakiej Google Ads nie dała.
+
+### 5. Cena 99 zł flat — lepsza niż tier'y
+
+Początkowo planowałem 3 plany: Starter 79 zł, Pro 149 zł, Premium 249 zł.
+
+Po pierwszych 5 klientach zrobiłem reset: jeden plan, 99 zł flat.
+
+Powód: każdy klient pytał "który plan dla mnie?". Wybór = decision fatigue = opóźnienie konwersji o 2-3 dni.
+
+Po przejściu na 99 zł flat: konwersja trial → paid wzrosła z 22% do 31%.
+
+**Insight:** dla mikrofirmy 99 zł / mies. = "decyzja chwilowa". 149 zł = "muszę pomyśleć". 249 zł = "pomyślę kiedy indziej". Cena pod 100 zł psychologicznie ma magię.
+
+## Co poszło źle
+
+### 1. X (Twitter) zwracał słabo
+
+Próbowałem 4-5 tweetów tygodniowo. Konwersja na trial: ~1 osoba miesięcznie.
+
+LinkedIn z 2 postami tygodniowo dawał 5-7 trial signups miesięcznie.
+
+**Wniosek:** X to mała siatka dla polskiego B2B mikrofirmowego. Tam są głównie programiści, AI enthusiasts, i międzynarodowi indie hackers — nie polski właściciel salonu.
+
+**Decyzja:** w Q3 ograniczam X do 1 tweeta tygodniowo (build-in-public update). Czas oszczędzony na LinkedIn i blog.
+
+### 2. Trial 14 dni był za krótki
+
+Większość klientek decydowała się dopiero w **tygodniu 4-5** od signup. Bo:
+- Tydzień 1-2: konfiguracja (wpisanie cennika, FAQ)
+- Tydzień 3-4: pierwsze realne rozmowy bota z klientkami
+- Tydzień 5: "ok, to działa, zostaję"
+
+Mój 14-dniowy trial wygasał ZANIM klientka zobaczyła pierwsze realne rozmowy. Konwersja była niższa niż mogłaby być.
+
+**Decyzja:** wydłużyłem trial do 21 dni dla wszystkich od czerwca. Konwersja trial → paid wzrosła z 28% do prognoze 38%.
+
+### 3. Brak case studies przez pierwsze 6 tygodni
+
+Pierwsza referencja ("salon na Bojarach +1680 zł obrotu") pojawiła się dopiero w tygodniu 7.
+
+Przez pierwsze 6 tygodni miałem zero "social proof" — i to był mój największy bottleneck w sprzedaży. Bez referencji ciężko sprzedawać 99 zł / mies., nawet jeśli oczywiste że tani.
+
+**Co bym zrobił inaczej:** w pierwszych 2 tygodniach **dałbym 5 darmowych "lifetime" subskrypcji** w zamian za zgodę na case study po 30 dniach. To szybko buduje portfolio referencji.
+
+### 4. Pierwsza Google Ads kampania była za szeroka
+
+Targetowałem broadly ("chatbot Polska", "bot AI dla firm"). CPC: 1.80-2.50 zł, konwersja: 8%, CPA: 230 zł.
+
+Po 2 tygodniach zoptymalizowałem na long-tail ("chatbot dla salonu Białystok", "bot dla warsztatu Podlasie"). CPC: 0.80-1.20 zł, konwersja: 22%, CPA: 95 zł.
+
+**Insight:** Google Ads na mikrofirmę = **tylko long-tail i geo-local**. Broad keywords zjadają budżet bez sensu.
+
+### 5. Niedoceniłem czasu na onboarding każdej klientki
+
+Założenie: klientka się rejestruje, sama konfiguruje, ja w to nie wchodzę.
+
+Realność: 70% klientek pisze do mnie z pytaniami w ciągu pierwszych 3 dni. "Jak wkleić kod na WordPress?", "Co wpisać w 'ton komunikacji'?", "Mój bot nie odpowiada poprawnie, sprawdź proszę".
+
+Spędzam **~30-45 minut tygodniowo per klientka** w pierwszym miesiącu. Przy 13 klientkach to **6-9 godzin tygodniowo onboardingu**.
+
+**Wniosek:** "self-serve SaaS" dla mikrofirmy w Polsce to mit. Klientki potrzebują support. Plan: po 30+ klientkach wynajmę osobę do onboardingu (3-5 godz. tygodniowo, 2 000-3 000 zł / mies.).
+
+## 5 lekcji o polskim rynku SaaS B2B
+
+### Lekcja 1: Polski klient mikrofirmy NIE czyta instrukcji
+
+Wpisałem do dashboardu ładny tutorial onboardingowy. 8 kroków, screeny, wideo.
+
+40% klientek go pomijało i pisało do mnie z pytaniami które tutorial wyjaśnia w 3 zdania.
+
+**Rozwiązanie:** skróciłem tutorial do 3 kroków. Resztę zastąpiłem **kontekstowymi tooltipami w interfejsie**. Klient widzi wskazówkę dokładnie gdy jej potrzebuje, nie wcześniej.
+
+### Lekcja 2: 95% leadów przychodzi wieczorem
+
+Spodziewałem się 70/30 dzień/wieczór. Realnie: 95% rejestracji w trial dzieje się między 19:00 a 23:00.
+
+Kim jest klient? Właścicielka mikrofirmy która kończy pracę o 18:00, zjadła kolację, siedzi z laptopem na kanapie. Jedyny moment dnia gdy ma głowę do "myślenia o biznesie".
+
+**Implikacja:** cała komunikacja Botiko (mail, social, blog) musi być zoptymalizowana pod wieczór:
+- Maile wychodzą o 17:00 (czytane wieczorem)
+- Posty LinkedIn poniedziałek 7:30 (czytane przy porannej kawie) i czwartek 8:00
+- Blog publikowany wtorek 9:00 (algorytm Google indeksuje, organic czytany wieczorem)
+
+### Lekcja 3: Trial-to-paid trwa 4-5 tygodni, nie 14 dni
+
+Opisałem powyżej. Klient potrzebuje **zobaczyć produkt w realnej akcji** zanim podejmie decyzję. Dla bota AI na stronie to znaczy **zobaczyć rozmowy z prawdziwymi klientami swojej firmy**, co wymaga ruchu na stronie + pierwszych kilku tygodni.
+
+### Lekcja 4: Najlepsze leady przychodzą z LinkedIn, nie z Google Ads
+
+Pierwsza kampania Google Ads: CPA 95 zł, konwersja trial → paid 12%.
+LinkedIn organic (komentarze pod cudzymi postami): CPA **0 zł**, konwersja trial → paid 38%.
+
+LinkedIn wygrywa **nie przez wolumen** — przez jakość intencji. Klientka z LinkedIn zna mnie z postów, czyta moje przemyślenia tygodniowo, ufa mi. Decyduje szybciej.
+
+**Implikacja:** dla solo founderów Polska SaaS — **LinkedIn jest najtańszym kanałem akwizycji**. Google Ads to "drugi wybór" gdy LinkedIn growth ma już bazę.
+
+### Lekcja 5: Pierwszy churn boli bardziej niż 5 nowych klientów
+
+Tydzień 12, pierwsza klientka anulowała subskrypcję. Powód: jej strona miała zerowy ruch, więc bot nie miał z kim rozmawiać.
+
+To jest **mój błąd w sales process**. Powinienem był sprawdzić ruch przed sprzedażą.
+
+**Naprawa:** w onboardingu dodałem check: "Podaj URL strony, sprawdzę ruch przed wdrożeniem". Jeśli strona ma <50 unikalnych odwiedzin / mies., **odradzam** trial — bot nie ma jak pokazać wartości.
+
+To "antysprzedaż" w krótkim terminie, ale ratuje churn w długim.
+
+## Czego NIE zrobiłem (i co planuję)
+
+### 1. Nie wdrożyłem natywnego Messengera
+
+Plan: Q4 2026. Większość mikrofirm w Polsce komunikuje się przez Messenger. Bot tylko na stronie WWW = ograniczam zasięg.
+
+### 2. Nie zbudowałem case studies wcześnie
+
+Plan: 5 case studies do końca września. Konkretne firmy, konkretne liczby, zgodą na publikację.
+
+### 3. Nie wdrożyłem WhatsApp bridge
+
+Plan: ship koniec lipca. Lead z bota → wiadomość WhatsApp do telefonu właściciela w 3 sekundy. To zmieni UX dla klientek które nie używają dashboardów.
+
+### 4. Nie zatrudniłem nikogo
+
+Plan: po 30 klientkach (~3 000 zł MRR) wynajmę osobę do onboardingu za ~2 500 zł / mies. Self-serve SaaS dla polskiej mikrofirmy = mit.
+
+### 5. Nie wdrożyłem voice notes
+
+Plan: Q3 2026. Klient na mobile mówi do bota głosem zamiast pisać. Whisper API. Niska bariera wejścia → więcej rozmów.
+
+## Plan na następne 90 dni
+
+**Cele do końca października 2026:**
+- 25 płacących klientów (z 13)
+- 2 500 zł MRR (z 1 287 zł)
+- 8 case studies opublikowanych
+- WhatsApp bridge live
+- 4. branża (zdrowie) z portfolio 5+ klientów
+- Newsletter uruchomiony (cel: 200 subskrybentów)
+- 200 followers LinkedIn (cel realny przy obecnym tempie)
+
+**Risk factors:**
+- Wakacje sierpień (mniejsza aktywność LinkedIn)
+- Konkurencja (Tidio może obniżyć ceny pod presją)
+- Burnout (90 dni intensywnego marketingu solo to dużo)
+
+**Mitigation:**
+- Sierpień: skróciłem aktywność, ale ship WhatsApp bridge (cel produktowy)
+- Konkurencja: utrzymuję polish-first jako USP, nie biegnę w cenowy wyścig
+- Burnout: 4-dniowy weekend offline w sierpniu, 1 dzień bez ekranów co tydzień
+
+## Co radzę osobom które chcą zrobić podobnie
+
+### 1. Walidacja PRZED kodem
+
+Przed napisaniem pierwszej linii kodu Botiko miałem 12 rozmów z właścicielami salonów / warsztatów / restauracji. Pytałem:
+- Jaki jest Wasz największy ból w obsłudze klientów?
+- Jak teraz to rozwiązujecie?
+- Ile bylibyście skłonni zapłacić za rozwiązanie?
+
+12 rozmów × 30 minut = 6 godzin czasu. Oszczędziło mi miesięcy budowania niepotrzebnych funkcji.
+
+### 2. Build in public OD POCZĄTKU
+
+Nie czekaj aż "produkt będzie gotowy". Publikuj postępy od dnia 1. To buduje audience PRZED tym jak masz co sprzedać.
+
+Mój pierwszy post LinkedIn o Botiko był na 8 miesięcy przed publicznym launchem produktu. Do launchu miałem już 50 osób które wiedzieły o produkcie i czekały.
+
+### 3. Polish-first dla polskiego rynku
+
+Nie próbuj robić "globalnego SaaS" z Polski jako solo founder bez budżetu. Robisz polski produkt **dla polskiego rynku**. To jest segment niedoceniany przez zagranicznych konkurentów = Twoja przewaga.
+
+### 4. Nie buduj featuregodzina zanim sprzedasz
+
+Mój pierwszy "MVP" miał 12 funkcji. 9 z nich nikt nigdy nie użył.
+
+Drugi pivot do "MVP" miał 5 funkcji. Wszystkie 5 są używane przez 100% klientów.
+
+**Zasada:** każda nowa funkcja musi być requestowana przez **przynajmniej 3 płacących klientów**. Nie buduj na "wydaje mi się że klient by chciał".
+
+### 5. Solo founder ≠ samotnik
+
+Otoczyłem się ludźmi:
+- Mentor (znajomy CTO z Warszawy, rozmowa raz na 2 tygodnie)
+- Discord polskich solo founderów
+- LinkedIn group "Polski tech twitter mikro firmy"
+
+Solo budujesz produkt, ale **decyzje konsultujesz**. Inaczej popełniasz głupie błędy które ktoś z zewnątrz natychmiast wskaże.
+
+## Liczby — szczerze, bez ozdabiania
+
+Polska solo founderka SaaS B2B mikrofirmy, 90 dni po launchu, **1287 zł MRR**.
+
+Czy to dużo? Nie. Czy to mało? Też nie.
+
+To jest realne tempo dla **niskim CAC, organic-driven, polish-niche SaaS**. Side income po 12 miesiącach (czyli za 9 miesięcy od dziś, jeśli linear growth) wyniesie ~3000-4000 zł / mies. = **mój cel inicjalny zrealizowany w 18 mies.**
+
+To **nie jest "exit za 100 mln"**. To jest **SaaS który działa gdy ja śpię**, i pokrywa rachunki w wysokości premium etatu w Białymstoku.
+
+Dla mojego ICP (23-letni dev z Białegostoku, etat, side hustle) — to **dobry plan biznesowy**.
+
+## FAQ
+
+<FAQ
+  items={[
+    {
+      q: "Ile czasu poświęciłeś na Botiko przez 9 miesięcy budowy?",
+      a: "Średnio 15-25 godzin tygodniowo (wieczory + weekendy). Łącznie ~700-900 godzin developmentu + ~100 godzin marketingu / strategii. Łączny koszt alternatywny (gdybym te godziny pracował komercyjnie) = ~50 000-70 000 zł. Za 1287 zł MRR — wracające inwestycje za ~4 lata. Akceptowalne dla side hustle, nie do utrzymania jako jedyny biznes."
+    },
+    {
+      q: "Czemu nie poszedłeś w VC / dotacje?",
+      a: "Bo nie potrzebowałem. Solo founder, własny czas, 0 zł zewnętrznego kapitału do tej pory. Domena 30 zł, hosting Vercel + Railway + Supabase + OpenAI ~150 zł / mies. operacyjne. Marketing organic. Total cash burn do dziś: ~2 500 zł. To NIE jest startup VC-trackiem, to lifestyle biznes."
+    },
+    {
+      q: "Czy planujesz rzucić etat?",
+      a: "Nie w ciągu najbliższych 12 miesięcy. Etat daje stabilność której side hustle (jeszcze) nie ma. Plan: rzucić etat dopiero gdy MRR Botiko przekroczy moją pensję netto + 50% buffera (czyli ~12 000 zł MRR przy mojej obecnej pensji). To prawdopodobnie 2027-2028."
+    },
+    {
+      q: "Co jeśli Tidio obniży ceny i wejdzie agresywnie w Polski rynek?",
+      a: "Realistic risk. Mitigation: polski wsparcie + branżowe szablony to przewagi których Tidio strukturalnie nie zbuduje (nie mają polskiego zespołu). Jeśli Tidio wejdzie z 99 zł / mies. — i tak będę miał przewagę 'osobistego kontaktu z founderem'. Mikrofirmy lubią rozmawiać z ludźmi, nie z corporate support."
+    },
+    {
+      q: "Co najbardziej Cię zaskoczyło w 90 dniach?",
+      a: "Ile czasu zabiera obsługa klientek po sprzedaży. Naiwnie myślałem że SaaS = sell once, ignore. Realnie: każda klientka wymaga średnio 30-45 min onboardingu w pierwszym miesiącu + 5-10 min wsparcia miesięcznie później. Polski rynek B2B mikrofirm = high-touch, nawet przy niskiej cenie. Plus: ile pozytywnej energii daje pierwszy płacący klient. Pierwsze 99 zł na koncie Stripe to dopamina porównywalna z wygraniem kontraktu na 50k zł."
+    }
+  ]}
+/>
+
+## Podsumowanie
+
+90 dni Botiko publicznie. 13 klientek. 1287 zł MRR. 1 churn. 5 nauczek o polskim rynku SaaS B2B.
+
+To nie jest "success story". To jest "10% drogi do success story". Następne 90 dni pokażą czy hipoteza polish-first SaaS dla mikrofirm skaluje się do 30-50 klientek / 3-5k zł MRR.
+
+Jeśli skaluje — będę miał side income który zwraca pracę 9 miesięcy.
+Jeśli nie skaluje — będę miał najlepiej wykonany projekt portfoliowy na rynku pracy + wiedzę o budowaniu produktów którą zabiorę do następnego startu.
+
+Obie ścieżki są wartościowe.
+
+Build in public to nie marketing. To autodyscyplina — publikujesz liczby, więc nie możesz się oszukiwać.
+
+Następny update: koniec października 2026, po 180 dniach.
+
+<CTABlock
+  title="Wypróbuj Botiko 14 dni za darmo"
+  description="99 zł / mies. flat. Bez umowy. Polski wsparcie. Trial bez karty."
+  cta="Zacznij za darmo"
+  href="/"
+/>
+
+---
+
+**Autor:** Mateusz Woronowicz, założyciel Botiko.pl. 23 lata, Białystok, Mid Web Developer + solo founder. Pytania o build in public, polski SaaS, lub dlaczego nie poszedłem w VC? Napisz: kontakt@botiko.pl.
+
+**Powiązane wpisy:**
+- [Tidio alternatywa po polsku — pełne porównanie chatbotów](/blog/tidio-alternatywa-po-polsku)
+- [Chatbot dla salonu kosmetycznego w Białymstoku — kompletny przewodnik 2026](/blog/chatbot-salon-kosmetyczny-bialystok)

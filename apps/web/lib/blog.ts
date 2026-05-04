@@ -71,9 +71,12 @@ function _getAllPosts(): PostMeta[] {
     };
   });
 
-  return posts.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+
+  return posts
+    .filter((p) => p.date && new Date(p.date) <= today)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 function _getPostBySlug(slug: string): Post | null {

@@ -1,0 +1,398 @@
+---
+title: "RODO a chatbot w gabinecie medycznym — kompletny checklist 15 punktów dla właściciela"
+excerpt: "Bot zbiera dane wrażliwe pacjentów. RODO wymaga konkretnych zabezpieczeń. Checklist 15 punktów: szyfrowanie, serwery EU, DPA, klauzula, retention, prawa pacjenta. Plus gotowy wzór klauzuli do pobrania."
+date: "2026-07-14"
+category: "Branża: zdrowie"
+categorySlug: "zdrowie"
+tags:
+  - "RODO chatbot gabinet"
+  - "RODO bot fizjoterapia"
+  - "klauzula RODO gabinet medyczny"
+  - "DPA chatbot"
+author: "Mateusz W"
+authorTitle: "Założyciel Botiko.pl"
+image: "/BotikoLogo.png"
+---
+
+# RODO a chatbot w gabinecie medycznym — kompletny checklist 15 punktów
+
+**TL;DR:** Bot na stronie gabinetu fizjo / stomato / psycho zbiera dane wrażliwe pacjentów (imię, telefon, opis problemu zdrowotnego). RODO wymaga konkretnych zabezpieczeń — szyfrowania, lokalizacji serwerów w UE, DPA z dostawcą, klauzuli w polityce prywatności, procedur dla praw pacjenta. Lista 15 punktów które musisz odhaczyć **zanim** uruchomisz bota produkcyjnie. Plus: gotowy wzór klauzuli do wklejenia (do pobrania w PDF).
+
+<Callout type="info">
+  Ten artykuł rozwija jeden konkretny aspekt z [pillara: Bot dla gabinetu zdrowia w Białymstoku](/blog/bot-dla-gabinetu-zdrowia-bialystok). Tutaj koncentruję się wyłącznie na compliance RODO — checklist + wzór klauzuli + częste pytania prawne.
+</Callout>
+
+## Dlaczego ten checklist powstał
+
+Bo dostaję jedno pytanie tygodniowo od właścicieli gabinetów medycznych w Białymstoku: *"Czy mogę używać Botiko w gabinecie? Co z RODO?"*. Odpowiedź zawsze taka sama: *"Tak, jeśli zrobisz 15 rzeczy."*
+
+Postanowiłem to zapisać raz, ze wszystkimi szczegółami, żeby wystarczyło wysłać link.
+
+**Najważniejsza rzecz na początek:** ten checklist **NIE jest poradą prawną**. Jestem developerem, nie radcą prawnym. Konkretne sytuacje (np. czy potrzebujesz IOD-a, czy DPA jest wystarczające w Twojej sytuacji) skonsultuj z prawnikiem od RODO. Lista pokazuje **typowy zakres wymagań**, nie zastępuje audytu prawnego.
+
+## Co bot zbiera — i dlaczego to dane wrażliwe
+
+W typowej rozmowie z pacjentem bot zbiera:
+
+1. **Imię i nazwisko** — dane osobowe (RODO art. 4 pkt 1)
+2. **Numer telefonu** — dane osobowe
+3. **Email** (czasem) — dane osobowe
+4. **Opis dolegliwości** — np. "boli mnie kręgosłup", "mam problem z lękami", "potrzebuję leczenia kanałowego" — **dane szczególnej kategorii** (RODO art. 9, dane dotyczące zdrowia)
+
+Pierwsze 3 to "zwykłe" dane osobowe — wymagana zgoda + standardowe procedury.
+
+**Czwarte to dane szczególnej kategorii — wymagają wyraźnej zgody i mocniejszych zabezpieczeń.**
+
+Konsekwencje:
+- Wymóg **wyraźnej zgody** na przetwarzanie (checkbox z klauzulą, nie domyślne "akceptujesz wszystko")
+- **Szyfrowanie** danych (technicznie i organizacyjnie)
+- **Ograniczenie dostępu** (tylko upoważnione osoby w gabinecie)
+- **Retention policy** (jak długo, kiedy usunąć)
+- **DPA** z dostawcą bota (umowa powierzenia przetwarzania)
+- **Procedury** dla praw pacjenta (dostęp, sprostowanie, usunięcie)
+
+## Checklist 15 punktów
+
+### Sekcja 1: Czynności wstępne (przed wdrożeniem bota)
+
+#### Punkt 1: Polityka prywatności na stronie gabinetu istnieje
+
+☐ **Sprawdź:** Czy strona gabinetu ma podstronę "Polityka prywatności" lub "RODO"?
+
+Jeśli **nie ma** — stwórz przed wdrożeniem bota. Gabinet bez polityki prywatności narusza RODO niezależnie od bota. Bot tylko pogarsza problem.
+
+#### Punkt 2: Polityka jest aktualizowana w 2024-2026
+
+☐ **Sprawdź:** Data ostatniej aktualizacji widoczna na dole polityki?
+
+RODO ewoluuje (orzecznictwo TSUE, decyzje UODO, Schrems II i jego konsekwencje). Polityki starsze niż 2 lata wymagają review. Konkretnie: w 2023 ETSF wydał wytyczne dot. transferów do USA, w 2024 DPF (Data Privacy Framework) zastąpił Privacy Shield — większość polityk z 2020-2022 jest **nieaktualna**.
+
+#### Punkt 3: Decyzja o IOD (Inspektorze Ochrony Danych)
+
+☐ **Sprawdź:** Czy potrzebujesz IOD-a?
+
+**IOD wymagany** gdy:
+- Główna działalność polega na regularnym monitorowaniu osób na dużą skalę
+- Główna działalność polega na przetwarzaniu danych szczególnej kategorii (zdrowotnych) **na dużą skalę**
+
+"Duża skala" w polskiej praktyce UODO:
+- Mały gabinet 1-3 osobowy z ~150 pacjentami: **IOD nie wymagany**
+- Klinika 10+ osób z 1000+ pacjentami rocznie: **IOD wymagany**
+- Sieć kilku gabinetów: **IOD wymagany**
+
+Jeśli IOD wymagany — wynajmij zewnętrznego (~500-1500 zł / mies. dla małej kliniki) lub wyznacz pracownika i zapewnij mu szkolenia + niezależność.
+
+### Sekcja 2: Konfiguracja bota
+
+#### Punkt 4: Bot zbiera tylko niezbędne dane
+
+☐ **Sprawdź:** Konfiguracja bota nie wymusza zbierania PESEL, daty urodzenia, dokumentów medycznych przez czat.
+
+Zasada minimalizacji danych (RODO art. 5 ust. 1 lit. c): zbieraj tylko to co potrzebne. Dla pierwszego kontaktu wystarczy:
+- Imię (do identyfikacji w rozmowie telefonicznej)
+- Numer telefonu (do oddzwonienia)
+
+**NIE zbieraj przez bota:**
+- PESEL (wymagany dopiero w gabinecie do wystawienia faktury)
+- Pełnej historii chorób (wywiad robi specjalista podczas wizyty)
+- Wyników badań (wgląd w gabinecie)
+
+#### Punkt 5: Klauzula zgody przed wysłaniem leada
+
+☐ **Sprawdź:** W formularzu lead capture jest checkbox "wyrażam zgodę na przetwarzanie moich danych osobowych w celu kontaktu i umówienia wizyty"
+
+Klauzula musi być:
+- **Wyraźnie odrębna** od innych zgód (zasada granularności)
+- **Niedomyślna** (checkbox unchecked by default)
+- **Jasna** (pacjent wie co się dzieje z danymi)
+- **Łatwa do odwołania** (pacjent wie jak cofnąć zgodę)
+
+#### Punkt 6: Link do polityki prywatności widoczny w widgecie
+
+☐ **Sprawdź:** Pacjent widzi link "Polityka prywatności" w widgecie bota.
+
+W Botiko domyślnie wyświetlany jest na dole widgetu. Pacjent może kliknąć w każdym momencie rozmowy.
+
+### Sekcja 3: Przechowywanie danych
+
+#### Punkt 7: Dane szyfrowane at-rest
+
+☐ **Sprawdź:** Dostawca bota szyfruje dane w bazie danych algorytmem co najmniej AES-256.
+
+Botiko: **AES-256-GCM** dla wszystkich PII (imię, telefon, treść wiadomości pacjenta). Klucz szyfrujący jest oddzielony od bazy danych — kompromitacja DB nie daje czytelnych danych.
+
+Sprawdź u konkurentów:
+- **Tidio:** standardowe AES-128 (mniej bezpieczne)
+- **Chatbase:** AES-256 ale klucze hostowane w USA
+- **Crisp:** AES-256, klucze w Francji (lepiej)
+
+#### Punkt 8: Serwery w EOG (UE / Norwegia / Liechtenstein / Islandia)
+
+☐ **Sprawdź:** Dostawca bota hostuje dane w EOG.
+
+**To jest kluczowy punkt po Schrems II.**
+
+Wyrok TSUE z 2020 (sprawa C-311/18) unieważnił Privacy Shield — mechanizm który ułatwiał transfer danych z UE do USA. W 2023 wprowadzono Data Privacy Framework jako następcę, ale:
+- DPF wymaga że dostawca w USA jest **certyfikowany w DPF**
+- DPF nie chroni przed ustawami nadzoru USA (FISA 702, EO 12333)
+- Krytyka prawnicza wskazuje że Schrems III (kolejny pozew) jest kwestią czasu
+
+**Implikacja dla gabinetu:**
+- Dane wrażliwe (zdrowotne) trzymane w USA = ryzyko reklamacji RODO
+- Pacjent może zapytać "gdzie są moje dane?", odpowiedź "USA" otwiera ścieżkę do skargi do UODO
+
+**Bezpieczna opcja:** dostawca z infrastrukturą w EOG.
+
+| Dostawca | Lokalizacja danych |
+|---|---|
+| Botiko | UE (Frankfurt, Supabase EU) |
+| Tidio | USA (główne) + opcjonalnie EU dla wybranych planów |
+| Chatbase | USA |
+| Crisp | Francja + USA mieszane |
+
+#### Punkt 9: Retention policy zdefiniowana
+
+☐ **Sprawdź:** Dostawca ma jasną politykę "jak długo trzymamy dane?"
+
+Botiko: dane leadów żyją 30 dni od końca subskrypcji. Po 30 dniach automatyczne, bezpowrotne usunięcie.
+
+Konfiguracja w Twoim gabinecie:
+- W trakcie aktywnej subskrypcji: dane dostępne (potrzebne do oddzwaniania)
+- Po anulowaniu subskrypcji: 30 dni grace period (na wypadek powrotu)
+- Po 30 dniach: hard delete
+
+Dostosujesz w klauzuli RODO swojego gabinetu.
+
+#### Punkt 10: DPA podpisana z dostawcą bota
+
+☐ **Sprawdź:** Masz podpisaną Umowę Powierzenia Przetwarzania Danych (DPA) z dostawcą bota.
+
+DPA jest **wymagana** gdy zatrudniasz "procesora" — kogoś kto przetwarza dane w Twoim imieniu. Dostawca bota = procesor.
+
+Bez DPA:
+- Naruszenie RODO art. 28
+- Brak podstawy prawnej dla transferu danych do dostawcy
+- Ryzyko kary administracyjnej
+
+Botiko: DPA gotowy do podpisu jednym kliknięciem w dashboardzie. Wysyłamy PDF, Ty podpisujesz cyfrowo (lub drukujesz, podpisujesz, skanujesz), trzymasz w archiwum gabinetu.
+
+### Sekcja 4: Prawa pacjenta
+
+#### Punkt 11: Procedura "right to access"
+
+☐ **Sprawdź:** Wiesz jak odpowiedzieć gdy pacjent prosi o kopię swoich danych?
+
+RODO art. 15: pacjent ma prawo zobaczyć jakie jego dane przetwarzasz.
+
+Procedura:
+1. Pacjent pisze: "Proszę o kopię moich danych"
+2. Identyfikujesz pacjenta (telefon zgadza się z bazą)
+3. W Botiko dashboard → wyszukujesz pacjenta po telefonie
+4. Eksportujesz wszystkie rozmowy + leady do PDF
+5. Wysyłasz PDF zaszyfrowany (hasło SMS-em)
+6. Termin: **30 dni od żądania**
+
+#### Punkt 12: Procedura "right to be forgotten"
+
+☐ **Sprawdź:** Wiesz jak usunąć dane pacjenta na żądanie?
+
+RODO art. 17: pacjent ma prawo do usunięcia danych ("prawo do bycia zapomnianym").
+
+Procedura w Botiko:
+1. Pacjent pisze: "Proszę o usunięcie moich danych"
+2. Identyfikujesz pacjenta
+3. W dashboardzie → znajdź pacjenta → przycisk "Usuń wszystkie dane"
+4. Botiko usuwa: lead, wszystkie rozmowy, embedy, logi
+5. Termin: **30 dni od żądania**
+6. Odpowiadasz pacjentowi że dane usunięte
+
+**Wyjątek:** dane pacjentów z **realizowanym leczeniem** mogą pozostać 20 lat (art. 29 ustawy o zawodach lekarskich) — ale tylko w gabinetowej dokumentacji medycznej, nie w bocie.
+
+#### Punkt 13: Procedura sprostowania
+
+☐ **Sprawdź:** Wiesz jak poprawić błędne dane na żądanie pacjenta?
+
+RODO art. 16. Procedura analogiczna do dostępu i usunięcia. W praktyce dla bota — rzadko wykorzystywane, ale musi być dostępne.
+
+### Sekcja 5: W razie incydentu
+
+#### Punkt 14: Wiesz jak zgłosić incydent do UODO
+
+☐ **Sprawdź:** Znasz procedurę zgłoszenia incydentu RODO.
+
+W razie wycieku danych pacjentów (włamanie do dostawcy, błąd, kradzież laptopa z dostępem):
+1. **W ciągu 72 godzin** od wykrycia zgłoś do UODO przez formularz online
+2. Powiadom pacjentów których dane wyciekły (jeśli ryzyko wysokie dla ich praw)
+3. Dokumentuj incydent w wewnętrznym rejestrze
+4. Współpracuj z UODO podczas dochodzenia
+
+Kara administracyjna za nieingerwencję: do 4% rocznego obrotu lub 20 mln EUR (zwykle dla małej praktyki: 5 000-50 000 zł).
+
+#### Punkt 15: Kontakty awaryjne
+
+☐ **Sprawdź:** Masz pod ręką numery do:
+- IOD (jeśli wyznaczony)
+- Prawnik specjalizujący się w RODO
+- Wsparcie dostawcy bota (Botiko: kontakt@botiko.pl, odpowiedź w 4h w dni robocze)
+- UODO (uodo.gov.pl)
+
+W kryzysie nie ma czasu szukać kontaktów — miej gotową listę wydrukowaną w gabinecie.
+
+## Wzór klauzuli RODO do polityki prywatności gabinetu
+
+Poniżej gotowy wzór do wklejenia. **Dostosuj zaznaczone fragmenty do swojego gabinetu**.
+
+```
+Sekcja: Bot AI na stronie internetowej
+
+1. Administratorem Twoich danych osobowych zbieranych przez bota AI 
+   jest [PEŁNA NAZWA GABINETU], z siedzibą [ADRES], NIP [NIP].
+
+2. Bot zbiera następujące dane:
+   - Imię i nazwisko (pseudonim akceptowany)
+   - Numer telefonu (do nawiązania kontaktu)
+   - Treść Twoich wiadomości (w tym opis dolegliwości, jeśli go podasz)
+
+3. Cel przetwarzania danych:
+   - Nawiązanie kontaktu w celu umówienia wizyty
+   - Przekazanie kontekstu specjaliście przed wizytą
+   - Odpowiedź na pytania dotyczące oferty gabinetu
+
+4. Podstawa prawna przetwarzania:
+   - Art. 6 ust. 1 lit. a RODO (zgoda) — dla danych zwykłych
+   - Art. 9 ust. 2 lit. a RODO (wyraźna zgoda) — dla danych dotyczących 
+     zdrowia, jeśli zostały przekazane
+
+5. Czas przechowywania:
+   Twoje dane zostaną usunięte po 30 dniach od zakończenia naszej 
+   subskrypcji u dostawcy bota lub na Twoje żądanie.
+
+6. Odbiorcy danych:
+   Dane są przetwarzane przez dostawcę bota — Botiko.pl 
+   (Mateusz Woronowicz, Białystok, NIP [NIP BOTIKO]). 
+   Mamy podpisaną umowę powierzenia przetwarzania (DPA).
+
+7. Lokalizacja serwerów:
+   Twoje dane są przechowywane w UE (Frankfurt, Niemcy). 
+   Dane NIE są przekazywane poza Europejski Obszar Gospodarczy.
+
+8. Twoje prawa:
+   - Dostęp do swoich danych
+   - Sprostowanie danych
+   - Usunięcie danych ("prawo do bycia zapomnianym")
+   - Ograniczenie przetwarzania
+   - Sprzeciw wobec przetwarzania
+   - Przenoszenie danych
+   - Wycofanie zgody w dowolnym momencie
+
+9. Aby skorzystać z praw lub zadać pytania, napisz na: [EMAIL GABINETU]
+
+10. Masz prawo wnieść skargę do Prezesa Urzędu Ochrony Danych 
+    Osobowych (uodo.gov.pl).
+
+11. Profilowanie i decyzje automatyczne:
+    Bot AI udziela informacji ale NIE podejmuje decyzji medycznych. 
+    Wszystkie decyzje terapeutyczne podejmuje wykwalifikowany 
+    specjalista podczas wizyty osobistej.
+```
+
+**Wklej ten tekst do polityki prywatności gabinetu jako osobną sekcję.** Zastąp `[PLACEHOLDERY]` Twoimi danymi. Czas wdrożenia: 5 minut.
+
+<Callout type="warning">
+  **Disclaimer prawny:** wzór klauzuli powyżej jest punktem wyjścia, nie finalnym dokumentem prawnym. Konkretne wdrożenie skonsultuj z radcą prawnym specjalizującym się w RODO. Cena konsultacji RODO dla gabinetu w Białymstoku: ~300-800 zł, rzadko więcej. Inwestycja zwracająca się przy pierwszej kontroli UODO.
+</Callout>
+
+## Porównanie 4 chatbotów pod RODO dla gabinetu
+
+<ComparisonTable
+  title="RODO compliance — Botiko vs Tidio vs Chatbase vs Crisp"
+  headers={["Wymóg RODO", "Botiko", "Tidio", "Chatbase", "Crisp"]}
+  rows={[
+    ["Serwery w EOG", "✅ Frankfurt", "❌ USA (główne)", "❌ USA", "Mieszane FR+US"],
+    ["Szyfrowanie AES-256", "✅", "AES-128", "✅", "✅"],
+    ["DPA gotowy", "✅ jednym kliknięciem", "Płatne ekstra", "Niedostępne", "Tak (płatne)"],
+    ["Klauzula RODO PL", "✅ wzór", "❌", "❌", "❌"],
+    ["Polski język interfejsu", "✅", "Częściowo", "❌", "❌"],
+    ["Wsparcie po polsku", "✅ osobiste", "Po angielsku", "Po angielsku", "Po angielsku"],
+    ["Cena dla 1-osobowego gabinetu", "99 zł", "~250 zł z AI", "~30 USD", "25 EUR"]
+  ]}
+/>
+
+**Wniosek:** dla polskiego gabinetu medycznego Botiko to jedyny bot AI zaprojektowany pod polski rynek z perspektywy compliance.
+
+## Częste pytania prawne
+
+<FAQ
+  items={[
+    {
+      q: "Czy potrzebuję IOD jeśli mam mały gabinet 1-2 osobowy?",
+      a: "W większości przypadków NIE. IOD jest wymagany gdy główna działalność to przetwarzanie danych zdrowotnych 'na dużą skalę' — co UODO interpretuje jako 1000+ pacjentów rocznie i 5+ pracowników. Mały gabinet z 100-300 pacjentami nie podlega temu obowiązkowi. Jednak warto skonsultować — sytuacja konkretna może być inna."
+    },
+    {
+      q: "Czy bot przekazujący dane do dostawcy w USA narusza RODO?",
+      a: "Po Schrems II (2020) transfer danych do USA wymaga dodatkowych zabezpieczeń (Standard Contractual Clauses + ocena ryzyka). Większość małych gabinetów nie ma technicznych ani prawnych kompetencji żeby to wdrożyć. Praktyczne rozwiązanie: wybierz dostawcę z infrastrukturą w EOG (jak Botiko), żeby uniknąć tematu transferu."
+    },
+    {
+      q: "Co się stanie jeśli pacjent zgłosi skargę do UODO że bot zbiera dane bez zgody?",
+      a: "Jeśli masz: (1) klauzulę RODO w polityce prywatności, (2) DPA podpisany z dostawcą, (3) checkbox zgody w widgecie, (4) procedury dla praw pacjenta — UODO uzna że dopełniłeś obowiązków. Skarga zostaje umorzona albo otrzymujesz pouczenie. Bez tych elementów — kara 5 000-50 000 zł realnie."
+    },
+    {
+      q: "Mój gabinet jest małą jednoosobową działalnością. Czy podpadam pod RODO?",
+      a: "Tak, RODO obowiązuje **wszystkich** którzy przetwarzają dane osobowe — niezależnie od wielkości firmy. Nie ma 'minimalnego progu' pod którym RODO nie obowiązuje. Mała działalność = takie same obowiązki, mniejsze kary (UODO patrzy na proporcjonalność)."
+    },
+    {
+      q: "Jak długo realnie trzymać rozmowy bota? 30 dni? Rok?",
+      a: "Zasada minimalizacji + ograniczenia czasowego (RODO art. 5 ust. 1 lit. c i e): tak długo jak potrzeba do realizacji celu. Cel = 'umówienie wizyty + przekazanie kontekstu specjaliście'. Po wizycie kontekst jest w dokumentacji medycznej gabinetu (która ma swój własny okres retencji wynikający z ustawy o zawodach lekarskich — 20 lat). Rozmowa z bota nie musi być dłużej niż 30 dni — to wystarcza na umówienie i pierwszą wizytę. Botiko default = 30 dni jest bezpieczny."
+    },
+    {
+      q: "Czy DPA z Botiko jest wystarczające, czy potrzebuję czegoś więcej?",
+      a: "DPA standardowo zawiera: rolę stron (administrator vs procesor), zakres przetwarzania, czas, środki bezpieczeństwa, prawa do audytu, procedurę incydentów. Botiko DPA pokrywa wszystkie te elementy zgodnie z RODO art. 28. Dla większości gabinetów to wystarczające. Większe kliniki czasem wymagają indywidualnych modyfikacji (np. branding, specyficzne klauzule audytowe) — wtedy negocjujemy."
+    },
+    {
+      q: "Co jeśli pacjent zostawi w bocie dane innego pacjenta (np. dziecka)?",
+      a: "W przypadku dzieci ≤16 lat zgoda musi pochodzić od rodzica. Praktyka: bot na początku może informować 'jeśli umawiasz dziecko, zostaw kontakt rodzica'. W razie wątpliwości — gabinet weryfikuje przy pierwszej wizycie. Niedopełnienie tego nie unieważnia zgody jeśli rodzic później zatwierdzi."
+    },
+    {
+      q: "Czy nagrywanie rozmów z botem to monitorowanie?",
+      a: "Bot zapisuje rozmowę dla celu utrzymania kontekstu konwersacji + audit trail. To NIE jest 'monitorowanie' w sensie RODO art. 35 — bot nie analizuje pacjentów ani nie podejmuje automatycznych decyzji. Klauzula informacyjna powinna jednak wspomnieć że rozmowa jest zapisana ('Twoja rozmowa z botem jest zapisana w celu zapewnienia ciągłości obsługi i bezpieczeństwa danych')."
+    }
+  ]}
+/>
+
+## Podsumowanie
+
+Bot na stronie gabinetu medycznego = przetwarzanie danych osobowych pacjentów + danych dotyczących zdrowia. RODO wymaga konkretnych zabezpieczeń.
+
+15 punktów które musisz odhaczyć:
+1. Polityka prywatności istnieje
+2. Polityka jest aktualna (2024-2026)
+3. Decyzja o IOD podjęta
+4. Bot zbiera tylko niezbędne dane
+5. Klauzula zgody przed leadem
+6. Link do polityki w widgecie
+7. Szyfrowanie AES-256
+8. Serwery w EOG
+9. Retention policy
+10. DPA podpisana
+11. Procedura "right to access"
+12. Procedura "right to be forgotten"
+13. Procedura sprostowania
+14. Procedura zgłoszenia incydentu
+15. Kontakty awaryjne
+
+Botiko domyślnie spełnia punkty 4, 6, 7, 8, 9, 10. Twoja praca to punkty 1, 2, 3, 5, 11-15 + skopiowanie wzoru klauzuli z tego artykułu.
+
+Czas wdrożenia compliance: ~2-3 godziny pracy + ~300 zł konsultacji RODO (zalecane).
+
+<CTABlock
+  title="Botiko — bot AI zaprojektowany pod polskie RODO"
+  description="Szyfrowanie AES-256. Serwery EU. DPA jednym kliknięciem. Klauzula RODO gotowa. 14 dni za darmo."
+  cta="Wypróbuj"
+  href="/dla/gabinet-zdrowia"
+/>
+
+---
+
+**Powiązane wpisy:**
+- [Bot dla gabinetu fizjoterapii, stomatologii, psychologii w Białymstoku — pillar](/blog/bot-dla-gabinetu-zdrowia-bialystok)
+- [Pacjent pisze o 22:00 — fizjoterapeuta i pierwsze konsultacje przez bota](/blog/fizjoterapeuta-bialystok-bot-pierwsze-konsultacje)
