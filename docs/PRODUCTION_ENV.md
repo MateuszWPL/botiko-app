@@ -1,86 +1,123 @@
 # Produkcyjne zmienne środowiskowe — Botiko.pl
 
-Instrukcja krok-po-kroku: skąd wziąć każdą wartość i gdzie ją wkleić.  
+Instrukcja krok-po-kroku: jak założyć projekty, skąd wziąć każdą wartość i gdzie ją wkleić.  
 Hosting: **Railway** (API) · **Vercel** (Web + Widget jako statyczne)
+
+---
+
+## 0. Przed startem — zainstaluj CLI
+
+```bash
+# Railway CLI
+npm install -g @railway/cli
+railway login
+
+# Vercel CLI
+npm install -g vercel
+vercel login
+```
 
 ---
 
 ## 1. Railway — `apps/api`
 
-Panel: **railway.app → projekt → Variables**
+### Założenie projektu
 
-### NODE i App URLs
+1. Wejdź na **https://railway.app** → zaloguj się przez GitHub
+2. **New Project → Deploy from GitHub repo** → wybierz `botiko-app`
+3. Railway zapyta o katalog — wpisz `apps/api`
+4. Kliknij **Add Variables** — tu wkleisz env vars z sekcji poniżej
+5. Domena: **Settings → Networking → Generate Domain** → dostaniesz `*.railway.app`  
+   Potem: **Settings → Networking → Custom Domain** → wpisz `api.botiko.pl`
+
+Lub przez CLI:
+
+```bash
+cd apps/api
+railway link          # połącz z istniejącym projektem
+# lub
+railway init          # utwórz nowy projekt
+railway up            # deploy
+```
+
+---
+
+### Zmienne środowiskowe — Railway
+
+Panel: **railway.app → projekt → Variables → Raw Editor** (wklej blok naraz)
+
+#### NODE i App URLs
 
 ```
 NODE_ENV=production
 APP_URL=https://app.botiko.pl
 API_URL=https://api.botiko.pl
 WIDGET_URL=https://widget.botiko.pl
+PORT=3001
 ```
 
 > `NODE_ENV=production` jest krytyczne — bez tego CORS i DomainWhitelistGuard działają w trybie dev (rozluźnionym). API odmówi startu jeśli `NODE_ENV=production` i któryś URL wskazuje `localhost`.
 
 ---
 
-### Database — Supabase
+#### Database — Supabase
 
-Panel: **supabase.com → projekt → Settings → Database → Connection string → URI**  
-Wybierz: **Transaction pooler** (port 6543) — Railway używa pooled connections.
+Panel: **https://supabase.com/dashboard → projekt → Settings → Database**  
+Zakładka: **Connection string → URI**  
+Wybierz: **Transaction pooler** (port 6543)
 
 ```
 DATABASE_URL=postgresql://postgres.XXXX:HASLO@aws-1-eu-west-3.pooler.supabase.com:6543/postgres?sslmode=require
 ```
 
-> Upewnij się że w URL jest port `6543` (pooler), nie `5432` (direct). Direct connection nie działa z Railway.
+> Port musi być `6543` (pooler), nie `5432` (direct). Direct connection nie działa z Railway (serverless środowisko).
 
 ---
 
-### Supabase Auth
+#### Supabase Auth
 
-Panel: **supabase.com → projekt → Settings → API**
+Panel: **https://supabase.com/dashboard → projekt → Settings → API**
 
 ```
 SUPABASE_URL=https://TWOJ_PROJEKT.supabase.co
 SUPABASE_ANON_KEY=eyJ...                          ← "anon public"
-SUPABASE_SERVICE_ROLE_KEY=eyJ...                  ← "service_role" (TYLKO API, nigdy Vercel/web!)
+SUPABASE_SERVICE_ROLE_KEY=eyJ...                  ← "service_role secret" (TYLKO Railway/API!)
 ```
 
 ---
 
-### OpenAI
+#### OpenAI
 
-Panel: **platform.openai.com → API keys → Create new secret key**
+Panel: **https://platform.openai.com/api-keys** → Create new secret key
 
 ```
 OPENAI_API_KEY=sk-proj-...
 ```
 
-> Ustaw billing limit w OpenAI żeby uniknąć niespodzianek. Zalecane: hard limit 50 USD/mies. na start.
+> Ustaw billing limit: **https://platform.openai.com/settings/organization/limits** → Hard limit: 50 USD/mies. na start.
 
 ---
 
-### Sekrety bezpieczeństwa — generuj lokalnie
-
-Wygeneruj NOWE wartości dla produkcji (nie kopiuj z `.env`):
+#### Sekrety bezpieczeństwa — generuj lokalnie, NOWE dla produkcji
 
 ```bash
 # JWT_SECRET
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
-# ENCRYPTION_KEY (musi być dokładnie 64 znaki hex = 32 bajty)
+# ENCRYPTION_KEY (musi być dokładnie 64 znaki hex)
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 ```
-JWT_SECRET=<64-znakowy hex>
-ENCRYPTION_KEY=<64-znakowy hex>
+JWT_SECRET=<wklej wynik pierwszego polecenia>
+ENCRYPTION_KEY=<wklej wynik drugiego polecenia>
 ```
 
-> `ENCRYPTION_KEY` musi być niezmienny po deploymencie — zmiana go oznacza utratę możliwości odszyfrowania danych PII leadów (imię, telefon).
+> `ENCRYPTION_KEY` jest niezmienny po deploymencie — zmiana = utrata możliwości odszyfrowania PII leadów. Zapisz go w bezpiecznym miejscu (np. 1Password).
 
 ---
 
-### Rate limiting (opcjonalne, możesz zostawić defaulty)
+#### Rate limiting (możesz zostawić defaulty)
 
 ```
 RATE_LIMIT_WINDOW_MS=60000
@@ -89,71 +126,98 @@ RATE_LIMIT_MAX=100
 
 ---
 
-### Email — Resend
+#### Email — Resend
 
-Panel: **resend.com → API Keys → Create API Key** (uprawnienia: `Sending access`)  
-Zweryfikuj domenę: **resend.com → Domains → Add domain** → dodaj DNS TXT record u rejestratora.
+1. Załóż konto: **https://resend.com**
+2. **Domains → Add Domain** → wpisz `botiko.pl` → dodaj podane rekordy DNS u rejestratora (TXT + MX)
+3. **API Keys → Create API Key** (uprawnienia: `Sending access`)
 
 ```
 RESEND_API_KEY=re_...
 RESEND_FROM_EMAIL=powiadomienia@botiko.pl
 ```
 
-> Bez zweryfikowanej domeny Resend odrzuci wysyłkę. Weryfikacja DNS zajmuje do 24h.
+> Weryfikacja domeny DNS zajmuje do 24h. Bez niej Resend odrzuci wysyłkę.
 
 ---
 
-### Stripe — PRODUKCJA (klucze live, nie test!)
+#### Stripe — klucze LIVE (nie test!)
 
-Panel: **dashboard.stripe.com → Developers → API keys**  
-Przełącz widok na **Live mode** (toggle w lewym górnym rogu).
+Panel: **https://dashboard.stripe.com/apikeys**  
+Przełącz na **Live mode** (toggle w lewym górnym rogu panelu Stripe).
 
 ```
 STRIPE_SECRET_KEY=sk_live_...
-STRIPE_PRICE_ID=price_...             ← ID produktu STARTER w live mode
+STRIPE_PRICE_ID=price_...
 ```
 
-Webhook (po deploymencie API):
+Żeby dostać `STRIPE_PRICE_ID`:
+- **Stripe Dashboard → Products → Add product**
+- Nazwa: `Botiko STARTER`, cena: `99 PLN / miesiąc`, rozliczenie: `recurring monthly`
+- Po zapisaniu skopiuj **Price ID** (`price_...`) z zakładki produktu
 
-1. **Stripe Dashboard → Developers → Webhooks → Add endpoint**
+Webhook — **po tym jak API jest już dostępne pod docelowym URL**:
+1. **https://dashboard.stripe.com/webhooks → Add endpoint**
 2. URL: `https://api.botiko.pl/api/v1/billing/webhook`
-3. Events: zaznacz wszystkie `customer.subscription.*` i `checkout.session.completed`
-4. Skopiuj **Signing secret** (`whsec_...`)
+3. Events: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
+4. Kliknij **Add endpoint** → skopiuj **Signing secret** (`whsec_...`)
 
 ```
-STRIPE_WEBHOOK_SECRET=whsec_...       ← z kroku 4 powyżej
+STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
-> Klucze `sk_test_` NIE działają z live webhookami i odwrotnie. Upewnij się że wszystkie trzy (`SK`, `PRICE_ID`, `WEBHOOK_SECRET`) są z tego samego trybu (live).
+> Wszystkie trzy klucze (`SK`, `PRICE_ID`, `WEBHOOK_SECRET`) muszą być z tego samego trybu (live). `sk_test_` + live webhook = błąd.
 
 ---
 
-### Cron (opcjonalne, ale zalecane)
+#### Cron secret
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(24).toString('hex'))"
 ```
 
 ```
-CRON_SECRET=<min 16 znaków>
+CRON_SECRET=<wynik polecenia>
 ```
 
 ---
 
-### Czego NIE ustawiać na Railway
+#### Czego NIE ustawiać na Railway
 
 ```
-# Te zmienne MUSZĄ być nieobecne na produkcji:
-NODE_TLS_REJECT_UNAUTHORIZED    ← bezpieczeństwo SSL
-DEV_ALLOW_LOCALHOST             ← ochrona SSRF (API odmówi startu jeśli ustawione)
+# Muszą być NIEOBECNE na produkcji:
+NODE_TLS_REJECT_UNAUTHORIZED    ← SSL security
+DEV_ALLOW_LOCALHOST             ← SSRF guard (API odmówi startu jeśli ustawione)
 ```
 
 ---
 
 ## 2. Vercel — `apps/web`
 
+### Założenie projektu
+
+1. Wejdź na **https://vercel.com** → zaloguj się przez GitHub
+2. **Add New → Project → Import Git Repository** → wybierz `botiko-app`
+3. **Root Directory** → zmień na `apps/web`
+4. Framework Preset: `Next.js` (auto-detect)
+5. Rozwiń **Environment Variables** i wklej zmienne z sekcji poniżej przed pierwszym deployem
+6. Kliknij **Deploy**
+7. Po deploymencie: **Settings → Domains** → dodaj `app.botiko.pl`
+
+Lub przez CLI:
+
+```bash
+cd apps/web
+vercel          # pierwsze uruchomienie — przeprowadzi przez setup
+vercel --prod   # deploy na produkcję
+```
+
+---
+
+### Zmienne środowiskowe — Vercel
+
 Panel: **vercel.com → projekt → Settings → Environment Variables**  
-Ustaw scope: **Production** (nie Preview/Development).
+Scope: ustaw **Production** (nie Preview/Development).
 
 ```
 NEXT_PUBLIC_API_URL=https://api.botiko.pl
@@ -162,15 +226,15 @@ NEXT_PUBLIC_SUPABASE_URL=https://TWOJ_PROJEKT.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 ```
 
-Demo widget na landing page (opcjonalne — jeśli chcesz live demo):
+Demo widget na landing page (opcjonalne):
 
 ```
-NEXT_PUBLIC_DEMO_BOT_ID=<UUID bota demo z bazy>
+NEXT_PUBLIC_DEMO_BOT_ID=<UUID bota demo — weź z bazy po pierwszym deploymencie>
 ```
 
-> Bez `NEXT_PUBLIC_DEMO_BOT_ID` sekcja demo na landing page po prostu się nie renderuje — nie rzuca błędów.
+> Bez tej zmiennej sekcja demo na landing page się nie renderuje. Ustaw po tym jak założysz konto demo w aplikacji.
 
-Cloudinary (opcjonalne, jeśli używane do uploadu zdjęć):
+Cloudinary (opcjonalne, dla uploadu avatarów botów):
 
 ```
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=...
@@ -179,14 +243,20 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=...
 
 ---
 
-## 3. Vercel / Cloudflare Pages — `apps/widget`
+## 3. Vercel — `apps/widget`
 
-Widget to statyczny plik `dist/embed.js` — brak runtime env vars.  
-`VITE_API_URL` używane jest tylko w dev (`apps/widget/.env.local`).
+### Założenie projektu
 
-Opcje hostingu:
-- **Vercel** — subpath lub osobny projekt, serwuj `dist/embed.js` jako `widget.botiko.pl/embed.js`
-- **Cloudflare Pages** — darmowy CDN z edge caching, polecany dla statycznych assetów
+1. **Vercel → Add New → Project → Import Git Repository** → `botiko-app`
+2. **Root Directory** → zmień na `apps/widget`
+3. Framework Preset: `Vite`
+4. Build Command: `pnpm build`
+5. Output Directory: `dist`
+6. Brak env vars — widget nie ma runtime config
+7. Po deploymencie: **Settings → Domains** → dodaj `widget.botiko.pl`
+
+> Alternatywa: **Cloudflare Pages** (darmowy CDN, lepsza wydajność dla statycznych assetów)  
+> **https://pages.cloudflare.com** → Connect to Git → wybierz repo → Root: `apps/widget`, Build: `pnpm build`, Output: `dist`
 
 ---
 
@@ -194,69 +264,96 @@ Opcje hostingu:
 
 ### Auth redirect URLs
 
-Panel: **supabase.com → Authentication → URL Configuration**
+Panel: **https://supabase.com/dashboard → projekt → Authentication → URL Configuration**
 
 ```
-Site URL:           https://app.botiko.pl
-Redirect URLs:      https://app.botiko.pl/**
-                    https://app.botiko.pl/auth/callback
+Site URL:      https://app.botiko.pl
+Redirect URLs: https://app.botiko.pl/**
 ```
 
-> Bez tego Supabase odmówi przekierowania po logowaniu/rejestracji.
+> Bez tego Supabase odmówi przekierowania po logowaniu i resetowaniu hasła.
 
-### RLS Policies
-
-Migracje Supabase są w `supabase/` — upewnij się że wszystkie zostały zaaplikowane:
+### Migracje bazy danych
 
 ```bash
+# Zainstaluj CLI jeśli nie masz
+npm install -g supabase
+
+# Zaloguj się
+supabase login
+
+# Wypchnij migracje na projekt produkcyjny
 supabase db push --project-ref TWOJ_REF
 ```
 
+`TWOJ_REF` znajdziesz w **Supabase Dashboard → Settings → General → Reference ID**.
+
 ---
 
-## 5. DNS — przykładowa konfiguracja
+## 5. DNS — konfiguracja u rejestratora (np. home.pl, OVH, Cloudflare)
 
 | Subdomena | Typ | Wartość |
 |---|---|---|
 | `app.botiko.pl` | CNAME | `cname.vercel-dns.com` |
-| `api.botiko.pl` | CNAME | `[twój projekt].railway.app` |
-| `widget.botiko.pl` | CNAME | `cname.vercel-dns.com` lub Cloudflare |
+| `api.botiko.pl` | CNAME | `[twój-projekt].railway.app` |
+| `widget.botiko.pl` | CNAME | `cname.vercel-dns.com` |
+
+> SSL certyfikaty wystawiają się automatycznie (Railway + Vercel przez Let's Encrypt). Propagacja DNS: do 24h, zwykle kilka minut.
 
 ---
 
-## 6. Checklist przed pierwszym deployem
+## 6. Kolejność działań przy pierwszym deploymencie
 
 ```
-Railway (API):
-[ ] NODE_ENV=production
-[ ] DATABASE_URL (pooler port 6543)
-[ ] SUPABASE_URL / ANON_KEY / SERVICE_ROLE_KEY
-[ ] OPENAI_API_KEY
-[ ] JWT_SECRET (nowy, 64 hex)
-[ ] ENCRYPTION_KEY (nowy, 64 hex — zachowaj kopię!)
-[ ] APP_URL / API_URL / WIDGET_URL (prod URLs, nie localhost)
-[ ] STRIPE_SECRET_KEY (sk_live_...)
-[ ] STRIPE_PRICE_ID (price_ z live mode)
-[ ] STRIPE_WEBHOOK_SECRET (po setupie webhooka w Stripe Dashboard)
-[ ] RESEND_API_KEY + zweryfikowana domena
-[ ] CRON_SECRET
+1. [ ] Supabase — skonfiguruj Auth redirect URLs
+2. [ ] Supabase — wypchnij migracje (supabase db push)
+3. [ ] Resend — zweryfikuj domenę (DNS TXT) — może trwać do 24h, zrób jako pierwsze
+4. [ ] Stripe — utwórz produkt STARTER 99 PLN/mies w live mode, skopiuj PRICE_ID
+5. [ ] Generuj JWT_SECRET i ENCRYPTION_KEY lokalnie
+6. [ ] Railway — utwórz projekt, ustaw wszystkie Variables, zdeployuj
+7. [ ] Vercel (web) — utwórz projekt, ustaw Variables, zdeployuj
+8. [ ] Vercel/CF (widget) — utwórz projekt, zdeployuj
+9. [ ] DNS — dodaj rekordy CNAME dla wszystkich trzech subdomen
+10.[ ] Stripe — po tym jak api.botiko.pl działa: dodaj webhook endpoint, wklej STRIPE_WEBHOOK_SECRET do Railway
+11.[ ] Vercel (web) — redeploy jeśli dodałeś NEXT_PUBLIC_DEMO_BOT_ID po pierwszym deploymencie
+12.[ ] QA — przejdź TASK.md §1A.6 na produkcji
+```
 
-Vercel (Web):
-[ ] NEXT_PUBLIC_API_URL
-[ ] NEXT_PUBLIC_WIDGET_URL
-[ ] NEXT_PUBLIC_SUPABASE_URL
-[ ] NEXT_PUBLIC_SUPABASE_ANON_KEY
+---
 
-Supabase:
-[ ] Site URL i Redirect URLs zaktualizowane
-[ ] Migracje zaaplikowane (supabase db push)
+## 7. Pełna lista zmiennych — Railway (Raw Editor)
 
-Stripe:
-[ ] Webhook endpoint dodany (https://api.botiko.pl/api/v1/billing/webhook)
-[ ] Webhook secret wklejony do Railway
+Gotowy blok do wklejenia (uzupełnij wartości):
 
-DNS:
-[ ] app.botiko.pl → Vercel
-[ ] api.botiko.pl → Railway
-[ ] widget.botiko.pl → Vercel/Cloudflare
+```
+NODE_ENV=production
+PORT=3001
+APP_URL=https://app.botiko.pl
+API_URL=https://api.botiko.pl
+WIDGET_URL=https://widget.botiko.pl
+DATABASE_URL=
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+OPENAI_API_KEY=
+JWT_SECRET=
+ENCRYPTION_KEY=
+RATE_LIMIT_WINDOW_MS=60000
+RATE_LIMIT_MAX=100
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=powiadomienia@botiko.pl
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+STRIPE_PRICE_ID=
+CRON_SECRET=
+```
+
+## 8. Pełna lista zmiennych — Vercel (Production)
+
+```
+NEXT_PUBLIC_API_URL=https://api.botiko.pl
+NEXT_PUBLIC_WIDGET_URL=https://widget.botiko.pl
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_DEMO_BOT_ID=
 ```
