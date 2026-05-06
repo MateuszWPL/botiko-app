@@ -19,7 +19,7 @@ Botiko.pl is a B2B SaaS AI chatbot platform for Polish micro and small service b
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                      Customer Website                        │
-│  (WordPress, Shopify, Webflow, Wix, custom HTML, GTM)       │
+│  (WordPress primary, generic HTML fallback)                  │
 │                                                              │
 │  ┌─────────────────────────────────────┐                    │
 │  │  <script src="botiko.pl/embed.js">  │                    │
