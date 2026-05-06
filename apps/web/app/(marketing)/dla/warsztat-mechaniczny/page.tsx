@@ -476,7 +476,7 @@ export default function MechanicLandingPage() {
                 {
                   step: '03',
                   title: 'Wstawiasz widget na stronę',
-                  text: 'Jeden tag HTML na stronę warsztatu, profil Google, Facebooka lub landing page. Widget pojawia się w rogu i obsługuje pytania, gdy jesteś na hali.',
+                  text: 'Natywna instalacja na WordPress (5 minut przez wtyczkę WPCode) lub jeden tag HTML na dowolną inną stronę warsztatu. Widget pojawia się w rogu i obsługuje pytania, gdy jesteś na hali.',
                 },
                 {
                   step: '04',

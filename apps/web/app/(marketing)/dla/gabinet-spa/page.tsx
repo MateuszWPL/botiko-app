@@ -474,7 +474,7 @@ export default function SpaLandingPage() {
                 {
                   step: '03',
                   title: 'Wstawiasz widget na stronę',
-                  text: 'Kopiujesz jeden tag HTML i wklejasz na swoją stronę — WordPress, Squarespace, Wix, cokolwiek. Widget pojawia się w rogu strony.',
+                  text: 'Kopiujesz jeden tag HTML i wklejasz na swoją stronę — natywnie na WordPress (przez wtyczkę WPCode) lub każdą inną stronę WWW. Widget pojawia się w rogu strony.',
                 },
                 {
                   step: '04',
