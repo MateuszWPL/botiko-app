@@ -13,11 +13,13 @@ interface ComparisonTableProps {
 
 export function ComparisonTable({
   title,
-  headers,
-  rows,
+  headers = [],
+  rows = [],
   highlightColumn,
   className,
 }: ComparisonTableProps): JSX.Element {
+  if (headers.length === 0 || rows.length === 0) return <></>;
+
   return (
     <div className={cn('my-8', className)}>
       {title ? (
