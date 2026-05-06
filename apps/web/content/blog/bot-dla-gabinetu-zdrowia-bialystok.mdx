@@ -11,7 +11,7 @@ tags:
   - "chatbot dla gabinetu medycznego"
 author: "Mateusz W"
 authorTitle: "Założyciel Botiko.pl"
-image: "/BotikoLogo.png"
+image: "/blog/bot-dla-gabinetu-zdrowia-bialystok-hero.jpg"
 ---
 
 # Bot dla gabinetu fizjoterapii, stomatologii, psychologii w Białymstoku — RODO, etyka, obsługa pacjentów
@@ -19,7 +19,7 @@ image: "/BotikoLogo.png"
 **TL;DR:** W Białymstoku działa **61 gabinetów fizjoterapii** widocznych w Booksy (realnie ponad 100 wliczając niezależne praktyki), **150+ gabinetów stomatologicznych** i **40+ psychologów/psychoterapeutów**. Średni czas oczekiwania na fizjoterapię NFZ w Białymstoku to **475 dni** — pacjenci masowo przechodzą do prywatnych gabinetów, gdzie pierwsze pytanie zadają zwykle wieczorem. Bot AI na stronie gabinetu odpowiada 24/7 z zachowaniem RODO (szyfrowanie AES-256, serwery EU, DPA), zbiera leady i odsyła pacjentów na konkretne wizyty. Tidio i Chatbase hostują w USA — dla gabinetu medycznego to ryzyko reklamacji. Botiko hostuje w UE i ma gotową klauzulę RODO do polityki prywatności.
 
 <Callout type="info">
-  Ten przewodnik łączy trzy różne segmenty (fizjoterapia, stomatologia, psychologia/psychoterapia) bo wszystkie mają to samo wyzwanie: dane wrażliwe + obsługa pacjentów wieczorem + ryzyko prawne przy złym wdrożeniu bota. Specyficzne case dla fizjoterapii znajdziesz w [satelicie: Pacjent pisze o 22:00 — fizjoterapeuta i pierwsze konsultacje przez bota](/blog/fizjoterapeuta-bialystok-bot-pierwsze-konsultacje). Pełny checklist RODO w osobnym wpisie: [RODO a chatbot w gabinecie medycznym](/blog/rodo-chatbot-gabinet-checklist).
+  Ten przewodnik łączy trzy różne segmenty (fizjoterapia, stomatologia, psychologia/psychoterapia) bo wszystkie mają to samo wyzwanie: dane wrażliwe + obsługa pacjentów wieczorem + ryzyko prawne przy złym wdrożeniu bota.
 </Callout>
 
 ## Dlaczego ten tekst powstał
@@ -390,7 +390,7 @@ Wklejasz **gotowy wzór klauzuli** który dostarcza Botiko, do Twojej polityki p
 
 ### Krok 4: Wklejenie kodu na stronę (5 min)
 
-WordPress, Wix, Squarespace — kod JavaScript w stopce. Tutoriale dla każdej platformy w dashboardzie.
+**WordPress (rekomendowane):** zainstaluj wtyczkę WPCode, wklej kod jako HTML Snippet z lokalizacją Site Wide Footer. 5 minut, bez edycji kodu. Jeśli masz inną stronę — wklej kod JavaScript przed `</body>` w szablonie HTML. Instrukcja krok po kroku w dashboardzie Botiko.
 
 ### Krok 5: Test eskalacji emergency (2 min)
 
@@ -532,6 +532,5 @@ Jeśli prowadzisz gabinet fizjoterapii, stomatologii, psychologii, logopedii, di
 **Autor:** Mateusz Woronowicz, założyciel Botiko.pl. Buduje narzędzia AI dla polskich mikrofirm — z Białegostoku dla Białegostoku. Pytania o RODO, wdrożenia, etykę bota w gabinecie? Napisz na kontakt@botiko.pl, odpowiadam osobiście.
 
 **Powiązane wpisy:**
-- [Pacjent pisze o 22:00 — fizjoterapeuta i pierwsze konsultacje przez bota](/blog/fizjoterapeuta-bialystok-bot-pierwsze-konsultacje)
-- [RODO a chatbot w gabinecie medycznym — kompletny checklist](/blog/rodo-chatbot-gabinet-checklist)
+- [RODO a chatbot na stronie — zgody i przetwarzanie danych](/blog/rodo-chatbot-na-stronie-zgody-przetwarzanie-danych)
 - [Chatbot dla salonu kosmetycznego w Białymstoku — kompletny przewodnik 2026](/blog/chatbot-salon-kosmetyczny-bialystok)
