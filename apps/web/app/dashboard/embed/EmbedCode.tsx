@@ -14,7 +14,7 @@ import {
 import { toast } from 'sonner';
 import { EmptyStateClient } from '../../../components/ui/EmptyStateClient';
 
-interface Bot {
+export interface Bot {
   id: string;
   name: string;
   allowedDomains: string[];
