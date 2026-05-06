@@ -40,6 +40,10 @@ const FAQS = [
     q: 'Czy bot działa na Facebooku i Instagramie?',
     a: 'Aktualnie widget embeddujemy na stronie WWW klienta. Integracja z Meta Messengerem i Instagram Direct jest w roadmapie — daj znać że jesteś zainteresowany przez kontakt@botiko.pl.',
   },
+  {
+    q: 'Ile kosztuje Botiko i czy jest umowa?',
+    a: 'Botiko kosztuje 99 zł miesięcznie. Pierwsze 14 dni są bezpłatne — bez karty kredytowej. Brak umowy długoterminowej, możesz anulować w dowolnym momencie z poziomu panelu.',
+  },
 ];
 
 const FAQ_SCHEMA = {
