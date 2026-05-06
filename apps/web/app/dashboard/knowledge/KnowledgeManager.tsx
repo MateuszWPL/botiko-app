@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useMemo, useEffect } from 'react';
+import { createClient } from '../../../lib/supabase';
 import {
   Plus, Trash2, Loader2, BookOpen, Phone, HelpCircle, FileText, FileUp,
   Check, X, Pencil, AlertCircle, Search, Mail, MapPin, Clock, Globe,
@@ -977,6 +978,37 @@ function WebTab({
   botId: string;
   tenantWebsiteUrl?: string | null;
 }) {
+  const [savedUrl, setSavedUrl] = useState<string | null>(tenantWebsiteUrl ?? null);
+  const [input, setInput] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
+
+  const saveUrl = async () => {
+    const raw = input.trim();
+    if (!raw) return;
+    setSaving(true);
+    setSaveError('');
+    try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token ?? '';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+      const res = await fetch(`${apiUrl}/api/v1/tenant/me`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ websiteUrl: raw }),
+      });
+      if (!res.ok) throw new Error('Błąd zapisu');
+      const normalized = raw.startsWith('http') ? raw : 'https://' + raw;
+      setSavedUrl(normalized);
+      setInput('');
+    } catch {
+      setSaveError('Nie udało się zapisać. Sprawdź format adresu (np. twojastrona.pl).');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -986,18 +1018,42 @@ function WebTab({
         <p className="text-xs text-slate-500 mb-4">
           Bot automatycznie pobierze informacje ze Twojej strony: usługi, FAQ, kontakt i cennik.
         </p>
-        {!tenantWebsiteUrl && (
-          <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5 mb-4">
-            Dodaj URL strony w{' '}
-            <a href="/dashboard/settings" className="underline font-semibold">
-              Ustawieniach
-            </a>{' '}
-            aby odblokować import.
+        {!savedUrl && (
+          <div className="mb-4">
+            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5 mb-3">
+              Podaj URL swojej strony, żeby odblokować import.
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="np. twojastrona.pl"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && void saveUrl()}
+                className="flex-1 text-sm border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400"
+              />
+              <button
+                onClick={() => void saveUrl()}
+                disabled={saving || !input.trim()}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white text-sm font-medium rounded-xl transition-colors cursor-pointer disabled:cursor-default"
+              >
+                {saving ? 'Zapisuję…' : 'Zapisz'}
+              </button>
+            </div>
+            {saveError && (
+              <p className="text-xs text-rose-600 mt-1.5">{saveError}</p>
+            )}
+          </div>
+        )}
+        {savedUrl && (
+          <p className="text-xs text-slate-500 mb-3">
+            Strona:{' '}
+            <span className="font-mono text-slate-700">{savedUrl}</span>
           </p>
         )}
         <WebsiteImportButton
           botId={botId}
-          tenantWebsiteUrl={tenantWebsiteUrl}
+          tenantWebsiteUrl={savedUrl}
         />
       </div>
     </div>
