@@ -1,11 +1,14 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   UseGuards,
 } from '@nestjs/common';
+import { z } from 'zod';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
 import { CurrentTenant } from '../../common/decorators/current-tenant.decorator';
@@ -20,6 +23,18 @@ export class TenantController {
   @Get('me')
   getMe(@CurrentTenant() tenantId: string) {
     return this.tenantService.getMe(tenantId);
+  }
+
+  @Patch('me')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async updateMe(
+    @CurrentTenant() tenantId: string,
+    @Body() body: unknown,
+  ): Promise<void> {
+    const { websiteUrl } = z
+      .object({ websiteUrl: z.string().trim().min(4) })
+      .parse(body);
+    await this.tenantService.updateWebsiteUrl(tenantId, websiteUrl);
   }
 
   // RODO: right to erasure — permanently deletes all tenant data

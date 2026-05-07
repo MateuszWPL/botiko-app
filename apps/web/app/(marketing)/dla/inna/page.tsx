@@ -200,7 +200,7 @@ const STEPS = [
   {
     step: '03',
     title: 'Wstawiasz widget na stronę',
-    text: 'Jeden tag HTML — działa na każdej stronie obsługującej własny HTML, w tym Wix, WordPress, Squarespace, Webflow i Google Sites.',
+    text: 'Natywna instalacja na WordPress (5 minut przez wtyczkę WPCode, bez edycji kodu) lub jeden tag HTML na każdej innej stronie WWW.',
   },
   {
     step: '04',

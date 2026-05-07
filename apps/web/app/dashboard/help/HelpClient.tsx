@@ -1,11 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { toast } from 'sonner';
 import {
   Mail,
-  ChevronDown,
   Copy,
   Check,
   Rocket,
@@ -31,7 +30,7 @@ interface FaqItem {
 const FAQ: FaqItem[] = [
   {
     q: 'Jak zainstalować bota na swojej stronie?',
-    a: 'Przejdź do zakładki Instalacja, skopiuj kod widgetu i wklej go przed zamykającym tagiem </body> swojej strony. Widget działa na WordPress, Shopify, Wix, Squarespace i każdej stronie HTML.',
+    a: 'Przejdź do zakładki Instalacja, skopiuj kod widgetu i wklej go przed zamykającym tagiem </body> swojej strony. Widget jest natywnie zoptymalizowany pod WordPress i działa na każdej innej stronie WWW.',
   },
   {
     q: 'Czy bot działa po polsku?',
@@ -104,25 +103,43 @@ const TIPS: Tip[] = [
 ];
 
 function AccordionItem({ q, a, open, onToggle }: FaqItem & { open: boolean; onToggle: () => void }) {
+  const contentRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden transition-shadow hover:shadow-sm">
+    <div
+      className="rounded-2xl border overflow-hidden transition-all duration-200"
+      style={{
+        background: open ? '#FAFBFF' : '#fff',
+        borderColor: open ? 'rgba(99,102,241,0.25)' : '#F1F5F9',
+        boxShadow: open ? '0 2px 16px rgba(99,102,241,0.08)' : 'none',
+      }}
+    >
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left cursor-pointer"
+        className="w-full flex items-center gap-3 px-5 py-4 text-left cursor-pointer"
+        aria-expanded={open}
       >
-        <span className="text-sm font-semibold text-slate-800">{q}</span>
-        <ChevronDown
-          className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-200 ${
-            open ? 'rotate-180 text-indigo-500' : ''
-          }`}
-        />
+        <span className="flex-1 font-semibold text-slate-800 text-sm pr-2">{q}</span>
+        <span
+          className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center border transition-all duration-300"
+          style={{
+            transform: open ? 'rotate(45deg)' : 'rotate(0deg)',
+            borderColor: open ? '#6366F1' : '#E2E8F0',
+            color: open ? '#6366F1' : '#94A3B8',
+          }}
+        >
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+        </span>
       </button>
+
       <div
-        className={`overflow-hidden transition-[max-height] duration-200 ease-out ${
-          open ? 'max-h-96' : 'max-h-0'
-        }`}
+        ref={contentRef}
+        className="overflow-hidden transition-all duration-300 ease-in-out"
+        style={{ maxHeight: open ? `${contentRef.current?.scrollHeight ?? 400}px` : '0px' }}
       >
-        <p className="px-5 pb-5 text-sm text-slate-600 leading-relaxed">{a}</p>
+        <p className="px-5 pb-4 text-slate-500 text-sm leading-relaxed">{a}</p>
       </div>
     </div>
   );

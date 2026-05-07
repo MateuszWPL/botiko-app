@@ -7,6 +7,7 @@ const LINKS = {
     { label: 'Branże', href: '/#branze' },
     { label: 'Cennik', href: '/#cennik' },
     { label: 'Demo', href: '/#demo' },
+    { label: 'WordPress', href: '/#faq' },
   ],
   Firma: [
     { label: 'Blog', href: '/blog' },

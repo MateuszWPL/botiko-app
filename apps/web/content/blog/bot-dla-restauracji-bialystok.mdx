@@ -1,0 +1,515 @@
+---
+title: "Bot dla restauracji w Białymstoku — jak nie tracić rezerwacji po 22:00 i w środku serwisu"
+excerpt: "Bot AI na stronę restauracji w Białymstoku: odpowiada o menu, alergeny, rezerwacje, catering i zamówienia 24/7. Działa gdy kelner nie podnosi telefonu. 99 zł/mies., 14 dni za darmo."
+date: "2026-06-09"
+category: "Branża: food"
+categorySlug: "food"
+tags:
+  - "bot dla restauracji Białystok"
+  - "chatbot restauracja Białystok"
+  - "rezerwacja online restauracja Białystok"
+  - "catering Białystok zapytania"
+author: "Mateusz W"
+authorTitle: "Założyciel Botiko.pl"
+image: "/blog/bot-dla-restauracji-bialystok-hero.jpg"
+---
+
+# Bot dla restauracji w Białymstoku — jak nie tracić rezerwacji po 22:00 i w środku serwisu
+
+**TL;DR:** W Białymstoku i okolicach działa ponad 400 lokali gastronomicznych — od restauracji premium przy Rynku Kościuszki (Kwestia Czasu, Regiment, Lipcowy Ogród) przez kebaby przy Malmeda i Św. Rocha, po kawiarnie, pizzerie i firmy cateringowe. Wszystkie mają ten sam strukturalny problem: telefon dzwoni w środku serwisu. Mail z pytaniem o catering leży do jutra. Gość z Łap pyta o stolik w niedzielę o 22:30, nikt nie odpowiada, idzie na Booking albo do konkurencji. Bot AI na stronie rozwiązuje to za 99 zł miesięcznie — odpowiada 24/7 o menu, alergenach, godzinach, cateringu, zbiera rezerwacje i leady na eventy.
+
+<Callout type="info">
+  Ten przewodnik jest pisany pod konkretny rynek gastronomiczny Białegostoku i Podlasia. Dane cenowe i dynamika gości dotyczą tego rynku — jeśli prowadzisz lokal w Trójmieście albo w Krakowie, niektóre liczby będą inne, ale mechanika problemu jest identyczna w każdym mieście powyżej 100 tys. mieszkańców.
+</Callout>
+
+## Dlaczego ten tekst powstał
+
+Bo w Białymstoku rozmawiałem z właścicielami pięciu różnych lokali — restauracji z kuchnią podlaską, pizzerii rodzinnej, kebabu przy Rynku, kawiarni na Lipowej i firmy cateringowej z Wysokiego Stoczka. Pięć różnych biznesów, jeden powtarzający się motyw w każdej rozmowie:
+
+*"Gość pisze wieczorem o stolik na weekend, a ja wtedy kończę serwis o 23:00, nie mam głowy do odpisywania. Rano odpisuję, ale już po sprawie — oni zarezerwowali gdzie indziej."*
+
+*"Dostaję kilkanaście maili o catering tygodniowo. Każdy wymaga indywidualnej wyceny. W niedzielę siadam do ich ogarnięcia i wysyłam odpowiedź we wtorek. Zostaje mi 60% tych zapytań — reszta w międzyczasie wzięła ofertę od konkurencji."*
+
+*"W piątek wieczorem telefon dzwoni co 5 minut. Nie odbieramy bo serwis trwa. Klient nie dostaje potwierdzenia rezerwacji, przychodzi — miejsca nie ma. Scena."*
+
+*"Ludzie pytają o alergeny przy każdej rezerwacji. Glutenem, laktoza, orzechy. Odpowiedzi mam standardowe, ale żeby je dać — ktoś musi wyłączyć się z serwisu na 3 minuty. Razy 10 rezerwacji dziennie — to jest pół godziny kelnera nie wykonującego swojej pracy."*
+
+Ten tekst pokazuje:
+
+- Jak wygląda rynek restauracyjny w Białymstoku w 2026 i gdzie są prawdziwe pieniądze do odzyskania
+- Czym jest bot AI dla restauracji — co robi, czego nie robi, granice odpowiedzialności
+- Scenariusze rozmów bota z gośćmi: rezerwacje, pytania o menu, alergeny, catering, eventy
+- Ile kosztuje, kiedy się zwraca, konkretne przykłady z lokali podlaskich
+- Jak bot współpracuje z systemami rezerwacyjnymi (SuperMenu, Resee, Gastrojob) i nie wchodzi im w paradę
+- Sezonowość gastronomii w Białymstoku (komunie, wesela, święta, ferie)
+- Konkretny checklist wdrożenia krok po kroku
+
+## Rynek gastronomiczny w Białymstoku w 2026 — co trzeba wiedzieć
+
+**Skala rynku:** W Białymstoku działa ponad 400 punktów gastronomicznych — od fine diningu przy Rynku Kościuszki po food trucki na Krywlanach i bary mleczne na Antoniuku. Polski rynek gastronomiczny rośnie — w 2023 liczba lokali wzrosła o 11% rok do roku, w 2024 o kolejne 4%, łącznie blisko 100 tys. lokali w Polsce. Białystok podąża tym trendem: nowe lokale otwierają się regularnie, zwłaszcza w centrum, na Bojarach i przy głównych arteriach wylotowych.
+
+**Mapa gastronomiczna Białegostoku:**
+
+- **Centrum i Rynek Kościuszki** — fine dining i restauracje dla klienta biznesowego. Kwestia Czasu (Akademicka 26A, autorska kuchnia podlasko-słowiańska), Regiment (Traugutta 3, butikowy hotelowy fine dining), Sztuka Mięsa (steki ze sezonowanego mięsa), Sphinx (Rynek Kościuszki). Kwestia Czasu stawia na lokalność z menu jak burger z sarny i pierogi z perliczką, Regiment działa w zabytkowej willi z 1884 roku.
+- **Pasaż Rynek Kościuszki – Lipowa – Sienkiewicza** — popularne kebaby i fast casual. Wood Fire Kebab, Turkish Antalya (Icchoka Malmeda 11), Good Boy Kraft Kebab & Beer. Duży ruch w weekendy i wieczory.
+- **Okolice dworca i Galerii Białej** — gastronomia turystyczna i szybka.
+- **Osiedle Antoniuk, Bojary, Wysoki Stoczek** — pizzerie osiedlowe, bary mleczne, lokalne restauracje z dowozem.
+- **42 Pułku Piechoty i okoliczne osiedla** — Lipcowy Ogród (tatar wołowy znany w całej Polsce, catering) — to segment restauracji-cum-catering.
+- **Sushi barów** — Nova Sushi (Św. Rocha), Sakura Sushi, kilka innych — osobny segment, głównie dowozowy.
+- **Catering (osobny biznes):** Konkurencja Catering (Wrocławska 51), Lipcowy Ogród, Bistro Pieprz i Wanilia, Lech Gościnny Dom, wielu drobniejszych. Konkurencja Catering działa w Białymstoku przy ulicy Wrocławskiej 51 i koncentruje się na kompleksowej organizacji wydarzeń i przyjęć okolicznościowych.
+
+**Kluczowa obserwacja:** segmenty mają różne problemy. Fine dining walczy o rezerwacje wieczorne i eventy. Kebaby i pizzerie — o szybkie zamówienia na wynos. Catering — o eventy, wesela, chrzciny, 18-stki. Bot konfigurujesz pod swój segment — nie ma jednego "bota dla restauracji", są trzy różne zastosowania.
+
+**Średni rachunek klienta w Polsce:** w styczniu 2023 Polacy zostawiali w restauracjach, kawiarniach czy foodtruckach średnio 54,6 zł, w styczniu 2024 już 59 zł, a w 2026 wartość dalej rośnie. W Białymstoku rachunki są nieco niższe niż średnia krajowa (siła nabywcza Podlasia) — przyjmij 45–70 zł dla lunchu biznesowego i 80–150 zł dla kolacji z parą gości.
+
+## Trzy problemy gastronomii w Białymstoku — i jak bot rozwiązuje każdy
+
+### Problem 1: Nieodebrany telefon w środku serwisu = nieprzyjęta rezerwacja
+
+Twój lokal jest pełny. Piątek, 20:15, drugi rzut gości. Telefon dzwoni. Kelnerka ma tacę. Kucharz jest przy okapie. Menadżer rozlicza gościa na kasie. **Telefon dzwoni 6 razy i rozłącza się.**
+
+Kto dzwonił? Najczęściej:
+
+- Gość chcący zarezerwować stolik na sobotę
+- Klient chcący zamówić jedzenie na wynos
+- Firma pytająca o catering na konferencję w przyszły wtorek
+- Para negocjująca wesele w lipcu
+- Ktoś kto chce potwierdzić otwarcie w niedzielę
+
+**Każde z tych zapytań reprezentuje inne pieniądze.** Stolik dla 4 w sobotę = 300–500 zł obrotu. Zamówienie na wynos w piątek = 100–200 zł. Catering na 30 osób = 3000–6000 zł. Wesele 100 osób = 30 000–80 000 zł.
+
+**Matematyka strat:** jeśli tracisz 5 telefonów dziennie w szczycie serwisu, i tylko 2 z nich byłyby konwertowalne, i średnia wartość to 200 zł — to **2 × 200 zł × 25 dni = 10 000 zł miesięcznie potencjału**, który leci do kosza.
+
+**Bot na stronie** przejmuje te zapytania które i tak w większości trafiają najpierw na stronę (gość szuka menu, potem dzwoni). Jeśli na stronie mają bot gotowego do odpowiedzi i zbierania rezerwacji — dzwonić nie muszą.
+
+### Problem 2: Pytania o alergeny i specjalne diety spowalniają obsługę
+
+Pokolenie 25–40 lat to dziś pokolenie "świadomych konsumentów". Jedno z dwóch pytań przy rezerwacji brzmi:
+
+- *"Czy macie coś bez glutenu?"*
+- *"Córka jest wegetarianką, czy znajdzie coś poza frytkami?"*
+- *"Mam alergię na orzechy, czy kuchnia jest bezpieczna?"*
+- *"Robicie wersję laktozo-free?"*
+- *"Dieta keto — co polecacie?"*
+
+Każde z tych pytań zabiera kelnerowi **2–4 minuty** — musi przejść do menadżera, sprawdzić w menu, zapytać kuchni. Razy 15 rezerwacji dziennie z pytaniami = **30–60 minut dziennie kelnera nie obsługującego gości**.
+
+**Bot** odpowie na te pytania w 2 sekundy, bo masz w bazie wiedzy wpisane:
+
+- Pozycje bezglutenowe (z dopłatą lub bez)
+- Pozycje wegetariańskie i wegańskie
+- Sekcja "alergeny" — które dania zawierają orzechy, sezam, skorupiaki
+- Procedura kuchni (np. *"kucharz informowany jest o alergiach przy przyjmowaniu zamówienia, ale kuchnia nie jest laboratoryjnie wolna od glutenu — przy celiakii prosimy o wcześniejszą informację"*)
+
+### Problem 3: Catering — email odpowiadany we wtorek po weekendzie jest zimny
+
+To jest największa strata finansowa dla restauracji prowadzących catering. Zapytanie cateringowe ma okno decyzyjne **24–48 godzin** — jeśli nie odpowiesz w tym czasie, klient weźmie ofertę od konkurencji.
+
+Typowe zapytanie: *"Dzień dobry, organizujemy komunię córki 15 maja na 30 osób, interesuje nas catering finger food + ciepły bufet. Prosimy o wycenę."*
+
+**Bez bota:**
+- Zapytanie dochodzi przez formularz na stronie lub email
+- Właściciel czyta w poniedziałek rano
+- Zaczyna przygotowywać wycenę — potrzebuje danych, których zapytanie nie zawiera (ilość dzieci vs dorosłych, preferencje kuchni, budżet, godzina, adres dostawy)
+- Odpisuje listą pytań
+- Klient odpowiada za 2 dni
+- Odpowiedź z wyceną wysyła we wtorek wieczorem
+- Klient już ma 2 inne oferty, wybiera którąkolwiek
+
+**Z botem:**
+- Zapytanie dochodzi przez czat na stronie
+- Bot od razu prowadzi klienta przez strukturyzowaną rozmowę: *"Super, pogratulujmy! Żeby przygotować precyzyjną wycenę, podaj kilka detali: (1) dokładna data i godzina, (2) liczba gości — dorośli i dzieci, (3) gdzie impreza się odbywa, (4) preferujesz finger food czy ciepły bufet czy oba, (5) czy są ograniczenia dietetyczne w gronie."*
+- Klient odpowiada w trakcie tej samej rozmowy
+- Bot zbiera dane + email kontaktowy + numer telefonu
+- Właściciel rano ma **w dashboardzie gotowy brief** cateringu — wszystko co potrzebuje do wyceny
+- Przygotowuje ofertę w ciągu godziny, wysyła tego samego dnia
+- Klient ma pierwszą ofertę, jeszcze gorącą
+
+**Konwersja leadów cateringowych w Białymstoku** przy szybkiej odpowiedzi (do 6h) vs wolnej (powyżej 24h) to różnica **3-4x**. Bot poprawia czas reakcji na cateringu dramatycznie.
+
+## Czym jest bot AI dla restauracji — co robi konkretnie
+
+**Bot to pole czatu na Twojej stronie** (małe okienko w prawym dolnym rogu). Odpowiada gościom 24 godziny na dobę, nigdy nie śpi, nigdy nie jest "w serwisie", nigdy nie jest w weekend.
+
+### Co bot robi w restauracji
+
+- **Odpowiada na pytania o menu** — "Co polecacie?", "Czy macie pierogi?", "Jest sezonowe menu?"
+- **Odpowiada o alergeny i diety** — dania bezglutenowe, wegetariańskie, wegańskie, laktozo-free, keto, FODMAP
+- **Odpowiada o godziny otwarcia** — w tym święta, niedziele handlowe, wydarzenia specjalne
+- **Odpowiada o lokalizację i parking** — "Jak trafić?", "Czy jest parking?", "Jaka linia dojeżdża?"
+- **Podaje orientacyjne ceny** — "Ile za kolację dla dwojga?", "Średni rachunek?", "Zestaw dnia?"
+- **Zbiera rezerwacje** — imię, telefon, data, godzina, liczba osób, specjalne życzenia (stolik w ogrodzie, niski stolik dla wózka, alergie)
+- **Obsługuje catering** — prowadzi przez strukturyzowaną rozmowę zbierającą wszystkie dane do wyceny
+- **Kwalifikuje leady weselne/eventowe** — zbiera datę, budżet orientacyjny, liczbę gości, lokalizację
+- **Informuje o promocjach** — "Lunch dnia 35 zł", "Happy hours 17–19", "Menu weekendowe"
+- **Odsyła do systemów rezerwacyjnych** — jeśli masz Resee / SuperMenu / Rezervin / Tablegest — bot podaje link
+- **Obsługuje pytania o wynos i dowóz** — "Macie dowóz?", "Jaki zakres dostawy?", "Czy jestem w strefie?"
+
+### Czego bot NIE robi w restauracji
+
+- **Nie przetwarza płatności** — płacimy w lokalu lub przy dostawie, nie przez bota
+- **Nie prowadzi fizycznie rezerwacji w systemie** — zbiera zapytanie, menadżer wpisuje do Rezervin/SuperMenu ręcznie (chyba że masz zewnętrzny widget rezerwacyjny — wtedy bot go podaje)
+- **Nie zamyka oferty cateringowej** — zbiera brief, właściciel wysyła finalną wycenę
+- **Nie obsługuje reklamacji** — "jedzenie było zimne" → bot eskaluje do menadżera natychmiast, nie próbuje "zarządzać kryzysem"
+- **Nie gwarantuje dostępności stolika na żywo** — nie jest podłączony do Twojego systemu rezerwacji, więc mówi *"zapisuję zapytanie, potwierdzimy dostępność w ciągu godziny SMS-em"*
+
+<Callout type="warning">
+  **Ważne rozróżnienie:** bot dla restauracji to **NIE jest zastępstwo dla Resee, SuperMenu, Rezervin czy Tablegest**. Te systemy zarządzają kalendarzem stolików i wysyłają przypomnienia. Bot obsługuje **obsługę pytań PRZED rezerwacją** i **obsługuje eventy/catering** — obszary w których systemy rezerwacyjne nic nie mówią. Bot + system rezerwacyjny działają razem, nie przeciwko sobie.
+</Callout>
+
+## Scenariusze rozmów w lokalu białostockim
+
+Cztery typy rozmów, które realnie widzi bot na stronie restauracji:
+
+### Scenariusz A: Piątek 21:47, para chce stolik na sobotę
+
+> **Gość:** Cześć, szukamy stolika na sobotę wieczór, we dwójkę, godzina 20:00. Jest u Was miejsce?
+>
+> **Bot:** Cześć! Sobota 20:00 dla 2 osób — zapiszę zapytanie. Sprawdzę dostępność i potwierdzimy SMS-em w ciągu godziny. Zostaw proszę imię i numer telefonu.
+>
+> Mały tip: sobota wieczór to u nas szczyt — jeśli godzina 20:00 okaże się zajęta, mogę zaproponować 19:00 lub 21:30. W sobotę polecam też nasze sezonowe menu degustacyjne (5 dań za 189 zł/os) — jeśli jesteście na coś wyjątkowego, napisz, zarezerwujemy miejsce w sali Planty.
+>
+> **Gość:** Imię Anna, telefon 600 XXX XXX. Możemy 19:00 zamiast 20:00 jak będzie problem. Sala Planty brzmi dobrze, nigdy nie byliśmy.
+>
+> **Bot:** Dzięki Anno, zapisane. Sala Planty to 12 stolików, klimatyczna, elegancka, idealnie na randkę lub rodzinny obiad. Potwierdzenie SMS dostaniesz w ciągu godziny z konkretną godziną. W razie pytań o menu lub rocznicę/specjalne okazje — daj znać w odpowiedzi SMS, przygotujemy coś ekstra.
+
+**Co właściciel widzi w dashboardzie:**
+- Lead: Anna, 600 XXX XXX, sobota 20:00 (alternatywa 19:00), 2 osoby, zainteresowana menu degustacyjnym, sala Planty
+- Status: do potwierdzenia
+
+Menadżer ma 10 minut na sprawdzenie kalendarza, wysyła SMS, Anna potwierdza, przychodzi w sobotę, wydaje 400 zł na menu degustacyjne dla dwojga. **Bez bota — Anna o 21:47 w piątek nie dostała odpowiedzi, w sobotę rano sprawdziła inną restaurację, zarezerwowała tam, Twój stolik pustował.**
+
+### Scenariusz B: Sobota, zapytanie o catering na komunię
+
+> **Klient:** Dzień dobry, organizujemy komunię syna, 24 maja, na ok. 35 osób, pół dzieci pół dorośli. Interesuje mnie wasz catering z dostawą do domu, ogród w Choroszczy. Jak to działa?
+>
+> **Bot:** Cześć! Komunia 24 maja, 35 osób, Choroszcz — zapisuję. Żebyśmy przygotowali precyzyjną ofertę, podaj proszę kilka detali:
+>
+> 1. **Godzina wydarzenia** (kiedy ma być gotowe jedzenie na miejscu)
+> 2. **Liczba dorosłych vs dzieci** (dzieci 3–12 lat liczymy w specjalnych pakietach tańszych)
+> 3. **Styl cateringu** — ciepły bufet obiadowy (zupa + danie główne + deser), zimny bufet (finger food, przekąski, sałatki), czy oba?
+> 4. **Budżet orientacyjny** — pomoże dobrać menu (zakres od 70 zł/os do 180 zł/os w zależności od opcji)
+> 5. **Ograniczenia dietetyczne** — wegetarianie, alergie, dieta dziecięca?
+> 6. **Obsługa** — sami wydajecie czy nasz kelner? Z kelnerem +200 zł/3h
+>
+> Po odpowiedzi przygotujemy ofertę i wyślemy mailem w ciągu 24h. Powiedz też proszę imię, email i telefon.
+>
+> **Klient:** OK. Godzina 13:00, 20 dorosłych 15 dzieci w wieku 7–11, ciepły bufet + finger food, budżet do 100 zł/os, bez alergii, sami wydamy. Piotr Kowalski, piotr.k@... , 509 XXX XXX.
+>
+> **Bot:** Dzięki Piotr, wszystko mam. 24 maja, 13:00, Choroszcz, 20 dorosłych + 15 dzieci, ciepły bufet + finger food, samodzielna obsługa, budżet ~100 zł/os (to pakiet średni — mamy dla niego klasyczny zestaw 3-daniowy + 5 pozycji finger food). Oferta w Twojej skrzynce do jutra 18:00. Jeśli wcześniej będziesz chciał o czymś porozmawiać — zadzwoń na nasz numer +48 85 XXX XX XX, oddzwonimy.
+
+**Wartość dla restauracji:** właściciel dostaje **kompletny brief** cateringu z wyceny. W bazie ma: datę, godzinę, lokalizację, 20+15 osób, styl cateringu, budżet, brak alergii, bez obsługi. Może przygotować ofertę w 30 minut, wysłać jeszcze w sobotę wieczorem. Konkurencja, która dostała analogiczny zapytanie przez formularz — odpowie we wtorek. **Klient bierze pierwszą rozsądną ofertę.**
+
+### Scenariusz C: Gość z alergią na gluten
+
+> **Gość:** Macie coś bezglutenowego na kolację? Mam celiakię, muszę być ostrożna.
+>
+> **Bot:** Mamy dedykowaną sekcję w menu oznaczoną BG (bez glutenu). Aktualne pozycje (listopad 2026):
+>
+> **Przystawki BG:**
+> - Tatar wołowy z kaparami, żółtkiem i sałatą (49 zł)
+> - Sałata cezar z kurczakiem grillowanym (bez grzanek), opcja z krewetkami (42 zł / 58 zł)
+>
+> **Dania główne BG:**
+> - Sandacz w sosie winnym, purée ziemniaczane, warzywa sezonowe (85 zł)
+> - Stek z polędwicy wołowej z sosem pieprzowym, ziemniaki zapiekane (125 zł)
+> - Risotto z borowikami (pakujemy w ryżu BG) (68 zł)
+>
+> **Desery BG:**
+> - Panna cotta z musem malinowym (28 zł)
+> - Sorbet cytrynowy z miętą (22 zł)
+>
+> **Ważna informacja o kuchni:** nasza kuchnia nie jest laboratoryjnie wolna od glutenu. Stosujemy osobne deski, noże i garnki dla dań BG, informujemy kuchnię przy zamówieniu. Przy celiakii zdecydowanie rekomenduję — jeśli rezerwujesz — zaznaczyć to przy rezerwacji, żeby kuchnia zorganizowała się z wyprzedzeniem.
+>
+> Chcesz zarezerwować stolik? Mogę zebrać zapytanie i zaznaczę alergię w notatce dla kuchni.
+
+**Wartość dla restauracji:** bot udzielił szczegółowej, konkretnej odpowiedzi — w niej jest **5 pozycji**, ceny, zastrzeżenie o kuchni, oferta rezerwacji. Kelner nie został przerwany w serwisie. Gość dostała więcej informacji niż zazwyczaj dostaje dzwoniąc (kelner wymienia 2–3 pozycje z pamięci), jest bardziej przekonana do lokalu. **To jest przewaga konkurencyjna** — większość restauracji w Białymstoku na pytanie o BG odpowie ogólnikowo "mamy parę rzeczy, przyjdźcie, porozmawiamy z kucharzem".
+
+### Scenariusz D: Zapytanie o imprezę (wesele, 18-stka) — kwalifikacja leada
+
+> **Klientka:** Czy robicie u siebie 18-tki? Planuje dla córki na wrzesień.
+>
+> **Bot:** Tak, organizujemy 18-stki — mamy do tego salę Barową na 40 osób i salę Antresolę na 60. Żebyśmy przygotowali dobrą ofertę, podaj proszę kilka detali:
+>
+> - **Data wrześniowa** — piątek / sobota czy inny dzień?
+> - **Liczba gości** (dokładnie lub orientacyjnie)
+> - **Typ imprezy** — oficjalna z zasiadaną kolacją, luźniejsza z bufetem i barem, w formie open bar?
+> - **Orientacyjny budżet** — pomoże dobrać propozycje menu i pakietu barowego
+> - **Godzina startu i końca**
+>
+> Nasze standardowe pakiety na 18-stki:
+> - **Pakiet Start** (120 zł/os) — kolacja 3-daniowa, lemoniady + woda, sala 6h
+> - **Pakiet Classic** (180 zł/os) — kolacja 3-daniowa + finger food, bar nielimitowany bezalkoholowy + 2 koktajle/os, sala 7h
+> - **Pakiet Premium** (260 zł/os) — kolacja 4-daniowa + stacja mięsna, open bar pełny, DJ możliwy za dopłatą, sala 9h
+>
+> Zostaw proszę imię i telefon — oddzwonimy z precyzyjną ofertą po Twoich odpowiedziach.
+>
+> **Klientka:** Anna Nowak, 512 XXX XXX. Córka chce 12 września, sobota, około 30 gości, raczej luźna impreza z barem, budżet 150–200 zł/os.
+>
+> **Bot:** Dzięki Anno. Zapisałam: 12.09 sobota, 30 gości, styl luźny z barem, budżet 150–200 zł/os. Proponujemy pakiet Classic (180 zł/os × 30 = 5400 zł, mieści się w budżecie). 12 września to weekend, dostępność potwierdzimy telefonicznie. Oddzwonimy jutro rano, żeby omówić detale i ewentualnie umówić wizytę na degustację menu (bezpłatna dla organizatorów imprez powyżej 20 osób).
+
+**Wartość dla restauracji:** Bot **zakwalifikował leada na 5400 zł imprezy** — zebrał wszystkie informacje potrzebne do rozmowy handlowej, zaproponował pakiet w budżecie, wspomniał o degustacji (konwertuje świetnie), zebrał dane kontaktowe. Właściciel dzwoni rano, nie od zera — już wie o kim rozmawia i z czym dzwoni.
+
+## Jak bot współpracuje z systemami rezerwacyjnymi
+
+**Ważna sprawa:** w Polsce dużo restauracji używa systemów do rezerwacji — SuperMenu, Resee, Rezervin, Tablegest, OpenTable (rzadziej). Te systemy obsługują **kalendarz stolików** — pokazują, które są wolne, przyjmują rezerwację, wysyłają SMS-y potwierdzające.
+
+**Bot NIE zastępuje tych systemów.** Bot **wspomaga** je w miejscach, w których one nie działają:
+
+<ComparisonTable
+  title="System rezerwacji (Resee/SuperMenu) vs Bot (Botiko) — kiedy który"
+  headers={["Sytuacja", "System rezerwacji", "Bot"]}
+  rows={[
+    ["Gość zna restaurację, chce konkretny slot", "✅ Tak", "❌ Nie"],
+    ["Gość pyta o menu przed rezerwacją", "❌ Nie", "✅ Tak"],
+    ["Gość pyta o alergeny i diety", "❌ Nie", "✅ Tak"],
+    ["Gość pyta o orientacyjne ceny", "❌ Nie", "✅ Tak"],
+    ["Gość pisze w niedzielę o 23:00 o catering", "❌ (catering to osobny obszar)", "✅ Tak"],
+    ["Gość pyta o parking i dojazd", "❌ Nie (max link do mapy)", "✅ Tak"],
+    ["Zarządzanie kalendarzem stolików", "✅ Tak", "❌ Nie"],
+    ["Przypomnienia SMS o rezerwacji", "✅ Tak", "❌ Nie"],
+    ["Obsługa pytań gości dla firmy cateringowej", "❌ Nie", "✅ Tak"],
+    ["Kwalifikacja leadów weselnych / eventowych", "❌ Nie", "✅ Tak"]
+  ]}
+/>
+
+**Praktyczny workflow bota + systemu rezerwacyjnego:**
+
+1. Gość wchodzi na stronę, chce zarezerwować stolik na sobotę
+2. Klika widget bota → pyta o alergie, menu, parking
+3. Bot odpowiada + na końcu rozmowy mówi: *"Chcesz sprawdzić dostępność? Tu zarezerwujesz od razu: [link do Resee / SuperMenu]"*
+4. Gość klika link → trafia na kalendarz systemu rezerwacyjnego → rezerwuje
+5. System wysyła potwierdzenie SMS
+
+**Dla pytań cateringowych / weselnych / eventowych** — bot obsługuje **całościowo**, bo systemy rezerwacyjne tego obszaru w ogóle nie tykają.
+
+## Sezonowość gastronomii w Białymstoku
+
+Białystok ma wyraźne cykle restauracyjne, które bot musi rozumieć:
+
+**Komunie (maj):** Szczyt zapytań cateringowych. Tysiące komunii w mieście, większość rodzin zamawia catering zamiast gotować. W dashboardzie bota: od marca aktualizuj sekcję "Pakiety komunijne" z gotowymi ofertami (pakiet 70 zł/os, 100 zł/os, 150 zł/os).
+
+**Wesela (czerwiec–wrzesień):** Lokale z salami na wesela dostają zapytania o wesela z 6–12 miesięcznym wyprzedzeniem. Bot zbiera leady na przyszły rok — proces kwalifikacji jest długi (kilkutygodniowy).
+
+**Święta (grudzień–styczeń):** Bożonarodzeniowe eventy firmowe (od listopada rosnące zapytania), catering na wigilie firmowe, imprezy sylwestrowe w restauracji. Update bota: **od października** dodaj sekcję "Menu świąteczne dla firm" i "Menu sylwestrowe".
+
+**Walentynki (luty):** Wieczorny szczyt rezerwacji, specjalne menu. Update bota tydzień przed: sekcja "Menu walentynkowe", dedykowane stoliki, dodatki (kwiaty, szampan).
+
+**Ferie zimowe (styczeń–luty):** Mniej rezerwacji dorosłych, więcej rodzinnych z dziećmi. Bot może promować menu rodzinne i sale dziecięce (jeśli masz).
+
+**Wakacje (lipiec–sierpień):** W Białymstoku paradoksalnie spadek ruchu (mieszkańcy wyjeżdżają). Za to **ruch turystyczny z Polski do Supraśla/Białowieży** przejeżdżający przez miasto. Bot powinien podpowiadać *"mamy otwarte ogródki, duży parking, dojazd z AG 685 "15 minut"* — targetuje turystę.
+
+**Back-to-school (wrzesień):** Wzrost rezerwacji biznesowych, eventów firmowych po wakacjach.
+
+**Praktyka:** raz w miesiącu 5 minut — wchodzisz do dashboardu, podmieniasz sekcję "Aktualne oferty i menu sezonowe". Bot ma aktualne informacje.
+
+## Ile kosztuje bot i kiedy się zwraca — restauracja
+
+**Botiko STARTER: 99 zł/mies.** Bez umowy, 14 dni za darmo.
+
+### Matematyka zwrotu — przykłady z białostockich lokali
+
+<ROICalculator
+  defaults={{
+    clientsPerMonth: 5,
+    averageVisitValue: 120
+  }}
+  industry="food"
+  city="Białystok"
+/>
+
+**Scenariusze dla różnych typów lokali gastronomicznych:**
+
+| Typ lokalu | Średnia transakcja | Dodatkowych klientów/mies. przez bota | Przychód | Koszt bota | Zysk netto |
+|---|---|---|---|---|---|
+| Pizzeria osiedlowa (dowóz) | 80 zł | 10 | 800 zł | 99 zł | **+701 zł** |
+| Kebab / fast casual | 45 zł | 15 | 675 zł | 99 zł | **+576 zł** |
+| Kawiarnia / bistro lunch | 55 zł | 10 | 550 zł | 99 zł | **+451 zł** |
+| Restauracja średniego segmentu | 140 zł | 7 | 980 zł | 99 zł | **+881 zł** |
+| Fine dining / steki | 220 zł | 5 | 1100 zł | 99 zł | **+1001 zł** |
+| Sushi bar | 110 zł | 8 | 880 zł | 99 zł | **+781 zł** |
+| Firma cateringowa (1 event/mies) | 3500 zł | 1 | 3500 zł | 99 zł | **+3401 zł** |
+| Lokal z eventami (1 wesele/mies) | 30000 zł | 1 | 30000 zł | 99 zł | **+29901 zł** |
+
+**Kluczowa liczba dla restauracji:** jeśli bot odzyska **1 stolik dla 4 osób miesięcznie** w segmencie średnim, już się zwraca. W rzeczywistości odzyska 5–15 stolików miesięcznie, bo to są wszystkie te zapytania z 22:30 w niedziele, alergie, pytania o parking. **Dla firmy cateringowej — jeden lepiej obsłużony event rocznie pokrywa roczny abonament.**
+
+<CTABlock
+  title="Uruchom Botiko w swojej restauracji — 14 dni za darmo"
+  description="Bez karty kredytowej. Bez umowy. Konfiguracja dla restauracji zajmuje 15–20 minut."
+  cta="Wypróbuj za darmo"
+  href="/dla/restauracja"
+/>
+
+## Wdrożenie krok po kroku — 15–20 minut
+
+Zakładam, że masz stronę WWW restauracji (nawet prostą). Jeśli nie masz — zacznij od strony.
+
+### Krok 1: Rejestracja (2 min)
+botiko.pl → "Zacznij za darmo" → email, hasło → 14 dni triala bez karty.
+
+### Krok 2: Wybór branży (30 s)
+W onboardingu wybierasz "Restauracja / gastronomia". Bot dostaje szablon branżowy — ton ciepły, uprzejmy, przyjazny, domyślne pytania startowe ("Cześć! Rezerwacja? Pytanie o menu? W czym mogę pomóc?").
+
+### Krok 3: Baza wiedzy (12–15 min)
+Najważniejsza część. Wklej:
+
+- **Menu podstawowe** — najważniejsze pozycje z cenami. Nie musisz wklejać całego menu; wklej **highlighty**: 5–10 przystawek, 8–12 dań głównych, 5 deserów, 3 pozycje wegetariańskie/wegańskie, sekcja BG.
+
+- **Menu lunchowe / zestaw dnia** — jeśli masz (np. 39 zł poniedziałek, 42 zł wtorek itd.)
+
+- **Godziny otwarcia** — "Pon–czw 12:00–22:00, pt–sob 12:00–24:00, niedziela 13:00–22:00. W święta (Wszystkich Świętych, Boże Narodzenie, Wielkanoc) zamknięte — sprawdzaj aktualne informacje na stronie."
+
+- **Lokalizacja** — adres, dzielnica, punkty orientacyjne, parking, komunikacja miejska. Przykład: *"Ul. Akademicka 26A, centrum Białegostoku. Parking dla gości przed lokalem (5 miejsc) + parking płatny naprzeciwko (Plac Dominikański). Autobus 5, 14, 103 przystanek Akademicka."*
+
+- **Sekcje specjalne (jeśli masz):**
+  - Catering: zakres usług, pakiety (finger food, ciepły bufet), minimalna liczba osób
+  - Eventy: sale na wesela, 18-stki, chrzciny, imprezy firmowe — pojemność sal, cennik pakietów
+  - Sale prywatne: liczba, pojemność, minimum zamówieniowe
+  - Ogródek letni: kiedy otwarty, pojemność
+  - Karty prezentowe: czy wydajecie, gdzie kupić, do kiedy ważne
+
+- **Alergeny i diety** — w bazie wiedzy WYRAŹNIE zaznaczone:
+  - Pozycje bezglutenowe (z numerami, nazwami)
+  - Wegetariańskie/wegańskie
+  - Bez laktozy
+  - Opcje keto / FODMAP (jeśli dostępne)
+  - Zastrzeżenia kuchni (np. *"kuchnia nie jest laboratoryjnie BG, przy celiakii prosimy o wcześniejszą informację"*)
+
+- **Link do systemu rezerwacyjnego** (Resee/SuperMenu/Rezervin) — bot będzie go podawał
+
+- **Kontakt** — numer, email, godziny odbierania (np. "Telefon odbieramy w godzinach serwisu. Maile czytamy w godzinach pracy kuchni.")
+
+- **FAQ typowe dla restauracji** — 10–15 pytań. Przykładowe:
+  - *"Czy można przyjść z psem?"*
+  - *"Czy jest strefa dla niepalących / dla palących?"*
+  - *"Akceptujecie BLIK / karty / gotówkę?"*
+  - *"Czy macie krzesełka dla dzieci?"*
+  - *"Fotele dla wózków inwalidzkich?"*
+  - *"Czy można przyjść z własnym tortem urodzinowym? Ile opłata?"*
+  - *"Ile gości wchodzi na salę prywatną?"*
+  - *"Minimalne zamówienie dowozu?"*
+  - *"Strefa dostawy?"*
+
+### Krok 4: Konfiguracja widgetu (1 min)
+Kolor (dopasowany do strony restauracji — ciepły, nie jaskrawy), pozycja, imię widgetu (np. "Rezerwacje" lub imię kelnera gdy chcesz spersonalizować — np. "Marta"), pierwsza wiadomość ("Cześć! W czym mogę pomóc? Rezerwacja, pytanie o menu, alergeny, catering?").
+
+### Krok 5: Wklejenie kodu na stronę (5 min)
+Kod JavaScript w stopce strony (przed `</body>`). **WordPress (rekomendowane):** instalujesz bezpłatną wtyczkę WPCode i wklejasz snippet — 5 minut, bez dotykania motywu. Na innej stronie WWW — kopiujesz kod ręcznie. Instrukcja krok po kroku w dashboardzie Botiko.
+
+### Krok 6: Test (3 min)
+Otwórz stronę, kliknij widget. Zadaj 5 pytań: *"Jakie macie godziny?"*, *"Mam alergię na orzechy, co polecacie?"*, *"Chcę zarezerwować stolik na piątek 20:00 we dwójkę"*, *"Robicie catering na komunię?"*, *"Gdzie jesteście?"*. Sprawdź, czy bot odpowiada sensownie.
+
+### Krok 7: Pierwszy tydzień monitoringu
+Raz dziennie zaglądaj do dashboardu. Czytaj rozmowy gości. Jeśli bot odpowiada błędnie lub niepełnie — uzupełnij bazę wiedzy. Po tygodniu bot jest w miarę samodzielny.
+
+## Typowe błędy przy wdrożeniu w restauracji
+
+### Błąd 1: Baza wiedzy jako skopiowane całe menu
+Właściciel wkleja 4 strony menu z cenami. Bot dostaje pytanie *"co polecacie dla 2 osób"* i zwraca całą listę 40 pozycji. Gość jest zagubiony.
+
+**Rozwiązanie:** w bazie wiedzy wpisz **rekomendacje** (*"Nasze bestsellery: tatar wołowy, sandacz z winem, polędwica z pieprzem. Dla 2 osób polecamy menu degustacyjne 189 zł lub kolację z przystawką + dwoma daniami głównymi + deserem (~200–280 zł)"*). Bot wtedy doradza jak kelner, a nie wyrzuca cennik.
+
+### Błąd 2: Nieaktualne menu sezonowe
+Menu zmienia się co 3 miesiące, ale baza wiedzy bota dalej zawiera pozycje z zimy w sierpniu.
+
+**Rozwiązanie:** w kalendarzu zespołu: **wpis co kwartał "update bota"**. 10 minut. Nowe menu sezonowe → zamiana w bazie wiedzy.
+
+### Błąd 3: Brak obsługi imprez w bazie wiedzy
+Restauracja ma salę na 60 osób, robi wesela — ale w bazie wiedzy nic o tym nie napisane. Bot dostaje pytanie o wesele, mówi *"niestety nie mamy takiej informacji"*. Lead traci się.
+
+**Rozwiązanie:** dedykowana sekcja w bazie wiedzy "Eventy i imprezy". Minimum: sale (nazwy, pojemność), pakiety ze średnimi cenami, szablon rozmowy kwalifikacyjnej (data, liczba gości, typ imprezy, budżet).
+
+### Błąd 4: Nieobsłużone reklamacje
+Gość pisze "jedzenie było zimne i kelnerka niegrzeczna". Bot próbuje załagodzić, odpowiada sugesty, eskaluje nie natychmiast.
+
+**Rozwiązanie:** w bazie wiedzy **bardzo wyraźnie**: *"Gdy gość zgłasza reklamację, problem z jedzeniem, niezadowolenie — NIE argumentuj, NIE proponuj rozwiązań. Natychmiast odpowiedz: 'Bardzo mi przykro. Proszę zostaw numer — skontaktuje się z Tobą menadżer osobiście w ciągu godziny' i zbierz lead z kategorią 'RECLAMATION'."* Menadżer dzwoni natychmiast — to 10× lepsze niż bot próbujący zarządzać kryzysem.
+
+### Błąd 5: Brak klauzuli RODO
+Bot zbiera imię, numer telefonu, email gości — ale polityka prywatności restauracji nic o tym nie mówi.
+
+**Rozwiązanie:** Botiko dostarcza gotowy wzór klauzuli do wklejenia. Wklej. To zajmuje 2 minuty, a chroni Cię przed reklamacją RODO od gościa.
+
+## Lokalna specyfika Białegostoku — czego NIE napisze ogólnopolski poradnik
+
+**Kuchnia podlaska jako USP:** W Białymstoku gość pyta o **kartacze, babkę ziemniaczaną, kiszkę ziemniaczaną, sękacz**. Jeśli je masz — baza wiedzy musi o tym jasno mówić. Bot powinien umieć wyjaśnić: *"Kartacze to podlaski specjał — duże pierogi ziemniaczane z mięsem, polane skwarkami i cebulką. U nas 2 szt. (porcja) = 28 zł. Polecamy szczególnie w chłodne dni."*
+
+**Turyści jadący do Supraśla/Białowieży:** duży ruch weekendowy turystów z Warszawy i Trójmiasta przejeżdżających przez Białystok w drodze na Podlasie. Bot powinien obsługiwać: *"Jestem z Warszawy, jadę do Białowieży, czy mogę wpaść na obiad?"* → bot mówi o parkingu, średnim rachunku, czasie posiłku, i ewentualnie rezerwuje stolik jeśli to piątek/sobota.
+
+**Wesela poza sezonem:** w Podlaskiem wesela robi się głównie w maju–wrześniu, ale rośnie trend **zimowych wesel** (grudzień, styczeń — w cenie). Bot powinien być świadomy promocji zimowych (niższe stawki Q1 i Q4).
+
+**Osiedlowe kebaby i pizzerie:** mają specyficzny rynek — 70% zamówień to wynos/dowóz, nie stolik. Bot dla takiego lokalu powinien być skonfigurowany inaczej: **pierwsze pytanie = "na wynos czy dowóz?"**, szybka kwalifikacja strefy dostawy, podanie orientacyjnego czasu, link do zamówień.
+
+**Godziny tradycyjne niedzielne:** w Białymstoku (miasto religijne) wiele lokali jest zamkniętych lub ma skrócone godziny w niedziele. Bot musi to jasno mówić, bo turyści z dużych miast zakładają że wszystko jest otwarte.
+
+## FAQ — bot dla restauracji
+
+<FAQ
+  items={[
+    {
+      q: "Czy bot zastąpi kelnera lub hostessę?",
+      a: "Nie. Bot obsługuje ruch PRZED wizytą — zapytania z internetu, telefon e-mailowy, catering, eventy. Kelner i hostessa dalej obsługują gości na miejscu. Bot to dodatkowy kanał, nie zastępstwo. W lokalu średniej wielkości bot redukuje obciążenie kelnera telefonami o 50–70% w godzinach serwisu."
+    },
+    {
+      q: "Czy mogę zintegrować bota z Resee / SuperMenu / Rezervin?",
+      a: "Bezpośredniej integracji kalendarzowej obecnie nie ma — bot nie widzi wolnych stolików w Twoim systemie. Ale bot **podaje link do Twojego systemu rezerwacyjnego** gdy gość chce rezerwować. To działa w praktyce dobrze. Bot obsługuje wszystko PRZED rezerwacją (pytania, menu, alergeny, catering), system rezerwacyjny obsługuje samą rezerwację."
+    },
+    {
+      q: "Czy bot może przetwarzać zamówienia na dowóz?",
+      a: "Obecnie bot zbiera zapytania o dowóz (adres, zamówienie, preferencje) i przekazuje je do Ciebie — Ty ręcznie potwierdzasz, rozliczasz, wysyłasz. Pełna integracja z systemami typu Pyszne.pl / UberEats / Glovo jest w roadmapie. Dla małych lokali gdzie zamówienia robicie sami telefonicznie — bot działa jako 'kanał zapytań', oszczędza telefony."
+    },
+    {
+      q: "Co jeśli bot odpowie źle na pytanie o alergeny? Mogę mieć problemy prawne?",
+      a: "Bot odpowiada WYŁĄCZNIE na podstawie bazy wiedzy którą Ty wprowadzasz. Jeśli dokładnie wpisałeś 'lasagne zawiera: mąkę, jaja, laktozę' — bot nie wymyśli inaczej. Dodatkowe zabezpieczenie: w bazie wiedzy wpisujesz zastrzeżenie *'kuchnia nie jest laboratoryjnie wolna od alergenów, przy poważnych alergiach prosimy o informację przy rezerwacji'* — bot zawsze to dodaje. Dodatkowo: wszystkie rozmowy są zapisane w dashboardzie, więc masz ślad czego bot odpowiedział w razie problemu."
+    },
+    {
+      q: "Mam restaurację z kuchnią podlaską — czy bot rozumie specjały lokalne?",
+      a: "Tak, jeśli wpiszesz je w bazie wiedzy. Bot GPT-4o mini rozumie kontekst kulinarny — wie co to kartacze, babka ziemniaczana, sękacz — ale **odpowiada zgodnie z Twoimi informacjami**, nie z wiedzy ogólnej. Wpisz do bazy: 'Kartacze: duże pierogi ziemniaczane z mięsem mielonym, okraszone skwarkami, porcja 2 szt. 28 zł.' — bot powtórzy to dokładnie."
+    },
+    {
+      q: "Czy bot będzie dobrze obsługiwać klientów wielojęzycznych (turyści)?",
+      a: "Bot natywnie działa po polsku, ale rozumie też angielski i rosyjski (GPT-4o mini to wielojęzyczny model). Jeśli turysta napisze po angielsku 'Do you have vegetarian options?' — bot odpowie po angielsku. Dla Białegostoku to jest istotne bo ruch turystyczny z Niemiec, Rosji, Białorusi istnieje. Informacje w bazie wiedzy możesz wpisać po polsku — bot przetłumaczy na język gościa."
+    },
+    {
+      q: "Ile osób obsługi potrzebuję do bota?",
+      a: "Zero dodatkowych. Bot działa sam. Twoja praca ogranicza się do: **10 minut raz w tygodniu** na aktualizację bazy wiedzy (menu sezonowe, promocje) i **5–15 minut dziennie** na oddzwanianie do zebranych leadów (rezerwacje do potwierdzenia, zapytania cateringowe). Osoba która obsługiwała leady email — może mieć bota, osoba która odbierała telefony — ma o 50% mniej telefonów."
+    },
+    {
+      q: "Czy bot działa na Messengerze Facebook lub Instagramie?",
+      a: "Obecnie nie — bot działa wyłącznie na Twojej stronie WWW. Integracja z Messenger i Instagram Direct jest w roadmapie 2026. Jeśli chcesz bota głównie do Messengera — poczekaj. Jeśli chcesz bota na stronie — jest gotowy."
+    },
+    {
+      q: "Mam firmę cateringową bez lokalu — czy bot ma sens dla mnie?",
+      a: "Tak, wręcz BARDZIEJ niż dla restauracji z lokalem. Firma cateringowa żyje z leadów (zapytań o event). Bot zbiera strukturyzowane briefy — data, liczba gości, styl, budżet — których formularz kontaktowy nie zbiera. Zwrot z abonamentu przy 1 dodatkowym evencie miesięcznie (typowa wartość 3000–10000 zł) to 30–100× koszt bota."
+    },
+    {
+      q: "Jak długo trwa wdrożenie bota w restauracji?",
+      a: "Pierwsza konfiguracja — 45–60 minut (wliczając wypełnienie bazy wiedzy menu + FAQ + wklejenie kodu). Kolejne 3–5 dni to 'okres szlifowania' — codziennie czytasz rozmowy bota i dodajesz brakujące informacje. Po tygodniu bot jest samodzielny. Dla restauracji z prostszym menu (kebab, pizzeria) — wdrożenie to 30 minut."
+    }
+  ]}
+/>
+
+## Podsumowanie
+
+W Białymstoku działa ponad 400 lokali gastronomicznych, a największą konkurencję mają w **czasie reakcji na zapytania** — gość pyta w piątek o 22:00, w niedzielę o 23:30, w środku weselnego serwisu. Kto odpowie pierwszy, bierze rezerwację. Kto odpowie we wtorek — traci gościa.
+
+Bot AI za 99 zł miesięcznie rozwiązuje to fundamentalnie: zapytania dochodzą 24/7, są od razu obsługiwane, menu, alergeny, godziny, rezerwacje, catering, eventy — wszystko ogarnięte bez potrzeby wyłączania kelnera z serwisu.
+
+Zwraca się przy **jednej rezerwacji dla 4 osób miesięcznie** (segment średni) lub **jednym zamówieniu cateringowym rocznie** (firma cateringowa). To liczba trywialna — w praktyce bot pozyskuje 5–15 dodatkowych rezerwacji/zleceń miesięcznie, w tym te najcenniejsze (weekendy, wieczory, wesele).
+
+Jeśli prowadzisz restaurację, pizzerię, kebab, catering albo lokal eventowy w Białymstoku, Choroszczy, Wasilkowie, Supraślu, Łapach lub gdziekolwiek w Podlaskiem — bot jest dla Ciebie. 14 dni triala jest za darmo, sprawdzenie kosztuje 30 minut pracy.
+
+<CTABlock
+  title="Uruchom bota w swojej restauracji — 14 dni za darmo"
+  description="Bez karty kredytowej. Bez umowy. Konfiguracja 15–20 minut. Wsparcie po polsku dla lokali z Białegostoku."
+  cta="Zacznij za darmo"
+  href="/dla/restauracja"
+/>
+
+---
+
+**Autor:** Mateusz Woronowicz, założyciel Botiko.pl. Buduje narzędzia AI dla polskich mikrofirm — z Białegostoku dla Białegostoku. Pytania? kontakt@botiko.pl
+
+**Powiązane wpisy:**
+- [Chatbot dla salonu kosmetycznego w Białymstoku — kompletny przewodnik 2026](/blog/chatbot-salon-kosmetyczny-bialystok)
+- [Bot dla warsztatu samochodowego w Białymstoku — jak nie tracić zleceń gdy masz ręce w oleju](/blog/bot-dla-warsztatu-samochodowego-bialystok)
+- [Jak wybrać chatbota dla małej firmy w Polsce — 2026](/blog/jak-wybrac-chatbota-dla-malej-firmy)

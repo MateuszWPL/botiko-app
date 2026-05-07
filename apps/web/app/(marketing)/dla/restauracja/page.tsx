@@ -481,7 +481,7 @@ export default function RestaurantLandingPage() {
                 {
                   step: '03',
                   title: 'Wstawiasz widget na stronę',
-                  text: 'Jeden tag HTML na Twoją stronę, profil Linktree lub landing page. Widget pojawia się w rogu — pasuje kolorystycznie do Twojej restauracji.',
+                  text: 'Natywna instalacja na WordPress (5 minut przez wtyczkę WPCode) lub jeden tag HTML na dowolną inną stronę. Widget pojawia się w rogu — pasuje kolorystycznie do Twojej restauracji.',
                 },
                 {
                   step: '04',

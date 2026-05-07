@@ -400,7 +400,7 @@ export default function BeautyLandingPage() {
                 Zacznij dziś — bot działa już jutro rano
               </h2>
               <p className="text-pink-100 text-base mb-8 max-w-xl mx-auto">
-                14 dni za darmo. Bez karty kredytowej. Bez umowy. Konfiguracja cennika i FAQ w ~15 minut.
+                14 dni za darmo. Bez karty kredytowej. Bez umowy. Konfiguracja cennika i FAQ w ~15 minut. Działa natywnie na WordPress i każdej innej stronie WWW.
               </p>
               <Link
                 href="/rejestracja"

@@ -9,13 +9,15 @@ import {
   ChevronDown,
   Terminal,
   HelpCircle,
+  Loader2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { EmptyStateClient } from '../../../components/ui/EmptyStateClient';
 
-interface Bot {
+export interface Bot {
   id: string;
   name: string;
+  allowedDomains: string[];
 }
 
 const WIDGET_URL =
@@ -95,11 +97,6 @@ function CodeBlock({ code, language = 'html' }: { code: string; language?: strin
 
 type PlatformId =
   | 'wordpress'
-  | 'webflow'
-  | 'shopify'
-  | 'squarespace'
-  | 'wix'
-  | 'gtm'
   | 'html';
 
 interface Step {
@@ -146,124 +143,14 @@ const PLATFORMS: PlatformDef[] = [
     ],
   },
   {
-    id: 'webflow',
-    name: 'Webflow',
-    abbr: 'WF',
-    color: '#146EF5',
-    steps: (code) => [
-      {
-        title: 'Otwórz ustawienia projektu',
-        body: 'W Webflow Designer kliknij ikonę koła zębatego (Project Settings) w lewym górnym rogu, lub otwórz panel projektów i wybierz Settings przy swoim projekcie.',
-      },
-      {
-        title: 'Przejdź do Custom Code',
-        body: 'W ustawieniach projektu wybierz zakładkę "Custom Code". Znajdź sekcję "Footer Code" na dole strony.',
-      },
-      {
-        title: 'Wklej kod i opublikuj',
-        body: 'Wklej kod w polu "Footer Code" i kliknij Save. Następnie wróć do projektanta i opublikuj stronę przyciskiem Publish.',
-        code: { snippet: code, lang: 'html' },
-        note: 'Kod nie jest widoczny w Webflow Editor podczas edycji — to normalne zachowanie. Widget działa wyłącznie na opublikowanej, publicznej stronie.',
-      },
-    ],
-  },
-  {
-    id: 'shopify',
-    name: 'Shopify',
-    abbr: 'SH',
-    color: '#96BF48',
-    steps: (code) => [
-      {
-        title: 'Przejdź do edytora motywu',
-        body: 'W panelu Shopify przejdź do Online Store → Themes. Przy aktywnym motywie kliknij przycisk z trzema kropkami (Actions) → Edit Code.',
-      },
-      {
-        title: 'Otwórz plik theme.liquid',
-        body: 'W drzewie plików po lewej stronie znajdź sekcję Layout i kliknij plik theme.liquid aby go otworzyć w edytorze.',
-      },
-      {
-        title: 'Wklej kod przed </body>',
-        body: 'Użyj Ctrl+F aby znaleźć tag </body>. Wklej kod bezpośrednio przed nim. Kliknij Save w prawym górnym rogu.',
-        code: { snippet: code, lang: 'html' },
-      },
-    ],
-  },
-  {
-    id: 'squarespace',
-    name: 'Squarespace',
-    abbr: 'SS',
-    color: '#000000',
-    steps: (code) => [
-      {
-        title: 'Otwórz ustawienia strony',
-        body: 'W panelu Squarespace kliknij Settings (Ustawienia) w lewym menu nawigacyjnym.',
-      },
-      {
-        title: 'Przejdź do Code Injection',
-        body: 'Przewiń menu ustawień i kliknij Advanced → Code Injection. Jeśli nie widzisz tej opcji, sprawdź czy Twój plan obejmuje tę funkcję.',
-        note: 'Code Injection jest dostępne wyłącznie w planach Business i Commerce. Plany Personal i Basic nie obsługują tej funkcji.',
-      },
-      {
-        title: 'Wklej kod w sekcji Footer',
-        body: 'W polu "Footer" wklej kod widgetu i kliknij Save w prawym górnym rogu. Zmiany są widoczne natychmiastowo na stronie.',
-        code: { snippet: code, lang: 'html' },
-      },
-    ],
-  },
-  {
-    id: 'wix',
-    name: 'Wix',
-    abbr: 'WX',
-    color: '#FAAD00',
-    warning:
-      'Wix ogranicza bezpośrednie osadzanie skryptów przez sandbox iframe. Zalecamy instalację przez Google Tag Manager — opis znajdziesz w zakładce obok.',
-    steps: (code) => [
-      {
-        title: 'Zainstaluj Google Tag Manager na Wix',
-        body: 'W panelu Wix przejdź do Marketing & SEO → Marketing Integrations i znajdź Google Tag Manager. Wprowadź ID kontenera GTM i zapisz.',
-      },
-      {
-        title: 'Dodaj widget przez GTM',
-        body: 'Po podłączeniu GTM do Wix postępuj zgodnie z instrukcją z zakładki "Google Tag Manager". Wklej poniższy kod jako Custom HTML tag z triggerem All Pages.',
-        code: { snippet: code, lang: 'html' },
-        note: 'Bezpośredni Wix HTML Embed Widget (dodawany jako element na stronie) działa w sandboxowanym iframe i może uniemożliwić prawidłowe załadowanie widgetu Botiko.',
-      },
-    ],
-  },
-  {
-    id: 'gtm',
-    name: 'Google Tag Manager',
-    abbr: 'GTM',
-    color: '#4285F4',
-    steps: (code) => [
-      {
-        title: 'Utwórz nowy Tag',
-        body: 'W kontenerze GTM kliknij Tags → New. Nadaj tagowi nazwę np. "Botiko Widget". Kliknij Tag Configuration i wybierz typ "Custom HTML".',
-      },
-      {
-        title: 'Wklej kod widgetu',
-        body: 'W polu HTML wklej poniższy kod.',
-        code: { snippet: code, lang: 'html' },
-      },
-      {
-        title: 'Ustaw wyzwalacz',
-        body: 'Kliknij w sekcję Triggering (ikona pioruna) i wybierz "All Pages". Jeśli chcesz bot tylko na wybranych stronach — utwórz własny trigger z filtrem na URL.',
-      },
-      {
-        title: 'Zapisz i opublikuj kontener',
-        body: 'Kliknij Save, a następnie Submit → Publish w prawym górnym rogu. Wpisz opis wersji np. "Dodano Botiko Widget". Zmiany będą aktywne w ciągu kilku sekund.',
-      },
-    ],
-  },
-  {
     id: 'html',
-    name: 'Własny HTML',
+    name: 'Inna strona',
     abbr: '</>',
-    color: '#E34F26',
+    color: '#64748B',
     steps: (code) => [
       {
         title: 'Otwórz szablon HTML strony',
-        body: 'Znajdź główny plik HTML lub szablon używany na wszystkich podstronach (np. layout.html, base.html, _layout.html w zależności od frameworka).',
+        body: 'Znajdź główny plik HTML lub szablon używany na wszystkich podstronach (np. layout.html, base.html, _layout.html w zależności od frameworka lub CMS).',
       },
       {
         title: 'Wklej kod przed </body>',
@@ -292,7 +179,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Chcę żeby bot pojawiał się tylko na wybranych podstronach.',
-    a: 'Użyj Google Tag Manager z niestandardowym wyzwalaczem. W GTM możesz ustawić trigger z filtrem "Page URL contains /kontakt" lub "Page Path equals /". Bez GTM bot pojawi się na wszystkich stronach gdzie wklejony jest skrypt.',
+    a: 'Możesz to osiągnąć przez warunkowe ładowanie skryptu — wklej kod tylko do szablonów wybranych podstron. Na WordPress wystarczy skonfigurować reguły widoczności w WPCode (opcja "Location" → wybierz konkretne strony lub typy wpisów).',
   },
   {
     q: 'Jak otworzyć bota po kliknięciu własnego przycisku CTA?',
@@ -303,6 +190,196 @@ const FAQ: { q: string; a: string }[] = [
     a: 'Pierwsze zapytanie może trwać 2-4 sekundy (model AI przetwarza kontekst). Jeśli oczekiwanie przekracza 30 sekund, bot wyświetli komunikat o timeout. Sprawdź czy Twój plan Botiko jest aktywny w zakładce Billing — wygasły plan blokuje odpowiedzi.',
   },
 ];
+
+// ── Widget health check ────────────────────────────────────────────────────
+
+type CheckStatus = 'idle' | 'checking' | 'detected' | 'not_detected' | 'error';
+
+interface DomainCheck {
+  domain: string;
+  status: CheckStatus;
+}
+
+async function checkDomain(domain: string, botId: string): Promise<CheckStatus> {
+  try {
+    const res = await fetch(
+      `/api/widget-check?url=${encodeURIComponent(domain)}&botId=${encodeURIComponent(botId)}`,
+    );
+    const data = (await res.json()) as { detected: boolean; error?: string };
+    if (data.error === 'fetch_failed') return 'error';
+    return data.detected ? 'detected' : 'not_detected';
+  } catch {
+    return 'error';
+  }
+}
+
+function DomainRow({ check, onRecheck }: { check: DomainCheck; onRecheck: () => void }) {
+  const icon = {
+    idle:          <span className="w-4 h-4 rounded-full bg-slate-200 flex-shrink-0" />,
+    checking:      <Loader2 className="w-4 h-4 text-slate-400 animate-spin flex-shrink-0" />,
+    detected:      <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />,
+    not_detected:  <AlertTriangleIcon className="w-4 h-4 text-amber-500 flex-shrink-0" />,
+    error:         <AlertTriangleIcon className="w-4 h-4 text-rose-400 flex-shrink-0" />,
+  }[check.status];
+
+  const label = {
+    idle:         <span className="text-slate-400 text-xs">Nie sprawdzono</span>,
+    checking:     <span className="text-slate-500 text-xs">Sprawdzanie…</span>,
+    detected:     (
+      <span className="inline-flex items-center gap-1 text-emerald-600 font-medium text-xs">
+        <CheckCircle2 className="w-3.5 h-3.5" />
+        Widget wykryty
+      </span>
+    ),
+    not_detected: (
+      <span className="inline-flex items-center gap-1 text-amber-600 font-medium text-xs">
+        <AlertTriangleIcon className="w-3.5 h-3.5" />
+        Nie znaleziono
+      </span>
+    ),
+    error:        (
+      <span className="inline-flex items-center gap-1 text-rose-500 font-medium text-xs">
+        <AlertTriangleIcon className="w-3.5 h-3.5" />
+        Błąd połączenia
+      </span>
+    ),
+  }[check.status];
+
+  return (
+    <div className="flex items-center gap-3 py-3 border-b border-slate-100 last:border-0">
+      {icon}
+      <span className="text-sm text-slate-700 font-mono flex-1 truncate">{check.domain}</span>
+      <span className="text-xs">{label}</span>
+      {check.status !== 'checking' && (
+        <button
+          onClick={onRecheck}
+          className="text-xs text-slate-400 hover:text-indigo-500 transition-colors cursor-pointer px-2 py-1 rounded hover:bg-indigo-50"
+        >
+          Odśwież
+        </button>
+      )}
+    </div>
+  );
+}
+
+function WidgetDetector({ botId, domains }: { botId: string; domains: string[] }) {
+  const [checks, setChecks] = useState<DomainCheck[]>(() =>
+    domains.map((d) => ({ domain: d, status: 'idle' as CheckStatus })),
+  );
+  const [lastChecked, setLastChecked] = useState<Date | null>(null);
+
+  const runCheck = async (domain: string) => {
+    setChecks((prev) =>
+      prev.map((c) => (c.domain === domain ? { ...c, status: 'checking' } : c)),
+    );
+    const status = await checkDomain(domain, botId);
+    setChecks((prev) =>
+      prev.map((c) => (c.domain === domain ? { ...c, status } : c)),
+    );
+    setLastChecked(new Date());
+  };
+
+  const runAll = () => {
+    domains.forEach((d) => void runCheck(d));
+  };
+
+  // Auto-run on mount if domains available
+  useEffect(() => {
+    if (domains.length > 0) runAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [botId]);
+
+  const allDetected  = checks.length > 0 && checks.every((c) => c.status === 'detected');
+  const anyChecking  = checks.some((c) => c.status === 'checking');
+
+  if (domains.length === 0) {
+    return (
+      <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 flex items-start gap-3">
+        <AlertTriangleIcon className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+        <div>
+          <p className="text-sm font-medium text-amber-800">Brak zdefiniowanych domen</p>
+          <p className="text-xs text-amber-700 mt-0.5">
+            Dodaj dozwolone domeny w{' '}
+            <a href="/dashboard/settings" className="underline font-medium hover:text-amber-900">
+              Ustawieniach → Domeny
+            </a>{' '}
+            aby włączyć automatyczną weryfikację widgetu.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`rounded-2xl border overflow-hidden shadow-sm ${
+        allDetected ? 'border-emerald-200 bg-emerald-50/40' : 'border-slate-200 bg-white/80 backdrop-blur-sm'
+      }`}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
+        <div className="flex items-center gap-2">
+          <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${allDetected ? 'bg-emerald-100' : 'bg-slate-100'}`}>
+            <RadarIcon className={`w-3.5 h-3.5 ${allDetected ? 'text-emerald-600' : 'text-slate-500'}`} />
+          </div>
+          <span className="text-sm font-semibold text-slate-800">Weryfikacja instalacji</span>
+        </div>
+        <div className="flex items-center gap-3">
+          {lastChecked && (
+            <span className="text-xs text-slate-400 hidden sm:block">
+              sprawdzono {lastChecked.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          )}
+          <button
+            onClick={runAll}
+            disabled={anyChecking}
+            className="text-xs font-medium text-indigo-500 hover:text-indigo-700 disabled:opacity-50 cursor-pointer hover:bg-indigo-50 px-2.5 py-1 rounded-lg transition-colors"
+          >
+            {anyChecking ? 'Sprawdzam…' : 'Odśwież status'}
+          </button>
+        </div>
+      </div>
+
+      {/* Domain list */}
+      <div className="px-5">
+        {checks.map((check) => (
+          <DomainRow
+            key={check.domain}
+            check={check}
+            onRecheck={() => void runCheck(check.domain)}
+          />
+        ))}
+      </div>
+
+      {/* Footer hint */}
+      {!allDetected && !anyChecking && checks.some((c) => c.status === 'not_detected') && (
+        <div className="px-5 pb-4 pt-1">
+          <p className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-3.5 py-2.5 leading-relaxed">
+            Widget nie został znaleziony. Upewnij się że kod jest wklejony przed{' '}
+            <code className="font-mono font-semibold">&lt;/body&gt;</code> i strona jest opublikowana.
+            Nowe wdrożenia mogą być widoczne z opóźnieniem do kilku minut.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Simple inline SVG icons to avoid extra imports
+function AlertTriangleIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 20 20" fill="currentColor">
+      <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+    </svg>
+  );
+}
+function RadarIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  );
+}
 
 // ── Main component ─────────────────────────────────────────────────────────
 
@@ -336,6 +413,8 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
   const currentPlatform = PLATFORMS.find((p) => p.id === activePlatform) ?? PLATFORMS[0]!;
   const steps = currentPlatform.steps(embedCode);
 
+  const currentBot = bots.find((b) => b.id === selectedBot);
+
   return (
     <div className="space-y-6 max-w-6xl">
       <style>{`
@@ -344,6 +423,12 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
           to   { opacity: 1; transform: translateY(0); }
         }
       `}</style>
+
+      {/* ── SEKCJA 0: Weryfikacja instalacji ── */}
+      <WidgetDetector
+        botId={selectedBot}
+        domains={currentBot?.allowedDomains ?? []}
+      />
 
       {/* Bot selector — tylko gdy > 1 */}
       {bots.length > 1 && (
@@ -426,7 +511,7 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
               </svg>
             </div>
             <span className="text-sm font-semibold text-slate-800">Instrukcja instalacji</span>
-            <span className="text-xs text-slate-400 ml-1">— wybierz swoją platformę</span>
+            <span className="text-xs text-slate-400 ml-1">— natywnie na WordPress lub kod na dowolnej stronie</span>
           </div>
         </div>
 

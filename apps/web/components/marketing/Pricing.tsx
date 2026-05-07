@@ -12,6 +12,7 @@ const FEATURES = [
   { text: 'Automatyczne zbieranie leadów (imię + telefon)', strong: true },
   { text: 'Email powiadomienie o każdym nowym leadzie', strong: false },
   { text: 'Dashboard z historią rozmów i leadów', strong: false },
+  { text: 'Natywna integracja z WordPress (wtyczka w przygotowaniu)', strong: false },
   { text: 'Kolorowy widget dopasowany do Twojej marki', strong: false },
   { text: 'Wsparcie e-mail — odpowiadamy w 24h', strong: false },
 ];

@@ -80,8 +80,9 @@ export function ConversationsClient({ initialConversations }: ConversationsClien
   };
 
   return (
-    <div className="space-y-4">
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-sm p-4 space-y-3">
+    <div className="space-y-3">
+      {/* Toolbar — relative z-10 so dropdowns appear above the table below */}
+      <div className="relative z-10 bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-sm p-3 md:p-4 space-y-3">
         <SearchBar value={search} onChange={setSearch} />
         <Filters
           daysBack={daysBack}
@@ -89,6 +90,7 @@ export function ConversationsClient({ initialConversations }: ConversationsClien
           status={status}
           onStatusChange={setStatus}
           onExport={handleExport}
+          totalCount={conversations.length}
         />
       </div>
 

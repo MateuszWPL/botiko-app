@@ -19,6 +19,7 @@ Botiko.pl — polska SaaS platforma AI chatbot B2B dla mikro/małych firm usług
 - NIE robimy natywnej apki mobilnej — dashboard jest responsive PWA
 - NIE targetujemy korporacji — tylko mikro i małe firmy usługowe
 - NIE używamy Turborepo/monorepo workspace — 3 osobne apps z własnym `pnpm install`
+- NIE supportujemy oficjalnie Webflow / Shopify / Squarespace / Wix / PrestaShop / Shoper — skrypt JS działa technicznie, ale nie ma per-platformowych instrukcji ani gwarancji. **Priority 1: WordPress + uniwersalny skrypt HTML.**
 
 ---
 
@@ -145,11 +146,11 @@ CORS jest **otwarty dla wszystkich originów** — widget musi działać na dowo
 
 ### Widget Constraints
 - **Hard limit**: <12KB gzip — wymuszany przez plugin Vite w `vite.config.ts`
+- **Primary platform: WordPress** — instalacja przez wtyczkę WPCode, instrukcje w `EmbedCode.tsx`. Skrypt działa też na każdej innej stronie HTML (fallback). Inne CMS — Webflow/Shopify/Wix/Squarespace — wycięte z oficjalnych instrukcji.
 - Shadow DOM izoluje style od strony hosta
 - Preact (nie React) — dla rozmiaru bundle
 - Konfigurowany przez `data-bot-id` na tagu `<script>`
-- `document.currentScript` fallback na `querySelector('[data-bot-id]')` — działa z GTM
-- Guard against double-init (GTM, React Strict Mode, snippet wklejony 2x)
+- `document.currentScript` fallback na `querySelector('[data-bot-id]')` — guard against double-init (React Strict Mode, snippet wklejony 2x)
 - `BotikoWidget.open/close/toggle` — globalne API dla strony hosta
 - Session persistence: `sessionStorage` per `botiko_{botId}` (historia ginie po zamknięciu zakładki — celowo, prywatność)
 - **Bot odpowiada 24/7** — `businessHours` config jest czysto informacyjny (banner), nigdy nie blokuje chatu
@@ -270,23 +271,27 @@ NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z bran
 - Ból: "tracisz klientki o 22:00 bo nie odbierasz"
 - ROI: "1 klientka = 150-300 zł. Bot = 99 zł/mies."
 
-## Aktualny stan projektu (2026-04-22)
+## Aktualny stan projektu (2026-05-06)
 
 **Faza:** 1A — Gotowe do pilotu. Brakuje: deploy infra.
 
 **Co działa:**
 - Core bot (RAG + OpenAI) z pełnym pre-processingiem wiadomości
-- Widget embedded (<12KB, Shadow DOM, działa na WordPress/Shopify/Squarespace/Webflow/GTM)
+- Widget embedded (<12KB, Shadow DOM, natywnie zoptymalizowany pod WordPress; działa też na dowolnej innej stronie WWW)
 - Dashboard (10 stron: overview, leads, conversations, knowledge, knowledge-base, settings, embed, billing, help + strony onboardingu)
-- Onboarding wizard 5-krokowy (`/onboarding/step-1` … `/step-5`)
-- 5 landing pages branżowych (`/dla/salon-beauty`, `/dla/gabinet-spa`, `/dla/restauracja`, `/dla/warsztat-mechaniczny`, `/dla/inna`)
+- Onboarding wizard 5-krokowy (`/onboarding/step-1` … `/step-5`) — branża → dane firmy → wiedza → embed (WordPress-first) → finish
+- Embed installer (`apps/web/app/dashboard/embed/EmbedCode.tsx`) — 2 ścieżki: WordPress (przez wtyczkę WPCode) + Inna strona (uniwersalny skrypt HTML)
+- 5 landing pages branżowych (`/dla/salon-beauty`, `/dla/gabinet-spa`, `/dla/restauracja`, `/dla/warsztat-mechaniczny`, `/dla/inna`) — każda z wzmianką WordPress-first
 - Stripe billing (STARTER 99 zł/mies., 14 dni trial, webhooks, idempotency guard, audit trail BillingEvent)
 - System recenzji (`Review` model + moduł API)
-- Landing page + blog SEO + formularz kontaktowy
+- Landing page marketingowy + blog SEO + formularz kontaktowy
+- Blog SEO: 30+ postów MDX w `apps/web/content/blog/`, w tym 5 pillar per branża + pillar "Botiko dla WordPress" (`botiko-dla-wordpress-przewodnik-2026.mdx`). Komponenty MDX (FAQ, ROICalculator, ComparisonTable, CTABlock, Callout) w `apps/web/components/blog/mdx/`
 - Security hardening (CORS, UUID validation, HTML escaping, HTTP error handling, walidacja hasła: 12 znaków + cyfra + znak specjalny)
 - Pokrycie testami: 297+ testów jednostkowych (Jest) + 24 E2E landing pages (Playwright) + E2E API (Supertest); 4-jobowy CI zielony
 
 **Co zostało przed deployem:**
 - Railway/Vercel infra setup + DNS + env vars
 - Ręczna QA (szczegółowy checklist: `TASK.md §1A.6`)
-- Weryfikacja Wix HTML Embed compatibility (czy `querySelector` działa w sandboxed iframe)
+
+**W roadmapie (po pilocie):**
+- Dedykowana wtyczka Botiko do katalogu WordPress.org — kanał akwizycji bez udziału supportu

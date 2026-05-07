@@ -73,7 +73,9 @@ export class WebsiteScraperService {
         if (extracted) {
           pages.push(extracted);
           scrapedUrls.push(finalUrl);
-          this.logger.debug(`Scraped: ${finalUrl} (${extracted.text.length} chars)`);
+          this.logger.debug(
+            `Scraped: ${finalUrl} (${extracted.text.length} chars)`,
+          );
         } else {
           this.logger.debug(`Skipped empty page: ${pageUrl.toString()}`);
           // Still count as visited, just no usable content
@@ -86,7 +88,10 @@ export class WebsiteScraperService {
       }
 
       if (onProgress) {
-        await onProgress({ scrapedUrls: [...scrapedUrls], failedUrls: [...failedUrls] });
+        await onProgress({
+          scrapedUrls: [...scrapedUrls],
+          failedUrls: [...failedUrls],
+        });
       }
 
       // Polite crawl rate limiting

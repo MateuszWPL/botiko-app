@@ -14,13 +14,19 @@ describe('createContactSchema — website URL (P2: validation)', () => {
 
   it('akceptuje poprawny URL z https://', () => {
     expect(
-      createContactSchema.safeParse({ ...validBase, website: 'https://example.pl' }).success,
+      createContactSchema.safeParse({
+        ...validBase,
+        website: 'https://example.pl',
+      }).success,
     ).toBe(true);
   });
 
   it('akceptuje poprawny URL z http://', () => {
     expect(
-      createContactSchema.safeParse({ ...validBase, website: 'http://example.pl' }).success,
+      createContactSchema.safeParse({
+        ...validBase,
+        website: 'http://example.pl',
+      }).success,
     ).toBe(true);
   });
 
@@ -28,7 +34,7 @@ describe('createContactSchema — website URL (P2: validation)', () => {
     'nie-url',
     'salon',
     'ftp://example.pl', // not http/https but valid URL — zod accepts any URL scheme
-    'example.pl',       // brak protokołu — Zod url() odrzuca
+    'example.pl', // brak protokołu — Zod url() odrzuca
     '',
   ])('odrzuca lub pomija niepoprawny URL: "%s"', (website) => {
     // Zod .url() requires a full URL with protocol
@@ -54,13 +60,15 @@ describe('createContactSchema — website URL (P2: validation)', () => {
 describe('createContactSchema — message', () => {
   it('odrzuca wiadomość krótszą niż 10 znaków', () => {
     expect(
-      createContactSchema.safeParse({ ...validBase, message: 'Krótka' }).success,
+      createContactSchema.safeParse({ ...validBase, message: 'Krótka' })
+        .success,
     ).toBe(false);
   });
 
   it('odrzuca wiadomość dłuższą niż 4000 znaków', () => {
     expect(
-      createContactSchema.safeParse({ ...validBase, message: 'x'.repeat(4001) }).success,
+      createContactSchema.safeParse({ ...validBase, message: 'x'.repeat(4001) })
+        .success,
     ).toBe(false);
   });
 });
@@ -69,13 +77,16 @@ describe('createContactSchema — topic enum', () => {
   it.each(['DEMO', 'WDROZENIE', 'CENNIK', 'WSPOLPRACA', 'INNE'] as const)(
     'akceptuje topic "%s"',
     (topic) => {
-      expect(createContactSchema.safeParse({ ...validBase, topic }).success).toBe(true);
+      expect(
+        createContactSchema.safeParse({ ...validBase, topic }).success,
+      ).toBe(true);
     },
   );
 
   it('odrzuca nieznany topic', () => {
     expect(
-      createContactSchema.safeParse({ ...validBase, topic: 'NIEZNANY' }).success,
+      createContactSchema.safeParse({ ...validBase, topic: 'NIEZNANY' })
+        .success,
     ).toBe(false);
   });
 });

@@ -78,12 +78,33 @@ export function LeadSidebar({ lead, onClose, onStatusChange }: LeadSidebarProps)
   const [conversation, setConversation] = useState<ConversationDetail | null>(null);
   const [convLoading, setConvLoading] = useState(false);
   const [status, setStatus] = useState(lead?.status ?? 'NEW');
+  // Slide animation state — panel is always mounted when lead is set
+  const [isVisible, setIsVisible] = useState(false);
+  // Keep last lead in memory so content stays during close animation
+  const [displayLead, setDisplayLead] = useState<Lead | null>(lead);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Handle open/close animation
   useEffect(() => {
-    setStatus(lead?.status ?? 'NEW');
+    if (lead) {
+      setDisplayLead(lead);
+      // Small delay so the browser renders the panel before transition starts
+      const raf = requestAnimationFrame(() => setIsVisible(true));
+      return () => cancelAnimationFrame(raf);
+    } else {
+      setIsVisible(false);
+      // Keep displayLead alive during slide-out (300ms)
+      const t = setTimeout(() => setDisplayLead(null), 320);
+      return () => clearTimeout(t);
+    }
+  }, [lead]);
+
+  // Load conversation when lead changes
+  useEffect(() => {
+    if (!lead) return;
+    setStatus(lead.status);
     setConversation(null);
-    if (!lead?.sessionId) return;
+    if (!lead.sessionId) return;
 
     setConvLoading(true);
     fetch(`/api/conversations/by-session?sessionId=${encodeURIComponent(lead.sessionId)}`)
@@ -99,105 +120,109 @@ export function LeadSidebar({ lead, onClose, onStatusChange }: LeadSidebarProps)
 
   const handleStatusChange = (newStatus: string) => {
     setStatus(newStatus);
-    if (lead) onStatusChange(lead.id, newStatus);
+    if (displayLead) onStatusChange(displayLead.id, newStatus);
   };
 
-  if (!lead) return null;
+  if (!displayLead) return null;
 
-  const initials = getInitials(lead.name);
-  const color = avatarColor(lead.name);
+  const initials = getInitials(displayLead.name);
+  const color = avatarColor(displayLead.name);
 
   return (
     <>
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black/30 backdrop-blur-[2px] z-40"
+        className={`fixed inset-0 bg-black/30 backdrop-blur-[2px] z-40 transition-opacity duration-300 ${
+          isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
         onClick={onClose}
       />
 
       {/* Sidebar panel */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-50 flex flex-col overflow-hidden">
+      <div
+        className={`fixed right-0 top-0 h-full w-full sm:max-w-md bg-white shadow-2xl z-50 flex flex-col overflow-hidden transition-transform duration-300 ease-in-out ${
+          isVisible ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
         {/* Header */}
-        <div className="flex items-center gap-4 px-6 py-5 border-b border-slate-100">
-          <div className={`w-12 h-12 rounded-full ${color} text-white text-sm font-bold flex items-center justify-center flex-shrink-0`}>
+        <div className="flex items-center gap-4 px-5 py-4 border-b border-slate-100 flex-shrink-0">
+          <div className={`w-11 h-11 rounded-full ${color} text-white text-sm font-bold flex items-center justify-center flex-shrink-0`}>
             {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-base font-semibold text-slate-900 truncate">{lead.name}</p>
-            <p className="text-sm text-slate-500">{lead.phone}</p>
+            <p className="text-base font-semibold text-slate-900 truncate">{displayLead.name}</p>
+            <p className="text-sm text-slate-500 truncate">{displayLead.phone}</p>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors flex-shrink-0"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors flex-shrink-0 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Action bar */}
-        <div className="flex items-center gap-2 px-6 py-3 border-b border-slate-100 bg-slate-50/50">
+        <div className="flex flex-wrap items-center gap-2 px-5 py-3 border-b border-slate-100 bg-slate-50/50 flex-shrink-0">
           <a
-            href={`tel:${lead.phone.replace(/\s/g, '')}`}
+            href={`tel:${displayLead.phone.replace(/\s/g, '')}`}
             className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
           >
-            <Phone className="w-4 h-4" />
+            <Phone className="w-4 h-4 flex-shrink-0" />
             Zadzwoń
           </a>
           <a
-            href={`sms:${lead.phone.replace(/\s/g, '')}`}
+            href={`sms:${displayLead.phone.replace(/\s/g, '')}`}
             className="flex items-center gap-2 px-4 py-2 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors"
           >
-            <MessageSquare className="w-4 h-4" />
+            <MessageSquare className="w-4 h-4 flex-shrink-0" />
             SMS
           </a>
-          <div className="ml-auto">
-            <select
-              value={status}
-              onChange={(e) => handleStatusChange(e.target.value)}
-              className="text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300 cursor-pointer"
-            >
-              {STATUS_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={status}
+            onChange={(e) => handleStatusChange(e.target.value)}
+            className="ml-auto text-sm border border-slate-200 rounded-lg px-3 py-2 text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300 cursor-pointer"
+          >
+            {STATUS_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Scrollable body */}
         <div className="flex-1 overflow-y-auto">
           {/* Lead info */}
-          <div className="px-6 py-4 border-b border-slate-100">
-            <div className="flex items-center gap-2 mb-1">
+          <div className="px-5 py-4 border-b border-slate-100">
+            <div className="flex items-center gap-2 mb-3">
               <User className="w-3.5 h-3.5 text-slate-400" />
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Dane leada</span>
             </div>
-            <div className="mt-2 space-y-1.5 text-sm">
-              <div className="flex gap-2">
+            <div className="space-y-2 text-sm">
+              <div className="flex gap-2 flex-wrap">
                 <span className="text-slate-400 w-20 flex-shrink-0">Data:</span>
-                <span className="text-slate-700">{formatDateShort(lead.createdAt)}</span>
+                <span className="text-slate-700">{formatDateShort(displayLead.createdAt)}</span>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center flex-wrap">
                 <span className="text-slate-400 w-20 flex-shrink-0">Status:</span>
                 <StatusBadge status={status} />
               </div>
-              {lead.message && (
+              {displayLead.message && (
                 <div className="flex gap-2">
                   <span className="text-slate-400 w-20 flex-shrink-0 mt-0.5">Notatka:</span>
-                  <span className="text-slate-700 italic text-xs">{lead.message}</span>
+                  <span className="text-slate-700 italic text-xs leading-relaxed">{displayLead.message}</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Conversation */}
-          <div className="px-6 py-4">
+          <div className="px-5 py-4">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-4">
               Rozmowa z botem
             </p>
 
-            {!lead.sessionId ? (
+            {!displayLead.sessionId ? (
               <p className="text-sm text-slate-400 italic">Lead dodany ręcznie — brak rozmowy z botem</p>
             ) : convLoading ? (
               <p className="text-sm text-slate-400">Ładowanie rozmowy...</p>
@@ -211,7 +236,7 @@ export function LeadSidebar({ lead, onClose, onStatusChange }: LeadSidebarProps)
                     className={`flex flex-col ${msg.role === 'USER' ? 'items-end' : 'items-start'}`}
                   >
                     <div
-                      className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
+                      className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed break-words ${
                         msg.role === 'USER'
                           ? 'bg-indigo-600 text-white rounded-br-sm'
                           : 'bg-slate-100 text-slate-800 rounded-bl-sm'

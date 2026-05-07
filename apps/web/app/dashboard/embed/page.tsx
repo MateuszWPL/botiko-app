@@ -1,11 +1,6 @@
 import { fetchWithAuth } from '../../../lib/api';
 import { PageHeader } from '../../../components/ui/PageHeader';
-import { EmbedCode } from './EmbedCode';
-
-interface Bot {
-  id: string;
-  name: string;
-}
+import { EmbedCode, type Bot } from './EmbedCode';
 
 export default async function EmbedPage() {
   let bots: Bot[] = [];

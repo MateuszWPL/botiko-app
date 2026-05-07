@@ -119,11 +119,17 @@ export class ConversationService {
           }
         }
 
-        const status = this.getStatus(c._count.messages, leadExists, c.createdAt);
+        const status = this.getStatus(
+          c._count.messages,
+          leadExists,
+          c.createdAt,
+        );
         const durationSeconds =
           userMessages.length > 0
             ? Math.floor(
-                (new Date(c.messages[c.messages.length - 1]?.createdAt || c.createdAt).getTime() -
+                (new Date(
+                  c.messages[c.messages.length - 1]?.createdAt || c.createdAt,
+                ).getTime() -
                   new Date(userMessages[0].createdAt).getTime()) /
                   1000,
               )
@@ -137,7 +143,8 @@ export class ConversationService {
           firstMessage: firstMsg,
           lastMessage: lastMsg,
           createdAt: c.createdAt,
-          updatedAt: c.messages[c.messages.length - 1]?.createdAt || c.createdAt,
+          updatedAt:
+            c.messages[c.messages.length - 1]?.createdAt || c.createdAt,
           durationSeconds,
           status,
           leadName,

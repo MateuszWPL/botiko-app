@@ -30,6 +30,15 @@ export class TenantService {
     return tenant;
   }
 
+  async updateWebsiteUrl(tenantId: string, websiteUrl: string): Promise<void> {
+    let normalized = websiteUrl.trim();
+    if (!normalized.startsWith('http')) normalized = 'https://' + normalized;
+    await this.prisma.tenant.update({
+      where: { id: tenantId },
+      data: { websiteUrl: normalized },
+    });
+  }
+
   /**
    * Permanently deletes all tenant data (RODO: right to erasure).
    * Order matters — FK constraints require child records deleted first.

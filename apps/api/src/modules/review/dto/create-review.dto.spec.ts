@@ -37,18 +37,23 @@ describe('createReviewSchema — pole message', () => {
 
   it('akceptuje wiadomość do 500 znaków', () => {
     expect(
-      createReviewSchema.safeParse({ rating: 4, message: 'Świetny produkt!' }).success,
+      createReviewSchema.safeParse({ rating: 4, message: 'Świetny produkt!' })
+        .success,
     ).toBe(true);
   });
 
   it('odrzuca wiadomość dłuższą niż 500 znaków', () => {
     expect(
-      createReviewSchema.safeParse({ rating: 4, message: 'x'.repeat(501) }).success,
+      createReviewSchema.safeParse({ rating: 4, message: 'x'.repeat(501) })
+        .success,
     ).toBe(false);
   });
 
   it('trimmuje białe znaki z wiadomości', () => {
-    const result = createReviewSchema.safeParse({ rating: 3, message: '  OK  ' });
+    const result = createReviewSchema.safeParse({
+      rating: 3,
+      message: '  OK  ',
+    });
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.message).toBe('OK');

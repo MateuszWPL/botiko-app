@@ -1,6 +1,5 @@
 import { MessageSquare } from 'lucide-react';
 import { fetchWithAuth } from '../../../lib/api';
-import { PageHeader } from '../../../components/ui/PageHeader';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { ConversationsClient } from '../../../components/conversations/ConversationsClient';
 
@@ -28,23 +27,15 @@ export default async function ConversationsPage() {
     console.error('Failed to load conversations:', error);
   }
 
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Rozmowy"
-        description="Historia konwersacji z klientami"
-        badge={{ label: `${conversations.length} rozmów`, color: 'bg-sky-100 text-sky-700' }}
+  if (conversations.length === 0) {
+    return (
+      <EmptyState
+        icon={MessageSquare}
+        title="Brak rozmów"
+        description="Rozmowy pojawią się gdy klienci skontaktują się z botem"
       />
+    );
+  }
 
-      {conversations.length === 0 ? (
-        <EmptyState
-          icon={MessageSquare}
-          title="Brak rozmów"
-          description="Rozmowy pojawią się gdy klienci skontaktują się z botem"
-        />
-      ) : (
-        <ConversationsClient initialConversations={conversations} />
-      )}
-    </div>
-  );
+  return <ConversationsClient initialConversations={conversations} />;
 }

@@ -31,7 +31,10 @@ export const confirmImportSchema = z.object({
   services: z.array(selectedServiceSchema).max(20).default([]),
   faq: z.array(selectedFaqSchema).max(15).default([]),
   hours: z
-    .object({ raw: z.string().max(600).nullable().optional(), selected: z.boolean() })
+    .object({
+      raw: z.string().max(600).nullable().optional(),
+      selected: z.boolean(),
+    })
     .nullable()
     .optional(),
   about: z

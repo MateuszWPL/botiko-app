@@ -9,6 +9,10 @@ const FAQS = [
     a: 'Absolutnie nie. Botiko nie wymaga żadnej wiedzy technicznej. Konfigurujesz bota przez prosty panel — wklejasz cennik, godziny pracy, FAQ. Na koniec dostajesz jeden fragment kodu HTML, który wklejasz na stronę.',
   },
   {
+    q: 'Czy Botiko działa na WordPress?',
+    a: 'Tak — Botiko jest natywnie zoptymalizowane pod WordPress (~93% polskiego rynku CMS). Instalacja przez darmową wtyczkę WPCode zajmuje 5 minut, bez edycji motywu ani pomocy programisty. Pracujemy też nad dedykowaną wtyczką Botiko do katalogu WordPress.org — zapisz się na listę oczekujących: kontakt@botiko.pl. Skrypt działa również na każdej innej stronie WWW.',
+  },
+  {
     q: 'Jak długo trwa wdrożenie?',
     a: 'W wielu przypadkach da się uruchomić bota w 15–20 minut: wybierasz branżę, uzupełniasz dane o firmie, wklejasz cennik/FAQ i gotowe. Nie potrzebujesz agencji ani programisty.',
   },
@@ -35,6 +39,10 @@ const FAQS = [
   {
     q: 'Czy bot działa na Facebooku i Instagramie?',
     a: 'Aktualnie widget embeddujemy na stronie WWW klienta. Integracja z Meta Messengerem i Instagram Direct jest w roadmapie — daj znać że jesteś zainteresowany przez kontakt@botiko.pl.',
+  },
+  {
+    q: 'Ile kosztuje Botiko i czy jest umowa?',
+    a: 'Botiko kosztuje 99 zł miesięcznie. Pierwsze 14 dni są bezpłatne — bez karty kredytowej. Brak umowy długoterminowej, możesz anulować w dowolnym momencie z poziomu panelu.',
   },
 ];
 

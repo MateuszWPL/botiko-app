@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { ChevronRight } from 'lucide-react';
 import { createClient } from '../../../lib/supabase';
 import { getTopBarMeta } from './topbar-meta';
 import { NotificationsBell } from './NotificationsBell';
@@ -62,8 +61,17 @@ export function DashboardTopBar() {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
-          const status = (await res.json()) as { isActive: boolean };
-          if (mounted) setBotActive(status.isActive !== false);
+          const status = (await res.json()) as {
+            isActive: boolean;
+            hasSubscription: boolean;
+            trialEndsAt: string | null;
+          };
+          // Derive effective state from date — cron may not have run yet.
+          const trialExpired =
+            !status.hasSubscription &&
+            !!status.trialEndsAt &&
+            new Date(status.trialEndsAt).getTime() <= Date.now();
+          if (mounted) setBotActive(status.isActive && !trialExpired);
         }
       } catch {
         // silent — fall back to default
@@ -76,33 +84,34 @@ export function DashboardTopBar() {
 
   return (
     <div className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-slate-200/70">
-      <div className="mx-auto w-full max-w-[1600px] 2xl:max-w-[2000px] min-[2200px]:max-w-[2400px] min-[2800px]:max-w-[2600px] px-4 md:px-8 py-3 md:py-4 flex items-center gap-4">
-        {/* Left side — breadcrumb + title + greeting */}
-        <div className="min-w-0 flex-1">
-          <nav className="flex items-center gap-1 text-[11px] text-slate-400 font-medium mb-0.5" aria-label="breadcrumb">
-            <Link href="/dashboard/overview" className="hover:text-indigo-500 transition-colors">
-              Dashboard
-            </Link>
-            <ChevronRight className="w-3 h-3 text-slate-300" />
-            <span className="text-slate-600">{title}</span>
-          </nav>
-
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-sm flex-shrink-0">
-              <Icon className="w-4 h-4 text-white" />
+      <div className="mx-auto w-full max-w-[1600px] 2xl:max-w-[2000px] min-[2200px]:max-w-[2400px] min-[2800px]:max-w-[2600px] px-4 md:px-8 py-4 md:py-5 flex items-center gap-6">
+        {/* Left side — title + greeting */}
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-sm flex-shrink-0">
+                <Icon className="w-4 h-4 text-white" />
+              </div>
+              <h1 className="text-lg md:text-xl font-bold text-slate-900 truncate">{title}</h1>
             </div>
-            <h1 className="text-lg md:text-xl font-bold text-slate-900 truncate">{title}</h1>
-            <span className="hidden sm:inline-flex items-center gap-1.5 ml-1 px-2 py-0.5 rounded-full bg-slate-50 border border-slate-200/80">
+            <Link
+              href="/dashboard/billing"
+              className={`hidden sm:inline-flex items-center gap-2 px-2.5 py-1 rounded-full border transition-all duration-150 cursor-pointer ${
+                botActive
+                  ? 'bg-slate-50 border-slate-200/80 hover:bg-emerald-50 hover:border-emerald-200'
+                  : 'bg-rose-50 border-rose-200/80 hover:bg-rose-100 hover:border-rose-300'
+              }`}
+            >
               <span
-                className={`w-1.5 h-1.5 rounded-full ${botActive ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'}`}
+                className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${botActive ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400'}`}
               />
-              <span className="text-[10px] font-medium text-slate-600">
+              <span className={`text-[11px] font-medium ${botActive ? 'text-slate-600' : 'text-rose-600'}`}>
                 {botActive ? 'Bot aktywny' : 'Bot nieaktywny'}
               </span>
-            </span>
+            </Link>
           </div>
 
-          <p className="text-xs text-slate-500 mt-0.5 truncate">
+          <p className="text-xs md:text-[13px] text-slate-500 leading-relaxed truncate">
             <span className="font-medium text-slate-600">{greeting}</span>
             <span className="hidden sm:inline"> · {description}</span>
           </p>

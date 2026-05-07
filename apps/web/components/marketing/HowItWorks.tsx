@@ -181,7 +181,7 @@ const STEPS = [
   {
     num: '03',
     title: 'Bot pracuje za Ciebie',
-    desc: 'Jeden fragment kodu HTML na Twojej stronie. Bot odpowiada na pytania i błyskawicznie zbiera numery telefonów od klientów 24/7.',
+    desc: 'Natywna instalacja na WordPress (5 minut przez wtyczkę WPCode) lub fragment kodu HTML na każdej innej stronie. Bot odpowiada i zbiera leady 24/7.',
     badge: 'Leady w panelu od razu',
     Mockup: MockupChat,
   },

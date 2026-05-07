@@ -203,7 +203,11 @@ export default async function OverviewPage() {
   const trialDaysLeft = billing?.trialEndsAt
     ? Math.max(0, Math.ceil((new Date(billing.trialEndsAt).getTime() - Date.now()) / 864e5))
     : 0;
-  const trialExpired = showBillingCard && !billing?.isActive;
+  // Derive from date — DB isActive may still be true if daily cron hasn't fired.
+  const trialExpired =
+    !!showBillingCard &&
+    !!billing?.trialEndsAt &&
+    new Date(billing.trialEndsAt).getTime() <= Date.now();
 
   // --- Quick actions ---
   const quickActions = [

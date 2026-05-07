@@ -665,13 +665,11 @@ pnpm preview                # Serve dist/ locally
 
 ## Supported Platforms
 
-Tested on:
-- WordPress (with theme/plugin support for custom scripts)
-- Shopify (using "Online Store → Checkout" script settings)
-- Webflow (using custom code block)
-- Squarespace (using code injection)
-- Wix (using HTML Embed widget)
-- Generic HTML (direct `<script>` tag)
+**Primary: WordPress** — installed via WPCode plugin (free, 2M+ installs). Instructions in `apps/web/app/dashboard/embed/EmbedCode.tsx`. WordPress = ~93% of Polish CMS market, primary target platform.
+
+**Universal fallback: Generic HTML** — direct `<script>` tag before `</body>` on any site.
+
+Other CMS (Shopify, Webflow, Squarespace, Wix, GTM) — the script works technically but are not officially supported and have no per-platform instructions in the dashboard. Removed from MVP scope.
 
 ---
 

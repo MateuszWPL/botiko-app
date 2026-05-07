@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+
+export const revalidate = 86400;
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -62,8 +64,11 @@ export async function generateMetadata({
   };
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('pl-PL', {
+function formatDate(dateStr?: string): string {
+  if (!dateStr) return 'Brak daty';
+  const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return 'Brak daty';
+  return date.toLocaleDateString('pl-PL', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
@@ -167,11 +172,11 @@ export default async function BlogPostPage({
               <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-8 pb-8 border-b border-slate-100">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 text-xs font-bold">
-                    {post.author.charAt(0)}
+                    {(post.author ?? '?').charAt(0)}
                   </div>
                   <div>
                     <div className="text-slate-700 font-medium text-xs">
-                      {post.author}
+                      {post.author ?? 'Botiko'}
                     </div>
                     {post.authorTitle && (
                       <div className="text-xs text-slate-400">
@@ -181,7 +186,7 @@ export default async function BlogPostPage({
                   </div>
                 </div>
                 <span>·</span>
-                <time dateTime={post.date}>{formatDate(post.date)}</time>
+                <time dateTime={post.date ?? ''}>{formatDate(post.date)}</time>
                 <span>·</span>
                 <span>{post.readingTime} min czytania</span>
                 {post.updatedAt && post.updatedAt !== post.date && (
