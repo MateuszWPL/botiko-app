@@ -1,10 +1,11 @@
 /**
- * Automatyczne generowanie grafik blogowych przez Gemini Imagen API
+ * Automatyczne generowanie grafik blogowych przez Gemini Flash Image Generation API
  *
  * Użycie:
  *   1. Pobierz darmowy klucz API: https://aistudio.google.com → "Get API key"
  *   2. node scripts/generate-blog-images.mjs <TWÓJ_KLUCZ_API>
  *
+ * Model: gemini-2.0-flash-preview-image-generation (darmowy w AI Studio free tier)
  * Grafiki trafiają do: apps/web/public/blog/
  * Każdy post dostaje: {slug}-hero.jpg, {slug}-1.jpg, {slug}-2.jpg
  */
@@ -214,56 +215,79 @@ const POSTS = [
   ],
 ];
 
-// Gemini Imagen API call
+// Hugging Face FLUX.1-schnell — darmowy, wysoka jakość
 async function generateImage(prompt, outputPath) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${API_KEY}`;
+  const HF_TOKEN = API_KEY; // przekazuj token HF jako argument, lub 'anonymous'
+  const url = 'https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell';
 
-  const body = JSON.stringify({
-    contents: [{ parts: [{ text: prompt }] }],
-    generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
-  });
+  const body = JSON.stringify({ inputs: prompt });
+  const headers = {
+    'Content-Type': 'application/json',
+    'Content-Length': Buffer.byteLength(body),
+    'x-use-cache': 'false',
+  };
+  if (HF_TOKEN && HF_TOKEN !== 'anonymous' && HF_TOKEN !== 'dummy') {
+    headers['Authorization'] = `Bearer ${HF_TOKEN}`;
+  }
 
   return new Promise((resolve, reject) => {
-    const req = https.request(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
-    }, (res) => {
-      let data = '';
-      res.on('data', (chunk) => { data += chunk; });
-      res.on('end', () => {
-        try {
-          const json = JSON.parse(data);
-
-          if (json.error) {
-            reject(new Error(json.error.message));
+    const req = https.request(
+      url,
+      { method: 'POST', headers },
+      (res) => {
+        const chunks = [];
+        res.on('data', c => chunks.push(c));
+        res.on('end', () => {
+          if (res.statusCode === 503) {
+            reject(new Error('503 Model loading — spróbuj ponownie za chwilę'));
             return;
           }
-
-          const parts = json.candidates?.[0]?.content?.parts ?? [];
-          const imagePart = parts.find(p => p.inlineData?.mimeType?.startsWith('image/'));
-
-          if (!imagePart) {
-            reject(new Error('Brak grafiki w odpowiedzi API'));
+          if (res.statusCode !== 200) {
+            const raw = Buffer.concat(chunks).toString('utf-8');
+            let msg = `HTTP ${res.statusCode}`;
+            try { msg += ': ' + (JSON.parse(raw)?.error ?? raw.slice(0, 200)); } catch {}
+            reject(new Error(msg));
             return;
           }
-
-          const imageBuffer = Buffer.from(imagePart.inlineData.data, 'base64');
-          fs.writeFileSync(outputPath, imageBuffer);
+          const buf = Buffer.concat(chunks);
+          if (buf.length < 5000) {
+            reject(new Error('Plik za mały — prawdopodobnie błąd API'));
+            return;
+          }
+          fs.writeFileSync(outputPath, buf);
           resolve(outputPath);
-        } catch (e) {
-          reject(e);
-        }
-      });
-    });
-
+        });
+        res.on('error', reject);
+      }
+    );
     req.on('error', reject);
     req.write(body);
     req.end();
   });
 }
 
-// Opóźnienie między requestami (rate limiting)
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+const DELAY_MS = 3000;
+const RETRY_WAIT_MS = 30000;
+const MAX_RETRIES = 3;
+
+async function generateWithRetry(prompt, outputPath, filename, n, total) {
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      await generateImage(prompt, outputPath);
+      return true;
+    } catch (err) {
+      if (err.message.includes('429') && attempt < MAX_RETRIES) {
+        console.log(`  429 [${n}/${total}] ${filename} — czekam 30s (próba ${attempt}/${MAX_RETRIES})`);
+        await sleep(RETRY_WAIT_MS);
+      } else {
+        console.log(`  ERR [${n}/${total}] ${filename}: ${err.message}`);
+        return false;
+      }
+    }
+  }
+  return false;
+}
 
 async function main() {
   const total = POSTS.length * 3;
@@ -271,7 +295,7 @@ async function main() {
   let skipped = 0;
   let failed = 0;
 
-  console.log(`\nGenerowanie ${total} grafik dla ${POSTS.length} postów...\n`);
+  console.log(`\nGenerowanie ${total} grafik dla ${POSTS.length} postów (sekwencyjnie, retry na 429)...\n`);
 
   for (const [slug, featured, img1, img2] of POSTS) {
     const images = [
@@ -282,27 +306,23 @@ async function main() {
 
     for (const { prompt, filename } of images) {
       const outputPath = path.join(OUTPUT_DIR, filename);
+      done++;
 
-      if (fs.existsSync(outputPath)) {
-        console.log(`  ⏭  Pomijam (istnieje): ${filename}`);
+      if (fs.existsSync(outputPath) && fs.statSync(outputPath).size > 5000) {
+        console.log(`  SKIP [${done}/${total}] ${filename}`);
         skipped++;
-        done++;
         continue;
       }
 
-      try {
-        process.stdout.write(`  [${done + 1}/${total}] Generuję: ${filename}... `);
-        await generateImage(prompt, outputPath);
+      process.stdout.write(`  --> [${done}/${total}] ${filename}... `);
+      const ok = await generateWithRetry(prompt, outputPath, filename, done, total);
+      if (ok) {
         console.log('OK');
-        done++;
-      } catch (err) {
-        console.log(`BŁĄD: ${err.message}`);
+      } else {
         failed++;
-        done++;
       }
 
-      // 2s przerwy żeby nie przekroczyć rate limit (15 req/min na free tier)
-      await sleep(2000);
+      await sleep(DELAY_MS);
     }
   }
 
