@@ -12,6 +12,7 @@ import {
   EyeOff,
   Copy,
   X,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { createClient } from '../../../lib/supabase';
 import { StatusBadge } from '../../../components/ui/StatusBadge';
@@ -94,7 +95,7 @@ const STAT_CARDS: { key: StatusKey; label: string; dot: string; num: string; pil
 ];
 
 const FILTER_LABELS: Record<string, string> = {
-  ALL: 'Wszystkie statusy',
+  ALL: 'Wszystkie',
   NEW: 'Nowe',
   CONTACTED: 'Skontaktowane',
   CONVERTED: 'Skonwertowane',
@@ -116,23 +117,20 @@ function StatusDropdown({
   isOpen: boolean;
   onToggle: (open: boolean) => void;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handler = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) onToggle(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [isOpen, onToggle]);
-
   return (
-    <div ref={ref} className="relative inline-block">
+    <div className="relative inline-block">
+      {/* Backdrop: catches any click outside the dropdown, z-20 below the dropdown */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-20"
+          onClick={(e) => { e.stopPropagation(); onToggle(false); }}
+        />
+      )}
+
       <button
-        onClick={() => !updating && onToggle(!isOpen)}
+        onClick={(e) => { e.stopPropagation(); if (!updating) onToggle(!isOpen); }}
         disabled={updating}
-        className="inline-flex items-center gap-1.5 disabled:opacity-60"
+        className="relative z-30 inline-flex items-center gap-1.5 disabled:opacity-60 cursor-pointer"
       >
         {updating ? (
           <Loader2 className="w-3.5 h-3.5 text-slate-400 animate-spin" />
@@ -145,16 +143,18 @@ function StatusDropdown({
           </>
         )}
       </button>
+
       {isOpen && (
-        <div className="absolute left-0 top-full mt-1.5 z-30 bg-white rounded-xl border border-slate-200 shadow-xl p-1.5 min-w-[170px]">
+        <div className="absolute right-0 top-full mt-1.5 z-30 bg-white rounded-xl border border-slate-200 shadow-xl p-1.5 min-w-[170px]">
           {STATUS_KEYS.map((key) => (
             <button
               key={key}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 onToggle(false);
                 if (key !== current) onUpdate(leadId, key);
               }}
-              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left hover:bg-slate-50 ${key === current ? 'bg-slate-50' : ''}`}
+              className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-left hover:bg-slate-50 cursor-pointer ${key === current ? 'bg-slate-50' : ''}`}
             >
               <StatusBadge status={key} />
               {key === current && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400" />}
@@ -177,9 +177,7 @@ function AddLeadModal({ onClose, onAdd }: { onClose: () => void; onAdd: (lead: L
     if (!name.trim() || !phone.trim()) return;
     setLoading(true);
     const supabase = createClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    const { data: { session } } = await supabase.auth.getSession();
     const token = session?.access_token;
     try {
       const res = await fetch(`${API_URL}/api/v1/leads/manual`, {
@@ -319,9 +317,7 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
   const updateStatus = async (leadId: string, status: string) => {
     setUpdating(leadId);
     const supabase = createClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    const { data: { session } } = await supabase.auth.getSession();
     const token = session?.access_token;
     try {
       const res = await fetch(`${API_URL}/api/v1/leads/${leadId}/status`, {
@@ -362,184 +358,252 @@ export function LeadsTable({ leads: initialLeads }: { leads: Lead[] }) {
   return (
     <>
       {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
         {STAT_CARDS.map(({ key, label, dot, num, pill }) => (
-          <div key={key} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <div key={key} className="bg-white rounded-2xl border border-slate-200 p-4 md:p-5 shadow-sm">
             <p className="text-xs font-medium text-slate-500 mb-1">{label}</p>
-            <p className={`text-3xl font-bold ${num}`}>{stats[key]}</p>
+            <p className={`text-2xl md:text-3xl font-bold ${num}`}>{stats[key]}</p>
             <div className={`mt-3 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${pill}`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${dot}`} />
-              {label}
+              <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${dot}`} />
+              <span className="hidden sm:inline">{label}</span>
+              <span className="sm:hidden">{stats[key]}</span>
             </div>
           </div>
         ))}
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Szukaj po nazwie lub telefonie..."
-            className="w-full pl-9 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
-          />
+      <div className="flex flex-col gap-2 mb-4">
+        {/* Row 1: search + filter */}
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Szukaj po nazwie lub telefonie..."
+              className="w-full pl-9 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 bg-white"
+            />
+          </div>
+
+          <div ref={filterRef} className="relative">
+            <button
+              onClick={() => setFilterOpen((o) => !o)}
+              className="flex items-center gap-2 px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 cursor-pointer whitespace-nowrap"
+            >
+              <SlidersHorizontal className="w-4 h-4 flex-shrink-0" />
+              <span className="hidden sm:inline">{FILTER_LABELS[statusFilter]}</span>
+              <ChevronDown className={`w-4 h-4 transition-transform flex-shrink-0 ${filterOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {filterOpen && (
+              <div className="absolute right-0 top-full mt-1.5 z-20 bg-white rounded-xl border border-slate-200 shadow-xl p-1.5 min-w-[180px]">
+                {(['ALL', ...STATUS_KEYS] as const).map((key) => (
+                  <button
+                    key={key}
+                    onClick={() => { setStatusFilter(key); setFilterOpen(false); }}
+                    className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-left hover:bg-slate-50 cursor-pointer ${statusFilter === key ? 'bg-slate-50 font-medium' : ''}`}
+                  >
+                    {key === 'ALL' ? (
+                      <span className="text-slate-600">Wszystkie statusy</span>
+                    ) : (
+                      <StatusBadge status={key} />
+                    )}
+                    {statusFilter === key && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
-        <div ref={filterRef} className="relative">
+        {/* Row 2: actions */}
+        <div className="flex gap-2 justify-end">
           <button
-            onClick={() => setFilterOpen((o) => !o)}
-            className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 min-w-[190px] cursor-pointer"
+            onClick={() => exportCSV(filtered)}
+            className="flex items-center gap-2 px-3 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 cursor-pointer"
           >
-            <span className="flex-1 text-left">{FILTER_LABELS[statusFilter]}</span>
-            <ChevronDown className={`w-4 h-4 transition-transform ${filterOpen ? 'rotate-180' : ''}`} />
+            <Download className="w-4 h-4 flex-shrink-0" />
+            <span className="hidden xs:inline sm:inline">Eksportuj</span>
           </button>
-          {filterOpen && (
-            <div className="absolute left-0 top-full mt-1.5 z-20 bg-white rounded-xl border border-slate-200 shadow-xl p-1.5 min-w-full">
-              {(['ALL', ...STATUS_KEYS] as const).map((key) => (
-                <button
-                  key={key}
-                  onClick={() => {
-                    setStatusFilter(key);
-                    setFilterOpen(false);
-                  }}
-                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-left hover:bg-slate-50 cursor-pointer ${statusFilter === key ? 'bg-slate-50 font-medium' : ''}`}
-                >
-                  {key === 'ALL' ? (
-                    <span className="text-slate-600">Wszystkie statusy</span>
-                  ) : (
-                    <StatusBadge status={key} />
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
+
+          <button
+            onClick={() => setAddModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 cursor-pointer"
+          >
+            <Plus className="w-4 h-4 flex-shrink-0" />
+            <span>Dodaj ręcznie</span>
+          </button>
         </div>
-
-        <button
-          onClick={() => exportCSV(filtered)}
-          className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 cursor-pointer"
-        >
-          <Download className="w-4 h-4" />
-          CSV
-        </button>
-
-        <button
-          onClick={() => setAddModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          Dodaj ręcznie
-        </button>
       </div>
 
-      {/* Table */}
+      {/* Empty state */}
       {filtered.length === 0 ? (
         <div className="flex items-center justify-center h-40 bg-white rounded-2xl border border-slate-200">
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-400 text-center px-4">
             {leads.length === 0
               ? 'Leady pojawią się gdy klienci zostawią kontakt przez bota'
               : 'Brak wyników dla wybranych filtrów'}
           </p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-visible shadow-sm">
-          <table className="w-full text-sm border-separate border-spacing-0">
-            <thead className="bg-slate-50 [&_th:first-child]:rounded-tl-2xl [&_th:last-child]:rounded-tr-2xl">
-              <tr>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200">
-                  Kontakt
-                </th>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200">
-                  Telefon
-                </th>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200 hidden md:table-cell">
-                  Wiadomość
-                </th>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200">
-                  Status
-                </th>
-                <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200 hidden sm:table-cell">
-                  Data
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filtered.map((lead, idx) => {
-                const revealed = revealedPhones.has(lead.id);
-                return (
-                  <tr
-                    key={lead.id}
+        <>
+          {/* ── Mobile: card list (hidden md+) ── */}
+          <div className="md:hidden space-y-3">
+            {filtered.map((lead) => {
+              const revealed = revealedPhones.has(lead.id);
+              const dropdownOpen = openDropdownId === lead.id;
+              return (
+                <div
+                  key={lead.id}
+                  className={`relative ${dropdownOpen ? 'z-50' : 'z-0'}`}
+                >
+                  <div
                     onClick={() => setSelectedLead(lead)}
-                    className={`hover:bg-indigo-50/30 transition-colors relative cursor-pointer ${openDropdownId === lead.id ? 'z-50' : 'z-0'}`}
-                    style={{ animationDelay: `${idx * 30}ms` }}
+                    className="bg-white rounded-2xl border border-slate-200 p-4 cursor-pointer hover:border-indigo-200 hover:shadow-sm transition-all active:scale-[0.99]"
                   >
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${getAvatarColor(lead.name)}`}
-                        >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${getAvatarColor(lead.name)}`}>
                           {getInitials(lead.name)}
                         </div>
-                        <span className="font-semibold text-slate-800">{lead.name}</span>
+                        <div className="min-w-0">
+                          <p className="font-semibold text-slate-800 text-sm truncate">{lead.name}</p>
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <span className="font-mono text-xs text-slate-500">
+                              {revealed ? lead.phone : maskPhone(lead.phone)}
+                            </span>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); togglePhone(lead.id); }}
+                              className="text-slate-400 hover:text-slate-600 cursor-pointer"
+                            >
+                              {revealed ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                            </button>
+                            {revealed && (
+                              <button
+                                onClick={(e) => { e.stopPropagation(); void copyPhone(lead.phone); }}
+                                className="text-slate-400 hover:text-slate-600 cursor-pointer"
+                              >
+                                <Copy className="w-3 h-3" />
+                              </button>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </td>
-                    <td className="px-5 py-4">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-slate-600 font-mono text-xs">
-                          {revealed ? lead.phone : maskPhone(lead.phone)}
-                        </span>
-                        <button
-                          onClick={() => togglePhone(lead.id)}
-                          className="text-slate-400 hover:text-slate-600 cursor-pointer"
-                          aria-label={revealed ? 'Ukryj telefon' : 'Pokaż telefon'}
-                        >
-                          {revealed ? (
-                            <EyeOff className="w-3.5 h-3.5" />
-                          ) : (
-                            <Eye className="w-3.5 h-3.5" />
-                          )}
-                        </button>
-                        {revealed && (
-                          <button
-                            onClick={() => void copyPhone(lead.phone)}
-                            className="text-slate-400 hover:text-slate-600 cursor-pointer"
-                            aria-label="Kopiuj telefon"
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <StatusDropdown
+                          leadId={lead.id}
+                          current={lead.status}
+                          onUpdate={(id, status) => void updateStatus(id, status)}
+                          updating={updating === lead.id}
+                          isOpen={dropdownOpen}
+                          onToggle={(open) => setOpenDropdownId(open ? lead.id : null)}
+                        />
+                      </div>
+                    </div>
+                    {lead.message && (
+                      <p className="text-xs text-slate-500 italic mt-3 line-clamp-2">{lead.message}</p>
+                    )}
+                    <p className="text-xs text-slate-400 mt-2">{formatDate(lead.createdAt)}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* ── Desktop: table (hidden below md) ── */}
+          <div className="hidden md:block bg-white rounded-2xl border border-slate-200 overflow-visible shadow-sm">
+            <table className="w-full text-sm border-separate border-spacing-0">
+              <thead className="bg-slate-50 [&_th:first-child]:rounded-tl-2xl [&_th:last-child]:rounded-tr-2xl">
+                <tr>
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200">
+                    Kontakt
+                  </th>
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200">
+                    Telefon
+                  </th>
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200 hidden lg:table-cell">
+                    Wiadomość
+                  </th>
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200">
+                    Status
+                  </th>
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide border-b border-slate-200">
+                    Data
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filtered.map((lead, idx) => {
+                  const revealed = revealedPhones.has(lead.id);
+                  return (
+                    <tr
+                      key={lead.id}
+                      onClick={() => setSelectedLead(lead)}
+                      className={`hover:bg-indigo-50/30 transition-colors relative cursor-pointer ${openDropdownId === lead.id ? 'z-50' : 'z-0'}`}
+                      style={{ animationDelay: `${idx * 30}ms` }}
+                    >
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${getAvatarColor(lead.name)}`}
                           >
-                            <Copy className="w-3.5 h-3.5" />
+                            {getInitials(lead.name)}
+                          </div>
+                          <span className="font-semibold text-slate-800 truncate max-w-[160px]">{lead.name}</span>
+                        </div>
+                      </td>
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-slate-600 font-mono text-xs whitespace-nowrap">
+                            {revealed ? lead.phone : maskPhone(lead.phone)}
+                          </span>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); togglePhone(lead.id); }}
+                            className="text-slate-400 hover:text-slate-600 cursor-pointer flex-shrink-0"
+                            aria-label={revealed ? 'Ukryj telefon' : 'Pokaż telefon'}
+                          >
+                            {revealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                           </button>
+                          {revealed && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); void copyPhone(lead.phone); }}
+                              className="text-slate-400 hover:text-slate-600 cursor-pointer flex-shrink-0"
+                              aria-label="Kopiuj telefon"
+                            >
+                              <Copy className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 hidden lg:table-cell max-w-[220px]">
+                        {lead.message ? (
+                          <span className="text-xs text-slate-500 italic block overflow-hidden text-ellipsis whitespace-nowrap">
+                            {lead.message}
+                          </span>
+                        ) : (
+                          <span className="text-slate-300 text-xs">—</span>
                         )}
-                      </div>
-                    </td>
-                    <td className="px-5 py-4 hidden md:table-cell" style={{ maxWidth: '220px' }}>
-                      {lead.message ? (
-                        <span className="text-xs text-slate-500 italic block overflow-hidden text-ellipsis whitespace-nowrap">
-                          {lead.message}
-                        </span>
-                      ) : (
-                        <span className="text-slate-300 text-xs">—</span>
-                      )}
-                    </td>
-                    <td className="px-5 py-4">
-                      <StatusDropdown
-                        leadId={lead.id}
-                        current={lead.status}
-                        onUpdate={(id, status) => void updateStatus(id, status)}
-                        updating={updating === lead.id}
-                        isOpen={openDropdownId === lead.id}
-                        onToggle={(open) => setOpenDropdownId(open ? lead.id : null)}
-                      />
-                    </td>
-                    <td className="px-5 py-4 text-slate-400 text-xs hidden sm:table-cell whitespace-nowrap">
-                      {formatDate(lead.createdAt)}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                      </td>
+                      <td className="px-5 py-4" onClick={(e) => e.stopPropagation()}>
+                        <StatusDropdown
+                          leadId={lead.id}
+                          current={lead.status}
+                          onUpdate={(id, status) => void updateStatus(id, status)}
+                          updating={updating === lead.id}
+                          isOpen={openDropdownId === lead.id}
+                          onToggle={(open) => setOpenDropdownId(open ? lead.id : null)}
+                        />
+                      </td>
+                      <td className="px-5 py-4 text-slate-400 text-xs whitespace-nowrap">
+                        {formatDate(lead.createdAt)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {addModalOpen && (

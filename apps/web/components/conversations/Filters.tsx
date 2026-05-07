@@ -11,6 +11,7 @@ interface FiltersProps {
   status: ConversationStatus | 'Wszystkie';
   onStatusChange: (status: ConversationStatus | 'Wszystkie') => void;
   onExport?: () => void;
+  totalCount?: number;
 }
 
 const dayOptions = [
@@ -56,7 +57,7 @@ function Dropdown({ label, options, selected, onSelect }: DropdownProps) {
         <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="absolute left-0 top-full mt-1 min-w-[180px] bg-white border border-slate-200 rounded-lg shadow-lg z-20">
+        <div className="absolute left-0 top-full mt-1 min-w-[180px] bg-white border border-slate-200 rounded-lg shadow-lg z-50">
           {options.map((opt) => (
             <button
               key={opt.value}
@@ -74,13 +75,13 @@ function Dropdown({ label, options, selected, onSelect }: DropdownProps) {
   );
 }
 
-export function Filters({ daysBack, onDaysBackChange, status, onStatusChange, onExport }: FiltersProps) {
+export function Filters({ daysBack, onDaysBackChange, status, onStatusChange, onExport, totalCount }: FiltersProps) {
   const daysLabel = dayOptions.find((o) => o.value === daysBack)?.label ?? 'Ostatnie 90 dni';
   const statusLabel = statusOptions.find((o) => o.value === status)?.label ?? 'Wszystkie';
 
   return (
-    <div className="flex items-center justify-between gap-3">
-      <div className="flex items-center gap-3">
+    <div className="flex items-center justify-between gap-3 flex-wrap">
+      <div className="flex items-center gap-2 flex-wrap">
         <Dropdown
           label={daysLabel}
           options={dayOptions}
@@ -93,15 +94,20 @@ export function Filters({ daysBack, onDaysBackChange, status, onStatusChange, on
           selected={status}
           onSelect={(v) => onStatusChange(v as ConversationStatus | 'Wszystkie')}
         />
+        {totalCount !== undefined && (
+          <span className="text-xs font-medium text-slate-400 ml-1">
+            {totalCount} rozmów
+          </span>
+        )}
       </div>
 
       {onExport && (
         <button
           onClick={onExport}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors cursor-pointer"
         >
           <Download className="w-4 h-4" />
-          Eksport
+          <span className="hidden sm:inline">Eksport</span>
         </button>
       )}
     </div>

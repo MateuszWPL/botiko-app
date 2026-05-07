@@ -16,11 +16,13 @@ interface FAQProps {
 }
 
 export function FAQ({
-  items,
+  items = [],
   withSchema = true,
   defaultOpenFirst = false,
   className,
 }: FAQProps): JSX.Element {
+  if (items.length === 0) return <></>;
+
   return (
     <>
       {withSchema ? <FAQSchema items={items} /> : null}

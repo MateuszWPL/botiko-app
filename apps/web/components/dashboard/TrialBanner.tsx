@@ -28,11 +28,18 @@ export async function TrialBanner() {
   if (!status.trialEndsAt && status.hasSubscription) return null;
 
   const daysLeft = status.trialEndsAt ? getDaysLeft(status.trialEndsAt) : 0;
-  const trialStillActive = status.trialEndsAt ? daysLeft > 0 : false;
-  const isExpired = !status.isActive && !status.hasSubscription && !trialStillActive;
+  // Derive expiry from the date, not from DB isActive — the daily cron may
+  // not have fired yet, so isActive can still be true even after trial ended.
+  const trialExpired =
+    !status.hasSubscription &&
+    !!status.trialEndsAt &&
+    new Date(status.trialEndsAt).getTime() <= Date.now();
+  const isExpired = trialExpired;
 
   // No banner during healthy trial (> 5 days left)
   if (!isExpired && daysLeft > 5) return null;
+  // daysLeft can still be 0 from Math.max but trialExpired covers the real check
+  if (!isExpired && daysLeft === 0) return null;
 
   // Expired — critical red banner
   if (isExpired) {
