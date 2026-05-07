@@ -32,7 +32,32 @@ export class TenantController {
     @Body() body: unknown,
   ): Promise<void> {
     const { websiteUrl } = z
-      .object({ websiteUrl: z.string().trim().min(4) })
+      .object({
+        websiteUrl: z
+          .string()
+          .trim()
+          .min(4)
+          .refine((v) => {
+            const withScheme = v.startsWith('http') ? v : 'https://' + v;
+            try {
+              const u = new URL(withScheme);
+              if (u.protocol !== 'http:' && u.protocol !== 'https:') return false;
+              const h = u.hostname.toLowerCase();
+              const parts = h.split('.');
+              const [a, b] = parts.map(Number);
+              const isPrivate =
+                h === 'localhost' ||
+                a === 127 ||
+                a === 10 ||
+                (a === 172 && b >= 16 && b <= 31) ||
+                (a === 192 && b === 168) ||
+                (a === 169 && b === 254);
+              return !isPrivate;
+            } catch {
+              return false;
+            }
+          }, 'Nieprawidłowy lub niedozwolony adres URL'),
+      })
       .parse(body);
     await this.tenantService.updateWebsiteUrl(tenantId, websiteUrl);
   }

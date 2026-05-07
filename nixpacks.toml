@@ -1,0 +1,11 @@
+[variables]
+NIXPACKS_NODE_VERSION = "20"
+
+[phases.install]
+cmds = ["cd apps/api && pnpm install --frozen-lockfile"]
+
+[phases.build]
+cmds = ["cd apps/api && pnpm prisma generate && pnpm build"]
+
+[start]
+cmd = "cd apps/api && pnpm prisma migrate deploy && node dist/main.js"

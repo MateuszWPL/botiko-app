@@ -55,7 +55,7 @@ export async function safeFetch(
         });
       }
       throw new BadRequestException(
-        `Błąd połączenia z ${currentUrl.hostname}: ${String(err)}`,
+        `Nie można połączyć się ze stroną ${currentUrl.hostname}. Sprawdź czy adres jest poprawny.`,
       );
     }
     clearTimeout(timeout);
