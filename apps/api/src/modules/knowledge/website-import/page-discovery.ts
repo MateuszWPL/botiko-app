@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import type { RobotsRules } from './robots-parser';
+import { assertSafePublicHost } from './ssrf-guard';
 
 const MAX_PAGES = 20;
 const MAX_SITEMAP_ENTRIES = 50;
@@ -78,6 +79,9 @@ async function trySitemaps(
 
   for (const sitemapUrl of candidates) {
     try {
+      // Validate each sitemap URL before fetching — robots.txt entries are attacker-controlled
+      const sitemapHost = new URL(sitemapUrl).hostname;
+      await assertSafePublicHost(sitemapHost);
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 5_000);
       const res = await fetch(sitemapUrl, {
