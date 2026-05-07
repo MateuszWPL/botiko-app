@@ -152,15 +152,14 @@ Scope (opcjonalny): `api`, `web`, `widget`
 
 **Co działa:**
 - ✅ RAG pipeline (embeddings → pgvector → GPT-4o-mini)
-- ✅ Widget (<12KB, Shadow DOM, sessionStorage)
-- ✅ Dashboard (8 stron + Stripe billing)
-- ✅ Landing page + blog (MDX)
-- ✅ Security (CORS, UUID validation, encryption)
+- ✅ Widget (<12KB, Shadow DOM, natywnie pod WordPress; działa też na każdej innej stronie WWW)
+- ✅ Dashboard (10 stron + Stripe billing + import strony WWW)
+- ✅ Landing page + blog SEO (30+ postów MDX, w tym pillar "Botiko dla WordPress")
+- ✅ Security (CORS, UUID validation, AES-256-GCM encryption)
 
 **Co zostało:**
 - ❌ Railway/Vercel deployment + DNS
-- ❌ Ręczna QA
-- ❌ Verifikacja Wix HTML Embed
+- ❌ Ręczna QA (checklist: `TASK.md §1A.6`)
 
 ---
 
