@@ -89,7 +89,10 @@ export class LeadService {
     return { id };
   }
 
-  async createManual(tenantId: string, dto: CreateLeadManualDto): Promise<{ id: string }> {
+  async createManual(
+    tenantId: string,
+    dto: CreateLeadManualDto,
+  ): Promise<{ id: string }> {
     const bot = await this.prisma.bot.findFirst({
       where: { tenantId, isActive: true },
       select: { id: true },

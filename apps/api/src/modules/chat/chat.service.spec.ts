@@ -27,6 +27,8 @@ const mockBot = {
     industry: 'BEAUTY',
     plan: 'STARTER',
     isActive: true,
+    createdAt: new Date(),
+    stripeSubscriptionId: 'sub_test_active',
   },
 };
 

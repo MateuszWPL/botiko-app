@@ -29,7 +29,9 @@ describe('registerSchema — walidacja hasła', () => {
     expect(result.success).toBe(false);
     if (!result.success) {
       const msgs = result.error.issues.map((i) => i.message);
-      expect(msgs.some((m) => m.toLowerCase().includes('uppercase'))).toBe(true);
+      expect(msgs.some((m) => m.toLowerCase().includes('uppercase'))).toBe(
+        true,
+      );
     }
   });
 
@@ -113,7 +115,10 @@ describe('registerSchema — walidacja email', () => {
   };
 
   it('normalizuje email do lowercase', () => {
-    const result = registerSchema.safeParse({ ...base, email: 'TEST@EXAMPLE.COM' });
+    const result = registerSchema.safeParse({
+      ...base,
+      email: 'TEST@EXAMPLE.COM',
+    });
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.data.email).toBe('test@example.com');

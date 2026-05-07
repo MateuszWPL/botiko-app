@@ -14,7 +14,10 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { LeadService, type LeadResponse } from './lead.service';
 import { createLeadSchema, type CreateLeadDto } from './dto/create-lead.dto';
-import { createLeadManualSchema, type CreateLeadManualDto } from './dto/create-lead-manual.dto';
+import {
+  createLeadManualSchema,
+  type CreateLeadManualDto,
+} from './dto/create-lead-manual.dto';
 import {
   updateLeadStatusSchema,
   type UpdateLeadStatusDto,

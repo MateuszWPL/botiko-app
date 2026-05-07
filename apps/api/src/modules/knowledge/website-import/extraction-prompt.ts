@@ -83,7 +83,8 @@ export function buildRetryMessages(
 
 function getIndustryHint(industry: Industry): string {
   const hints: Record<Industry, string> = {
-    BEAUTY: 'salon piękności / beauty (manicure, pedicure, stylizacja, kosmetyka)',
+    BEAUTY:
+      'salon piękności / beauty (manicure, pedicure, stylizacja, kosmetyka)',
     HEALTH: 'gabinet zdrowia / SPA / masaże / fizjoterapia / wellness',
     FOOD: 'restauracja / kawiarnia / bistro / catering',
     AUTO: 'warsztat samochodowy / mechanik / serwis auto',

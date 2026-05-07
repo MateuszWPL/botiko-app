@@ -66,7 +66,10 @@ export async function discoverPages(
   return results.slice(0, MAX_PAGES).map((r) => r.url);
 }
 
-async function trySitemaps(origin: URL, robots: RobotsRules): Promise<string[]> {
+async function trySitemaps(
+  origin: URL,
+  robots: RobotsRules,
+): Promise<string[]> {
   const candidates = [
     `${origin.protocol}//${origin.hostname}/sitemap.xml`,
     `${origin.protocol}//${origin.hostname}/sitemap_index.xml`,
@@ -86,7 +89,9 @@ async function trySitemaps(origin: URL, robots: RobotsRules): Promise<string[]> 
       if (!res.ok) continue;
 
       const xml = await res.text();
-      const matches = [...xml.matchAll(/<loc>\s*(https?:\/\/[^<]+?)\s*<\/loc>/g)];
+      const matches = [
+        ...xml.matchAll(/<loc>\s*(https?:\/\/[^<]+?)\s*<\/loc>/g),
+      ];
       const urls = matches
         .map((m) => m[1].trim())
         .filter((u) => {

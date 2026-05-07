@@ -13,7 +13,10 @@ import { TenantGuard } from '../../common/guards/tenant.guard';
 import { CurrentTenant } from '../../common/decorators/current-tenant.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { ReviewService } from './review.service';
-import { createReviewSchema, type CreateReviewDto } from './dto/create-review.dto';
+import {
+  createReviewSchema,
+  type CreateReviewDto,
+} from './dto/create-review.dto';
 
 @Controller('api/v1/reviews')
 export class ReviewController {

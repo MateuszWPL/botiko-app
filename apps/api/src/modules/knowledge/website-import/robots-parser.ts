@@ -65,9 +65,7 @@ export function parseRobotsTxt(
   };
 }
 
-export async function fetchAndCheckRobots(
-  origin: URL,
-): Promise<RobotsRules> {
+export async function fetchAndCheckRobots(origin: URL): Promise<RobotsRules> {
   const robotsUrl = `${origin.protocol}//${origin.hostname}/robots.txt`;
   try {
     const controller = new AbortController();

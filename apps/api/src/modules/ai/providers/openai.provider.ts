@@ -40,7 +40,10 @@ export class OpenAIProvider implements AIService {
     };
   }
 
-  async chat(messages: ChatMessage[], options: ChatOptions = {}): Promise<ChatResult> {
+  async chat(
+    messages: ChatMessage[],
+    options: ChatOptions = {},
+  ): Promise<ChatResult> {
     const { maxTokens = 600, temperature = 0.3, responseFormat } = options;
     const response = await this.client.chat.completions.create({
       model: 'gpt-4o-mini',

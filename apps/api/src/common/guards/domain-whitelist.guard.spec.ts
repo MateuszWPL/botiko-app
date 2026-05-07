@@ -28,9 +28,9 @@ function makeContext(
 function buildPrismaMock(allowedDomains: string[], botActive = true) {
   return {
     bot: {
-      findFirst: jest.fn().mockResolvedValue(
-        botActive ? { allowedDomains } : null,
-      ),
+      findFirst: jest
+        .fn()
+        .mockResolvedValue(botActive ? { allowedDomains } : null),
     },
   };
 }
@@ -99,9 +99,7 @@ describe('DomainWhitelistGuard', () => {
   describe('missing Origin header', () => {
     it('allows in dev/test (no origin header)', async () => {
       process.env.NODE_ENV = 'test';
-      const guard = await buildGuard(
-        buildPrismaMock(['https://example.pl']),
-      );
+      const guard = await buildGuard(buildPrismaMock(['https://example.pl']));
       const ctx = makeContext(undefined, 'bot-1');
 
       await expect(guard.canActivate(ctx)).resolves.toBe(true);
@@ -109,9 +107,7 @@ describe('DomainWhitelistGuard', () => {
 
     it('blocks in production when Origin is absent', async () => {
       process.env.NODE_ENV = 'production';
-      const guard = await buildGuard(
-        buildPrismaMock(['https://example.pl']),
-      );
+      const guard = await buildGuard(buildPrismaMock(['https://example.pl']));
       const ctx = makeContext(undefined, 'bot-1');
 
       await expect(guard.canActivate(ctx)).rejects.toThrow(ForbiddenException);
@@ -129,21 +125,18 @@ describe('DomainWhitelistGuard', () => {
       ['https://example.pl', 'https://www.example.pl'], // www normalisation
       ['https://www.example.pl', 'https://example.pl'], // reverse
       ['https://salon.example.pl', 'https://salon.example.pl'], // subdomain exact
-    ])(
-      'allows: allowedDomain=%s, origin=%s',
-      async (allowedDomain, origin) => {
-        const guard = await buildGuard(buildPrismaMock([allowedDomain]));
-        const ctx = makeContext(origin, 'bot-1');
+    ])('allows: allowedDomain=%s, origin=%s', async (allowedDomain, origin) => {
+      const guard = await buildGuard(buildPrismaMock([allowedDomain]));
+      const ctx = makeContext(origin, 'bot-1');
 
-        await expect(guard.canActivate(ctx)).resolves.toBe(true);
-      },
-    );
+      await expect(guard.canActivate(ctx)).resolves.toBe(true);
+    });
 
     it.each([
       ['https://example.pl', 'https://evil.com'],
       ['https://example.pl', 'https://evil-example.pl'],
       ['https://example.pl', 'https://sub.example.pl'], // subdomains not auto-allowed
-      ['https://example.pl', 'http://example.pl'],      // scheme mismatch is allowed (hostname match only)
+      ['https://example.pl', 'http://example.pl'], // scheme mismatch is allowed (hostname match only)
     ])(
       'blocks unrelated domain: allowedDomain=%s, origin=%s',
       async (allowedDomain, origin) => {
@@ -153,10 +146,15 @@ describe('DomainWhitelistGuard', () => {
         // subdomains: guard normalises only www prefix — sub.example.pl != example.pl
         // http vs https: URL.hostname is the same, so it's allowed. Skip that case.
         const incomingHost = new URL(origin).hostname.replace(/^www\./, '');
-        const allowedHost = new URL(allowedDomain).hostname.replace(/^www\./, '');
+        const allowedHost = new URL(allowedDomain).hostname.replace(
+          /^www\./,
+          '',
+        );
         if (incomingHost === allowedHost) return; // same hostname → guard allows it
 
-        await expect(guard.canActivate(ctx)).rejects.toThrow(ForbiddenException);
+        await expect(guard.canActivate(ctx)).rejects.toThrow(
+          ForbiddenException,
+        );
       },
     );
 

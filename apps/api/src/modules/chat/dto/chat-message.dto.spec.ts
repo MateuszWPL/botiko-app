@@ -6,7 +6,11 @@ const VALID_SESSION = 's_abc123';
 describe('chatMessageSchema — botId (P2: CUID validation)', () => {
   it('akceptuje poprawny CUID', () => {
     expect(
-      chatMessageSchema.safeParse({ botId: VALID_CUID, sessionId: VALID_SESSION, message: 'cześć' }).success,
+      chatMessageSchema.safeParse({
+        botId: VALID_CUID,
+        sessionId: VALID_SESSION,
+        message: 'cześć',
+      }).success,
     ).toBe(true);
   });
 
@@ -17,7 +21,11 @@ describe('chatMessageSchema — botId (P2: CUID validation)', () => {
     'uuid-style-but-not-cuid-xxxxxxxx-xxxx-xxxx',
   ])('odrzuca botId "%s" (nie jest CUID)', (botId) => {
     expect(
-      chatMessageSchema.safeParse({ botId, sessionId: VALID_SESSION, message: 'cześć' }).success,
+      chatMessageSchema.safeParse({
+        botId,
+        sessionId: VALID_SESSION,
+        message: 'cześć',
+      }).success,
     ).toBe(false);
   });
 });
@@ -48,7 +56,11 @@ describe('chatMessageSchema — message (P0: limit długości)', () => {
 
   it('odrzuca pustą wiadomość', () => {
     expect(
-      chatMessageSchema.safeParse({ botId: VALID_CUID, sessionId: VALID_SESSION, message: '' }).success,
+      chatMessageSchema.safeParse({
+        botId: VALID_CUID,
+        sessionId: VALID_SESSION,
+        message: '',
+      }).success,
     ).toBe(false);
   });
 

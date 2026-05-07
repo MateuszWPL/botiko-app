@@ -58,7 +58,9 @@ describe('AuthGuard — P0: token validation', () => {
 
     const guard = new AuthGuard();
     await expect(
-      guard.canActivate(makeContext('Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.anon.key')),
+      guard.canActivate(
+        makeContext('Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.anon.key'),
+      ),
     ).rejects.toThrow(UnauthorizedException);
   });
 

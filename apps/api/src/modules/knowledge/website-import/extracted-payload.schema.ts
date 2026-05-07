@@ -53,7 +53,7 @@ export const extractedPayloadSchema = z.object({
 export type ExtractedPayload = z.infer<typeof extractedPayloadSchema>;
 
 function sanitizeString(value: unknown): string | null | undefined {
-  if (value === null || value === undefined) return value as null | undefined;
+  if (value === null || value === undefined) return value;
   if (typeof value !== 'string') return null;
   // Strip < > to prevent HTML injection
   const stripped = value.replace(/[<>]/g, ' ');
@@ -64,7 +64,9 @@ export function parseAndSanitizePayload(raw: unknown): ExtractedPayload {
   const result = extractedPayloadSchema.parse(raw);
 
   // Sanitize all string fields and check for injection
-  const checkField = (value: string | null | undefined): string | null | undefined => {
+  const checkField = (
+    value: string | null | undefined,
+  ): string | null | undefined => {
     const sanitized = sanitizeString(value);
     if (sanitized && detectKnowledgeInjection(sanitized)) return null;
     return sanitized;
