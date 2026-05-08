@@ -5,7 +5,7 @@
     "buildCommand": "cd apps/api && pnpm install && pnpm prisma generate && pnpm build"
   },
   "deploy": {
-    "startCommand": "cd apps/api && pnpm prisma migrate deploy && node dist/main.js",
+    "startCommand": "cd /app/apps/api && pnpm prisma migrate deploy && node /app/apps/api/dist/main.js",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 3
   }
