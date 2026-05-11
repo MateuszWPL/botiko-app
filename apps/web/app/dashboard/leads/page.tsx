@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { fetchWithAuth } from '../../../lib/api';
 import { LeadsTable } from './LeadsTable';
 import { PageHeader } from '../../../components/ui/PageHeader';

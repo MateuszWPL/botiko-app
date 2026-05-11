@@ -146,10 +146,10 @@ export default function Faq() {
           <ScrollReveal delay={2} className="flex flex-col gap-3">
             {right.map((faq, i) => (
               <FaqItem
-                key={i + 4}
+                key={i + 5}
                 faq={faq}
-                isOpen={open === i + 4}
-                onToggle={() => setOpen(open === i + 4 ? null : i + 4)}
+                isOpen={open === i + 5}
+                onToggle={() => setOpen(open === i + 5 ? null : i + 5)}
               />
             ))}
           </ScrollReveal>

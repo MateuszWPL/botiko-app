@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Settings } from 'lucide-react';
 import { fetchWithAuth } from '../../../lib/api';
 import { SettingsForm } from './SettingsForm';
