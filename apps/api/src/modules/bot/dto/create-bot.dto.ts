@@ -24,6 +24,9 @@ export const createBotSchema = z.object({
     .array(z.string().url('Each domain must be a valid URL'))
     .max(1, 'Only one domain allowed per bot')
     .default([]),
+  companyName: z.string().max(200).trim().nullable().optional(),
+  companyPhone: z.string().max(50).trim().nullable().optional(),
+  companyAddress: z.string().max(500).trim().nullable().optional(),
 });
 
 export type CreateBotDto = z.infer<typeof createBotSchema>;
