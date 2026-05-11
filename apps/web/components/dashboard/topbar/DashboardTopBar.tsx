@@ -40,6 +40,7 @@ export function DashboardTopBar() {
 
   const [userName, setUserName] = useState<string | null>(null);
   const [botActive, setBotActive] = useState(true);
+  const [greeting, setGreeting] = useState('');
 
   useEffect(() => {
     let mounted = true;
@@ -80,7 +81,9 @@ export function DashboardTopBar() {
     return () => { mounted = false; };
   }, []);
 
-  const greeting = userName ? `${greetingByHour()}, ${userName}` : greetingByHour();
+  useEffect(() => {
+    setGreeting(userName ? `${greetingByHour()}, ${userName}` : greetingByHour());
+  }, [userName]);
 
   return (
     <div className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-slate-200/70">
