@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { fetchWithAuth } from '../../../lib/api';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import BillingClient from './BillingClient';

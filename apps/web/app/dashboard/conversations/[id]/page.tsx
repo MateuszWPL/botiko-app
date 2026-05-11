@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Link from 'next/link';
 import { ArrowLeft, Bot, User } from 'lucide-react';
 import { fetchWithAuth } from '../../../../lib/api';

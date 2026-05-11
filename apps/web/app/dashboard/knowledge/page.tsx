@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { BookOpen } from 'lucide-react';
 import { fetchWithAuth } from '../../../lib/api';
 import { KnowledgeManager } from './KnowledgeManager';
