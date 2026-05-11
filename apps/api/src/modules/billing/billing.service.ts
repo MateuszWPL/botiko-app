@@ -264,6 +264,7 @@ export class BillingService {
       line_items: [{ price: env.STRIPE_PRICE_ID, quantity: 1 }],
       customer_email: userEmail,
       client_reference_id: tenantId,
+      subscription_data: { trial_period_days: 14 },
       success_url: `${env.APP_URL}/dashboard/billing?success=true`,
       cancel_url: `${env.APP_URL}/dashboard/billing?canceled=true`,
       locale: 'pl',
