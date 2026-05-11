@@ -255,6 +255,6 @@ export class EmailService {
 /** Extract a displayable first name from an email address prefix. */
 export function emailToFirstName(email: string): string {
   const prefix = email.split('@')[0];
-  const part = prefix.split(/[._+\-]/)[0];
+  const part = prefix.split(/[._+-]/)[0];
   return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
 }
