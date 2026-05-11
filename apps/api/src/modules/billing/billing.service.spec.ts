@@ -19,6 +19,11 @@ jest.mock('../../common/services/notification.service', () => ({
   NotificationService: jest.fn(),
 }));
 
+jest.mock('../../email/email.service', () => ({
+  EmailService: jest.fn(),
+  emailToFirstName: jest.fn(() => 'Jan'),
+}));
+
 // Stripe constructor mock — returns a fake stripe instance.
 const mockStripeInstance = {
   webhooks: {
@@ -47,6 +52,7 @@ import { BadRequestException } from '@nestjs/common';
 import { BillingService } from './billing.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { NotificationService } from '../../common/services/notification.service';
+import { EmailService } from '../../email/email.service';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -76,6 +82,15 @@ async function buildService(prisma: object = makePrismaMock()) {
       {
         provide: NotificationService,
         useValue: { sendTrialNotificationEmail: jest.fn() },
+      },
+      {
+        provide: EmailService,
+        useValue: {
+          sendPaymentConfirmed: jest.fn(),
+          sendRecurringInvoice: jest.fn(),
+          sendPaymentFailed: jest.fn(),
+          sendSubscriptionCancelled: jest.fn(),
+        },
       },
     ],
   }).compile();

@@ -19,6 +19,10 @@ const ERROR_MESSAGES: Record<string, string> = {
   INVALID_SCHEMA: 'Wyekstraktowane dane nie pasują do oczekiwanego formatu.',
 };
 
+function storageKey(botId: string) {
+  return `botiko_import_job_${botId}`;
+}
+
 interface Props {
   botId: string;
   tenantWebsiteUrl: string | null | undefined;
@@ -32,6 +36,29 @@ export function WebsiteImportButton({ botId, tenantWebsiteUrl, onComplete }: Pro
 
   const isDisabled = !tenantWebsiteUrl;
 
+  // On mount — reconnect to any in-progress job (survives page refresh)
+  useEffect(() => {
+    const savedJobId = localStorage.getItem(storageKey(botId));
+    if (!savedJobId) return;
+
+    api.getImportJob(botId, savedJobId).then((existing) => {
+      if (existing.status === 'READY_FOR_REVIEW') {
+        setJob(existing);
+        setState('preview');
+      } else if (existing.status === 'SCRAPING' || existing.status === 'EXTRACTING' || existing.status === 'PENDING') {
+        setJob(existing);
+        setState('polling');
+      } else {
+        // CONFIRMED / FAILED / CANCELLED — no longer relevant
+        localStorage.removeItem(storageKey(botId));
+      }
+    }).catch(() => {
+      localStorage.removeItem(storageKey(botId));
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [botId]);
+
+  // Polling loop
   useEffect(() => {
     if (state !== 'polling' || !job) return;
     const timer = setInterval(async () => {
@@ -45,6 +72,7 @@ export function WebsiteImportButton({ botId, tenantWebsiteUrl, onComplete }: Pro
         } else if (updated.status === 'FAILED' || updated.status === 'CANCELLED') {
           setState('error');
           setError(updated.errorMessage || 'Nieznany błąd');
+          localStorage.removeItem(storageKey(botId));
           clearInterval(timer);
         }
       } catch (err) {
@@ -60,6 +88,7 @@ export function WebsiteImportButton({ botId, tenantWebsiteUrl, onComplete }: Pro
     setError('');
     try {
       const { jobId } = await api.startImport(botId, tenantWebsiteUrl);
+      localStorage.setItem(storageKey(botId), jobId);
       const newJob = await api.getImportJob(botId, jobId);
       setJob(newJob);
       setState('polling');
@@ -75,6 +104,7 @@ export function WebsiteImportButton({ botId, tenantWebsiteUrl, onComplete }: Pro
     setState('confirming');
     try {
       const { chunksCreated } = await api.confirmImport(botId, job.id, payload);
+      localStorage.removeItem(storageKey(botId));
       toast.success(`Dodano ${chunksCreated} elementów wiedzy`);
       setState('done');
       onComplete?.(chunksCreated);
@@ -86,12 +116,14 @@ export function WebsiteImportButton({ botId, tenantWebsiteUrl, onComplete }: Pro
   };
 
   const handleCancel = () => {
+    localStorage.removeItem(storageKey(botId));
     setState('idle');
     setJob(null);
     setError('');
   };
 
   const handleReset = () => {
+    localStorage.removeItem(storageKey(botId));
     setState('idle');
     setJob(null);
     setError('');
@@ -120,9 +152,14 @@ export function WebsiteImportButton({ botId, tenantWebsiteUrl, onComplete }: Pro
           : 'Przygotowuję dane...';
 
     return (
-      <div className="flex items-center gap-2 py-2.5 px-4 bg-slate-100 rounded-xl">
-        <Loader2 className="w-4 h-4 text-slate-600 animate-spin" />
-        <span className="text-sm text-slate-600">{statusLabel}</span>
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 py-2.5 px-4 bg-slate-100 rounded-xl">
+          <Loader2 className="w-4 h-4 text-slate-600 animate-spin" />
+          <span className="text-sm text-slate-600">{statusLabel}</span>
+        </div>
+        <p className="text-xs text-slate-400 text-center">
+          Możesz zamknąć tę stronę — skanowanie będzie kontynuowane w tle.
+        </p>
       </div>
     );
   }

@@ -405,8 +405,10 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
           name: data.botName,
           welcomeMsg: data.welcomeMsg,
           primaryColor: data.primaryColor,
-          // URL from signup is already `https://<host>` — drop it straight in.
           allowedDomains: data.websiteUrl ? [data.websiteUrl] : [],
+          companyName: data.companyName || null,
+          companyPhone: data.phone || null,
+          companyAddress: data.address || null,
         }),
       });
 
