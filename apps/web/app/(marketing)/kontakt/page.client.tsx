@@ -71,7 +71,7 @@ function CheckIcon({ color = '#10B981' }: { color?: string }) {
   );
 }
 
-function Stepper({ step }: { step: 1 | 2 }) {
+function Stepper({ step, submitted }: { step: 1 | 2; submitted: boolean }) {
   const steps = useMemo(
     () => [
       { num: 1, label: 'Twoje potrzeby' },
@@ -83,8 +83,8 @@ function Stepper({ step }: { step: 1 | 2 }) {
   return (
     <div className="flex items-center gap-4">
       {steps.map((s, idx) => {
-        const done = s.num < step;
-        const active = s.num === step;
+        const done = s.num < step || (s.num === 2 && submitted);
+        const active = s.num === step && !submitted;
         return (
           <div key={s.num} className="flex items-center gap-3">
             <div
@@ -243,8 +243,8 @@ export default function ContactPageClient() {
                 </div>
 
                 <p className="text-indigo-100 leading-relaxed" style={{ fontSize: '15px' }}>
-                  Botiko to jednoosobowy projekt z Białegostoku. Nie ma tu zespołu sprzedażowego ani bota filtrującego
-                  zapytania — piszesz, a odpowiedź dostajesz ode mnie. Zwykle w ciągu 1 dnia roboczego.
+                  Pisze do Ciebie ktoś z zespołu Botiko — nie bot filtrujący zapytania, nie automatyczna kolejka.
+                  Odpowiadamy w ciągu 1 dnia roboczego.
                 </p>
 
                 <div
@@ -293,7 +293,7 @@ export default function ContactPageClient() {
           {/* Right */}
           <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col">
             <div className="px-7 py-6 border-b border-slate-100 bg-slate-50">
-              <Stepper step={step} />
+              <Stepper step={step} submitted={submitted} />
             </div>
 
             <div className="p-7 flex-1">

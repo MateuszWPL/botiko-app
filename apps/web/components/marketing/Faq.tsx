@@ -110,8 +110,8 @@ function FaqItem({
 export default function Faq() {
   const [open, setOpen] = useState<number | null>(null);
 
-  const left = FAQS.slice(0, 4);
-  const right = FAQS.slice(4);
+  const left = FAQS.slice(0, 5);
+  const right = FAQS.slice(5);
 
   return (
     <section id="faq" className="py-24 bg-bg">
