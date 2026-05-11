@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { Loader2, Zap, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { createCheckoutAction, createPortalAction } from './actions';
 
@@ -33,6 +33,8 @@ const PLAN_LIMITS: Record<string, string> = {
 export default function BillingClient({ status, fetchError }: Props) {
   const [actionError, setActionError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   function safeStripeRedirect(url: string) {
     // Defense-in-depth: only redirect to Stripe domains
@@ -175,7 +177,7 @@ export default function BillingClient({ status, fetchError }: Props) {
             <p className="text-sm font-semibold text-red-900 mb-0.5">Trial wygasł</p>
             <p className="text-xs text-red-700">
               14-dniowy okres próbny się skończył
-              {status.trialEndsAt &&
+              {mounted && status.trialEndsAt &&
                 ` ${new Date(status.trialEndsAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long' })}`}
               . Bot nie odpowiada na wiadomości. Wykup subskrypcję, aby przywrócić działanie.
             </p>
@@ -244,14 +246,17 @@ export default function BillingClient({ status, fetchError }: Props) {
 function TrialCountdown({ trialEndsAt }: { trialEndsAt: string }) {
   const TOTAL_DAYS = 14;
   const end = new Date(trialEndsAt);
-  const now = new Date();
-  const msLeft = end.getTime() - now.getTime();
+  const msLeft = end.getTime() - Date.now();
   const daysLeft = Math.max(0, Math.ceil(msLeft / (1000 * 60 * 60 * 24)));
   const elapsed = TOTAL_DAYS - daysLeft;
   const progress = Math.min(100, Math.max(0, (elapsed / TOTAL_DAYS) * 100));
-
   const barColor =
     daysLeft <= 2 ? 'bg-red-400' : daysLeft <= 5 ? 'bg-amber-400' : 'bg-indigo-400';
+
+  const [formattedEnd, setFormattedEnd] = useState('');
+  useEffect(() => {
+    setFormattedEnd(new Date(trialEndsAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long' }));
+  }, [trialEndsAt]);
 
   return (
     <div>
@@ -267,9 +272,11 @@ function TrialCountdown({ trialEndsAt }: { trialEndsAt: string }) {
           style={{ width: `${progress}%` }}
         />
       </div>
-      <p className="text-xs text-indigo-600/70 mt-1">
-        Trial kończy się {end.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long' })}
-      </p>
+      {formattedEnd && (
+        <p className="text-xs text-indigo-600/70 mt-1">
+          Trial kończy się {formattedEnd}
+        </p>
+      )}
     </div>
   );
 }
