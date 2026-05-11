@@ -8,6 +8,7 @@ import {
 import { createClient } from '@supabase/supabase-js';
 import { PrismaService } from '../../prisma/prisma.service';
 import { env } from '../../config/env';
+import { EmailService, emailToFirstName } from '../../email/email.service';
 import type { RegisterDto } from './dto/register.dto';
 import type { LoginDto } from './dto/login.dto';
 
@@ -25,7 +26,10 @@ export class AuthService {
     env.SUPABASE_SERVICE_ROLE_KEY,
   );
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly emailService: EmailService,
+  ) {}
 
   async register(dto: RegisterDto): Promise<{ message: string }> {
     const existing = await this.prisma.user.findUnique({
@@ -103,6 +107,25 @@ export class AuthService {
       }
 
       this.logger.log(`New tenant registered: ${tenant.id}`);
+
+      // Look up the DB user id we just created for EmailLog idempotency
+      const dbUser = await this.prisma.user.findUnique({
+        where: { email: dto.email },
+        select: { id: true },
+      });
+      if (dbUser) {
+        // Fire-and-forget — registration must not fail because of email
+        void this.emailService
+          .sendWelcome({
+            userId: dbUser.id,
+            email: dto.email,
+            firstName: emailToFirstName(dto.email),
+          })
+          .catch((err: unknown) => {
+            this.logger.error('Failed to send welcome email', err);
+          });
+      }
+
       return { message: 'Account created successfully.' };
     } catch (error) {
       // Rollback Supabase user if Prisma transaction failed

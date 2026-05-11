@@ -11,6 +11,7 @@ import StripeLib from 'stripe';
 import { Plan } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { NotificationService } from '../../common/services/notification.service';
+import { EmailService, emailToFirstName } from '../../email/email.service';
 import { env } from '../../config/env';
 
 export interface BillingStatus {
@@ -71,7 +72,16 @@ interface StripeSubscription {
   customer?: string | { id?: string } | null;
 }
 interface StripeInvoice {
+  id?: string;
   customer: string | { id?: string } | null;
+  amount_paid?: number;
+  currency?: string;
+  billing_reason?: string;
+  hosted_invoice_url?: string | null;
+  period_start?: number;
+  period_end?: number;
+  charge?: string | null;
+  subscription?: string | null;
 }
 interface StripeEvent {
   id: string;
@@ -87,6 +97,7 @@ export class BillingService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notification: NotificationService,
+    private readonly emailService: EmailService,
   ) {
     this.stripe = env.STRIPE_SECRET_KEY
       ? new StripeLib(env.STRIPE_SECRET_KEY, {
@@ -356,12 +367,15 @@ export class BillingService {
           event.id,
         );
         break;
+      case 'invoice.payment_succeeded':
+        await this.onInvoicePaymentSucceeded(event.data.object as StripeInvoice);
+        break;
       case 'invoice.payment_failed':
         // Audit A3: do NOT deactivate here. Stripe retries the charge
         // several times; reacting to the first failure kills service for
         // a customer whose 3DS timed out. Deactivation is handled by
         // `customer.subscription.updated` once the status flips to unpaid.
-        this.onPaymentFailedLogOnly(event.data.object as StripeInvoice);
+        await this.onInvoicePaymentFailed(event.data.object as StripeInvoice);
         break;
       default:
         // Unhandled events — safe no-op, already recorded for idempotency.
@@ -535,6 +549,13 @@ export class BillingService {
     const tenant = await this.resolveTenantForSubscription(subscription);
     if (!tenant) return;
 
+    const tenantWithUsers = await this.prisma.tenant.findUnique({
+      where: { id: tenant.id },
+      select: {
+        users: { where: { role: 'OWNER' }, take: 1, select: { email: true } },
+      },
+    });
+
     await this.prisma.tenant.update({
       where: { id: tenant.id },
       data: { isActive: false },
@@ -547,17 +568,125 @@ export class BillingService {
     });
 
     this.logger.log(`Subscription deleted — tenant deactivated: ${tenant.id}`);
+
+    const ownerEmail = tenantWithUsers?.users?.[0]?.email;
+    if (ownerEmail) {
+      // End of paid period = now (subscription cancelled immediately or at period end)
+      const endDate = new Date().toLocaleDateString('pl-PL', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+      await this.emailService
+        .sendSubscriptionCancelled({
+          email: ownerEmail,
+          firstName: emailToFirstName(ownerEmail),
+          endDate,
+        })
+        .catch((err: unknown) => this.logger.error('Failed to send cancellation email', err));
+    }
   }
 
-  /** Payment failure — log-only (deactivation handled by subscription.updated). */
-  private onPaymentFailedLogOnly(invoice: StripeInvoice): void {
+  private async onInvoicePaymentSucceeded(invoice: StripeInvoice): Promise<void> {
     const customerId =
-      typeof invoice.customer === 'string'
-        ? invoice.customer
-        : invoice.customer?.id;
+      typeof invoice.customer === 'string' ? invoice.customer : invoice.customer?.id;
+    if (!customerId) return;
+
+    const tenant = await this.prisma.tenant.findFirst({
+      where: { stripeCustomerId: customerId },
+      select: { id: true, users: { where: { role: 'OWNER' }, take: 1, select: { id: true, email: true } } },
+    });
+    if (!tenant) return;
+
+    const ownerEmail = tenant.users?.[0]?.email;
+    if (!ownerEmail) return;
+
+    const firstName = emailToFirstName(ownerEmail);
+    const amountPln = invoice.amount_paid != null
+      ? `${(invoice.amount_paid / 100).toFixed(2)} ${(invoice.currency ?? 'pln').toUpperCase()}`
+      : '99,00 PLN';
+
+    // Get card details from Stripe charge (best-effort)
+    let cardBrand = 'Karta';
+    let last4 = '****';
+    if (this.stripe && invoice.charge) {
+      try {
+        const charge = await this.stripe.charges.retrieve(invoice.charge, {
+          expand: ['payment_method_details'],
+        });
+        const card = (charge as unknown as { payment_method_details?: { card?: { brand?: string; last4?: string } } })
+          .payment_method_details?.card;
+        if (card?.brand) cardBrand = card.brand.charAt(0).toUpperCase() + card.brand.slice(1);
+        if (card?.last4) last4 = card.last4;
+      } catch {
+        // Non-critical — fall back to defaults
+      }
+    }
+
+    const isFirstPayment = invoice.billing_reason === 'subscription_create';
+
+    if (isFirstPayment) {
+      // Calculate next billing date (~30 days from period_end)
+      const nextDate = invoice.period_end
+        ? new Date(invoice.period_end * 1000).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })
+        : '';
+      await this.emailService.sendPaymentConfirmed({
+        email: ownerEmail,
+        firstName,
+        amount: amountPln,
+        paymentMethod: cardBrand,
+        last4,
+        nextPaymentDate: nextDate,
+      });
+    } else {
+      const periodDate = invoice.period_start
+        ? new Date(invoice.period_start * 1000)
+        : new Date();
+      const periodEndDate = invoice.period_end
+        ? new Date(invoice.period_end * 1000)
+        : new Date();
+      await this.emailService.sendRecurringInvoice({
+        email: ownerEmail,
+        month: String(periodDate.getMonth() + 1).padStart(2, '0'),
+        year: String(periodDate.getFullYear()),
+        amount: amountPln,
+        paymentMethod: cardBrand,
+        last4,
+        periodStart: periodDate.toLocaleDateString('pl-PL'),
+        periodEnd: periodEndDate.toLocaleDateString('pl-PL'),
+        invoiceUrl: invoice.hosted_invoice_url ?? `${env.APP_URL}/dashboard/billing`,
+      });
+    }
+  }
+
+  private async onInvoicePaymentFailed(invoice: StripeInvoice): Promise<void> {
+    const customerId =
+      typeof invoice.customer === 'string' ? invoice.customer : invoice.customer?.id;
     this.logger.warn(
       `invoice.payment_failed for customer ${customerId ?? '<unknown>'} — awaiting subscription.updated before deactivating`,
     );
+
+    if (!customerId) return;
+    const tenant = await this.prisma.tenant.findFirst({
+      where: { stripeCustomerId: customerId },
+      select: { users: { where: { role: 'OWNER' }, take: 1, select: { email: true } } },
+    });
+    const ownerEmail = tenant?.users?.[0]?.email;
+    if (!ownerEmail) return;
+
+    // Estimate retry in ~3 days (Stripe's smart retry default)
+    const retryDate = new Date(Date.now() + 3 * 86_400_000).toLocaleDateString('pl-PL', {
+      day: 'numeric',
+      month: 'long',
+    });
+
+    await this.emailService.sendPaymentFailed({
+      email: ownerEmail,
+      firstName: emailToFirstName(ownerEmail),
+      paymentMethod: 'Karta',
+      last4: '****',
+      retryDate,
+    });
   }
 
   /**

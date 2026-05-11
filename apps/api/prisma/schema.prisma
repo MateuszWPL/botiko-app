@@ -50,12 +50,26 @@ model BillingEvent {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  tenantId  String
-  role      UserRole @default(MEMBER)
-  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  email        String   @unique
+  tenantId     String
+  role         UserRole @default(MEMBER)
+  emailOptOut  String[] @default([])
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  emailLogs    EmailLog[]
+  createdAt    DateTime @default(now())
+}
+
+/// Idempotency guard: prevents sending the same drip/onboarding email twice.
+model EmailLog {
+  id         String   @id @default(cuid())
+  userId     String
+  templateId String
+  sentAt     DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, templateId])
+  @@index([userId])
 }
 
 model Bot {

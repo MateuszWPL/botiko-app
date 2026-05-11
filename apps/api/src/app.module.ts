@@ -13,6 +13,7 @@ import { TenantModule } from './modules/tenant/tenant.module';
 import { BillingModule } from './modules/billing/billing.module';
 import { ContactModule } from './modules/contact/contact.module';
 import { ReviewModule } from './modules/review/review.module';
+import { EmailModule } from './email/email.module';
 import { env } from './config/env';
 
 @Module({
@@ -39,6 +40,7 @@ import { env } from './config/env';
     BillingModule,
     ContactModule,
     ReviewModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [
