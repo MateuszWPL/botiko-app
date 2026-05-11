@@ -49,7 +49,7 @@ export const updateBotSchema = z
       .max(5, 'Maximum 5 suggested questions')
       .optional(),
     leadFormAfterMessages: z.number().int().min(1).max(20).optional(),
-    avatarEmoji: z.string().max(10).optional(),
+    avatarEmoji: z.string().max(2048).optional(),
   })
   .refine(
     (data) => {
