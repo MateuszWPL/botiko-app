@@ -27,17 +27,13 @@ export default function Footer() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
           <div>
-            <Link href="/" className="inline-flex items-center gap-2 mb-4">
+            <Link href="/" className="inline-flex items-center mb-4">
               <Image
-                src="/BotikoLogo.png"
+                src="/botiko-logo-full-white.svg"
                 alt="Botiko.pl — bot obsługi klienta 24/7"
-                width={32}
-                height={32}
-                className="rounded-lg"
+                width={130}
+                height={35}
               />
-              <span className="text-white font-bold text-lg">
-                Botiko<span className="text-indigo-400">.pl</span>
-              </span>
             </Link>
             <p className="text-sm leading-relaxed mb-5">
               Bot obsługi klienta dla polskich firm usługowych. Odpowiada za Ciebie 24/7 — bez programowania, bez umowy.

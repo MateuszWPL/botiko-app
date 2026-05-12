@@ -55,10 +55,7 @@ export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez 
 
       {/* Logo */}
       <Link href="/" className="relative z-10 flex items-center gap-2.5">
-        <Image src="/BotikoLogo.png" alt="Botiko" width={36} height={36} className="rounded-xl" />
-        <span className="text-white font-bold text-xl">
-          Botiko<span className="text-indigo-300">.pl</span>
-        </span>
+        <Image src="/botiko-logo-full-white.svg" alt="Botiko.pl" width={130} height={35} />
       </Link>
 
       {/* Center content */}

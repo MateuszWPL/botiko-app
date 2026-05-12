@@ -45,7 +45,7 @@ export const metadata: Metadata = {
       'Klienci piszą po godzinach. Bot odpowiada za Ciebie. 1 klient = 150–300 zł. Bot = 99 zł/mies.',
     images: [
       {
-        url: '/opengraph-image',
+        url: '/opengraph-image.png',
         width: 1200,
         height: 630,
         alt: 'Botiko.pl — Bot obsługi klienta 24/7',
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     title: 'Botiko.pl — Bot obsługi klienta 24/7',
     description:
       'Klienci piszą o 22:00. Bot odpowiada za Ciebie.',
-    images: ['/twitter-image'],
+    images: ['/twitter-image.png'],
   },
   robots: {
     index: true,

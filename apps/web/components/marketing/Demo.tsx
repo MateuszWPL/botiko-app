@@ -81,11 +81,11 @@ function LogoReveal() {
             style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)' }}
           />
           <Image
-            src="/BotikoLogo.png"
+            src="/botiko-mark.svg"
             alt="Botiko"
-            width={140}
-            height={140}
-            className="relative rounded-[1.75rem] shadow-2xl"
+            width={110}
+            height={136}
+            className="relative"
           />
         </div>
       </div>

@@ -109,11 +109,11 @@ export function Sidebar() {
           {!collapsed && (
             <div className="flex items-center gap-3 min-w-0">
               <Image
-                src="/BotikoLogo.png"
+                src="/botiko-mark-white.svg"
                 alt="Botiko"
-                width={32}
-                height={32}
-                className="rounded-lg flex-shrink-0"
+                width={28}
+                height={35}
+                className="flex-shrink-0"
               />
               <div className="min-w-0">
                 <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent block whitespace-nowrap">
@@ -233,7 +233,7 @@ export function Sidebar() {
         >
           <Menu className="w-5 h-5" />
         </button>
-        <Image src="/BotikoLogo.png" alt="Botiko" width={28} height={28} className="rounded-md" />
+        <Image src="/botiko-mark-white.svg" alt="Botiko" width={22} height={28} />
         <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
           Botiko.pl
         </span>
@@ -254,7 +254,7 @@ export function Sidebar() {
           {/* Drawer header */}
           <div className="flex items-center justify-between gap-2 p-4 border-b border-slate-800/60 flex-shrink-0">
             <div className="flex items-center gap-3">
-              <Image src="/BotikoLogo.png" alt="Botiko" width={32} height={32} className="rounded-lg" />
+              <Image src="/botiko-mark-white.svg" alt="Botiko" width={28} height={35} />
               <div>
                 <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent block">
                   Botiko.pl

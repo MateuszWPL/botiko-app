@@ -14,8 +14,11 @@ export function baseLayout(opts: BaseLayoutOptions): string {
   const headerColor = opts.headerColor ?? '#6366F1';
   const footer = `
     <td style="padding:20px 28px;text-align:center;border-top:1px solid #f1f5f9;">
+      <p style="margin:0 0 10px;">
+        <img src="${APP_URL}/botiko-mail-logo.png" alt="Botiko.pl" width="100" height="27" style="display:inline-block;">
+      </p>
       <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.6;">
-        Botiko.pl — bot obsługi klienta 24/7<br>
+        Bot obsługi klienta 24/7<br>
         <a href="${APP_URL}/regulamin" style="color:#94a3b8;">Regulamin</a> ·
         <a href="${APP_URL}/prywatnosc" style="color:#94a3b8;">Polityka prywatności</a>
         ${opts.showUnsubscribe && opts.unsubscribeUrl

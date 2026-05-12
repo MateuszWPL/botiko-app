@@ -319,7 +319,7 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 font-bold text-xl cursor-pointer">
-            <Image src="/BotikoLogo.png" alt="Botiko" width={32} height={32} className="rounded-lg" />
+            <Image src="/botiko-mark.svg" alt="Botiko" width={28} height={35} />
             <span className={navSolid ? 'text-text' : 'text-white drop-shadow'}>
               Botiko<span className={navSolid ? 'text-brand' : 'text-white/80'}>.pl</span>
             </span>
@@ -409,7 +409,7 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
         {/* Panel header */}
         <div className="flex items-center justify-between px-6 h-16 border-b border-slate-100">
           <Link href="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 font-bold text-xl">
-            <span className="w-7 h-7 rounded-lg bg-brand flex items-center justify-center text-white text-sm font-bold">B</span>
+            <Image src="/botiko-mark.svg" alt="Botiko" width={28} height={35} />
             <span className="text-text">Botiko<span className="text-brand">.pl</span></span>
           </Link>
           <button

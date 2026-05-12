@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: 'Botiko.pl',
     images: [
       {
-        url: 'https://botiko.pl/opengraph-image',
+        url: 'https://botiko.pl/opengraph-image.png',
         width: 1200,
         height: 630,
         alt: 'Botiko.pl — Bot obsługi klienta 24/7',
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych',
     description:
       'Klienci piszą o 22:00. Bot odpowiada za Ciebie. 99 zł/mies. 14 dni za darmo.',
-    images: ['https://botiko.pl/twitter-image'],
+    images: ['https://botiko.pl/twitter-image.png'],
   },
   alternates: {
     canonical: 'https://botiko.pl',
@@ -58,7 +58,7 @@ const JSON_LD_ORGANIZATION = {
   '@type': 'Organization',
   name: 'Botiko.pl',
   url: 'https://botiko.pl',
-  logo: 'https://botiko.pl/BotikoLogo.png',
+  logo: 'https://botiko.pl/botiko-logo-full.svg',
   contactPoint: {
     '@type': 'ContactPoint',
     email: 'kontakt@botiko.pl',
@@ -77,7 +77,7 @@ const JSON_LD_LOCAL_BUSINESS = {
     'Bot obsługi klienta 24/7 dla firm usługowych — salony, gabinety, restauracje, warsztaty.',
   url: 'https://botiko.pl',
   email: 'kontakt@botiko.pl',
-  image: 'https://botiko.pl/BotikoLogo.png',
+  image: 'https://botiko.pl/opengraph-image.png',
   priceRange: '99 PLN',
   address: {
     '@type': 'PostalAddress',
