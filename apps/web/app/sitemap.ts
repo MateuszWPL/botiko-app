@@ -9,6 +9,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/blog`, changeFrequency: 'weekly', priority: 0.9 },
 { url: `${baseUrl}/kontakt`, changeFrequency: 'yearly', priority: 0.5 },
     { url: `${baseUrl}/dla/salon-beauty`, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/dla/gabinet-spa`, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/dla/restauracja`, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/dla/warsztat-mechaniczny`, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/dla/inna`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/prywatnosc`, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${baseUrl}/regulamin`, changeFrequency: 'yearly', priority: 0.3 },
   ];
