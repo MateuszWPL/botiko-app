@@ -109,21 +109,13 @@ export function Sidebar() {
           {!collapsed && (
             <div className="flex items-center gap-3 min-w-0">
               <Image
-                src="/botiko-mark-white.svg"
+                src="/botiko-logo-full-white.svg"
                 alt="Botiko"
-                width={28}
-                height={35}
+                width={110}
+                height={30}
                 className="flex-shrink-0"
+                priority
               />
-              <div className="min-w-0">
-                <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent block whitespace-nowrap">
-                  Botiko.pl
-                </span>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
-                  <span className="text-xs text-slate-500 whitespace-nowrap">Panel zarządzania</span>
-                </div>
-              </div>
             </div>
           )}
           <button
@@ -233,10 +225,7 @@ export function Sidebar() {
         >
           <Menu className="w-5 h-5" />
         </button>
-        <Image src="/botiko-mark-white.svg" alt="Botiko" width={22} height={28} />
-        <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-          Botiko.pl
-        </span>
+        <Image src="/botiko-logo-full-white.svg" alt="Botiko" width={95} height={26} />
       </header>
 
       {/* Mobile drawer overlay */}
@@ -253,17 +242,8 @@ export function Sidebar() {
         >
           {/* Drawer header */}
           <div className="flex items-center justify-between gap-2 p-4 border-b border-slate-800/60 flex-shrink-0">
-            <div className="flex items-center gap-3">
-              <Image src="/botiko-mark-white.svg" alt="Botiko" width={28} height={35} />
-              <div>
-                <span className="text-sm font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent block">
-                  Botiko.pl
-                </span>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-xs text-slate-500">Panel zarządzania</span>
-                </div>
-              </div>
+            <div className="flex items-center">
+              <Image src="/botiko-logo-full-white.svg" alt="Botiko" width={110} height={30} />
             </div>
             <button
               onClick={() => setMobileOpen(false)}

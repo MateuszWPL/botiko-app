@@ -13,6 +13,7 @@ interface BotConfig {
   businessHoursEnd: number | null;
   businessDays: number[];
   suggestedQuestions: string[];
+  avatarEmoji: string;
 }
 
 function Widget({
@@ -52,6 +53,7 @@ function Widget({
       businessHoursEnd: config.businessHoursEnd,
       businessDays: config.businessDays,
       suggestedQuestions: config.suggestedQuestions,
+      avatarEmoji: config.avatarEmoji,
     }),
     h(Launcher, {
       primaryColor: config.primaryColor,
@@ -105,6 +107,7 @@ async function init() {
     businessHoursEnd: null,
     businessDays: [],
     suggestedQuestions: ['Czym możesz mi pomóc?', 'Jakie są godziny pracy?', 'Jak się skontaktować?'],
+    avatarEmoji: '',
   };
 
   try {

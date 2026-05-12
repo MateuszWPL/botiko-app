@@ -28,6 +28,7 @@ interface ChatWindowProps {
   businessHoursEnd: number | null;
   businessDays: number[];
   suggestedQuestions: string[];
+  avatarEmoji: string;
 }
 
 interface ApiChatResponse {
@@ -128,6 +129,7 @@ export function ChatWindow({
   businessHoursEnd,
   businessDays,
   suggestedQuestions,
+  avatarEmoji,
 }: ChatWindowProps) {
   // salonClosed: informational only — bot zawsze odpowiada 24/7
   const salonClosed = isSalonClosed(businessHoursStart, businessHoursEnd, businessDays);
@@ -287,8 +289,14 @@ export function ChatWindow({
     ? { position: 'fixed' as const, inset: '0', width: '100%', height: '100%', borderRadius: '0' }
     : { position: 'fixed' as const, bottom: '92px', right: '24px', width: '360px', height: '540px', borderRadius: '16px' };
 
-  // Avatar: first letter of bot name
   const avatarLetter = botName.trim()[0]?.toUpperCase() ?? 'B';
+  const isAvatarUrl = avatarEmoji?.startsWith('http');
+  const avatarImgStyle = { width: '100%', height: '100%', objectFit: 'cover' as const, borderRadius: '50%', display: 'block' };
+  function AvatarContent() {
+    return isAvatarUrl
+      ? <img src={avatarEmoji} alt="" style={avatarImgStyle} />
+      : <>{avatarLetter}</>;
+  }
 
   return (
     <div
@@ -331,8 +339,9 @@ export function ChatWindow({
           fontWeight: 700,
           flexShrink: 0,
           border: '2px solid rgba(255,255,255,0.3)',
+          overflow: 'hidden',
         }}>
-          {avatarLetter}
+          <AvatarContent />
         </div>
 
         {/* Name + status — bot jest zawsze online */}
@@ -455,8 +464,9 @@ export function ChatWindow({
                 color: '#fff',
                 flexShrink: 0,
                 marginBottom: '2px',
+                overflow: 'hidden',
               }}>
-                {avatarLetter}
+                <AvatarContent />
               </div>
             )}
             <div style={{
@@ -484,8 +494,9 @@ export function ChatWindow({
               backgroundColor: `var(--botiko-primary, ${primaryColor})`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: '10px', fontWeight: 700, color: '#fff', flexShrink: 0,
+              overflow: 'hidden',
             }}>
-              {avatarLetter}
+              <AvatarContent />
             </div>
             <div style={{
               padding: '10px 14px',

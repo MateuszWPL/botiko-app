@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { X, ChevronRight, ChevronLeft, Check, Bot, Copy, Loader2, Plus, Trash2 } from 'lucide-react';
 import { createClient } from '../../lib/supabase';
+import { WELCOME_STORAGE_KEY } from './WelcomeTrialModal';
 import { WebsiteImportButton } from '../knowledge/WebsiteImportButton';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
@@ -798,6 +799,8 @@ export function SetupWizardProvider() {
 
     async function checkAndMaybeOpen() {
       if (isSetupDone()) return;
+      // Welcome modal hasn't been shown yet — it will trigger the wizard itself
+      if (!localStorage.getItem(WELCOME_STORAGE_KEY)) return;
 
       try {
         const supabase = createClient();
