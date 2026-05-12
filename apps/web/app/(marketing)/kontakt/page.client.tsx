@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Image from 'next/image';
 import { webEnv } from '@/lib/env';
 
 type ContactTopic = 'DEMO' | 'WDROZENIE' | 'CENNIK' | 'WSPOLPRACA' | 'INNE';
@@ -265,14 +266,12 @@ export default function ContactPageClient() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontWeight: 700,
-                      fontSize: '14px',
                       background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
                       boxShadow: '0 0 0 2px rgba(165,180,252,0.2)',
-                      color: '#fff',
+                      overflow: 'hidden',
                     }}
                   >
-                    B
+                    <Image src="/botiko-mark-white.svg" alt="" width={20} height={25} style={{ display: 'block' }} />
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <p style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>Zespół Botiko</p>
