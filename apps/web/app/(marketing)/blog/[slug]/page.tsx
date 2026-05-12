@@ -105,7 +105,7 @@ export default async function BlogPostPage({
       name: 'Botiko.pl',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://botiko.pl/icon.svg',
+        url: 'https://botiko.pl/botiko-logo-full.svg',
       },
     },
     mainEntityOfPage: {

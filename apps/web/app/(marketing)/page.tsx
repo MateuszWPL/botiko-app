@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: 'Botiko.pl',
     images: [
       {
-        url: 'https://botiko.pl/opengraph-image',
+        url: 'https://botiko.pl/opengraph-image.png',
         width: 1200,
         height: 630,
         alt: 'Botiko.pl — Bot obsługi klienta 24/7',
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych',
     description:
       'Klienci piszą o 22:00. Bot odpowiada za Ciebie. 99 zł/mies. 14 dni za darmo.',
-    images: ['https://botiko.pl/twitter-image'],
+    images: ['https://botiko.pl/twitter-image.png'],
   },
   alternates: {
     canonical: 'https://botiko.pl',
@@ -58,7 +58,7 @@ const JSON_LD_ORGANIZATION = {
   '@type': 'Organization',
   name: 'Botiko.pl',
   url: 'https://botiko.pl',
-  logo: 'https://botiko.pl/BotikoLogo.png',
+  logo: 'https://botiko.pl/botiko-logo-full.svg',
   contactPoint: {
     '@type': 'ContactPoint',
     email: 'kontakt@botiko.pl',
@@ -77,7 +77,7 @@ const JSON_LD_LOCAL_BUSINESS = {
     'Bot obsługi klienta 24/7 dla firm usługowych — salony, gabinety, restauracje, warsztaty.',
   url: 'https://botiko.pl',
   email: 'kontakt@botiko.pl',
-  image: 'https://botiko.pl/BotikoLogo.png',
+  image: 'https://botiko.pl/opengraph-image.png',
   priceRange: '99 PLN',
   address: {
     '@type': 'PostalAddress',
@@ -108,53 +108,6 @@ const JSON_LD_SOFTWARE = {
     'Bot obsługi klienta dla polskich firm usługowych. Odpowiada na pytania klientów 24/7, zbiera leady i odsyła do rezerwacji.',
 };
 
-const JSON_LD_FAQ = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'Czy muszę umieć programować żeby używać Botiko?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Nie. Botiko nie wymaga żadnej wiedzy technicznej. Konfigurujesz bota przez prosty panel — wklejasz cennik, godziny pracy, FAQ. Na koniec dostajesz jeden fragment kodu HTML.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Jak długo trwa wdrożenie Botiko?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'W wielu przypadkach da się uruchomić bota w 15–20 minut: wybierasz branżę, uzupełniasz dane o firmie i gotowe.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Ile kosztuje Botiko?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Botiko kosztuje 99 zł miesięcznie. Każde konto ma 14 dni za darmo bez karty kredytowej. Brak umowy długoterminowej — możesz anulować kiedy chcesz.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Czy dane klientów są bezpieczne zgodnie z RODO?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Tak. Dane przechowujemy na serwerach w UE. Imię i telefon klienta są szyfrowane (AES-256). Możemy podpisać umowę powierzenia danych (DPA).',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Czy mogę zrezygnować z Botiko w każdej chwili?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Tak. Subskrypcja jest miesięczna i możesz anulować kiedy chcesz. Brak umów długoterminowych.',
-      },
-    },
-  ],
-};
-
 export default function HomePage() {
   return (
     <>
@@ -170,10 +123,6 @@ export default function HomePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_SOFTWARE) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_FAQ) }}
       />
 
       <Hero />

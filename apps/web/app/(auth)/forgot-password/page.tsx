@@ -31,8 +31,7 @@ export default function ForgotPasswordPage() {
         <div className="flex flex-col justify-center w-full max-w-sm mx-auto px-6 lg:px-0 py-12 lg:py-0 min-h-screen lg:min-h-0">
           {/* Mobile logo */}
           <Link href="/" className="flex items-center gap-2 mb-8 lg:hidden">
-            <Image src="/BotikoLogo.png" alt="Botiko" width={32} height={32} className="rounded-lg" />
-            <span className="font-bold text-lg text-slate-900">Botiko<span className="text-brand">.pl</span></span>
+            <Image src="/botiko-logo-full.svg" alt="Botiko.pl" width={120} height={32} />
           </Link>
 
           {sent ? (
