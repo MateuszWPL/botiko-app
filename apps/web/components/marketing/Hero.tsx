@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function TypewriterText({ words }: { words: string[] }) {
@@ -142,8 +143,10 @@ function ChatMockup() {
               backgroundColor: 'rgba(255,255,255,0.2)',
               border: '2px solid rgba(255,255,255,0.3)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 16, fontWeight: 700, color: '#fff', flexShrink: 0,
-            }}>B</div>
+              flexShrink: 0, padding: 7,
+            }}>
+              <Image src="/botiko-mark-white.svg" alt="" width={14} height={18} style={{ display: 'block' }} />
+            </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontWeight: 700, fontSize: 14, color: '#fff', lineHeight: 1.2 }}>Botiko</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 2 }}>
@@ -187,8 +190,10 @@ function ChatMockup() {
               <div style={{
                 width: 24, height: 24, borderRadius: '50%', backgroundColor: BRAND,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 10, fontWeight: 700, color: '#fff', flexShrink: 0,
-              }}>B</div>
+                flexShrink: 0, padding: 5,
+              }}>
+                <Image src="/botiko-mark-white.svg" alt="" width={9} height={11} style={{ display: 'block' }} />
+              </div>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={sceneIdx}

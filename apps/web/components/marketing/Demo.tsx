@@ -69,24 +69,24 @@ function LogoReveal() {
           transition: 'opacity 0.7s ease-out, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
         }}
       >
-        <div className="relative">
-          {/* Outer glow ring */}
+        <div className="relative inline-block">
+          {/* Outer glow */}
           <div
-            className="absolute inset-0 rounded-[2rem] blur-2xl"
-            style={{ background: '#6366F1', opacity: 0.25, transform: 'scale(1.6)' }}
+            className="absolute inset-0 rounded-[2.5rem] blur-3xl"
+            style={{ background: '#6366F1', opacity: 0.22, transform: 'scale(1.7)' }}
           />
-          {/* Inner soft ring */}
+          {/* Card with even padding */}
           <div
-            className="absolute -inset-3 rounded-[2.5rem]"
-            style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)' }}
-          />
-          <Image
-            src="/botiko-mark.svg"
-            alt="Botiko"
-            width={110}
-            height={136}
-            className="relative"
-          />
+            className="relative rounded-[2rem] p-10"
+            style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.18)' }}
+          >
+            <Image
+              src="/botiko-mark.svg"
+              alt="Botiko"
+              width={96}
+              height={119}
+            />
+          </div>
         </div>
       </div>
     </div>

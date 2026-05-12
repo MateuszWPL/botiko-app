@@ -318,11 +318,14 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
       >
         <nav className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 font-bold text-xl cursor-pointer">
-            <Image src="/botiko-mark.svg" alt="Botiko" width={28} height={35} />
-            <span className={navSolid ? 'text-text' : 'text-white drop-shadow'}>
-              Botiko<span className={navSolid ? 'text-brand' : 'text-white/80'}>.pl</span>
-            </span>
+          <Link href="/" className="flex items-center cursor-pointer">
+            <Image
+              src={navSolid ? '/botiko-logo-full.svg' : '/botiko-logo-full-white.svg'}
+              alt="Botiko"
+              width={126}
+              height={34}
+              priority
+            />
           </Link>
 
           {/* Desktop nav */}
@@ -408,9 +411,8 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
       >
         {/* Panel header */}
         <div className="flex items-center justify-between px-6 h-16 border-b border-slate-100">
-          <Link href="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 font-bold text-xl">
-            <Image src="/botiko-mark.svg" alt="Botiko" width={28} height={35} />
-            <span className="text-text">Botiko<span className="text-brand">.pl</span></span>
+          <Link href="/" onClick={() => setMenuOpen(false)} className="flex items-center">
+            <Image src="/botiko-logo-full.svg" alt="Botiko" width={120} height={32} />
           </Link>
           <button
             onClick={() => setMenuOpen(false)}
