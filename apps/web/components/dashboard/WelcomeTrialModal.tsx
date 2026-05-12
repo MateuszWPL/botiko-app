@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react';
 import { Sparkles, BookOpen, Code2, Users, X } from 'lucide-react';
 import { createClient } from '../../lib/supabase';
 
-const STORAGE_KEY = 'botiko_welcomed_v1';
+export const WELCOME_STORAGE_KEY = 'botiko_welcomed_v1';
 const NEW_USER_HOURS = 48;
 
 export function WelcomeTrialModal() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const alreadySeen = localStorage.getItem(STORAGE_KEY);
+    const alreadySeen = localStorage.getItem(WELCOME_STORAGE_KEY);
     if (alreadySeen) return;
 
     const supabase = createClient();
@@ -26,8 +26,9 @@ export function WelcomeTrialModal() {
   }, []);
 
   function dismiss() {
-    localStorage.setItem(STORAGE_KEY, '1');
+    localStorage.setItem(WELCOME_STORAGE_KEY, '1');
     setOpen(false);
+    window.dispatchEvent(new Event('botiko:open-wizard'));
   }
 
   if (!open) return null;
@@ -52,7 +53,7 @@ export function WelcomeTrialModal() {
           </div>
           <h2 className="text-2xl font-extrabold text-slate-900">Witaj w Botiko!</h2>
           <p className="mt-2 text-slate-600 text-sm leading-relaxed">
-            Masz <strong className="text-indigo-600">14 dni darmowego dostępu</strong> — bez karty kredytowej, bez umowy.
+            Twoje konto jest gotowe. Masz <strong className="text-indigo-600">14 dni darmowego dostępu</strong> — bez karty, bez umowy.
           </p>
         </div>
 
@@ -84,9 +85,10 @@ export function WelcomeTrialModal() {
         <div className="px-8 pb-8">
           <button
             onClick={dismiss}
-            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-sm hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg shadow-indigo-200 active:scale-[0.98]"
+            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold text-sm hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg shadow-indigo-200 active:scale-[0.98] flex items-center justify-center gap-2"
           >
-            Zaczynamy
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Odbieram 14 dni za darmo
           </button>
           <p className="mt-3 text-center text-xs text-slate-400">Bez karty. Anuluj kiedy chcesz.</p>
         </div>
