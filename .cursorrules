@@ -7,7 +7,7 @@ SaaS AI chatbot dla polskich mikrofirm usługowych. Widget na stronie klienta �
 
 **Główny fokus:** beauty, health/SPA, food, auto — 4 branże z gotowymi szablonami promptów. **Szerzej:** każda inna mikro/mała firma usługowa (fryzjer, fizjoterapeuta, korepetytor, fotograf, coach, trener itd.) → szablon generyczny `OTHER`.
 
-**Stan (2026-04-22):** Faza 1A — kod gotowy, 297+ unit tests, 24 Playwright E2E, 4-jobowy CI zielony. Brakuje: deploy infra (Railway/Vercel).
+**Stan (2026-05-14):** Faza 1A ukończona — **MVP zdeployowane na produkcji** (`botiko.pl`). Web→Vercel (auto-deploy z `main`), API→Railway, Widget→Vercel. 297+ unit tests, 24 Playwright E2E, 4-jobowy CI zielony. Teraz: Faza 2 — piloty i pierwsi klienci.
 
 ## Stack
 - **web**: Next.js 14 App Router + Tailwind v4 + Supabase Auth SSR
@@ -22,7 +22,10 @@ SaaS AI chatbot dla polskich mikrofirm usługowych. Widget na stronie klienta �
 - Landing page + blog MDX + formularz kontaktowy
 - Security: CORS open (DomainWhitelistGuard jako gatekeeper), UUID validation, rate limits, walidacja hasła 12 znaków
 - Stripe: idempotency guard (ProcessedStripeEvent) + audit trail (BillingEvent)
+- System emailowy (Resend): szablony, drip scheduler onboardingowy, powiadomienia o leadach
 - System recenzji (Review model + moduł API)
+- Brand kit: SVG logo (`apps/web/public/botiko-*.svg`) — wordmark + znak, warianty light/dark/white
+- Blog: 32 posty MDX, daty 2026-03 → 2026-07, auto-publikacja wg daty (`lib/blog.ts` filtruje przyszłe). Grafiki w `public/blog/` ręcznie.
 
 ## Zasady których pilnujemy
 - TypeScript strict, zero `any`, zero `ts-ignore`

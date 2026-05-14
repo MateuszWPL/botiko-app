@@ -148,24 +148,30 @@ Scope (opcjonalny): `api`, `web`, `widget`
 
 ## Project Status
 
-**Faza:** 1A — Production-Ready (deployment pending)
+**Faza:** 1A ukończona — **MVP na produkcji** (`botiko.pl`). Trwa Faza 2 (piloty).
 
-**Co działa:**
+**Infrastruktura:** Web → Vercel (auto-deploy z `main`) · API → Railway · Widget → Vercel.
+Instrukcja env vars + DNS: [`docs/PRODUCTION_ENV.md`](./docs/PRODUCTION_ENV.md)
+
+**Co działa na produkcji:**
 - ✅ RAG pipeline (embeddings → pgvector → GPT-4o-mini)
 - ✅ Widget (<12KB, Shadow DOM, natywnie pod WordPress; działa też na każdej innej stronie WWW)
 - ✅ Dashboard (10 stron + Stripe billing + import strony WWW)
-- ✅ Landing page + blog SEO (30+ postów MDX, w tym pillar "Botiko dla WordPress")
+- ✅ System emailowy (Resend — drip scheduler, powiadomienia o leadach, billing webhooks)
+- ✅ Landing page + blog SEO (32 posty MDX z content runway do lipca 2026, auto-publikacja wg daty)
 - ✅ Security (CORS, UUID validation, AES-256-GCM encryption)
 
-**Co zostało:**
-- ❌ Railway/Vercel deployment + DNS
-- ❌ Ręczna QA (checklist: `TASK.md §1A.6`)
+**Backlog (drobne, nie blokują):**
+- Monitoring produkcyjny (Sentry + UptimeRobot)
+- Uzupełnienie brakujących testów jednostkowych (`TASK.md §1A.7`)
 
 ---
 
 ## Zasoby
 
-- **Projekt:** https://github.com/user/botiko
+- **Repo:** https://github.com/MateuszWPL/botiko-app
+- **Produkcja:** https://botiko.pl
+- **Hosting:** Railway (API) · Vercel (Web + Widget)
 - **Supabase:** https://supabase.com (PostgreSQL + Auth)
 - **Stripe:** https://stripe.com (Billing)
 - **OpenAI:** https://openai.com (API key)
