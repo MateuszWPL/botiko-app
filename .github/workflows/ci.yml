@@ -139,5 +139,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build (enforces <12KB gzip)
+      - name: Build (enforces <13KB gzip)
         run: pnpm build
+        env:
+          VITE_API_URL: https://api.botiko.pl
+
+      - name: Deploy to Vercel (production)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: npx vercel deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: team_XxFAcXoIM9oL0z3SW1a1QMBj
+          VERCEL_PROJECT_ID: prj_mqx686XbMFMs9Rn9zt6qhxlW3ykx

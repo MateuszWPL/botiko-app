@@ -979,6 +979,7 @@ function WebTab({
 }) {
   const [savedUrl, setSavedUrl] = useState<string | null>(tenantWebsiteUrl ?? null);
   const [input, setInput] = useState('');
+  const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
 
@@ -1001,12 +1002,15 @@ function WebTab({
       const normalized = raw.startsWith('http') ? raw : 'https://' + raw;
       setSavedUrl(normalized);
       setInput('');
+      setEditing(false);
     } catch {
       setSaveError('Nie udało się zapisać. Sprawdź format adresu (np. twojastrona.pl).');
     } finally {
       setSaving(false);
     }
   };
+
+  const showForm = !savedUrl || editing;
 
   return (
     <div className="space-y-4">
@@ -1017,11 +1021,13 @@ function WebTab({
         <p className="text-xs text-slate-500 mb-4">
           Bot automatycznie pobierze informacje ze Twojej strony: usługi, FAQ, kontakt i cennik.
         </p>
-        {!savedUrl && (
+        {showForm ? (
           <div className="mb-4">
-            <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5 mb-3">
-              Podaj URL swojej strony, żeby odblokować import.
-            </p>
+            {!savedUrl && (
+              <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5 mb-3">
+                Podaj URL swojej strony, żeby odblokować import.
+              </p>
+            )}
             <div className="flex gap-2">
               <input
                 type="text"
@@ -1038,17 +1044,32 @@ function WebTab({
               >
                 {saving ? 'Zapisuję…' : 'Zapisz'}
               </button>
+              {editing && (
+                <button
+                  onClick={() => { setEditing(false); setInput(''); setSaveError(''); }}
+                  className="px-3 py-2 text-sm text-slate-500 hover:text-slate-700 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  Anuluj
+                </button>
+              )}
             </div>
             {saveError && (
               <p className="text-xs text-rose-600 mt-1.5">{saveError}</p>
             )}
           </div>
-        )}
-        {savedUrl && (
-          <p className="text-xs text-slate-500 mb-3">
-            Strona:{' '}
-            <span className="font-mono text-slate-700">{savedUrl}</span>
-          </p>
+        ) : (
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xs text-slate-500">
+              Strona:{' '}
+              <span className="font-mono text-slate-700">{savedUrl}</span>
+            </span>
+            <button
+              onClick={() => { setInput(savedUrl ?? ''); setEditing(true); }}
+              className="text-xs text-indigo-600 hover:text-indigo-700 font-medium underline cursor-pointer"
+            >
+              Zmień
+            </button>
+          </div>
         )}
         <WebsiteImportButton
           botId={botId}

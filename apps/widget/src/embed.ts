@@ -16,6 +16,7 @@ interface BotConfig {
   businessDays: number[];
   suggestedQuestions: string[];
   avatarEmoji: string;
+  allowedDomains: string[];
 }
 
 function Widget({
@@ -114,6 +115,7 @@ async function init() {
     businessDays: [],
     suggestedQuestions: ['Czym możesz mi pomóc?', 'Jakie są godziny pracy?', 'Jak się skontaktować?'],
     avatarEmoji: '',
+    allowedDomains: [],
   };
 
   try {
@@ -123,6 +125,16 @@ async function init() {
     }
   } catch {
     // use defaults — bot still works without remote config
+  }
+
+  // If allowedDomains is non-empty and current origin isn't whitelisted → show offline.
+  // Security is still enforced server-side; this is UX-only (no chat prompt, red dot).
+  if (config.allowedDomains.length > 0) {
+    const origin = window.location.origin.toLowerCase();
+    const allowed = config.allowedDomains.some((d) => d.toLowerCase() === origin);
+    if (!allowed) {
+      config.online = false;
+    }
   }
 
   // Shadow DOM — isolates widget CSS from host page
