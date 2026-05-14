@@ -117,8 +117,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Missing params' }, { status: 400 });
   }
 
-  // Validate botId is a UUID to prevent HTML-injection in the contains check
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(botId)) {
+  // Bot IDs are CUIDs (Prisma @default(cuid())). Restrict to a safe
+  // alphanumeric charset so the value cannot break out of the contains check.
+  if (!/^[a-z0-9]{20,40}$/i.test(botId)) {
     return NextResponse.json({ error: 'Invalid botId' }, { status: 400 });
   }
 

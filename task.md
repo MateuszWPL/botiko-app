@@ -638,6 +638,8 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 - [ ] Checkbox RODO widoczny przed submitem formularza — nie można wysłać leada bez zgody
 - [ ] Link do polityki prywatności działa
 - [ ] PII encryption: sprawdź w DB że `lead.name`, `lead.phone` i `lead.message` są zaszyfrowane (format `hex:hex:hex` — AES-256-GCM)
+- [x] **`data-bot-id` jest publiczny — to celowe, nie luka.** Snippet żyje w HTML strony klienta, więc każdy go widzi (tak działa Intercom/Crisp/Tidio — nie da się zaszyfrować, klucz byłby po stronie przeglądarki). Realna ochrona to `DomainWhitelistGuard`: skopiowany skrypt na obcej domenie **wyświetli** button, ale `/chat` i `/leads` zwrócą 403 → zero dostępu do bota, zero kosztów OpenAI, zero leadów. **Znany kompromis:** nagłówek `Origin` da się sfałszować spoza przeglądarki (curl/serwer) — akceptowalne dla MVP, hardening w 1B.6.
+- [ ] Weryfikacja instalacji widgetu (`/api/widget-check`): otwórz dashboard → Embed → sekcja „Weryfikacja instalacji" pokazuje „Widget wykryty" dla domeny z wklejonym snippetem. Uwaga: scraper czyta tylko statyczny HTML — jeśli snippet jest wstrzykiwany przez JS (GTM, część wtyczek), pokaże „Nie znaleziono" mimo że widget działa.
 
 #### Stripe
 - [x] Webhook secret (`STRIPE_WEBHOOK_SECRET`) w env — nie w kodzie (pobierany przez `env.ts`)
@@ -719,6 +721,17 @@ Wdrożyć gdy: klient pyta o Google Docs/Notion sync lub API.
 
 - [ ] Cron job: codziennie o 8:00 → dla każdego aktywnego tenanta wyślij podsumowanie (X rozmów, Y leadów)
 - [ ] Wersja Pro/Premium tylko
+
+### 1B.6 — Hardening ochrony widgetu
+
+Wdrożyć gdy: ktoś faktycznie nadużywa skopiowanego snippetu, albo przed skalowaniem ponad pilot.
+
+> Kontekst: w MVP jedyną ochroną publicznego endpointu widgetu jest `DomainWhitelistGuard` (sprawdza nagłówek `Origin` vs `bot.allowedDomains`). `Origin` da się sfałszować spoza przeglądarki — wystarczające na pilot, ale nie docelowo.
+
+- [ ] **Rate limit per botId** już istnieje (`BotThrottleGuard`, 60 req/min) — zweryfikować że limituje też próby zza sfałszowanego `Origin`
+- [ ] Rozważyć podpisany token per-domena w snippecie (HMAC z `botId` + domena, weryfikowany w API) zamiast samego `Origin`
+- [ ] Alert dla właściciela bota gdy wykryto żądania z domeny spoza whitelisty (możliwa kradzież snippetu)
+- [ ] Testy jednostkowe dla `/api/widget-check` — `apps/web` nie ma jeszcze runnera testów jednostkowych (tylko Playwright E2E); wymaga dodania Vitest + joba w CI
 
 ---
 
