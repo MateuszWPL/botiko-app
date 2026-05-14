@@ -19,6 +19,7 @@ import { ConversationsAreaChart } from '../../../components/dashboard/Conversati
 import type { ChartPoint } from '../../../components/dashboard/ConversationsAreaChart';
 import { KnowledgeHealthCard } from '../../../components/dashboard/KnowledgeHealthCard';
 import type { KnowledgeHealth } from '../../../components/dashboard/KnowledgeHealthCard';
+import { RoiSummaryCard } from '../../../components/dashboard/RoiSummaryCard';
 
 interface Lead {
   id: string;
@@ -194,6 +195,15 @@ export default async function OverviewPage() {
   const usagePct = Math.min(100, Math.round((usageCount / PLAN_LIMIT) * 100));
   const remaining = Math.max(0, PLAN_LIMIT - usageCount);
 
+  // Conversations handled outside typical working hours (evenings + weekends).
+  // Heuristic — shift UTC by +2h to approximate Polish local time (CEST).
+  const afterHoursConvs = thisMonthConvs.filter((c) => {
+    const d = new Date(new Date(c.createdAt).getTime() + 2 * 60 * 60 * 1000);
+    const day = d.getUTCDay();
+    const hour = d.getUTCHours();
+    return day === 0 || day === 6 || hour < 8 || hour >= 18;
+  }).length;
+
   const newLeadsCount = leads.filter((l) => l.status === 'NEW').length;
   const contactedCount = leads.filter((l) => l.status === 'CONTACTED').length;
 
@@ -299,6 +309,14 @@ export default async function OverviewPage() {
             Aktywuj plan
           </Link>
         </div>
+      )}
+
+      {/* ── ROI summary ── */}
+      {bots.length > 0 && (
+        <RoiSummaryCard
+          leadsThisMonth={thisMonthLeads.length}
+          afterHoursConvs={afterHoursConvs}
+        />
       )}
 
       {/* ── 1. Stat cards ── */}
