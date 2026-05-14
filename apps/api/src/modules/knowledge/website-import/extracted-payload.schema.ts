@@ -19,6 +19,7 @@ export const extractedPayloadSchema = z.object({
         name: z.string().min(2).max(120),
         description: z.string().max(600).nullable().optional(),
         price: z.string().max(100).nullable().optional(),
+        sourceUrl: z.string().max(500).nullable().optional(),
       }),
     )
     .max(20)
@@ -28,6 +29,7 @@ export const extractedPayloadSchema = z.object({
       z.object({
         question: z.string().min(5).max(400),
         answer: z.string().min(5).max(1500),
+        sourceUrl: z.string().max(500).nullable().optional(),
       }),
     )
     .max(15)
@@ -39,15 +41,6 @@ export const extractedPayloadSchema = z.object({
     .nullable()
     .optional(),
   about: z.string().max(2000).nullable().optional(),
-  prices: z
-    .array(
-      z.object({
-        item: z.string().min(2).max(150),
-        price: z.string().min(1).max(100),
-      }),
-    )
-    .max(30)
-    .default([]),
 });
 
 export type ExtractedPayload = z.infer<typeof extractedPayloadSchema>;
@@ -83,6 +76,7 @@ export function parseAndSanitizePayload(raw: unknown): ExtractedPayload {
       name: checkField(s.name) ?? s.name,
       description: checkField(s.description) ?? undefined,
       price: checkField(s.price) ?? undefined,
+      sourceUrl: sanitizeString(s.sourceUrl) ?? undefined,
     }))
     .filter((s) => s.name.length >= 2);
 
@@ -90,6 +84,7 @@ export function parseAndSanitizePayload(raw: unknown): ExtractedPayload {
     .map((f) => ({
       question: checkField(f.question) ?? f.question,
       answer: checkField(f.answer) ?? f.answer,
+      sourceUrl: sanitizeString(f.sourceUrl) ?? undefined,
     }))
     .filter((f) => f.question.length >= 5 && f.answer.length >= 5);
 
@@ -98,13 +93,6 @@ export function parseAndSanitizePayload(raw: unknown): ExtractedPayload {
   }
 
   result.about = checkField(result.about) ?? undefined;
-
-  result.prices = result.prices
-    .map((p) => ({
-      item: checkField(p.item) ?? p.item,
-      price: checkField(p.price) ?? p.price,
-    }))
-    .filter((p) => p.item.length >= 2 && p.price.length >= 1);
 
   return result;
 }

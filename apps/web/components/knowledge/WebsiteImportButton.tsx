@@ -131,15 +131,20 @@ export function WebsiteImportButton({ botId, tenantWebsiteUrl, onComplete }: Pro
 
   if (state === 'idle') {
     return (
-      <button
-        onClick={start}
-        disabled={isDisabled}
-        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-        title={isDisabled ? 'Najpierw dodaj URL strony w Ustawieniach > Profil firmy' : ''}
-      >
-        <Globe className="w-4 h-4" />
-        Importuj ze strony
-      </button>
+      <div className="space-y-1.5">
+        <button
+          onClick={start}
+          disabled={isDisabled}
+          className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          title={isDisabled ? 'Najpierw dodaj URL strony w Ustawieniach > Profil firmy' : ''}
+        >
+          <Globe className="w-4 h-4" />
+          Importuj ze strony
+        </button>
+        <p className="text-xs text-slate-400 text-center">
+          Import skanuje stronę i analizuje ją przez AI — możesz go uruchomić maksymalnie 3 razy na 7 dni.
+        </p>
+      </div>
     );
   }
 

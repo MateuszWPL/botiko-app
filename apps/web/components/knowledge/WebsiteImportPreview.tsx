@@ -2,8 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import {
-  Phone, Mail, MapPin, Clock, BookOpen, HelpCircle, DollarSign, Info,
-  Plus, Trash2, Check, Loader2,
+  Phone, Mail, MapPin, Clock, BookOpen, HelpCircle, Info,
+  Plus, Trash2, Check, Loader2, ExternalLink,
 } from 'lucide-react';
 import type { ExtractedPayload, ConfirmPayload } from '../../lib/website-import';
 
@@ -25,18 +25,14 @@ type EditableService = {
   name: string;
   description: string;
   price: string;
+  sourceUrl?: string | null;
   selected: boolean;
 };
 
 type EditableFaq = {
   question: string;
   answer: string;
-  selected: boolean;
-};
-
-type EditablePrice = {
-  item: string;
-  price: string;
+  sourceUrl?: string | null;
   selected: boolean;
 };
 
@@ -71,6 +67,29 @@ function SectionHeader({
         </span>
       )}
     </div>
+  );
+}
+
+function SourceLink({ url }: { url?: string | null }) {
+  if (!url) return null;
+  let label = url;
+  try {
+    const u = new URL(url);
+    label = u.pathname && u.pathname !== '/' ? u.pathname : u.hostname;
+  } catch {
+    // keep raw url as label
+  }
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={`Źródło: ${url}`}
+      className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-indigo-500 transition-colors max-w-full"
+    >
+      <ExternalLink className="w-3 h-3 flex-shrink-0" />
+      <span className="truncate">źródło: {label}</span>
+    </a>
   );
 }
 
@@ -112,6 +131,7 @@ export function WebsiteImportPreview({ payload, onConfirm, onCancel, loading }: 
       name: s.name,
       description: s.description ?? '',
       price: s.price ?? '',
+      sourceUrl: s.sourceUrl ?? null,
       selected: true,
     })),
   );
@@ -130,10 +150,6 @@ export function WebsiteImportPreview({ payload, onConfirm, onCancel, loading }: 
     selected: !!(payload.about),
   });
 
-  const [prices, setPrices] = useState<EditablePrice[]>(
-    payload.prices.map((p) => ({ ...p, selected: true })),
-  );
-
   const selectedCount = useMemo(() => {
     let n = 0;
     if (contact.selected && (contact.phone || contact.email || contact.address)) n++;
@@ -141,10 +157,8 @@ export function WebsiteImportPreview({ payload, onConfirm, onCancel, loading }: 
     n += faq.filter((f) => f.selected && f.question.trim() && f.answer.trim()).length;
     if (hours.selected && hours.raw.trim()) n++;
     if (about.selected && about.text.trim()) n++;
-    const selectedPrices = prices.filter((p) => p.selected && p.item.trim() && p.price.trim());
-    if (selectedPrices.length > 0) n++;
     return n;
-  }, [contact, services, faq, hours, about, prices]);
+  }, [contact, services, faq, hours, about]);
 
   const handleConfirm = async () => {
     const payload2: ConfirmPayload = {
@@ -175,13 +189,6 @@ export function WebsiteImportPreview({ payload, onConfirm, onCancel, loading }: 
       about: about.text.trim()
         ? { text: about.text.trim(), selected: about.selected }
         : null,
-      prices: prices
-        .filter((p) => p.item.trim() && p.price.trim())
-        .map((p) => ({
-          item: p.item.trim(),
-          price: p.price.trim(),
-          selected: p.selected,
-        })),
     };
     await onConfirm(payload2);
   };
@@ -191,8 +198,7 @@ export function WebsiteImportPreview({ payload, onConfirm, onCancel, loading }: 
     payload.services.length > 0 ||
     payload.faq.length > 0 ||
     payload.hours?.raw ||
-    payload.about ||
-    payload.prices.length > 0;
+    payload.about;
 
   return (
     <div className="space-y-4">
@@ -312,6 +318,7 @@ export function WebsiteImportPreview({ payload, onConfirm, onCancel, loading }: 
                       className={inputClass}
                     />
                   </div>
+                  {s.sourceUrl && <SourceLink url={s.sourceUrl} />}
                 </div>
                 <button
                   type="button"
@@ -386,6 +393,7 @@ export function WebsiteImportPreview({ payload, onConfirm, onCancel, loading }: 
                     rows={2}
                     className={textareaClass}
                   />
+                  {f.sourceUrl && <SourceLink url={f.sourceUrl} />}
                 </div>
                 <button
                   type="button"
@@ -409,64 +417,6 @@ export function WebsiteImportPreview({ payload, onConfirm, onCancel, loading }: 
               <Plus className="w-3.5 h-3.5" />
               Dodaj pytanie FAQ
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* Prices */}
-      {payload.prices.length > 0 && (
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
-          <SectionHeader
-            icon={DollarSign}
-            title="Cennik"
-            count={prices.filter((p) => p.selected).length}
-            iconColor="text-amber-600"
-            iconBg="bg-amber-50"
-          />
-          <div className="space-y-2">
-            {prices.map((p, i) => (
-              <div key={i} className="flex items-center gap-2 p-2.5 bg-slate-50 rounded-lg border border-slate-100">
-                <Checkbox
-                  checked={p.selected}
-                  onChange={(v) =>
-                    setPrices((prev) =>
-                      prev.map((item, j) => (j === i ? { ...item, selected: v } : item)),
-                    )
-                  }
-                />
-                <input
-                  value={p.item}
-                  onChange={(e) =>
-                    setPrices((prev) =>
-                      prev.map((item, j) =>
-                        j === i ? { ...item, item: e.target.value } : item,
-                      ),
-                    )
-                  }
-                  placeholder="Pozycja cennika"
-                  className={`${inputClass} flex-1`}
-                />
-                <input
-                  value={p.price}
-                  onChange={(e) =>
-                    setPrices((prev) =>
-                      prev.map((item, j) =>
-                        j === i ? { ...item, price: e.target.value } : item,
-                      ),
-                    )
-                  }
-                  placeholder="Cena"
-                  className={`${inputClass} w-28 flex-shrink-0`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setPrices((prev) => prev.filter((_, j) => j !== i))}
-                  className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all flex-shrink-0"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ))}
           </div>
         </div>
       )}

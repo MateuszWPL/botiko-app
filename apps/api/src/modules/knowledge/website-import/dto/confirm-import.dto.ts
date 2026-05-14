@@ -20,12 +20,6 @@ const selectedFaqSchema = z.object({
   selected: z.boolean(),
 });
 
-const selectedPriceSchema = z.object({
-  item: z.string().min(2).max(150),
-  price: z.string().min(1).max(100),
-  selected: z.boolean(),
-});
-
 export const confirmImportSchema = z.object({
   contact: selectedContactSchema.nullable().optional(),
   services: z.array(selectedServiceSchema).max(20).default([]),
@@ -41,7 +35,6 @@ export const confirmImportSchema = z.object({
     .object({ text: z.string().max(2000), selected: z.boolean() })
     .nullable()
     .optional(),
-  prices: z.array(selectedPriceSchema).max(30).default([]),
 });
 
 export type ConfirmImportDto = z.infer<typeof confirmImportSchema>;

@@ -44,9 +44,14 @@ export class OpenAIProvider implements AIService {
     messages: ChatMessage[],
     options: ChatOptions = {},
   ): Promise<ChatResult> {
-    const { maxTokens = 600, temperature = 0.3, responseFormat } = options;
+    const {
+      maxTokens = 600,
+      temperature = 0.3,
+      responseFormat,
+      model = 'gpt-4o-mini',
+    } = options;
     const response = await this.client.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model,
       messages,
       max_tokens: maxTokens,
       temperature,
