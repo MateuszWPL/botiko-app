@@ -5,6 +5,7 @@ import { X, ChevronRight, ChevronLeft, Check, Bot, Copy, Loader2, Plus, Trash2 }
 import { createClient } from '../../lib/supabase';
 import { WELCOME_STORAGE_KEY } from './WelcomeTrialModal';
 import { WebsiteImportButton } from '../knowledge/WebsiteImportButton';
+import { DemoChatPreview } from './DemoChatPreview';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 const WIDGET_URL = process.env.NEXT_PUBLIC_WIDGET_URL ?? 'https://cdn.botiko.pl';
@@ -351,21 +352,19 @@ function StepAppearance({ data, onChange }: { data: WizardData; onChange: (d: Pa
         />
       </div>
 
-      {/* Podgląd na żywo */}
-      <div className="border border-slate-200 rounded-xl overflow-hidden">
-        <div
-          className="px-4 py-2.5 text-white text-sm font-medium flex items-center gap-2"
-          style={{ backgroundColor: data.primaryColor }}
-        >
-          <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
-          {data.botName || 'Twój bot'}
-        </div>
-        <div className="p-4 bg-slate-50">
-          <div className="inline-block bg-white rounded-xl rounded-bl-sm px-4 py-2 text-sm text-slate-800 shadow-sm max-w-xs">
-            {data.welcomeMsg || '...'}
-          </div>
-        </div>
-      </div>
+      {/* Interaktywny podgląd na żywo */}
+      <DemoChatPreview
+        data={{
+          botName: data.botName,
+          primaryColor: data.primaryColor,
+          welcomeMsg: data.welcomeMsg,
+          companyName: data.companyName,
+          phone: data.phone,
+          email: data.email,
+          address: data.address,
+          serviceItems: data.serviceItems,
+        }}
+      />
     </div>
   );
 }
