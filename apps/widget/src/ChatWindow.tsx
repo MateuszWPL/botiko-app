@@ -60,6 +60,25 @@ function generateSessionId(): string {
   return `s_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 9)}`;
 }
 
+/** Lenient phone check — 9-15 digits covers PL local (9) and international. */
+function isValidPhone(raw: string): boolean {
+  const digits = raw.replace(/\D/g, '');
+  return digits.length >= 9 && digits.length <= 15;
+}
+
+/** Pretty-prints common Polish formats; leaves anything else as typed. */
+function formatPhone(raw: string): string {
+  const trimmed = raw.trim();
+  const digits = trimmed.replace(/\D/g, '');
+  if (!trimmed.startsWith('+') && digits.length === 9) {
+    return digits.replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3');
+  }
+  if (digits.length === 11 && digits.startsWith('48')) {
+    return `+48 ${digits.slice(2).replace(/(\d{3})(\d{3})(\d{3})/, '$1 $2 $3')}`;
+  }
+  return trimmed;
+}
+
 function loadSession(botId: string, welcomeMessage: string): SessionData {
   try {
     const raw = sessionStorage.getItem(`botiko_${botId}`);
@@ -193,6 +212,8 @@ export function ChatWindow({
   }, [isMobile, isOpen]);
 
   const [showSuggestions, setShowSuggestions] = useState(userMessageCount === 0);
+  const [phoneTouched, setPhoneTouched] = useState(false);
+  const phoneValid = isValidPhone(lead.phone);
 
   useEffect(() => {
     saveSession(botId, {
@@ -291,7 +312,7 @@ export function ChatWindow({
   };
 
   const submitLead = async () => {
-    if (!lead.name.trim() || !lead.phone.trim() || !lead.consent) return;
+    if (!lead.name.trim() || !phoneValid || !lead.consent) return;
     setLead((s) => ({ ...s, loading: true, error: null }));
 
     try {
@@ -630,10 +651,28 @@ export function ChatWindow({
             onInput={(e) => setLead((s) => ({ ...s, name: (e.target as HTMLInputElement).value }))}
             style={inputStyle}
           />
-          <input type="tel" placeholder="Numer telefonu" value={lead.phone}
+          <input type="tel" placeholder="Numer telefonu (np. 600 100 200)" value={lead.phone}
             onInput={(e) => setLead((s) => ({ ...s, phone: (e.target as HTMLInputElement).value }))}
-            style={{ ...inputStyle, marginTop: '6px' }}
+            onBlur={(e) => {
+              setPhoneTouched(true);
+              setLead((s) => ({ ...s, phone: formatPhone((e.target as HTMLInputElement).value) }));
+            }}
+            style={{
+              ...inputStyle,
+              marginTop: '6px',
+              borderColor:
+                phoneTouched && lead.phone.trim() && !phoneValid
+                  ? '#dc2626'
+                  : phoneValid && lead.phone.trim()
+                    ? '#16a34a'
+                    : '#e2e8f0',
+            }}
           />
+          {phoneTouched && lead.phone.trim() && !phoneValid && (
+            <div style={{ marginTop: '4px', fontSize: '11px', color: '#dc2626' }}>
+              Podaj poprawny numer telefonu — co najmniej 9 cyfr.
+            </div>
+          )}
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', marginTop: '8px', fontSize: '11px', color: '#64748b', cursor: 'pointer' }}>
             <input type="checkbox" checked={lead.consent}
               onChange={(e) => setLead((s) => ({ ...s, consent: (e.target as HTMLInputElement).checked }))}
@@ -650,10 +689,10 @@ export function ChatWindow({
           <div style={{ display: 'flex', gap: '6px', marginTop: '8px' }}>
             <button
               onClick={() => void submitLead()}
-              disabled={lead.loading || !lead.name.trim() || !lead.phone.trim() || !lead.consent}
+              disabled={lead.loading || !lead.name.trim() || !phoneValid || !lead.consent}
               style={{
                 ...btnStyle(primaryColor), flex: 1,
-                opacity: (lead.loading || !lead.name.trim() || !lead.phone.trim() || !lead.consent) ? 0.6 : 1,
+                opacity: (lead.loading || !lead.name.trim() || !phoneValid || !lead.consent) ? 0.6 : 1,
               }}
             >
               {lead.loading ? '...' : 'Wyślij'}
