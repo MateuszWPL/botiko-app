@@ -31,7 +31,7 @@ export class TenantController {
     @CurrentTenant() tenantId: string,
     @Body() body: unknown,
   ): Promise<void> {
-    const { websiteUrl } = z
+    const { websiteUrl, industry } = z
       .object({
         websiteUrl: z
           .string()
@@ -41,7 +41,8 @@ export class TenantController {
             const withScheme = v.startsWith('http') ? v : 'https://' + v;
             try {
               const u = new URL(withScheme);
-              if (u.protocol !== 'http:' && u.protocol !== 'https:') return false;
+              if (u.protocol !== 'http:' && u.protocol !== 'https:')
+                return false;
               const h = u.hostname.toLowerCase();
               const parts = h.split('.');
               const [a, b] = parts.map(Number);
@@ -56,10 +57,14 @@ export class TenantController {
             } catch {
               return false;
             }
-          }, 'Nieprawidłowy lub niedozwolony adres URL'),
+          }, 'Nieprawidłowy lub niedozwolony adres URL')
+          .optional(),
+        industry: z
+          .enum(['BEAUTY', 'HEALTH', 'FOOD', 'AUTO', 'OTHER'])
+          .optional(),
       })
       .parse(body);
-    await this.tenantService.updateWebsiteUrl(tenantId, websiteUrl);
+    await this.tenantService.updateProfile(tenantId, { websiteUrl, industry });
   }
 
   // RODO: right to erasure — permanently deletes all tenant data

@@ -249,25 +249,14 @@ function TabProfil({
   return (
     <div className="space-y-4" suppressHydrationWarning>
       <SectionCard title="Tożsamość bota" subtitle="Imię i osobowość jakie bot prezentuje klientom.">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Imię bota</label>
-            <input
-              type="text"
-              value={form.name}
-              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Branża</label>
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-2 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-lg">
-                {INDUSTRY_LABELS[form.industry ?? ''] ?? form.industry ?? '—'}
-              </span>
-              <span className="text-xs text-slate-400">Kontakt z supportem aby zmienić</span>
-            </div>
-          </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-1.5">Imię bota</label>
+          <input
+            type="text"
+            value={form.name}
+            onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+            className={inputClass}
+          />
         </div>
         <div>
           <label className="block text-xs font-semibold text-slate-600 mb-1.5">Osobowość / ton wypowiedzi</label>
@@ -283,40 +272,6 @@ function TabProfil({
             <Lightbulb className="w-3.5 h-3.5 flex-shrink-0" />
             Wskazówka: im konkretniej opiszesz styl, tym bot brzmi bardziej &quot;Twoje&quot;.
           </p>
-        </div>
-      </SectionCard>
-
-      <SectionCard title="Dane firmy" subtitle='Bot używa tych danych aby odpowiadać na pytania "gdzie?", "kiedy?", "jak dojadę?".'>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Nazwa firmy</label>
-            <input
-              type="text"
-              value={form.companyName ?? ''}
-              onChange={(e) => setForm((f) => ({ ...f, companyName: e.target.value }))}
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Telefon</label>
-            <input
-              type="tel"
-              value={form.companyPhone ?? ''}
-              onChange={(e) => setForm((f) => ({ ...f, companyPhone: e.target.value }))}
-              placeholder="+48 600 123 456"
-              className={inputClass}
-            />
-          </div>
-        </div>
-        <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1.5">Adres</label>
-          <input
-            type="text"
-            value={form.companyAddress ?? ''}
-            onChange={(e) => setForm((f) => ({ ...f, companyAddress: e.target.value }))}
-            placeholder="ul. Floriańska 12, 31-019 Kraków"
-            className={inputClass}
-          />
         </div>
       </SectionCard>
 
@@ -719,44 +674,21 @@ function initSchedule(bot: BotData): DaySchedule[] {
   return schedule;
 }
 
-function TabKonto() {
-  const [firstName, setFirstName] = useState('');
-  const [saving, setSaving] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    const load = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      const name =
-        (user?.user_metadata?.full_name as string | undefined) ??
-        (user?.user_metadata?.name as string | undefined) ??
-        '';
-      setFirstName(name);
-      setLoaded(true);
-    };
-    void load();
-  }, []);
-
-  const handleSave = async () => {
-    if (!firstName.trim()) return;
-    setSaving(true);
-    try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.updateUser({
-        data: { full_name: firstName.trim() },
-      });
-      if (error) throw error;
-      toast.success('Imię zapisane');
-    } catch {
-      toast.error('Nie udało się zapisać imienia');
-    } finally {
-      setSaving(false);
-    }
-  };
-
+function TabKonto({
+  form,
+  setForm,
+  firstName,
+  setFirstName,
+  accountLoaded,
+}: {
+  form: FormState;
+  setForm: React.Dispatch<React.SetStateAction<FormState>>;
+  firstName: string;
+  setFirstName: (v: string) => void;
+  accountLoaded: boolean;
+}) {
   return (
-    <div className="space-y-4 max-w-lg">
+    <div className="space-y-4 max-w-2xl">
       <SectionCard
         title="Twój profil"
         subtitle="Imię wyświetlane w powitaniu na panelu zarządzania."
@@ -769,8 +701,8 @@ function TabKonto() {
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            placeholder={loaded ? 'Wpisz swoje imię…' : 'Ładowanie…'}
-            disabled={!loaded}
+            placeholder={accountLoaded ? 'Wpisz swoje imię…' : 'Ładowanie…'}
+            disabled={!accountLoaded}
             maxLength={50}
             className={inputClass}
           />
@@ -778,16 +710,58 @@ function TabKonto() {
             Np.&nbsp;<span className="font-medium text-slate-600">Mateusz</span> &mdash; pojawi się jako &bdquo;Dzień dobry, Mateusz&rdquo; w nagłówku dashboardu.
           </p>
         </div>
-        <div className="flex justify-end">
-          <button
-            onClick={() => void handleSave()}
-            disabled={!loaded || saving || !firstName.trim()}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white font-medium rounded-xl text-sm transition-all shadow-sm shadow-indigo-200 cursor-pointer disabled:cursor-default"
-          >
-            {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-            {saving ? 'Zapisywanie…' : 'Zapisz imię'}
-          </button>
+      </SectionCard>
+
+      <SectionCard title="Dane firmy" subtitle='Bot używa tych danych aby odpowiadać na pytania "gdzie?", "kiedy?", "jak dojadę?".'>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Nazwa firmy</label>
+            <input
+              type="text"
+              value={form.companyName ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, companyName: e.target.value }))}
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Telefon</label>
+            <input
+              type="tel"
+              value={form.companyPhone ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, companyPhone: e.target.value }))}
+              placeholder="+48 600 123 456"
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Branża</label>
+            <select
+              value={form.industry}
+              onChange={(e) => setForm((f) => ({ ...f, industry: e.target.value }))}
+              className={inputClass + ' cursor-pointer'}
+            >
+              {Object.entries(INDUSTRY_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Adres</label>
+            <input
+              type="text"
+              value={form.companyAddress ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, companyAddress: e.target.value }))}
+              placeholder="ul. Floriańska 12, 31-019 Kraków"
+              className={inputClass}
+            />
+          </div>
         </div>
+        <p className="flex items-center gap-1.5 text-xs text-amber-600">
+          <Lightbulb className="w-3.5 h-3.5 flex-shrink-0" />
+          Zmiana branży przełącza szablon promptu i domyślne sugerowane pytania — Twoja baza wiedzy zostaje nietknięta.
+        </p>
       </SectionCard>
     </div>
   );
@@ -828,7 +802,30 @@ export function SettingsForm({ bot }: { bot: BotData }) {
   const [activeTab, setActiveTab] = useState<TabId>('konto');
   const [saving, setSaving] = useState(false);
 
-  const isDirty = JSON.stringify(form) !== JSON.stringify(initial);
+  // Imię użytkownika żyje w Supabase Auth (nie w bocie) — ładowane osobno,
+  // ale zapisywane wspólnym przyciskiem razem z polami bota i branżą.
+  const [firstName, setFirstName] = useState('');
+  const [initialFirstName, setInitialFirstName] = useState('');
+  const [accountLoaded, setAccountLoaded] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      const name =
+        (user?.user_metadata?.full_name as string | undefined) ??
+        (user?.user_metadata?.name as string | undefined) ??
+        '';
+      setFirstName(name);
+      setInitialFirstName(name);
+      setAccountLoaded(true);
+    };
+    void load();
+  }, []);
+
+  const isDirty =
+    JSON.stringify(form) !== JSON.stringify(initial) ||
+    firstName !== initialFirstName;
 
   const handleSave = async () => {
     if (form.allowedDomains.length === 0) {
@@ -869,6 +866,29 @@ export function SettingsForm({ bot }: { bot: BotData }) {
       });
 
       if (!res.ok) throw new Error('Save failed');
+
+      // Branża żyje na tenancie — osobny endpoint, patchowany tylko gdy zmieniona.
+      if (form.industry && form.industry !== initial.industry) {
+        const tenantRes = await fetch(`${API_URL}/api/v1/tenant/me`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token ?? ''}`,
+          },
+          body: JSON.stringify({ industry: form.industry }),
+        });
+        if (!tenantRes.ok) throw new Error('Save failed');
+      }
+
+      // Imię użytkownika — Supabase Auth, patchowane tylko gdy zmienione.
+      if (firstName.trim() !== initialFirstName) {
+        const { error } = await supabase.auth.updateUser({
+          data: { full_name: firstName.trim() },
+        });
+        if (error) throw error;
+        setInitialFirstName(firstName.trim());
+      }
+
       toast.success('Zmiany zapisane');
     } catch {
       toast.error('Nie udało się zapisać zmian');
@@ -877,7 +897,10 @@ export function SettingsForm({ bot }: { bot: BotData }) {
     }
   };
 
-  const handleCancel = () => setForm(initial);
+  const handleCancel = () => {
+    setForm(initial);
+    setFirstName(initialFirstName);
+  };
 
   return (
     <div className="max-w-7xl 2xl:max-w-[1400px]">
@@ -901,14 +924,22 @@ export function SettingsForm({ bot }: { bot: BotData }) {
 
       {/* Tab content */}
       <div className="min-h-[400px]">
-        {activeTab === 'konto'  && <TabKonto />}
+        {activeTab === 'konto'  && (
+          <TabKonto
+            form={form}
+            setForm={setForm}
+            firstName={firstName}
+            setFirstName={setFirstName}
+            accountLoaded={accountLoaded}
+          />
+        )}
         {activeTab === 'profil' && <TabProfil form={form} setForm={setForm} />}
         {activeTab === 'wyglad' && <TabWyglad form={form} setForm={setForm} />}
         {activeTab === 'domeny' && <TabDomeny form={form} setForm={setForm} />}
       </div>
 
-      {/* Footer actions — hidden on Konto tab (has its own Save button) */}
-      <div className={`flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100 ${activeTab === 'konto' ? 'hidden' : ''}`}>
+      {/* Footer actions — wspólny zapis dla wszystkich zakładek */}
+      <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
         <button
           onClick={handleCancel}
           disabled={!isDirty || saving}

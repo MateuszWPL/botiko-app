@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { createClient } from '@supabase/supabase-js';
+import { Industry } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { env } from '../../config/env';
 
@@ -30,13 +31,28 @@ export class TenantService {
     return tenant;
   }
 
-  async updateWebsiteUrl(tenantId: string, websiteUrl: string): Promise<void> {
-    let normalized = websiteUrl.trim();
-    if (!normalized.startsWith('http')) normalized = 'https://' + normalized;
-    await this.prisma.tenant.update({
-      where: { id: tenantId },
-      data: { websiteUrl: normalized },
-    });
+  /**
+   * Updates editable tenant profile fields. Changing `industry` swaps the
+   * brand prompt template + default suggested questions going forward;
+   * already-seeded knowledge chunks are user content and stay untouched.
+   */
+  async updateProfile(
+    tenantId: string,
+    patch: { websiteUrl?: string; industry?: Industry },
+  ): Promise<void> {
+    const data: { websiteUrl?: string; industry?: Industry } = {};
+
+    if (patch.websiteUrl !== undefined) {
+      let normalized = patch.websiteUrl.trim();
+      if (!normalized.startsWith('http')) normalized = 'https://' + normalized;
+      data.websiteUrl = normalized;
+    }
+    if (patch.industry !== undefined) {
+      data.industry = patch.industry;
+    }
+    if (Object.keys(data).length === 0) return;
+
+    await this.prisma.tenant.update({ where: { id: tenantId }, data });
   }
 
   /**
