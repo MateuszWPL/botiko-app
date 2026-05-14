@@ -20,6 +20,13 @@ build/
 
 # Docs & internal files — not for the repo
 docs/
+BotikoIcons/
+botiko-bot-knowledge-base.md
+botiko-emails.md
+
+# Deployment tooling state
+.vercel
+.claude/scheduled_tasks.lock
 
 # Logs
 *.log
