@@ -16,7 +16,7 @@ interface Props {
 export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez karty' }: Props) {
   return (
     <div
-      className="relative flex flex-col justify-between px-6 py-8 lg:px-12 lg:py-10 order-2 lg:order-1 overflow-hidden"
+      className="relative flex flex-col gap-10 px-6 py-10 pb-28 lg:gap-0 lg:justify-between lg:px-12 lg:py-10 lg:pb-10 order-2 lg:order-1 overflow-hidden"
       style={{
         background: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #4338CA 100%)',
       }}
@@ -59,7 +59,7 @@ export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez 
       </Link>
 
       {/* Center content */}
-      <div className="relative z-10 flex flex-col gap-6">
+      <div className="relative z-10 flex flex-col gap-5 sm:gap-6">
         {/* Badge */}
         <div
           className="inline-flex self-start items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold"
@@ -75,8 +75,8 @@ export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez 
 
         {/* Headline */}
         <div>
-          <h2 className="text-4xl font-extrabold text-white leading-tight mb-3">{headline}</h2>
-          <p className="text-indigo-200 text-base leading-relaxed">{sub}</p>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight mb-3">{headline}</h2>
+          <p className="text-indigo-200 text-sm sm:text-base leading-relaxed">{sub}</p>
         </div>
 
         {/* Benefits */}
@@ -102,7 +102,7 @@ export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez 
 
       {/* Trust bar */}
       <div
-        className="relative z-10 flex items-center gap-8 pt-6"
+        className="relative z-10 flex items-center gap-4 sm:gap-8 pt-6"
         style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}
       >
         {[
@@ -110,9 +110,9 @@ export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez 
           { val: '24/7', label: 'dostępny bot' },
           { val: '<15 min', label: 'wdrożenie' },
         ].map((s) => (
-          <div key={s.label}>
-            <p className="text-white text-2xl font-extrabold">{s.val}</p>
-            <p className="text-indigo-300 text-sm">{s.label}</p>
+          <div key={s.label} className="min-w-0">
+            <p className="text-white text-xl sm:text-2xl font-extrabold whitespace-nowrap">{s.val}</p>
+            <p className="text-indigo-300 text-xs sm:text-sm">{s.label}</p>
           </div>
         ))}
       </div>
