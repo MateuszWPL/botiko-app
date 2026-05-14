@@ -23,6 +23,8 @@ interface ChatWindowProps {
   isOpen: boolean;
   apiUrl: string;
   onClose: () => void;
+  online: boolean;
+  companyPhone: string | null;
   offlineMessage: string | null;
   businessHoursStart: number | null;
   businessHoursEnd: number | null;
@@ -35,6 +37,7 @@ interface ApiChatResponse {
   message?: string;
   showLeadForm?: boolean;
 }
+
 
 interface SessionData {
   sessionId: string;
@@ -91,26 +94,28 @@ function saveSession(botId: string, data: SessionData): void {
 }
 
 /**
- * Maps an HTTP status code from /api/v1/chat to a user-friendly message.
- *
- * 400 — Zod validation failed (e.g. message too long, invalid botId)
- * 403 — plan limit reached OR domain not on whitelist
- * 429 — rate limit (20 req/min per IP)
- * 5xx — server error (OpenAI down, API key expired, unhandled exception)
+ * Maps an HTTP status + error code from /api/v1/chat to a user-friendly message.
+ * DOMAIN_NOT_ALLOWED / SERVICE_INACTIVE — no lead form.
+ * PLAN_LIMIT / unknown 403 — collect lead.
  */
-function errorMessageForStatus(status: number, showLeadFormCallback: () => void): string {
+function errorMessageForStatus(
+  status: number,
+  code: string | undefined,
+  showLeadFormCallback: () => void,
+): string {
   if (status === 400) {
     return 'Nie mogę przetworzyć tej wiadomości. Spróbuj sformułować pytanie inaczej.';
   }
   if (status === 403) {
-    // Plan limit exhausted — klientka nie powinna widzieć szczegółów
+    if (code === 'DOMAIN_NOT_ALLOWED' || code === 'SERVICE_INACTIVE') {
+      return 'Bot jest chwilowo niedostępny.';
+    }
     showLeadFormCallback();
     return 'Dziękuję za rozmowę! Zostaw swój numer — odezwiemy się i odpowiemy na wszystkie pytania.';
   }
   if (status === 429) {
     return 'Zbyt wiele wiadomości z rzędu. Odczekaj chwilę i spróbuj ponownie.';
   }
-  // 500, 502, 503, 504 — OpenAI down, API key wygasł, błąd serwera
   return 'Mamy chwilową przerwę techniczną. Spróbuj za moment — zwykle trwa to kilka sekund.';
 }
 
@@ -124,6 +129,8 @@ export function ChatWindow({
   isOpen,
   apiUrl,
   onClose,
+  online,
+  companyPhone,
   offlineMessage,
   businessHoursStart,
   businessHoursEnd,
@@ -221,7 +228,9 @@ export function ChatWindow({
       }
 
       if (!res.ok) {
-        const errMsg = errorMessageForStatus(res.status, () => {
+        let errorCode: string | undefined;
+        try { errorCode = ((await res.json()) as { code?: string }).code; } catch {}
+        const errMsg = errorMessageForStatus(res.status, errorCode, () => {
           if (!lead.submitted) setLead((s) => ({ ...s, visible: true }));
         });
         setMessages((prev) => [...prev, { role: 'assistant', content: errMsg }]);
@@ -344,7 +353,7 @@ export function ChatWindow({
           <AvatarContent />
         </div>
 
-        {/* Name + status — bot jest zawsze online */}
+        {/* Name + status */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 700, fontSize: '14px', lineHeight: 1.2 }}>{botName}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '2px' }}>
@@ -352,12 +361,12 @@ export function ChatWindow({
               width: '7px',
               height: '7px',
               borderRadius: '50%',
-              backgroundColor: '#4ade80',
+              backgroundColor: online ? '#4ade80' : '#ef4444',
               flexShrink: 0,
-              animation: 'botiko-pulse 2s ease infinite',
+              animation: online ? 'botiko-pulse 2s ease infinite' : 'none',
             }} />
             <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)' }}>
-              Online · odpowiada błyskawicznie
+              {online ? 'Online · odpowiada błyskawicznie' : 'Niedostępny'}
             </span>
           </div>
         </div>
@@ -418,8 +427,25 @@ export function ChatWindow({
         </button>
       </div>
 
+      {/* ── Karta offline gdy pakiet nieaktywny ── */}
+      {!online && (
+        <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'28px 20px',gap:'10px',textAlign:'center'}}>
+          <div style={{fontSize:'14px',fontWeight:600,color:'#0f172a'}}>
+            Bot jest chwilowo niedostępny
+          </div>
+          <div style={{fontSize:'13px',color:'#64748b',lineHeight:'1.5'}}>
+            Skontaktuj się bezpośrednio z firmą.
+          </div>
+          {companyPhone && (
+            <a href={'tel:' + companyPhone} style={{display:'inline-block',marginTop:'8px',padding:'8px 20px',borderRadius:'8px',backgroundColor:'#6366f1',color:'#fff',fontSize:'14px',fontWeight:600,textDecoration:'none'}}>
+              {companyPhone}
+            </a>
+          )}
+        </div>
+      )}
+
       {/* ── Informacyjny banner gdy salon fizycznie zamknięty ── */}
-      {salonClosed && offlineMessage && (
+      {online && salonClosed && offlineMessage && (
         <div style={{
           backgroundColor: '#fef9c3',
           borderBottom: '1px solid #fde047',
@@ -433,8 +459,8 @@ export function ChatWindow({
         </div>
       )}
 
-      {/* ── Messages ── */}
-      <div style={{
+      {/* ── Messages (tylko gdy online) ── */}
+      {online && <div style={{
         flex: 1,
         overflowY: 'auto',
         padding: '14px 12px 8px',
@@ -555,10 +581,10 @@ export function ChatWindow({
         )}
 
         <div ref={messagesEndRef} />
-      </div>
+      </div>}
 
-      {/* ── Lead form (inline) ── */}
-      {lead.visible && !lead.submitted && (
+      {/* ── Lead form (inline) — tylko gdy online ── */}
+      {online && lead.visible && !lead.submitted && (
         <div style={{
           padding: '12px',
           borderTop: '1px solid #e2e8f0',
@@ -615,8 +641,8 @@ export function ChatWindow({
         </div>
       )}
 
-      {/* ── Input area ── */}
-      <div style={{
+      {/* ── Input area — tylko gdy online ── */}
+      {online && <div style={{
         padding: '10px 12px',
         borderTop: '1px solid #e2e8f0',
         display: 'flex',
@@ -691,7 +717,7 @@ export function ChatWindow({
             <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
           </svg>
         </button>
-      </div>
+      </div>}
 
       {/* ── Footer ── */}
       <div style={{

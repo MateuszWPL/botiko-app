@@ -8,6 +8,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { getBrandTemplate } from '../../brand-templates';
 import { KnowledgeService } from '../knowledge/knowledge.service';
+import { isTenantOnline } from '../../common/tenant-status';
 import type { CreateBotDto } from './dto/create-bot.dto';
 import type { UpdateBotDto } from './dto/update-bot.dto';
 
@@ -22,6 +23,8 @@ export interface BotPublicConfig {
   name: string;
   welcomeMsg: string;
   primaryColor: string;
+  online: boolean;
+  companyPhone: string | null;
   offlineMessage: string | null;
   businessHoursStart: number | null;
   businessHoursEnd: number | null;
@@ -95,8 +98,20 @@ export class BotService {
 
     const tenant = await this.prisma.tenant.findUnique({
       where: { id: tenantId },
-      select: { industry: true },
+      select: { industry: true, websiteUrl: true },
     });
+
+    // Auto-populate allowedDomains from Tenant.websiteUrl when not provided.
+    // websiteUrl is stored as https://<host> (www-stripped) by register.dto.ts.
+    let allowedDomains = dto.allowedDomains;
+    if (allowedDomains.length === 0 && tenant?.websiteUrl) {
+      try {
+        const host = new URL(tenant.websiteUrl).hostname;
+        allowedDomains = [`https://${host}`, `https://www.${host}`];
+      } catch {
+        // malformed websiteUrl — keep empty
+      }
+    }
 
     const bot = await this.prisma.bot.create({
       data: {
@@ -104,7 +119,7 @@ export class BotService {
         name: dto.name,
         welcomeMsg: dto.welcomeMsg,
         primaryColor: dto.primaryColor,
-        allowedDomains: dto.allowedDomains,
+        allowedDomains,
         ...(dto.companyName != null && { companyName: dto.companyName }),
         ...(dto.companyPhone != null && { companyPhone: dto.companyPhone }),
         ...(dto.companyAddress != null && { companyAddress: dto.companyAddress }),
@@ -146,14 +161,17 @@ export class BotService {
 
   async getPublicConfig(botId: string): Promise<BotPublicConfig> {
     const bot = await this.prisma.bot.findFirst({
-      where: {
-        id: botId,
-        isActive: true,
-        tenant: { isActive: true },
-      },
+      where: { id: botId },
       select: {
         ...BOT_SELECT,
-        tenant: { select: { industry: true } },
+        tenant: {
+          select: {
+            industry: true,
+            isActive: true,
+            createdAt: true,
+            stripeSubscriptionId: true,
+          },
+        },
       },
     });
 
@@ -162,6 +180,7 @@ export class BotService {
     }
 
     const { tenant, ...rest } = bot;
+    const online = rest.isActive && isTenantOnline(tenant);
     const template = getBrandTemplate(tenant.industry);
 
     const suggestedQuestions =
@@ -174,6 +193,8 @@ export class BotService {
       name: rest.name,
       welcomeMsg: rest.welcomeMsg,
       primaryColor: rest.primaryColor,
+      online,
+      companyPhone: rest.companyPhone,
       offlineMessage: rest.offlineMessage,
       businessHoursStart: rest.businessHoursStart,
       businessHoursEnd: rest.businessHoursEnd,

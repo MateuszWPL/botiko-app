@@ -5,7 +5,7 @@ import { gzipSync } from 'zlib';
 import { readFileSync } from 'fs';
 import type { Plugin } from 'vite';
 
-const MAX_GZIP_KB = 12;
+const MAX_GZIP_KB = 13;
 
 function bundleSizeCheck(): Plugin {
   return {

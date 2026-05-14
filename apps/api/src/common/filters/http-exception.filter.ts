@@ -20,6 +20,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Internal server error';
     let details: unknown = undefined;
+    let code: string | undefined = undefined;
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
@@ -33,6 +34,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         const resp = exceptionResponse as Record<string, unknown>;
         message = (resp.message as string) ?? message;
         details = resp.details;
+        if (typeof resp.code === 'string') {
+          code = resp.code;
+        }
       }
     } else if (exception instanceof Error) {
       // Log internally but never expose raw error messages to clients
@@ -46,6 +50,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     response.status(status).json({
       statusCode: status,
       message,
+      ...(code !== undefined && { code }),
       ...(details !== undefined && { details }),
       path: request.url,
       timestamp: new Date().toISOString(),

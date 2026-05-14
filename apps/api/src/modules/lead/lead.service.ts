@@ -9,6 +9,7 @@ import { LeadStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EncryptionService } from '../../common/services/encryption.service';
 import { NotificationService } from '../../common/services/notification.service';
+import { isTenantOnline } from '../../common/tenant-status';
 import type { CreateLeadDto } from './dto/create-lead.dto';
 import type { CreateLeadManualDto } from './dto/create-lead-manual.dto';
 
@@ -42,6 +43,9 @@ export class LeadService {
         tenantId: true,
         tenant: {
           select: {
+            isActive: true,
+            createdAt: true,
+            stripeSubscriptionId: true,
             users: { select: { email: true }, take: 1 },
           },
         },
@@ -50,6 +54,10 @@ export class LeadService {
 
     if (!bot) {
       throw new NotFoundException('Bot not found');
+    }
+
+    if (!isTenantOnline(bot.tenant)) {
+      throw new ForbiddenException({ message: 'Service temporarily unavailable', code: 'SERVICE_INACTIVE' });
     }
 
     const id = randomUUID();

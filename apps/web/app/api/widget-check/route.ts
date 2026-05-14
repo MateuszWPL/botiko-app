@@ -35,6 +35,57 @@ function assertSafeUrl(url: URL): void {
   }
 }
 
+const BOT_CHECKER_UA =
+  'Mozilla/5.0 (compatible; BotikoWidgetChecker/1.0; +https://botiko.pl)';
+
+const MAX_REDIRECTS = 5;
+
+async function fetchFollowingRedirects(
+  startUrl: URL,
+): Promise<{ html: string; status: number } | { error: string }> {
+  let currentUrl = startUrl;
+
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    let res: Response;
+    try {
+      res = await fetch(currentUrl.toString(), {
+        headers: {
+          'User-Agent': BOT_CHECKER_UA,
+          Accept: 'text/html',
+        },
+        signal: AbortSignal.timeout(10_000),
+        redirect: 'manual',
+      });
+    } catch {
+      return { error: 'fetch_failed' };
+    }
+
+    if (res.status >= 300 && res.status < 400) {
+      if (hop === MAX_REDIRECTS) {
+        return { error: 'too_many_redirects' };
+      }
+      const location = res.headers.get('location');
+      if (!location) {
+        return { error: 'redirect_no_location' };
+      }
+      let nextUrl: URL;
+      try {
+        nextUrl = new URL(location, currentUrl.toString());
+        assertSafeUrl(nextUrl);
+      } catch {
+        return { error: 'unsafe_redirect' };
+      }
+      currentUrl = nextUrl;
+      continue;
+    }
+
+    const html = await res.text();
+    return { html, status: res.status };
+  }
+
+  return { error: 'too_many_redirects' };
+}
+
 export async function GET(req: NextRequest) {
   // Require authenticated Supabase session
   const cookieStore = await cookies();
@@ -81,48 +132,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ detected: false, error: 'invalid_url' }, { status: 400 });
   }
 
-  try {
-    const res = await fetch(targetUrl.toString(), {
-      headers: {
-        'User-Agent': 'Botiko-WidgetChecker/1.0',
-        Accept: 'text/html',
-      },
-      signal: AbortSignal.timeout(10_000),
-      redirect: 'manual', // Never follow redirects blindly — could redirect to internal hosts
-    });
+  const result = await fetchFollowingRedirects(targetUrl);
 
-    // Handle single redirect level — re-validate destination
-    if (res.status >= 300 && res.status < 400) {
-      const location = res.headers.get('location');
-      if (!location) {
-        return NextResponse.json({ detected: false, error: 'redirect_no_location' });
-      }
-      let redirectUrl: URL;
-      try {
-        redirectUrl = new URL(location, targetUrl.toString());
-        assertSafeUrl(redirectUrl);
-      } catch {
-        return NextResponse.json({ detected: false, error: 'unsafe_redirect' });
-      }
-      const r2 = await fetch(redirectUrl.toString(), {
-        headers: { 'User-Agent': 'Botiko-WidgetChecker/1.0', Accept: 'text/html' },
-        signal: AbortSignal.timeout(10_000),
-        redirect: 'manual',
-      });
-      const html2 = await r2.text();
-      const hasScript =
-        html2.includes(`data-bot-id="${botId}"`) ||
-        html2.includes(`data-bot-id='${botId}'`);
-      return NextResponse.json({ detected: hasScript, httpStatus: r2.status });
-    }
-
-    const html = await res.text();
-    const hasScript =
-      html.includes(`data-bot-id="${botId}"`) ||
-      html.includes(`data-bot-id='${botId}'`);
-
-    return NextResponse.json({ detected: hasScript, httpStatus: res.status });
-  } catch {
-    return NextResponse.json({ detected: false, error: 'fetch_failed' }, { status: 200 });
+  if ('error' in result) {
+    return NextResponse.json({ detected: false, error: result.error }, { status: 200 });
   }
+
+  const hasScript =
+    result.html.includes(`data-bot-id="${botId}"`) ||
+    result.html.includes(`data-bot-id='${botId}'`);
+
+  return NextResponse.json({ detected: hasScript, httpStatus: result.status });
 }
