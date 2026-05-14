@@ -19,14 +19,18 @@ Schemat JSON który musisz zwrócić:
     "address": "adres fizyczny firmy lub null"
   },
   "services": [
-    { "name": "nazwa usługi", "description": "krótki opis lub null", "price": "cena tekstowo lub null" }
+    { "name": "nazwa usługi", "description": "krótki opis lub null", "price": "cena tekstowo lub null", "sourceUrl": "adres podstrony skąd pochodzi ta informacja lub null" }
   ],
   "faq": [
-    { "question": "pytanie", "answer": "odpowiedź" }
+    { "question": "pytanie", "answer": "odpowiedź", "sourceUrl": "adres podstrony skąd pochodzi ta informacja lub null" }
   ],
   "hours": { "raw": "godziny otwarcia jako tekst lub null" },
   "about": "krótki opis firmy (max 3 zdania) lub null"
 }
+
+ATRYBUCJA ŹRÓDŁA:
+- Treść stron jest podzielona znacznikami "=== adres-url ===". Dla każdej usługi i pary FAQ ustaw "sourceUrl" na adres podstrony, z której wzięto tę informację.
+- Jeśli nie potrafisz jednoznacznie wskazać podstrony — ustaw "sourceUrl": null.
 
 ZASADY EKSTRAKCJI USŁUG I CEN:
 - Każda pozycja w "services" MUSI mieć sensowną nazwę usługi w polu "name". NIGDY nie zwracaj pozycji z pustą nazwą ani z samą ceną bez nazwy.

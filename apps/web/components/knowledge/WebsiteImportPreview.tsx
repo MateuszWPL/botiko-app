@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import {
   Phone, Mail, MapPin, Clock, BookOpen, HelpCircle, Info,
-  Plus, Trash2, Check, Loader2,
+  Plus, Trash2, Check, Loader2, ExternalLink,
 } from 'lucide-react';
 import type { ExtractedPayload, ConfirmPayload } from '../../lib/website-import';
 
@@ -25,12 +25,14 @@ type EditableService = {
   name: string;
   description: string;
   price: string;
+  sourceUrl?: string | null;
   selected: boolean;
 };
 
 type EditableFaq = {
   question: string;
   answer: string;
+  sourceUrl?: string | null;
   selected: boolean;
 };
 
@@ -65,6 +67,29 @@ function SectionHeader({
         </span>
       )}
     </div>
+  );
+}
+
+function SourceLink({ url }: { url?: string | null }) {
+  if (!url) return null;
+  let label = url;
+  try {
+    const u = new URL(url);
+    label = u.pathname && u.pathname !== '/' ? u.pathname : u.hostname;
+  } catch {
+    // keep raw url as label
+  }
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={`Źródło: ${url}`}
+      className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-indigo-500 transition-colors max-w-full"
+    >
+      <ExternalLink className="w-3 h-3 flex-shrink-0" />
+      <span className="truncate">źródło: {label}</span>
+    </a>
   );
 }
 
@@ -106,6 +131,7 @@ export function WebsiteImportPreview({ payload, onConfirm, onCancel, loading }: 
       name: s.name,
       description: s.description ?? '',
       price: s.price ?? '',
+      sourceUrl: s.sourceUrl ?? null,
       selected: true,
     })),
   );
@@ -292,6 +318,7 @@ export function WebsiteImportPreview({ payload, onConfirm, onCancel, loading }: 
                       className={inputClass}
                     />
                   </div>
+                  {s.sourceUrl && <SourceLink url={s.sourceUrl} />}
                 </div>
                 <button
                   type="button"
@@ -366,6 +393,7 @@ export function WebsiteImportPreview({ payload, onConfirm, onCancel, loading }: 
                     rows={2}
                     className={textareaClass}
                   />
+                  {f.sourceUrl && <SourceLink url={f.sourceUrl} />}
                 </div>
                 <button
                   type="button"

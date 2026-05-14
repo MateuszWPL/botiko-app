@@ -74,8 +74,9 @@ export interface ExtractedPayload {
     name: string;
     description?: string | null;
     price?: string | null;
+    sourceUrl?: string | null;
   }>;
-  faq: Array<{ question: string; answer: string }>;
+  faq: Array<{ question: string; answer: string; sourceUrl?: string | null }>;
   hours?: { raw?: string | null } | null;
   about?: string | null;
 }
