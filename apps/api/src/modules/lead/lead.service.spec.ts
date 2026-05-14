@@ -20,7 +20,12 @@ const mockBot = {
   id: 'bot-1',
   name: 'TestBot',
   tenantId: 'tenant-1',
-  tenant: { users: [{ email: 'owner@example.com' }] },
+  tenant: {
+    isActive: true,
+    createdAt: new Date(),
+    stripeSubscriptionId: 'sub_test',
+    users: [{ email: 'owner@example.com' }],
+  },
 };
 
 function buildPrismaMock(botOverride: object | null = mockBot) {

@@ -8,6 +8,8 @@ interface BotConfig {
   name: string;
   welcomeMsg: string;
   primaryColor: string;
+  online: boolean;
+  companyPhone: string | null;
   offlineMessage: string | null;
   businessHoursStart: number | null;
   businessHoursEnd: number | null;
@@ -48,6 +50,8 @@ function Widget({
       isOpen,
       apiUrl,
       onClose: () => setIsOpen(false),
+      online: config.online,
+      companyPhone: config.companyPhone,
       offlineMessage: config.offlineMessage,
       businessHoursStart: config.businessHoursStart,
       businessHoursEnd: config.businessHoursEnd,
@@ -102,6 +106,8 @@ async function init() {
     name: 'Botiko',
     welcomeMsg: 'Dzień dobry! W czym mogę pomóc?',
     primaryColor: '#6366F1',
+    online: true,
+    companyPhone: null,
     offlineMessage: null,
     businessHoursStart: null,
     businessHoursEnd: null,

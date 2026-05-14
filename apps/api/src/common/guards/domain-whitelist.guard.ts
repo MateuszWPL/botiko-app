@@ -22,7 +22,7 @@ export class DomainWhitelistGuard implements CanActivate {
       | undefined;
 
     if (!botId) {
-      throw new ForbiddenException('botId is required');
+      throw new ForbiddenException({ message: 'botId is required', code: 'DOMAIN_NOT_ALLOWED' });
     }
 
     const bot = await this.prisma.bot.findFirst({
@@ -31,7 +31,7 @@ export class DomainWhitelistGuard implements CanActivate {
     });
 
     if (!bot) {
-      throw new ForbiddenException('Bot not found');
+      throw new ForbiddenException({ message: 'Bot not found', code: 'DOMAIN_NOT_ALLOWED' });
     }
 
     const isProduction = process.env.NODE_ENV === 'production';
@@ -46,7 +46,7 @@ export class DomainWhitelistGuard implements CanActivate {
         this.logger.warn(
           `Blocked chat/lead for bot ${botId}: no allowedDomains configured`,
         );
-        throw new ForbiddenException('Bot is not properly configured');
+        throw new ForbiddenException({ message: 'Bot is not properly configured', code: 'DOMAIN_NOT_ALLOWED' });
       }
       return true;
     }
@@ -58,7 +58,7 @@ export class DomainWhitelistGuard implements CanActivate {
     //  - In dev: allow, so local curl tests work.
     if (!origin) {
       if (!isProduction) return true;
-      throw new ForbiddenException('Origin header is required');
+      throw new ForbiddenException({ message: 'Origin header is required', code: 'DOMAIN_NOT_ALLOWED' });
     }
 
     const isAllowed = bot.allowedDomains.some((domain) => {
@@ -75,7 +75,7 @@ export class DomainWhitelistGuard implements CanActivate {
     });
 
     if (!isAllowed) {
-      throw new ForbiddenException('Origin not allowed');
+      throw new ForbiddenException({ message: 'Origin not allowed', code: 'DOMAIN_NOT_ALLOWED' });
     }
 
     return true;

@@ -15,6 +15,7 @@ import {
 } from '../ai/ai.service.interface';
 import { getBrandTemplate } from '../../brand-templates';
 import { preprocessMessage } from './message-sanitizer';
+import { isTenantOnline } from '../../common/tenant-status';
 
 /** Monthly conversation limit — flat 1000/month on STARTER plan. */
 const PLAN_CONVERSATION_LIMITS: Record<string, number | null> = {
@@ -158,20 +159,8 @@ export class ChatService {
       throw new NotFoundException('Bot not found');
     }
 
-    if (!bot.tenant.isActive) {
-      // Generic message — never leak plan/billing state to the widget visitor.
-      // Widget will show a friendly fallback ("leave a contact") on 403.
-      throw new ForbiddenException('Service temporarily unavailable');
-    }
-
-    // Defense in depth: even if the daily trial-expiry cron didn't run yet,
-    // refuse chat once the 14-day trial has lapsed and no subscription exists.
-    if (!bot.tenant.stripeSubscriptionId) {
-      const trialEnd = new Date(bot.tenant.createdAt);
-      trialEnd.setDate(trialEnd.getDate() + 14);
-      if (trialEnd.getTime() <= Date.now()) {
-        throw new ForbiddenException('Service temporarily unavailable');
-      }
+    if (!isTenantOnline(bot.tenant)) {
+      throw new ForbiddenException({ message: 'Service temporarily unavailable', code: 'SERVICE_INACTIVE' });
     }
 
     await this.checkPlanLimit(bot.tenant.id, bot.tenant.plan);
@@ -376,7 +365,7 @@ export class ChatService {
       this.logger.warn(
         `Plan limit reached for tenant ${tenantId} (plan=${plan}, count=${count}, limit=${limit})`,
       );
-      throw new ForbiddenException('Service temporarily unavailable');
+      throw new ForbiddenException({ message: 'Service temporarily unavailable', code: 'PLAN_LIMIT' });
     }
   }
 
@@ -401,7 +390,7 @@ export class ChatService {
       this.logger.warn(
         `Bot message cap reached for bot ${botId} (${count}/${MAX_MESSAGES_PER_BOT_PER_MONTH})`,
       );
-      throw new ForbiddenException('Service temporarily unavailable');
+      throw new ForbiddenException({ message: 'Service temporarily unavailable', code: 'PLAN_LIMIT' });
     }
   }
 
@@ -428,7 +417,7 @@ export class ChatService {
       this.logger.warn(
         `Conversation message cap reached (botId=${botId}, sessionId=${sessionId}, count=${count})`,
       );
-      throw new ForbiddenException('Service temporarily unavailable');
+      throw new ForbiddenException({ message: 'Service temporarily unavailable', code: 'PLAN_LIMIT' });
     }
   }
 

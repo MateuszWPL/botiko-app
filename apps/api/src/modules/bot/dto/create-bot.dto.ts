@@ -22,7 +22,7 @@ export const createBotSchema = z.object({
     .default('#6366F1'),
   allowedDomains: z
     .array(z.string().url('Each domain must be a valid URL'))
-    .max(1, 'Only one domain allowed per bot')
+    .max(5, 'A bot can have at most 5 allowed domains')
     .default([]),
   companyName: z.string().max(200).trim().nullable().optional(),
   companyPhone: z.string().max(50).trim().nullable().optional(),
