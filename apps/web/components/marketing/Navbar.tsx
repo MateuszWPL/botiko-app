@@ -322,8 +322,8 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
             <Image
               src={navSolid ? '/botiko-logo-full.svg' : '/botiko-logo-full-white.svg'}
               alt="Botiko"
-              width={126}
-              height={34}
+              width={93}
+              height={25}
               priority
             />
           </Link>
