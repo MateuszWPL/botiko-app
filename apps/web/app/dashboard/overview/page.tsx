@@ -17,6 +17,8 @@ import { PageHeader } from '../../../components/ui/PageHeader';
 import { OverviewCharts } from '../../../components/dashboard/OverviewCharts';
 import { ConversationsAreaChart } from '../../../components/dashboard/ConversationsAreaChart';
 import type { ChartPoint } from '../../../components/dashboard/ConversationsAreaChart';
+import { KnowledgeHealthCard } from '../../../components/dashboard/KnowledgeHealthCard';
+import type { KnowledgeHealth } from '../../../components/dashboard/KnowledgeHealthCard';
 
 interface Lead {
   id: string;
@@ -47,15 +49,24 @@ interface BillingStatus {
 
 async function getStats() {
   try {
-    const [leads, conversations, bots, billing] = await Promise.all([
+    const [leads, conversations, bots, billing, knowledgeHealth] = await Promise.all([
       fetchWithAuth<Lead[]>('/api/v1/leads'),
       fetchWithAuth<Conversation[]>('/api/v1/conversations'),
       fetchWithAuth<BotData[]>('/api/v1/bot'),
       fetchWithAuth<BillingStatus>('/api/v1/billing/status').catch(() => null),
+      fetchWithAuth<KnowledgeHealth>('/api/v1/conversations/knowledge-health').catch(
+        () => null,
+      ),
     ]);
-    return { leads, conversations, bots, billing };
+    return { leads, conversations, bots, billing, knowledgeHealth };
   } catch {
-    return { leads: [], conversations: [], bots: [], billing: null };
+    return {
+      leads: [],
+      conversations: [],
+      bots: [],
+      billing: null,
+      knowledgeHealth: null,
+    };
   }
 }
 
@@ -141,7 +152,7 @@ function StatBadge({ value }: { value: number }) {
 }
 
 export default async function OverviewPage() {
-  const { leads, conversations, bots, billing } = await getStats();
+  const { leads, conversations, bots, billing, knowledgeHealth } = await getStats();
 
   // --- Monthly stats ---
   const now = new Date();
@@ -345,6 +356,11 @@ export default async function OverviewPage() {
           <p className="text-xs text-slate-400 mt-1">{remaining} rozmów do końca mies.</p>
         </div>
       </div>
+
+      {/* Knowledge base health */}
+      {bots.length > 0 && knowledgeHealth && (
+        <KnowledgeHealthCard health={knowledgeHealth} />
+      )}
 
       {/* No bots empty state */}
       {bots.length === 0 && (

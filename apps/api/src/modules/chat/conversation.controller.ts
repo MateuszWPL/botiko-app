@@ -4,6 +4,7 @@ import {
   type ConversationDetail,
   type ConversationStatus,
   type ConversationSummary,
+  type KnowledgeHealth,
 } from './conversation.service';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
@@ -28,6 +29,13 @@ export class ConversationController {
       daysBack: daysBack ? parseInt(daysBack, 10) : undefined,
       limit: limit ? parseInt(limit, 10) : undefined,
     });
+  }
+
+  @Get('knowledge-health')
+  getKnowledgeHealth(
+    @CurrentTenant() tenantId: string,
+  ): Promise<KnowledgeHealth> {
+    return this.conversationService.getKnowledgeHealth(tenantId);
   }
 
   @Get('by-session/:sessionId')
