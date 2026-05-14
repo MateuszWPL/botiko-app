@@ -678,12 +678,6 @@ function TabDomeny({
             <strong>Pamiętaj o obu wariantach</strong> — jeśli dodasz <code>salonkasi.pl</code>, dodaj też <code>www.salonkasi.pl</code>.
           </p>
         </div>
-
-        {form.allowedDomains.length === 0 && (
-          <p className="text-xs text-slate-400 italic">
-            Brak domen — widget działa na każdej stronie (tryb testowy). Dodaj domenę przed publikacją.
-          </p>
-        )}
       </SectionCard>
     </div>
   );
@@ -837,6 +831,11 @@ export function SettingsForm({ bot }: { bot: BotData }) {
   const isDirty = JSON.stringify(form) !== JSON.stringify(initial);
 
   const handleSave = async () => {
+    if (form.allowedDomains.length === 0) {
+      toast.error('Dodaj przynajmniej jedną domenę przed zapisem');
+      setActiveTab('domeny');
+      return;
+    }
     setSaving(true);
     const supabase = createClient();
     const {

@@ -111,8 +111,8 @@ export function Sidebar() {
               <Image
                 src="/botiko-logo-full-white.svg"
                 alt="Botiko"
-                width={110}
-                height={30}
+                width={90}
+                height={25}
                 className="flex-shrink-0"
                 priority
               />

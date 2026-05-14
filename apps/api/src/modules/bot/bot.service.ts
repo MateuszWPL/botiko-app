@@ -33,6 +33,7 @@ export interface BotPublicConfig {
   suggestedQuestions: string[];
   leadFormAfterMessages: number;
   avatarEmoji: string;
+  allowedDomains: string[];
 }
 
 export interface BotDetail {
@@ -203,6 +204,7 @@ export class BotService {
       suggestedQuestions,
       leadFormAfterMessages: rest.leadFormAfterMessages,
       avatarEmoji: rest.avatarEmoji,
+      allowedDomains: rest.allowedDomains,
     };
   }
 
