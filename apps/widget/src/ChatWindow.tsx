@@ -172,6 +172,26 @@ export function ChatWindow({
     return () => mq.removeEventListener('change', handler);
   }, []);
 
+  // Mobile: dopasuj okno do visualViewport, żeby przy otwartej klawiaturze
+  // belka nagłówka została na górze, a kurczył się tylko obszar wiadomości
+  // (input zostaje tuż nad klawiaturą) — zamiast przewijać całe okno w górę.
+  const [viewport, setViewport] = useState<{ height: number; offsetTop: number } | null>(null);
+  useEffect(() => {
+    if (!isMobile || !isOpen || typeof window === 'undefined' || !window.visualViewport) {
+      setViewport(null);
+      return;
+    }
+    const vv = window.visualViewport;
+    const update = () => setViewport({ height: vv.height, offsetTop: vv.offsetTop });
+    update();
+    vv.addEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    return () => {
+      vv.removeEventListener('resize', update);
+      vv.removeEventListener('scroll', update);
+    };
+  }, [isMobile, isOpen]);
+
   const [showSuggestions, setShowSuggestions] = useState(userMessageCount === 0);
 
   useEffect(() => {
@@ -186,6 +206,11 @@ export function ChatWindow({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
+
+  // Klawiatura zmienia rozmiar viewportu — utrzymaj ostatnią wiadomość w polu widzenia
+  useEffect(() => {
+    if (viewport) messagesEndRef.current?.scrollIntoView({ block: 'end' });
+  }, [viewport]);
 
   // Focus input when chat opens on desktop
   useEffect(() => {
@@ -295,7 +320,14 @@ export function ChatWindow({
   if (!isOpen) return null;
 
   const windowStyle = isMobile
-    ? { position: 'fixed' as const, inset: '0', width: '100%', height: '100%', borderRadius: '0' }
+    ? {
+        position: 'fixed' as const,
+        left: '0',
+        top: viewport ? `${viewport.offsetTop}px` : '0',
+        width: '100%',
+        height: viewport ? `${viewport.height}px` : '100%',
+        borderRadius: '0',
+      }
     : { position: 'fixed' as const, bottom: '92px', right: '24px', width: '360px', height: '540px', borderRadius: '16px' };
 
   const avatarLetter = botName.trim()[0]?.toUpperCase() ?? 'B';
