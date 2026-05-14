@@ -28,11 +28,11 @@ import type { Industry } from '@prisma/client';
 
 export const PLAN_IMPORT_LIMITS: Record<
   Plan,
-  { perDay: number; maxPages: number; maxChunks: number }
+  { perWeek: number; maxPages: number; maxChunks: number }
 > = {
-  STARTER: { perDay: 1, maxPages: 20, maxChunks: 200 },
-  PRO: { perDay: 5, maxPages: 50, maxChunks: 500 },
-  PREMIUM: { perDay: 20, maxPages: 100, maxChunks: 2000 },
+  STARTER: { perWeek: 3, maxPages: 20, maxChunks: 200 },
+  PRO: { perWeek: 15, maxPages: 50, maxChunks: 500 },
+  PREMIUM: { perWeek: 50, maxPages: 100, maxChunks: 2000 },
 };
 
 @Injectable()
@@ -204,7 +204,7 @@ export class WebsiteImportService {
 
   private async checkImportLimit(tenantId: string, plan: Plan): Promise<void> {
     const limit = PLAN_IMPORT_LIMITS[plan];
-    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
     const count = await this.prisma.knowledgeImportJob.count({
       where: {
@@ -214,9 +214,9 @@ export class WebsiteImportService {
       },
     });
 
-    if (count >= limit.perDay) {
+    if (count >= limit.perWeek) {
       throw new HttpException(
-        `Osiągnięto limit importów na dziś (max ${limit.perDay} dla planu ${plan}). Spróbuj jutro.`,
+        `Osiągnięto limit importów (max ${limit.perWeek} na 7 dni). Spróbuj ponownie za kilka dni lub dodaj dane ręcznie.`,
         HttpStatus.TOO_MANY_REQUESTS,
       );
     }
@@ -319,6 +319,7 @@ export class WebsiteImportService {
   ): Promise<{ payload: ExtractedPayload; tokenUsage: number }> {
     const messages = buildExtractionMessages(pages, industry);
     const result = await this.aiService.chat(messages, {
+      model: 'gpt-4o',
       maxTokens: 4000,
       temperature: 0.1,
       responseFormat: { type: 'json_object' },
@@ -331,6 +332,7 @@ export class WebsiteImportService {
       // Retry once with hint
       const retryMessages = buildRetryMessages(messages, result.content);
       const retryResult = await this.aiService.chat(retryMessages, {
+        model: 'gpt-4o',
         maxTokens: 4000,
         temperature: 0.1,
         responseFormat: { type: 'json_object' },
@@ -457,16 +459,6 @@ function buildChunksFromConfirm(
     chunks.push({
       content: `O firmie: ${dto.about.text}`,
       category: 'O firmie',
-      source,
-    });
-  }
-
-  const selectedPrices = dto.prices.filter((p) => p.selected);
-  if (selectedPrices.length > 0) {
-    const lines = selectedPrices.map((p) => `${p.item}: ${p.price}`);
-    chunks.push({
-      content: `Cennik:\n${lines.join('\n')}`,
-      category: 'Cennik',
       source,
     });
   }

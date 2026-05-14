@@ -25,14 +25,18 @@ Schemat JSON który musisz zwrócić:
     { "question": "pytanie", "answer": "odpowiedź" }
   ],
   "hours": { "raw": "godziny otwarcia jako tekst lub null" },
-  "about": "krótki opis firmy (max 3 zdania) lub null",
-  "prices": [
-    { "item": "nazwa pozycji cennika", "price": "cena tekstowo" }
-  ]
+  "about": "krótki opis firmy (max 3 zdania) lub null"
 }
 
-LIMITY: max 20 usług w "services", max 15 par w "faq", max 30 pozycji w "prices".
-Ceny podawaj w formacie tekstowym (np. "od 80 zł", "80-150 zł", "80 zł").
+ZASADY EKSTRAKCJI USŁUG I CEN:
+- Każda pozycja w "services" MUSI mieć sensowną nazwę usługi w polu "name". NIGDY nie zwracaj pozycji z pustą nazwą ani z samą ceną bez nazwy.
+- Cenę przypisuj WYŁĄCZNIE wtedy, gdy w treści jest jednoznacznie powiązana z konkretną usługą (np. w cenniku, na liście oferty). Jeśli nie masz pewności którą usługę dotyczy cena — zostaw "price": null.
+- Wyciągaj TYLKO ceny usług oferowanych przez tę firmę. IGNORUJ liczby z artykułów blogowych, materiałów marketingowych, przykładów, kalkulatorów ROI, statystyk, opinii klientów czy treści promocyjnych — to NIE są ceny usług.
+- Jeśli strona nie zawiera realnego cennika usług — zwróć pustą tablicę "services": []. Lepiej zwrócić mniej niż zmyślić.
+- Nie zgaduj cen. Nie uśredniaj. Przepisuj dokładnie tak, jak są na stronie.
+
+LIMITY: max 20 usług w "services", max 15 par w "faq".
+Ceny podawaj w formacie tekstowym dokładnie jak na stronie (np. "od 80 zł", "80-150 zł", "80 zł").
 Telefon preferuj w formacie +48 XXX XXX XXX.
 Zachowaj polskie znaki diakrytyczne.
 Jeśli dana sekcja nie jest dostępna w treści — zwróć null lub pustą tablicę [].`;

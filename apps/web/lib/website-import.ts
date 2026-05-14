@@ -78,7 +78,6 @@ export interface ExtractedPayload {
   faq: Array<{ question: string; answer: string }>;
   hours?: { raw?: string | null } | null;
   about?: string | null;
-  prices: Array<{ item: string; price: string }>;
 }
 
 export interface ConfirmPayload {
@@ -97,7 +96,6 @@ export interface ConfirmPayload {
   faq: Array<{ question: string; answer: string; selected: boolean }>;
   hours?: { raw?: string | null; selected: boolean } | null;
   about?: { text: string; selected: boolean } | null;
-  prices: Array<{ item: string; price: string; selected: boolean }>;
 }
 
 // ── API calls ──────────────────────────────────────────────────────────────────

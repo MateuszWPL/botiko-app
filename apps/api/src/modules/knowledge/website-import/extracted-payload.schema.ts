@@ -39,15 +39,6 @@ export const extractedPayloadSchema = z.object({
     .nullable()
     .optional(),
   about: z.string().max(2000).nullable().optional(),
-  prices: z
-    .array(
-      z.object({
-        item: z.string().min(2).max(150),
-        price: z.string().min(1).max(100),
-      }),
-    )
-    .max(30)
-    .default([]),
 });
 
 export type ExtractedPayload = z.infer<typeof extractedPayloadSchema>;
@@ -98,13 +89,6 @@ export function parseAndSanitizePayload(raw: unknown): ExtractedPayload {
   }
 
   result.about = checkField(result.about) ?? undefined;
-
-  result.prices = result.prices
-    .map((p) => ({
-      item: checkField(p.item) ?? p.item,
-      price: checkField(p.price) ?? p.price,
-    }))
-    .filter((p) => p.item.length >= 2 && p.price.length >= 1);
 
   return result;
 }
