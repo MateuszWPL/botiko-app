@@ -34,13 +34,12 @@ export default function NotFound() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 w-full text-center mt-20">
         {/* Icon & 404 tag */}
         <div className="mb-8 flex flex-col items-center justify-center animate-in fade-in slide-in-from-bottom-6 duration-700">
-          <div className="w-16 h-16 bg-white border border-indigo-100 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-100/50 mb-6 overflow-hidden">
+          <div className="mb-6">
             <Image
-              src="/BotikoLogo.png"
+              src="/botiko-logo-full.svg"
               alt="Botiko"
-              width={36}
-              height={36}
-              className="rounded-xl shadow-sm"
+              width={140}
+              height={38}
             />
           </div>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200/50 border border-slate-300/50 text-slate-600 text-sm font-semibold tracking-wide uppercase">

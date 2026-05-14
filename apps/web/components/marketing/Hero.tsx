@@ -143,9 +143,9 @@ function ChatMockup() {
               backgroundColor: 'rgba(255,255,255,0.2)',
               border: '2px solid rgba(255,255,255,0.3)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0, padding: 7,
+              flexShrink: 0, overflow: 'hidden',
             }}>
-              <Image src="/botiko-mark-white.svg" alt="" width={14} height={18} style={{ display: 'block' }} />
+              <Image src="/botiko-mark-white.svg" alt="" width={22} height={27} style={{ display: 'block' }} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontWeight: 700, fontSize: 14, color: '#fff', lineHeight: 1.2 }}>Botiko</div>
@@ -190,9 +190,9 @@ function ChatMockup() {
               <div style={{
                 width: 24, height: 24, borderRadius: '50%', backgroundColor: BRAND,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0, padding: 5,
+                flexShrink: 0, overflow: 'hidden',
               }}>
-                <Image src="/botiko-mark-white.svg" alt="" width={9} height={11} style={{ display: 'block' }} />
+                <Image src="/botiko-mark-white.svg" alt="" width={15} height={19} style={{ display: 'block' }} />
               </div>
               <AnimatePresence mode="wait">
                 <motion.div
@@ -276,8 +276,10 @@ function ChatMockup() {
                   <div style={{
                     width: 24, height: 24, borderRadius: '50%', backgroundColor: BRAND,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 10, fontWeight: 700, color: '#fff', flexShrink: 0,
-                  }}>B</div>
+                    flexShrink: 0, overflow: 'hidden',
+                  }}>
+                    <Image src="/botiko-mark-white.svg" alt="" width={15} height={19} style={{ display: 'block' }} />
+                  </div>
                   {showBotTyping ? (
                     <div style={{ borderRadius: '4px 14px 14px 14px', backgroundColor: '#f1f5f9' }}>
                       <BotTypingDots />

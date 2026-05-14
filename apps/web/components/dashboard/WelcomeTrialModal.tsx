@@ -6,6 +6,7 @@ import { createClient } from '../../lib/supabase';
 
 export const WELCOME_STORAGE_KEY = 'botiko_welcomed_v1';
 const NEW_USER_HOURS = 48;
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 export function WelcomeTrialModal() {
   const [open, setOpen] = useState(false);
@@ -28,7 +29,27 @@ export function WelcomeTrialModal() {
   function dismiss() {
     localStorage.setItem(WELCOME_STORAGE_KEY, '1');
     setOpen(false);
-    window.dispatchEvent(new Event('botiko:open-wizard'));
+    // Only auto-launch the setup wizard for accounts that don't have a bot yet.
+    // An account with an existing bot would just hit the "1 bot per account" error.
+    void (async () => {
+      try {
+        const supabase = createClient();
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
+        if (!token) return;
+        const res = await fetch(`${API_URL}/api/v1/bot`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const bots = (await res.json()) as unknown[];
+          if (bots.length > 0) return;
+        }
+      } catch {
+        // Non-fatal — if the check fails we simply don't auto-open the wizard
+        return;
+      }
+      window.dispatchEvent(new Event('botiko:open-wizard'));
+    })();
   }
 
   if (!open) return null;

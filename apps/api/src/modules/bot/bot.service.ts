@@ -89,7 +89,7 @@ export class BotService {
     const existing = await this.prisma.bot.count({ where: { tenantId } });
     if (existing >= 1) {
       throw new ForbiddenException(
-        'Plan STARTER allows only 1 bot per account. Update your bot instead.',
+        'Twoje konto może mieć tylko jednego bota. Edytuj istniejącego bota zamiast tworzyć nowego.',
       );
     }
 
