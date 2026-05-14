@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { SearchBar } from './SearchBar';
 import { Filters } from './Filters';
 import { ConversationsTable } from './ConversationsTable';
@@ -31,6 +31,7 @@ export function ConversationsClient({ initialConversations }: ConversationsClien
   const [search, setSearch] = useState('');
   const [daysBack, setDaysBack] = useState(7);
   const [status, setStatus] = useState<ConversationStatus | 'Wszystkie'>('Wszystkie');
+  const isInitialMount = useRef(true);
 
   const loadConversations = useCallback(async () => {
     setLoading(true);
@@ -53,6 +54,10 @@ export function ConversationsClient({ initialConversations }: ConversationsClien
   }, [search, status, daysBack]);
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     const timer = setTimeout(() => loadConversations(), 300);
     return () => clearTimeout(timer);
   }, [loadConversations]);
