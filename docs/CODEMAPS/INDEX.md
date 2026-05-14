@@ -1,7 +1,7 @@
 # Botiko.pl — Architecture & Codemap Index
 
-**Last Updated:** 2026-04-18  
-**Project Status:** Phase 1A — Production-Ready (Deployment pending)
+**Last Updated:** 2026-05-14  
+**Project Status:** Phase 1A complete — **MVP live in production** (`botiko.pl`). Web → Vercel, API → Railway, Widget → Vercel. Now in Phase 2 (pilots).
 
 ---
 
@@ -305,13 +305,15 @@ Decryption only happens when:
 
 ---
 
-## What's Working (MVP Phase 1A)
+## What's Working (live in production)
 
 ✅ RAG pipeline (embeddings → pgvector → GPT-4o-mini + sanitization)  
 ✅ Widget embed (<12KB, Shadow DOM, sessionStorage, GTM-safe)  
-✅ Dashboard (8 pages + Stripe billing)  
-✅ Landing page + blog (MDX, SEO)  
+✅ Dashboard (10 pages + Stripe billing)  
+✅ Email system (Resend — onboarding drip, lead notifications, billing webhooks)  
+✅ Landing page + blog (32 MDX posts, content runway to July 2026, date-gated auto-publish)  
 ✅ Security (CORS strategy, UUID validation, HTML escaping, error handling)  
+✅ Deployed: Web/Widget on Vercel (auto-deploy from `main`), API on Railway  
 
 ---
 

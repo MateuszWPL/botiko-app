@@ -10,12 +10,12 @@
 - [x] Kupić domenę Botiko.pl
 - [x] Założyć repo na GitHub
 - [x] Założyć konto Supabase (EU region!)
-- [ ] (później) Hosting/deploy (na razie pomijamy)
+- [x] Hosting/deploy — Railway (API) + Vercel (Web, Widget)
 - [x] Założyć konto OpenAI API (ustawić billing alerts)
-- [x] Założyć konto Stripe (test mode)
+- [x] Założyć konto Stripe
 - [x] Założyć konto Resend.com
-- [ ] Założyć konto SMSAPI.pl
-- [ ] DNS: skonfigurować subdomeny (app., api., widget.)
+- [ ] Założyć konto SMSAPI.pl (dopiero gdy SMS w Fazie 1B)
+- [x] DNS: domena botiko.pl aktywna i zaindeksowana
 
 ### 0.2 Tooling (brak monorepo)
 - [x] ESLint configurations
@@ -64,12 +64,12 @@
 ### 0.7 Security baseline
 - [x] Supabase RLS policies (SQL w `supabase/migrations/001_rls_policies.sql` — uruchomić po założeniu projektu Supabase)
 - [x] JWT verification middleware (Nest.js) — AuthGuard
-- [ ] Env variables — lokalnie `.env*`, na prod w hosting env (Railway/Vercel/VPS) i GitHub Secrets dla CI. Supabase NIE przechowuje env aplikacji.
+- [x] Env variables — lokalnie `.env*`, na prod w hosting env (Railway/Vercel) i GitHub Secrets dla CI. Supabase NIE przechowuje env aplikacji.
 - [x] `.env.local` w `.gitignore`
 
 ---
 
-## Faza 1A — Gotowe do Pilotu
+## Faza 1A — Gotowe do Pilotu ✅ (MVP na produkcji)
 
 > Cel: działający produkt na produkcji, który można pokazać pierwszym 3-5 klientom.
 > Jeden plan: **99 zł/mies, 14 dni trial**. Zero feature gating na razie — wszyscy mają to samo.
@@ -654,23 +654,23 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 
 ---
 
-### 1A.8 — Deploy Produkcyjny
+### 1A.8 — Deploy Produkcyjny ✅
 
-> Rekomendacja: Railway dla API (NestJS + Prisma, auto SSL, zmienne env w panelu), Vercel dla Web + Widget.
+> **MVP zdeployowane.** Railway dla API, Vercel dla Web + Widget. `apps/web` auto-deployuje się po merge na `main` (`ci(widget)` workflow). Pełna instrukcja env vars + DNS: `docs/PRODUCTION_ENV.md`.
 
-#### Konta i DNS (ręcznie)
-- [ ] Założyć konto Railway → deploy `apps/api` → ustawić env vars
-- [ ] Założyć konto Vercel → deploy `apps/web` → ustawić env vars (`NEXT_PUBLIC_*`)
-- [ ] Deploy `apps/widget` → Vercel lub Cloudflare Pages
-- [ ] DNS: `api.botiko.pl` → Railway, `app.botiko.pl` → Vercel, `widget.botiko.pl` → Vercel/CF
-- [ ] SSL certyfikaty: automatyczne (Railway + Vercel)
-- [ ] Monitoring uptime: UptimeRobot (darmowy) → monitor `api.botiko.pl/health` co 5 min, alert na email
+#### Konta i DNS (ręcznie) ✅
+- [x] Railway → deploy `apps/api` → env vars ustawione
+- [x] Vercel → deploy `apps/web` → env vars (`NEXT_PUBLIC_*`) ustawione, auto-deploy z `main`
+- [x] Deploy `apps/widget` → Vercel
+- [x] DNS: domena `botiko.pl` aktywna i zaindeksowana w Google
+- [x] SSL certyfikaty: automatyczne (Railway + Vercel)
+- [ ] Monitoring uptime: UptimeRobot (darmowy) → monitor `/health` co 5 min, alert na email — **do zrobienia**
 
 #### Weryfikacja post-deploy
-- [ ] Pełny flow na produkcji: rejestracja → onboarding → widget na testowej stronie → lead → email
-- [ ] Stripe webhook URL zaktualizowany do `https://api.botiko.pl/api/v1/billing/webhook`
-- [ ] Resend `From` adres zweryfikowany dla domeny `botiko.pl`
-- [ ] Test Stripe checkout na produkcji (mode test, karta testowa)
+- [x] Pełny flow na produkcji: rejestracja → onboarding → widget → lead → email
+- [x] Stripe webhook URL zaktualizowany
+- [x] Resend `From` adres zweryfikowany dla domeny `botiko.pl`
+- [ ] Cron `trial-notifications` — zweryfikować że odpala się na produkcji (Railway/Vercel Cron)
 
 ---
 
@@ -849,11 +849,11 @@ Wdrożyć gdy: ktoś faktycznie nadużywa skopiowanego snippetu, albo przed skal
 
 ---
 
-> 📅 **Ostatnia aktualizacja:** 2026-04-12
+> 📅 **Ostatnia aktualizacja:** 2026-05-14
 >
-> 📊 **Postęp:** Faza 0 ukończona. Faza 1A: 1A.1 ✅ 1A.2 ✅ 1A.3 ✅ 1A.4 ✅ 1A.5 ✅. Do zrobienia przed pilotem: 1A.6 manualna QA, 1A.7 testy automatyczne, 1A.8 security check + deploy produkcyjny.
+> 📊 **Postęp:** Faza 0 ukończona. **Faza 1A ukończona — MVP zdeployowane na produkcji** (`botiko.pl`, zaindeksowane w Google). 1A.1–1A.8 ✅. Web→Vercel (auto-deploy z `main`), API→Railway, Widget→Vercel.
 >
-> 🎯 **Aktualny focus:** 1A.6 — QA checklist (auth, onboarding, widget, dashboard, billing). Następnie 1A.7 testy automatyczne i 1A.8 deploy.
+> 🎯 **Aktualny focus:** Faza 2 — piloty i pierwsi klienci. Drobny backlog techniczny: brakujące testy jednostkowe (1A.7), monitoring produkcyjny Sentry/UptimeRobot (2.4), weryfikacja crona trial-notifications na prod (1A.8).
 
 ---
 
@@ -861,16 +861,16 @@ Wdrożyć gdy: ktoś faktycznie nadużywa skopiowanego snippetu, albo przed skal
 
 Poniższe wymagają założenia kont i są poza kodem:
 
-1. **Supabase** — założyć projekt EU region, włączyć `pgvector` (SQL) i skonfigurować RLS (`supabase/migrations/001_rls_policies.sql`)
+1. ✅ **Supabase** — projekt EU region, `pgvector` włączony, RLS skonfigurowane
 2. **Supabase connection** — używać poolera (direct host jest IPv6-only w tej konfiguracji)
-3. **Hosting/deploy** — na razie pomijamy (wrócimy później)
-5. **OpenAI** — założyć konto, ustawić billing alert, skopiować API key do envów
-6. **Stripe** — założyć konto (test mode), skopiować klucze do envów
-7. **Resend.com** — założyć konto, zweryfikować domenę botiko.pl
-8. **SMSAPI.pl** — założyć konto, skopiować token
-9. **DNS** — skonfigurować subdomeny: `app.botiko.pl`, `api.botiko.pl`, `widget.botiko.pl`
+3. ✅ **Hosting/deploy** — Railway (API) + Vercel (Web, Widget). Instrukcja: `docs/PRODUCTION_ENV.md`
+5. ✅ **OpenAI** — konto + billing alert + API key w envach
+6. ✅ **Stripe** — konto, klucze w envach, produkt STARTER 99 zł/mies
+7. ✅ **Resend.com** — konto, domena botiko.pl zweryfikowana
+8. **SMSAPI.pl** — założyć konto, skopiować token (dopiero gdy SMS w Fazie 1B)
+9. ✅ **DNS** — domena `botiko.pl` aktywna, zaindeksowana w Google
 10. **GitHub** — (opcjonalnie) ustawić branch protection na `main` (Settings > Branches)
-11. **Env w hosting** — na razie pomijamy
+11. ✅ **Env w hosting** — ustawione w panelach Railway + Vercel
 
 ---
 
