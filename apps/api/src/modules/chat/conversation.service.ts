@@ -38,6 +38,17 @@ interface FindAllOptions {
   limit?: number;
 }
 
+export interface KnowledgeHealth {
+  /** Total ASSISTANT messages in the last 30 days. */
+  totalAnswers: number;
+  /** ASSISTANT messages served from the RAG fallback path (bot didn't know). */
+  fallbackAnswers: number;
+  /** fallbackAnswers / totalAnswers as a 0-100 percentage. */
+  fallbackRate: number;
+  /** Total knowledge chunks across all of the tenant's bots. */
+  chunkCount: number;
+}
+
 @Injectable()
 export class ConversationService {
   constructor(
@@ -161,6 +172,44 @@ export class ConversationService {
         }
         return true;
       });
+  }
+
+  /**
+   * Knowledge base health for the dashboard indicator. A high fallback rate
+   * means the bot keeps hitting "I don't know" — the client's knowledge base
+   * needs more content.
+   */
+  async getKnowledgeHealth(tenantId: string): Promise<KnowledgeHealth> {
+    const dateFrom = new Date();
+    dateFrom.setDate(dateFrom.getDate() - 30);
+
+    const [totalAnswers, fallbackAnswers, chunkCount] = await Promise.all([
+      this.prisma.message.count({
+        where: {
+          role: 'ASSISTANT',
+          createdAt: { gte: dateFrom },
+          conversation: { bot: { tenantId } },
+        },
+      }),
+      this.prisma.message.count({
+        where: {
+          role: 'ASSISTANT',
+          wasFallback: true,
+          createdAt: { gte: dateFrom },
+          conversation: { bot: { tenantId } },
+        },
+      }),
+      this.prisma.knowledgeChunk.count({
+        where: { bot: { tenantId } },
+      }),
+    ]);
+
+    const fallbackRate =
+      totalAnswers > 0
+        ? Math.round((fallbackAnswers / totalAnswers) * 100)
+        : 0;
+
+    return { totalAnswers, fallbackAnswers, fallbackRate, chunkCount };
   }
 
   async findBySession(

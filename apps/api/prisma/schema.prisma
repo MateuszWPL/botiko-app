@@ -145,7 +145,13 @@ model Message {
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   role           MsgRole
   content        String
+  /// True on ASSISTANT messages served from the RAG fallback path (no relevant
+  /// knowledge found). Drives the "knowledge base health" indicator — a high
+  /// fallback rate means the client's knowledge base is too sparse.
+  wasFallback    Boolean      @default(false)
   createdAt      DateTime     @default(now())
+
+  @@index([conversationId, role])
 }
 
 model Review {

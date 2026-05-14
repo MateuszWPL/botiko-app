@@ -238,6 +238,7 @@ export class ChatService {
         conversationId,
         cleanMessage,
         FALLBACK_RESPONSE,
+        true,
       );
       return {
         message: FALLBACK_RESPONSE,
@@ -323,6 +324,7 @@ export class ChatService {
     conversationId: string,
     userMsg: string,
     assistantMsg: string,
+    wasFallback = false,
   ): Promise<void> {
     await this.prisma.$transaction([
       this.prisma.message.create({
@@ -339,6 +341,7 @@ export class ChatService {
           conversationId,
           role: 'ASSISTANT',
           content: assistantMsg,
+          wasFallback,
         },
       }),
     ]);

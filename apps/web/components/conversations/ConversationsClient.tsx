@@ -63,7 +63,9 @@ export function ConversationsClient({ initialConversations }: ConversationsClien
   }, [loadConversations]);
 
   const handleExport = () => {
-    const rows = [
+    // Polish Excel expects ';' as the field separator; commas land everything
+    // in one column. The UTF-8 BOM keeps ł/ą/ę intact when Excel opens the file.
+    const csv = [
       ['Sesja', 'Klient', 'Wiadomości', 'Czas (sek)', 'Data', 'Status'],
       ...conversations.map((c) => [
         c.sessionId,
@@ -74,14 +76,15 @@ export function ConversationsClient({ initialConversations }: ConversationsClien
         c.status,
       ]),
     ]
-      .map((row) => row.map((cell) => `"${cell}"`).join(','))
-      .join('\n');
+      .map((row) => row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(';'))
+      .join('\r\n');
 
-    const blob = new Blob([rows], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `rozmowy-${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
+    URL.revokeObjectURL(link.href);
   };
 
   return (

@@ -17,6 +17,9 @@ import { PageHeader } from '../../../components/ui/PageHeader';
 import { OverviewCharts } from '../../../components/dashboard/OverviewCharts';
 import { ConversationsAreaChart } from '../../../components/dashboard/ConversationsAreaChart';
 import type { ChartPoint } from '../../../components/dashboard/ConversationsAreaChart';
+import { KnowledgeHealthCard } from '../../../components/dashboard/KnowledgeHealthCard';
+import type { KnowledgeHealth } from '../../../components/dashboard/KnowledgeHealthCard';
+import { RoiSummaryCard } from '../../../components/dashboard/RoiSummaryCard';
 
 interface Lead {
   id: string;
@@ -47,15 +50,24 @@ interface BillingStatus {
 
 async function getStats() {
   try {
-    const [leads, conversations, bots, billing] = await Promise.all([
+    const [leads, conversations, bots, billing, knowledgeHealth] = await Promise.all([
       fetchWithAuth<Lead[]>('/api/v1/leads'),
       fetchWithAuth<Conversation[]>('/api/v1/conversations'),
       fetchWithAuth<BotData[]>('/api/v1/bot'),
       fetchWithAuth<BillingStatus>('/api/v1/billing/status').catch(() => null),
+      fetchWithAuth<KnowledgeHealth>('/api/v1/conversations/knowledge-health').catch(
+        () => null,
+      ),
     ]);
-    return { leads, conversations, bots, billing };
+    return { leads, conversations, bots, billing, knowledgeHealth };
   } catch {
-    return { leads: [], conversations: [], bots: [], billing: null };
+    return {
+      leads: [],
+      conversations: [],
+      bots: [],
+      billing: null,
+      knowledgeHealth: null,
+    };
   }
 }
 
@@ -141,7 +153,7 @@ function StatBadge({ value }: { value: number }) {
 }
 
 export default async function OverviewPage() {
-  const { leads, conversations, bots, billing } = await getStats();
+  const { leads, conversations, bots, billing, knowledgeHealth } = await getStats();
 
   // --- Monthly stats ---
   const now = new Date();
@@ -182,6 +194,15 @@ export default async function OverviewPage() {
   const usageCount = thisMonthConvs.length;
   const usagePct = Math.min(100, Math.round((usageCount / PLAN_LIMIT) * 100));
   const remaining = Math.max(0, PLAN_LIMIT - usageCount);
+
+  // Conversations handled outside typical working hours (evenings + weekends).
+  // Heuristic — shift UTC by +2h to approximate Polish local time (CEST).
+  const afterHoursConvs = thisMonthConvs.filter((c) => {
+    const d = new Date(new Date(c.createdAt).getTime() + 2 * 60 * 60 * 1000);
+    const day = d.getUTCDay();
+    const hour = d.getUTCHours();
+    return day === 0 || day === 6 || hour < 8 || hour >= 18;
+  }).length;
 
   const newLeadsCount = leads.filter((l) => l.status === 'NEW').length;
   const contactedCount = leads.filter((l) => l.status === 'CONTACTED').length;
@@ -290,6 +311,14 @@ export default async function OverviewPage() {
         </div>
       )}
 
+      {/* ── ROI summary ── */}
+      {bots.length > 0 && (
+        <RoiSummaryCard
+          leadsThisMonth={thisMonthLeads.length}
+          afterHoursConvs={afterHoursConvs}
+        />
+      )}
+
       {/* ── 1. Stat cards ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {/* Konwersacje */}
@@ -345,6 +374,11 @@ export default async function OverviewPage() {
           <p className="text-xs text-slate-400 mt-1">{remaining} rozmów do końca mies.</p>
         </div>
       </div>
+
+      {/* Knowledge base health */}
+      {bots.length > 0 && knowledgeHealth && (
+        <KnowledgeHealthCard health={knowledgeHealth} />
+      )}
 
       {/* No bots empty state */}
       {bots.length === 0 && (
