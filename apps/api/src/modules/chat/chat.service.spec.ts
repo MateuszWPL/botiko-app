@@ -63,8 +63,17 @@ const mockEmbeddingService = {
   findRelevantChunks: jest.fn().mockResolvedValue([]),
 };
 
+async function* defaultStream() {
+  await Promise.resolve();
+  yield { type: 'delta' as const, text: 'AI ' };
+  yield { type: 'delta' as const, text: 'streamed ' };
+  yield { type: 'delta' as const, text: 'answer' };
+  yield { type: 'done' as const, tokenUsage: 42 };
+}
+
 const mockAiService = {
   chat: jest.fn().mockResolvedValue({ content: 'AI answer', tokenUsage: 50 }),
+  chatStream: jest.fn(() => defaultStream()),
 };
 
 async function buildService(prismaMock = buildPrismaMock()) {
@@ -91,6 +100,7 @@ describe('ChatService', () => {
       content: 'AI answer',
       tokenUsage: 50,
     });
+    mockAiService.chatStream.mockImplementation(() => defaultStream());
   });
 
   describe('sendMessage — fallback', () => {
@@ -465,6 +475,136 @@ describe('ChatService', () => {
         message: 'Ile kosztuje strzyżenie?',
       });
       expect(result.message).toBeDefined();
+    });
+  });
+
+  // ── sendMessageStream ──────────────────────────────────────────────────────
+  describe('sendMessageStream', () => {
+    async function collect(
+      gen: AsyncGenerator<{
+        type: string;
+        text?: string;
+        showLeadForm?: boolean;
+      }>,
+    ) {
+      const events: { type: string; text?: string; showLeadForm?: boolean }[] =
+        [];
+      for await (const ev of gen) events.push(ev);
+      return events;
+    }
+
+    it('emits a single delta + done for canned fallback (no relevant chunks)', async () => {
+      mockEmbeddingService.findRelevantChunks.mockResolvedValue([]);
+      const prisma = buildPrismaMock();
+      const { service } = await buildService(prisma);
+
+      const events = await collect(
+        service.sendMessageStream({
+          botId: 'bot-1',
+          sessionId: 's1',
+          message: 'Pytanie bez odpowiedzi',
+        }),
+      );
+
+      expect(events).toHaveLength(2);
+      expect(events[0].type).toBe('delta');
+      expect(events[0].text).toContain('Nie mam dokładnej odpowiedzi');
+      expect(events[1]).toEqual({ type: 'done', showLeadForm: true });
+      expect(mockAiService.chatStream).not.toHaveBeenCalled();
+      expect(prisma.$transaction).toHaveBeenCalled();
+    });
+
+    it('emits canned escalation when user asks for a human', async () => {
+      const prisma = buildPrismaMock();
+      const { service } = await buildService(prisma);
+
+      const events = await collect(
+        service.sendMessageStream({
+          botId: 'bot-1',
+          sessionId: 's1',
+          message: 'chcę rozmawiać z człowiekiem',
+        }),
+      );
+
+      expect(events[0].type).toBe('delta');
+      expect(events[0].text).toContain('porozmawiać z naszym zespołem');
+      expect(events[events.length - 1]).toEqual({
+        type: 'done',
+        showLeadForm: true,
+      });
+      expect(mockAiService.chatStream).not.toHaveBeenCalled();
+    });
+
+    it('streams tokens from AI and persists the accumulated answer', async () => {
+      mockEmbeddingService.findRelevantChunks.mockResolvedValue([
+        { content: 'Strzyżenie kosztuje 80 zł', similarity: 0.85 },
+      ]);
+      const prisma = buildPrismaMock();
+      const { service } = await buildService(prisma);
+
+      const events = await collect(
+        service.sendMessageStream({
+          botId: 'bot-1',
+          sessionId: 's1',
+          message: 'Ile kosztuje strzyżenie?',
+        }),
+      );
+
+      expect(mockAiService.chatStream).toHaveBeenCalledTimes(1);
+      const deltas = events
+        .filter((e) => e.type === 'delta')
+        .map((e) => e.text)
+        .join('');
+      expect(deltas).toBe('AI streamed answer');
+      expect(events[events.length - 1]).toEqual({ type: 'done' });
+      // User msg + accumulated assistant msg persisted in one transaction
+      expect(prisma.$transaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('throws ForbiddenException before yielding when plan limit is reached', async () => {
+      const prisma = buildPrismaMock({
+        conversation: {
+          findFirst: jest.fn().mockResolvedValue(null),
+          create: jest.fn().mockResolvedValue(mockConversation),
+          count: jest.fn().mockResolvedValue(1000),
+        },
+      });
+      const { service } = await buildService(prisma);
+
+      const gen = service.sendMessageStream({
+        botId: 'bot-1',
+        sessionId: 's1',
+        message: 'hi',
+      });
+      await expect(gen.next()).rejects.toThrow(ForbiddenException);
+      expect(mockAiService.chatStream).not.toHaveBeenCalled();
+    });
+
+    it('persists partial response if consumer aborts mid-stream', async () => {
+      mockEmbeddingService.findRelevantChunks.mockResolvedValue([
+        { content: 'ctx', similarity: 0.9 },
+      ]);
+      // Stream that yields two deltas before consumer aborts
+      mockAiService.chatStream.mockImplementation(async function* () {
+        await Promise.resolve();
+        yield { type: 'delta' as const, text: 'first ' };
+        yield { type: 'delta' as const, text: 'second' };
+        yield { type: 'done' as const, tokenUsage: 10 };
+      });
+      const prisma = buildPrismaMock();
+      const { service } = await buildService(prisma);
+
+      const gen = service.sendMessageStream({
+        botId: 'bot-1',
+        sessionId: 's1',
+        message: 'hi',
+      });
+      // Consume one delta then bail
+      await gen.next();
+      await gen.return(undefined);
+
+      // finally{} in streamAndPersist should still persist what was accumulated
+      expect(prisma.$transaction).toHaveBeenCalledTimes(1);
     });
   });
 });

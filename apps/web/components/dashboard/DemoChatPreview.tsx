@@ -95,11 +95,31 @@ export function DemoChatPreview({ data }: { data: DemoData }) {
     setAsked((prev) => [...prev, question.q]);
     setMessages((prev) => [...prev, { role: 'user', text: question.q }]);
     setTyping(true);
-    const t = window.setTimeout(() => {
+
+    // Brief "typing" pause, then reveal the answer character-by-character to
+    // mirror the production widget's real-time typing UX.
+    const dotsDelay = window.setTimeout(() => {
       setTyping(false);
-      setMessages((prev) => [...prev, { role: 'bot', text: question.a }]);
-    }, 900);
-    timers.current.push(t);
+      setMessages((prev) => [...prev, { role: 'bot', text: '' }]);
+      let i = 0;
+      const reveal = () => {
+        i = Math.min(i + 2, question.a.length);
+        setMessages((prev) => {
+          const next = prev.slice();
+          const last = next[next.length - 1];
+          if (last && last.role === 'bot') {
+            next[next.length - 1] = { ...last, text: question.a.slice(0, i) };
+          }
+          return next;
+        });
+        if (i < question.a.length) {
+          const t = window.setTimeout(reveal, 28);
+          timers.current.push(t);
+        }
+      };
+      reveal();
+    }, 500);
+    timers.current.push(dotsDelay);
   };
 
   const remaining = questions.filter((q) => !asked.includes(q.q));

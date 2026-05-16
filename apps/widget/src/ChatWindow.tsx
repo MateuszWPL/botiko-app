@@ -33,12 +33,6 @@ interface ChatWindowProps {
   avatarEmoji: string;
 }
 
-interface ApiChatResponse {
-  message?: string;
-  showLeadForm?: boolean;
-}
-
-
 interface SessionData {
   sessionId: string;
   messages: Message[];
@@ -139,6 +133,37 @@ function errorMessageForStatus(
 }
 
 const CHAT_TIMEOUT_MS = 30_000;
+// Reveal-buffer pacing — uniform typewriter feel regardless of whether tokens
+// arrive from OpenAI in small chunks or from a canned response as one blob.
+const REVEAL_TICK_MS = 28;
+const REVEAL_CHARS_PER_TICK = 2;
+
+interface StreamEvent {
+  type: 'delta' | 'done';
+  text?: string;
+  showLeadForm?: boolean;
+}
+
+/** Parses an SSE buffer into events; returns leftover (incomplete frame). */
+function parseSseFrames(buffer: string): { events: StreamEvent[]; rest: string } {
+  const events: StreamEvent[] = [];
+  let rest = buffer;
+  let idx: number;
+  while ((idx = rest.indexOf('\n\n')) !== -1) {
+    const frame = rest.slice(0, idx);
+    rest = rest.slice(idx + 2);
+    for (const line of frame.split('\n')) {
+      if (line.startsWith('data:')) {
+        try {
+          events.push(JSON.parse(line.slice(5).trim()) as StreamEvent);
+        } catch {
+          // skip malformed
+        }
+      }
+    }
+  }
+  return { events, rest };
+}
 
 export function ChatWindow({
   botId,
@@ -179,6 +204,15 @@ export function ChatWindow({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  // Reveal buffer for streaming: incoming tokens land in `pending` and a timer
+  // drips them into the visible assistant message at a steady cadence. Decouples
+  // OpenAI's bursty token rate from a smooth typewriter UX, and gives canned
+  // responses (one-shot full text) the same gradual reveal.
+  const revealRef = useRef<{
+    pending: string;
+    done: boolean;
+    timer: number | null;
+  }>({ pending: '', done: false, timer: null });
   // Reaktywne wykrywanie mobile — reaguje na obrót urządzenia
   const [isMobile, setIsMobile] = useState(
     typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches,
@@ -249,6 +283,32 @@ export function ChatWindow({
     }, 220);
   };
 
+  /** Drains the reveal buffer into the last assistant message at a steady cadence. */
+  const startReveal = () => {
+    if (revealRef.current.timer !== null) return;
+    const tick = () => {
+      const ref = revealRef.current;
+      if (ref.pending.length === 0) {
+        ref.timer = null;
+        if (ref.done) setIsLoading(false);
+        return;
+      }
+      const take = Math.min(REVEAL_CHARS_PER_TICK, ref.pending.length);
+      const chunk = ref.pending.slice(0, take);
+      ref.pending = ref.pending.slice(take);
+      setMessages((prev) => {
+        const next = prev.slice();
+        const last = next[next.length - 1];
+        if (last && last.role === 'assistant') {
+          next[next.length - 1] = { ...last, content: last.content + chunk };
+        }
+        return next;
+      });
+      ref.timer = window.setTimeout(tick, REVEAL_TICK_MS);
+    };
+    revealRef.current.timer = window.setTimeout(tick, REVEAL_TICK_MS);
+  };
+
   const sendMessage = async (text?: string) => {
     const content = (text ?? input).trim();
     if (!content || isLoading) return;
@@ -257,59 +317,123 @@ export function ChatWindow({
     setShowSuggestions(false);
     setMessages((prev) => [...prev, { role: 'user', content }]);
     setIsLoading(true);
+    setUserMessageCount((n) => n + 1);
+    revealRef.current = { pending: '', done: false, timer: null };
 
     try {
       const controller = new AbortController();
+      // Timeout liczony do pierwszego tokenu — gdy stream już płynie, nie ucinamy go
       const timeoutId = setTimeout(() => controller.abort(), CHAT_TIMEOUT_MS);
       let res: Response;
       try {
-        res = await fetch(`${apiUrl}/api/v1/chat`, {
+        res = await fetch(`${apiUrl}/api/v1/chat/stream`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },
           body: JSON.stringify({ botId, sessionId, message: content }),
           signal: controller.signal,
         });
-      } finally {
+      } catch (err) {
         clearTimeout(timeoutId);
+        const isTimeout = err instanceof Error && err.name === 'AbortError';
+        setMessages((prev) => [...prev, {
+          role: 'assistant',
+          content: isTimeout
+            ? 'Odpowiedź trwa za długo. Spróbuj ponownie lub napisz krótsze pytanie.'
+            : 'Przepraszam, wystąpił błąd połączenia. Sprawdź internet i spróbuj ponownie.',
+        }]);
+        setIsLoading(false);
+        return;
       }
 
       if (!res.ok) {
+        clearTimeout(timeoutId);
         let errorCode: string | undefined;
         try { errorCode = ((await res.json()) as { code?: string }).code; } catch {}
         const errMsg = errorMessageForStatus(res.status, errorCode, () => {
           if (!lead.submitted) setLead((s) => ({ ...s, visible: true }));
         });
         setMessages((prev) => [...prev, { role: 'assistant', content: errMsg }]);
-        setUserMessageCount((n) => n + 1);
+        setIsLoading(false);
         return;
       }
 
-      const data = (await res.json()) as ApiChatResponse;
-
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: data.message ?? 'Przepraszam, coś poszło nie tak.' },
-      ]);
-      setUserMessageCount((n) => n + 1);
-
-      if (data.showLeadForm && !lead.submitted) {
-        setLead((s) => ({ ...s, visible: true }));
+      if (!res.body) {
+        // Should not happen on supported browsers, but bail gracefully
+        clearTimeout(timeoutId);
+        setMessages((prev) => [...prev, {
+          role: 'assistant',
+          content: 'Mamy chwilową przerwę techniczną. Spróbuj za moment.',
+        }]);
+        setIsLoading(false);
+        return;
       }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+      let firstDelta = true;
+      try {
+        for (;;) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          const parsed = parseSseFrames(buf);
+          buf = parsed.rest;
+          for (const ev of parsed.events) {
+            if (ev.type === 'delta' && ev.text) {
+              if (firstDelta) {
+                firstDelta = false;
+                clearTimeout(timeoutId);
+                // First delta = OpenAI started responding → open assistant bubble
+                setMessages((prev) => [...prev, { role: 'assistant', content: '' }]);
+              }
+              revealRef.current.pending += ev.text;
+              startReveal();
+            } else if (ev.type === 'done') {
+              revealRef.current.done = true;
+              if (ev.showLeadForm && !lead.submitted) {
+                setLead((s) => ({ ...s, visible: true }));
+              }
+            }
+          }
+        }
+      } finally {
+        clearTimeout(timeoutId);
+      }
+
+      // Stream ended without any delta → safety net, surface generic message
+      if (firstDelta) {
+        setMessages((prev) => [...prev, {
+          role: 'assistant',
+          content: 'Mamy chwilową przerwę techniczną. Spróbuj za moment.',
+        }]);
+        setIsLoading(false);
+      } else if (revealRef.current.pending.length === 0) {
+        // Buffer already empty when stream closed — stop the spinner now
+        setIsLoading(false);
+      }
+      // else: reveal loop will clear isLoading when buffer drains
     } catch (err) {
       const isTimeout = err instanceof Error && err.name === 'AbortError';
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: 'assistant',
-          content: isTimeout
-            ? 'Odpowiedź trwa za długo. Spróbuj ponownie lub napisz krótsze pytanie.'
-            : 'Przepraszam, wystąpił błąd połączenia. Sprawdź internet i spróbuj ponownie.',
-        },
-      ]);
-    } finally {
+      setMessages((prev) => [...prev, {
+        role: 'assistant',
+        content: isTimeout
+          ? 'Odpowiedź trwa za długo. Spróbuj ponownie lub napisz krótsze pytanie.'
+          : 'Przepraszam, wystąpił błąd połączenia. Sprawdź internet i spróbuj ponownie.',
+      }]);
       setIsLoading(false);
     }
   };
+
+  // Sprzątanie reveal-timera przy unmount, żeby nie pisać do unmounted komponentu
+  useEffect(() => {
+    return () => {
+      if (revealRef.current.timer !== null) {
+        window.clearTimeout(revealRef.current.timer);
+        revealRef.current.timer = null;
+      }
+    };
+  }, []);
 
   const submitLead = async () => {
     if (!lead.name.trim() || !phoneValid || !lead.consent) return;
@@ -565,8 +689,9 @@ export function ChatWindow({
           </div>
         ))}
 
-        {/* Typing indicator */}
-        {isLoading && (
+        {/* Typing indicator — only while waiting for first token; once streaming
+            starts the growing message bubble is itself the "typing" cue */}
+        {isLoading && messages[messages.length - 1]?.role === 'user' && (
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: '6px' }}>
             <div style={{
               width: '24px', height: '24px', borderRadius: '50%',

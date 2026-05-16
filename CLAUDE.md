@@ -145,7 +145,7 @@ CORS jest **otwarty dla wszystkich originów** — widget musi działać na dowo
 - Contact form: 10 req/min
 
 ### Widget Constraints
-- **Hard limit**: <12KB gzip — wymuszany przez plugin Vite w `vite.config.ts`
+- **Hard limit**: <14KB gzip — wymuszany przez plugin Vite w `vite.config.ts` (bumped z 12 → 13 → 14KB; ostatni bump dla streamingu SSE + reveal-buffer typewriter)
 - **Primary platform: WordPress** — instalacja przez wtyczkę WPCode, instrukcje w `EmbedCode.tsx`. Skrypt działa też na każdej innej stronie HTML (fallback). Inne CMS — Webflow/Shopify/Wix/Squarespace — wycięte z oficjalnych instrukcji.
 - Shadow DOM izoluje style od strony hosta
 - Preact (nie React) — dla rozmiaru bundle
