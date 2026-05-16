@@ -64,6 +64,7 @@ const mockEmbeddingService = {
 };
 
 async function* defaultStream() {
+  await Promise.resolve();
   yield { type: 'delta' as const, text: 'AI ' };
   yield { type: 'delta' as const, text: 'streamed ' };
   yield { type: 'delta' as const, text: 'answer' };
@@ -480,9 +481,14 @@ describe('ChatService', () => {
   // ── sendMessageStream ──────────────────────────────────────────────────────
   describe('sendMessageStream', () => {
     async function collect(
-      gen: AsyncGenerator<{ type: string; text?: string; showLeadForm?: boolean }>,
+      gen: AsyncGenerator<{
+        type: string;
+        text?: string;
+        showLeadForm?: boolean;
+      }>,
     ) {
-      const events: { type: string; text?: string; showLeadForm?: boolean }[] = [];
+      const events: { type: string; text?: string; showLeadForm?: boolean }[] =
+        [];
       for await (const ev of gen) events.push(ev);
       return events;
     }
@@ -501,10 +507,8 @@ describe('ChatService', () => {
       );
 
       expect(events).toHaveLength(2);
-      expect(events[0]).toEqual({
-        type: 'delta',
-        text: expect.stringContaining('Nie mam dokładnej odpowiedzi'),
-      });
+      expect(events[0].type).toBe('delta');
+      expect(events[0].text).toContain('Nie mam dokładnej odpowiedzi');
       expect(events[1]).toEqual({ type: 'done', showLeadForm: true });
       expect(mockAiService.chatStream).not.toHaveBeenCalled();
       expect(prisma.$transaction).toHaveBeenCalled();
@@ -522,10 +526,8 @@ describe('ChatService', () => {
         }),
       );
 
-      expect(events[0]).toEqual({
-        type: 'delta',
-        text: expect.stringContaining('porozmawiać z naszym zespołem'),
-      });
+      expect(events[0].type).toBe('delta');
+      expect(events[0].text).toContain('porozmawiać z naszym zespołem');
       expect(events[events.length - 1]).toEqual({
         type: 'done',
         showLeadForm: true,
@@ -584,6 +586,7 @@ describe('ChatService', () => {
       ]);
       // Stream that yields two deltas before consumer aborts
       mockAiService.chatStream.mockImplementation(async function* () {
+        await Promise.resolve();
         yield { type: 'delta' as const, text: 'first ' };
         yield { type: 'delta' as const, text: 'second' };
         yield { type: 'done' as const, tokenUsage: 10 };
