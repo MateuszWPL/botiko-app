@@ -17,6 +17,10 @@ import { getBrandTemplate } from '../../brand-templates';
 import { preprocessMessage } from './message-sanitizer';
 import { isTenantOnline } from '../../common/tenant-status';
 
+export type ChatStreamEvent =
+  | { type: 'delta'; text: string }
+  | { type: 'done'; showLeadForm?: boolean };
+
 /** Monthly conversation limit — flat 1000/month on STARTER plan. */
 const PLAN_CONVERSATION_LIMITS: Record<string, number | null> = {
   STARTER: 1000,
@@ -160,7 +164,10 @@ export class ChatService {
     }
 
     if (!isTenantOnline(bot.tenant)) {
-      throw new ForbiddenException({ message: 'Service temporarily unavailable', code: 'SERVICE_INACTIVE' });
+      throw new ForbiddenException({
+        message: 'Service temporarily unavailable',
+        code: 'SERVICE_INACTIVE',
+      });
     }
 
     await this.checkPlanLimit(bot.tenant.id, bot.tenant.plan);
@@ -303,6 +310,244 @@ export class ChatService {
     return { message: result.content, sessionId: req.sessionId };
   }
 
+  /**
+   * Streaming variant of sendMessage — same validation pipeline, but assistant
+   * tokens are yielded as they arrive from OpenAI. Validation (preprocessing,
+   * tenant/plan/cap checks, escalation) runs BEFORE the first yield so failures
+   * propagate as normal HTTP errors (controller converts pre-stream throws to
+   * JSON responses, post-stream errors close the SSE connection).
+   *
+   * Canned paths (sanitizer block, escalation, fallback) emit a single delta
+   * with the full canned text — the widget animates everything uniformly via
+   * its reveal buffer, so the API doesn't need to fake token-by-token output.
+   */
+  async *sendMessageStream(req: ChatRequest): AsyncGenerator<ChatStreamEvent> {
+    const preprocessed = preprocessMessage(req.message);
+    const cleanMessage =
+      preprocessed.action === 'respond'
+        ? req.message.slice(0, 500)
+        : preprocessed.text;
+
+    // ── Canned: sanitizer blocked the message ─────────────────────────────
+    if (preprocessed.action === 'respond') {
+      const conversationId = await this.getOrCreateConversationId(
+        req.botId,
+        req.sessionId,
+      );
+      await this.persistMessages(
+        conversationId,
+        cleanMessage,
+        preprocessed.response,
+      );
+      yield { type: 'delta', text: preprocessed.response };
+      yield { type: 'done', showLeadForm: preprocessed.showLeadForm };
+      return;
+    }
+
+    // ── Validation — throws propagate as HTTP errors before SSE starts ────
+    const bot = await this.prisma.bot.findFirst({
+      where: { id: req.botId, isActive: true },
+      include: {
+        tenant: {
+          select: {
+            id: true,
+            industry: true,
+            plan: true,
+            isActive: true,
+            createdAt: true,
+            stripeSubscriptionId: true,
+          },
+        },
+      },
+    });
+
+    if (!bot) {
+      throw new NotFoundException('Bot not found');
+    }
+    if (!isTenantOnline(bot.tenant)) {
+      throw new ForbiddenException({
+        message: 'Service temporarily unavailable',
+        code: 'SERVICE_INACTIVE',
+      });
+    }
+
+    await this.checkPlanLimit(bot.tenant.id, bot.tenant.plan);
+    await this.checkBotMessageCap(req.botId);
+    await this.checkConversationMessageCap(req.botId, req.sessionId);
+
+    // ── Canned: escalation to human ───────────────────────────────────────
+    if (isEscalationRequest(cleanMessage)) {
+      const conversationId = await this.getOrCreateConversationId(
+        req.botId,
+        req.sessionId,
+      );
+      await this.persistMessages(
+        conversationId,
+        cleanMessage,
+        ESCALATION_RESPONSE,
+      );
+      yield { type: 'delta', text: ESCALATION_RESPONSE };
+      yield { type: 'done', showLeadForm: true };
+      return;
+    }
+
+    const template = getBrandTemplate(bot.tenant.industry);
+
+    // ── Greeting path — stream OpenAI without RAG ─────────────────────────
+    if (preprocessed.action === 'no-rag') {
+      const greetingPrompt = buildSystemPrompt(
+        bot.name,
+        template.systemPrompt,
+        '',
+      );
+      const conversationId = await this.getOrCreateConversationId(
+        req.botId,
+        req.sessionId,
+      );
+      yield* this.streamAndPersist(
+        bot.tenant.id,
+        conversationId,
+        cleanMessage,
+        [
+          { role: 'system', content: greetingPrompt },
+          {
+            role: 'user',
+            content: `<user_message>${cleanMessage}</user_message>`,
+          },
+        ],
+        { maxTokens: 150 },
+        false,
+      );
+      return;
+    }
+
+    // ── RAG retrieval ─────────────────────────────────────────────────────
+    const relevantChunks = await this.embeddingService.findRelevantChunks(
+      req.botId,
+      cleanMessage,
+      5,
+    );
+    const context = relevantChunks
+      .filter((c) => c.similarity > 0.3)
+      .map((c) => c.content)
+      .join('\n\n');
+
+    // ── Canned: no relevant knowledge ─────────────────────────────────────
+    if (!context) {
+      const conversationId = await this.getOrCreateConversationId(
+        req.botId,
+        req.sessionId,
+      );
+      await this.persistMessages(
+        conversationId,
+        cleanMessage,
+        FALLBACK_RESPONSE,
+        true,
+      );
+      yield { type: 'delta', text: FALLBACK_RESPONSE };
+      yield { type: 'done', showLeadForm: true };
+      return;
+    }
+
+    // ── Normal RAG path — stream OpenAI with context ──────────────────────
+    const systemPrompt = buildSystemPrompt(
+      bot.name,
+      template.systemPrompt,
+      context,
+    );
+
+    let conversation = await this.prisma.conversation.findFirst({
+      where: { botId: req.botId, sessionId: req.sessionId },
+      include: {
+        messages: {
+          orderBy: { createdAt: 'desc' },
+          take: MAX_CONVERSATION_HISTORY,
+        },
+      },
+    });
+    if (conversation) {
+      conversation = {
+        ...conversation,
+        messages: [...conversation.messages].reverse(),
+      };
+    } else {
+      conversation = await this.prisma.conversation.create({
+        data: { botId: req.botId, sessionId: req.sessionId },
+        include: { messages: true },
+      });
+    }
+
+    const messages: ChatMessage[] = [
+      { role: 'system', content: systemPrompt },
+      ...conversation.messages.map((m) => ({
+        role: m.role.toLowerCase() as 'user' | 'assistant',
+        content: m.content,
+      })),
+      { role: 'user', content: `<user_message>${cleanMessage}</user_message>` },
+    ];
+
+    yield* this.streamAndPersist(
+      bot.tenant.id,
+      conversation.id,
+      cleanMessage,
+      messages,
+      { maxTokens: 600 },
+      false,
+    );
+  }
+
+  /**
+   * Streams tokens from OpenAI, accumulates them, persists the user+assistant
+   * pair when done, and tracks token usage. Uses try/finally so partial
+   * responses are persisted even if the consumer aborts (client disconnect →
+   * controller calls generator.return()).
+   */
+  private async *streamAndPersist(
+    tenantId: string,
+    conversationId: string,
+    userMessage: string,
+    messages: ChatMessage[],
+    options: { maxTokens: number },
+    wasFallback: boolean,
+  ): AsyncGenerator<ChatStreamEvent> {
+    let accumulated = '';
+    let tokenUsage = 0;
+    let completed = false;
+    try {
+      for await (const chunk of this.aiService.chatStream(messages, options)) {
+        if (chunk.type === 'delta') {
+          accumulated += chunk.text;
+          yield { type: 'delta', text: chunk.text };
+        } else {
+          tokenUsage = chunk.tokenUsage;
+        }
+      }
+      completed = true;
+      yield { type: 'done' };
+    } finally {
+      // Persist whatever we have (even on early abort) so the conversation
+      // history is intact. Empty assistant content can happen if OpenAI
+      // errored before sending any delta — skip persistence in that case.
+      if (accumulated.length > 0) {
+        try {
+          await this.persistMessages(
+            conversationId,
+            userMessage,
+            accumulated,
+            wasFallback,
+          );
+        } catch (e) {
+          this.logger.error('Stream persistence failed', e);
+        }
+      }
+      if (completed && tokenUsage > 0) {
+        this.trackTokenUsage(tenantId, tokenUsage).catch((e: unknown) => {
+          this.logger.error('Token usage tracking failed', e);
+        });
+      }
+    }
+  }
+
   private async getOrCreateConversationId(
     botId: string,
     sessionId: string,
@@ -368,7 +613,10 @@ export class ChatService {
       this.logger.warn(
         `Plan limit reached for tenant ${tenantId} (plan=${plan}, count=${count}, limit=${limit})`,
       );
-      throw new ForbiddenException({ message: 'Service temporarily unavailable', code: 'PLAN_LIMIT' });
+      throw new ForbiddenException({
+        message: 'Service temporarily unavailable',
+        code: 'PLAN_LIMIT',
+      });
     }
   }
 
@@ -393,7 +641,10 @@ export class ChatService {
       this.logger.warn(
         `Bot message cap reached for bot ${botId} (${count}/${MAX_MESSAGES_PER_BOT_PER_MONTH})`,
       );
-      throw new ForbiddenException({ message: 'Service temporarily unavailable', code: 'PLAN_LIMIT' });
+      throw new ForbiddenException({
+        message: 'Service temporarily unavailable',
+        code: 'PLAN_LIMIT',
+      });
     }
   }
 
@@ -420,7 +671,10 @@ export class ChatService {
       this.logger.warn(
         `Conversation message cap reached (botId=${botId}, sessionId=${sessionId}, count=${count})`,
       );
-      throw new ForbiddenException({ message: 'Service temporarily unavailable', code: 'PLAN_LIMIT' });
+      throw new ForbiddenException({
+        message: 'Service temporarily unavailable',
+        code: 'PLAN_LIMIT',
+      });
     }
   }
 

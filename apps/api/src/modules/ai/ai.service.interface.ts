@@ -20,9 +20,17 @@ export interface ChatOptions {
   model?: string;
 }
 
+export type ChatStreamChunk =
+  | { type: 'delta'; text: string }
+  | { type: 'done'; tokenUsage: number };
+
 export interface AIService {
   generateEmbedding(text: string): Promise<EmbeddingResult>;
   chat(messages: ChatMessage[], options?: ChatOptions): Promise<ChatResult>;
+  chatStream(
+    messages: ChatMessage[],
+    options?: ChatOptions,
+  ): AsyncIterable<ChatStreamChunk>;
 }
 
 export const AI_SERVICE = Symbol('AIService');

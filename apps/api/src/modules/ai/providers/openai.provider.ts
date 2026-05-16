@@ -6,6 +6,7 @@ import type {
   ChatMessage,
   ChatOptions,
   ChatResult,
+  ChatStreamChunk,
   EmbeddingResult,
 } from '../ai.service.interface';
 
@@ -67,5 +68,38 @@ export class OpenAIProvider implements AIService {
       content,
       tokenUsage: response.usage?.total_tokens ?? 0,
     };
+  }
+
+  async *chatStream(
+    messages: ChatMessage[],
+    options: ChatOptions = {},
+  ): AsyncIterable<ChatStreamChunk> {
+    const {
+      maxTokens = 600,
+      temperature = 0.3,
+      model = 'gpt-4o-mini',
+    } = options;
+
+    const stream = await this.client.chat.completions.create({
+      model,
+      messages,
+      max_tokens: maxTokens,
+      temperature,
+      stream: true,
+      stream_options: { include_usage: true },
+    });
+
+    let totalTokens = 0;
+    for await (const chunk of stream) {
+      // Final usage chunk has empty choices; surface it via 'done'
+      if (chunk.usage) {
+        totalTokens = chunk.usage.total_tokens;
+      }
+      const delta = chunk.choices[0]?.delta?.content;
+      if (delta) {
+        yield { type: 'delta', text: delta };
+      }
+    }
+    yield { type: 'done', tokenUsage: totalTokens };
   }
 }
