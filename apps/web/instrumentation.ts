@@ -7,4 +7,6 @@ export async function register() {
   }
 }
 
-export { onRequestError } from '@sentry/nextjs';
+// Next.js 14 nie posiada hooka onRequestError (został dodany w Next 15+),
+// więc nie reeksportujemy go z @sentry/nextjs. Errors w server components są
+// łapane przez global-error.tsx + Sentry init w sentry.server.config.ts.
