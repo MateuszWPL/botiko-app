@@ -47,7 +47,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       Sentry.captureException(exception);
     }
 
-    if (status >= 500 && exception instanceof HttpException) {
+    if (
+      status >= HttpStatus.INTERNAL_SERVER_ERROR &&
+      exception instanceof HttpException
+    ) {
       Sentry.captureException(exception);
     }
 

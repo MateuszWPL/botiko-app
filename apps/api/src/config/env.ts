@@ -83,9 +83,11 @@ function validateEnv(): Env {
       process.exit(1);
     }
 
-    if (!result.data.STRIPE_SECRET_KEY ||
-        !result.data.STRIPE_WEBHOOK_SECRET ||
-        !result.data.STRIPE_PRICE_ID) {
+    if (
+      !result.data.STRIPE_SECRET_KEY ||
+      !result.data.STRIPE_WEBHOOK_SECRET ||
+      !result.data.STRIPE_PRICE_ID
+    ) {
       console.warn(
         '⚠️  NODE_ENV=production but Stripe env vars are incomplete — billing endpoints will fail.',
       );
