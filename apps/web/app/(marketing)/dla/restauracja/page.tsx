@@ -522,8 +522,8 @@ export default function RestaurantLandingPage() {
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-            <table className="w-full text-sm">
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto shadow-sm">
+            <table className="w-full min-w-[480px] text-sm">
               <thead>
                 <tr style={{ background: '#FFF7ED' }} className="text-left">
                   <th className="px-5 py-3 font-semibold text-slate-700">Nowi goście / mies.</th>
@@ -598,8 +598,8 @@ export default function RestaurantLandingPage() {
             </h2>
           </div>
 
-          <div className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
-            <div className="grid grid-cols-3 text-sm">
+          <div className="bg-white rounded-2xl overflow-x-auto border border-slate-200 shadow-sm">
+            <div className="grid grid-cols-3 text-sm min-w-[480px]">
               <div className="px-5 py-3 font-semibold text-slate-500 bg-slate-50" />
               <div
                 className="px-5 py-3 font-bold text-center text-white text-sm"

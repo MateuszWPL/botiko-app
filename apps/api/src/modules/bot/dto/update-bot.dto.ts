@@ -5,7 +5,7 @@ const hexColorRegex = /^#[0-9A-Fa-f]{6}$/;
 const dayScheduleSchema = z.object({
   enabled: z.boolean(),
   start: z.number().int().min(0).max(23),
-  end: z.number().int().min(0).max(23),
+  end: z.number().int().min(0).max(24), // 24 = "open all day" flag
 });
 
 export const updateBotSchema = z

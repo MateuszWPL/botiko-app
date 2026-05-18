@@ -276,27 +276,46 @@ function TabProfil({
       </SectionCard>
 
       <SectionCard title="Godziny otwarcia" subtitle="Informacyjne — bot odpowiada 24/7, ale informuje klientów o godzinach.">
-        <div className="space-y-2">
-          {form.schedule.map((day, idx) => (
-            <div key={idx} className="flex items-center gap-3">
-              <Toggle
-                checked={day.enabled}
-                onChange={() => updateSchedule(idx, { enabled: !day.enabled })}
-              />
-              <span className="w-28 text-sm text-slate-700 font-medium">{DAY_NAMES[idx]}</span>
-              <TimeInput
-                value={day.start}
-                onChange={(v) => updateSchedule(idx, { start: v })}
-                disabled={!day.enabled}
-              />
-              <span className="text-slate-400 text-sm">—</span>
-              <TimeInput
-                value={day.end}
-                onChange={(v) => updateSchedule(idx, { end: v })}
-                disabled={!day.enabled}
-              />
-            </div>
-          ))}
+        <div className="space-y-3">
+          {form.schedule.map((day, idx) => {
+            const isAllDay = day.enabled && day.end >= 24;
+            return (
+              <div key={idx} className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                <div className="flex items-center gap-3">
+                  <Toggle
+                    checked={day.enabled}
+                    onChange={() => updateSchedule(idx, { enabled: !day.enabled })}
+                  />
+                  <span className="w-28 text-sm text-slate-700 font-medium">{DAY_NAMES[idx]}</span>
+                </div>
+                {day.enabled && (
+                  <div className="flex items-center gap-2 pl-[3.25rem] sm:pl-0">
+                    {isAllDay ? (
+                      <span className="text-xs text-indigo-600 font-medium bg-indigo-50 px-2.5 py-1 rounded-lg">Całą dobę</span>
+                    ) : (
+                      <>
+                        <TimeInput
+                          value={day.start}
+                          onChange={(v) => updateSchedule(idx, { start: v })}
+                        />
+                        <span className="text-slate-400 text-sm">—</span>
+                        <TimeInput
+                          value={day.end}
+                          onChange={(v) => updateSchedule(idx, { end: v })}
+                        />
+                      </>
+                    )}
+                    <button
+                      onClick={() => updateSchedule(idx, isAllDay ? { start: 9, end: 18 } : { start: 0, end: 24 })}
+                      className="text-xs text-slate-400 hover:text-indigo-500 underline underline-offset-2 transition-colors cursor-pointer"
+                    >
+                      {isAllDay ? 'Ustaw godziny' : '24h'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </SectionCard>
     </div>
@@ -905,18 +924,18 @@ export function SettingsForm({ bot }: { bot: BotData }) {
   return (
     <div className="max-w-7xl 2xl:max-w-[1400px]">
       {/* Tabs */}
-      <div className="flex border-b border-slate-200 mb-6">
+      <div className="flex overflow-x-auto border-b border-slate-200 mb-6 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-thin">
         {TABS.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
             onClick={() => setActiveTab(id)}
-            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer -mb-px ${
+            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors cursor-pointer -mb-px whitespace-nowrap shrink-0 ${
               activeTab === id
                 ? 'border-indigo-500 text-indigo-600'
                 : 'border-transparent text-slate-500 hover:text-slate-700'
             }`}
           >
-            <Icon className="w-4 h-4" />
+            <Icon className="w-4 h-4 shrink-0" />
             {label}
           </button>
         ))}

@@ -47,6 +47,7 @@ function isSalonClosed(start: number | null, end: number | null, days: number[])
   const day = now.getDay();
   const hour = now.getHours();
   if (!days.includes(day)) return true;
+  if (end >= 24) return false; // "open all day" flag
   return hour < start || hour >= end;
 }
 

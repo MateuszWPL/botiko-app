@@ -230,7 +230,7 @@ export function NotificationsBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-[360px] bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden z-50 animate-fade-in">
+        <div className="absolute right-0 top-full mt-2 w-[min(360px,calc(100vw-1rem))] bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden z-50 animate-fade-in">
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-indigo-50/50 to-transparent">
             <div className="flex items-center gap-2">
               <Bell className="w-4 h-4 text-indigo-500" />

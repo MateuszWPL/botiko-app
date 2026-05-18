@@ -71,8 +71,8 @@ export function ConversationsTable({ conversations }: ConversationsTableProps) {
   }
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 overflow-hidden shadow-sm">
-      <table className="w-full">
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 overflow-x-auto shadow-sm">
+      <table className="w-full min-w-[720px]">
         <thead>
           <tr className="border-b border-slate-100/80 bg-slate-50/50">
             <th className="text-left px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wide">
