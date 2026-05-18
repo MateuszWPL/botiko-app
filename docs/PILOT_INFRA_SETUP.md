@@ -6,37 +6,36 @@
 
 ---
 
-## 1. Sentry (error tracking) — ~10 min
+## 1. Sentry (error tracking) — ~5 min
 
-### 1.1. Konto + projekty
+### 1.1. Konto + projekty ✅ ZROBIONE
 
-1. Otwórz https://sentry.io/signup/ — zarejestruj się **na region EU** (Frankfurt) emailem `mateworo@gmail.com`. Plan **Developer (Free)** — 5k events/mies, 1 user, wystarczy na pilot.
-2. Po rejestracji "Create Organization" — nazwa: `botiko` (slug `botiko`).
-3. **Pierwszy projekt — API:**
-   - Platform → **Node.js → NestJS**
-   - Project name: `api-botiko`
-   - Team: default
-   - Klik "Create Project" → **skopiuj DSN** ze strony "Configure SDK" (format: `https://xxx@oXXXX.ingest.de.sentry.io/YYYY`)
-4. **Drugi projekt — Web:**
-   - Lewy sidebar → **Projects → Create Project**
-   - Platform → **Next.js**
-   - Project name: `web-botiko`
-   - Klik "Create Project" → **skopiuj DSN**
+Konto + organizacja `botiko` + 2 projekty już istnieją na region **EU (Frankfurt)**, utworzone przez MCP:
 
-### 1.2. Wpisz DSN do env
-
-**Railway → API service → Variables:**
-```
-SENTRY_DSN=<DSN z api-botiko>
-```
-
-**Vercel → web project → Settings → Environment Variables:**
-| Key | Value | Environment |
+| Projekt | Slug | URL |
 |---|---|---|
-| `SENTRY_DSN` | `<DSN z web-botiko>` | Production |
-| `NEXT_PUBLIC_SENTRY_DSN` | `<ten sam DSN>` | Production |
+| API (NestJS) | `node-nestjs` | https://botiko.sentry.io/projects/node-nestjs/ |
+| Web (Next.js) | `web-botiko` | https://botiko.sentry.io/projects/web-botiko/ |
 
-Redeploy oba (Railway: automatycznie po zmianie env, Vercel: "Redeploy" w panelu).
+Auth: `kontakt@botiko.pl` (Mateusz Woronowicz, user ID 4575407).
+
+### 1.2. Wpisz DSN do env — POZOSTAŁO TOBIE
+
+**Railway → API service → Variables → New Variable:**
+```
+SENTRY_DSN=https://b841e1f01e73174d5054bc6e216590a7@o4511412180746240.ingest.de.sentry.io/4511412186054736
+```
+
+**Vercel → web project → Settings → Environment Variables (Production):**
+
+| Key | Value |
+|---|---|
+| `SENTRY_DSN` | `https://acc814f79eef7081d96a4cdb15ee1d76@o4511412180746240.ingest.de.sentry.io/4511412205781072` |
+| `NEXT_PUBLIC_SENTRY_DSN` | `https://acc814f79eef7081d96a4cdb15ee1d76@o4511412180746240.ingest.de.sentry.io/4511412205781072` |
+
+Redeploy:
+- **Railway** — automatycznie po zmianie env (czekaj ~2 min).
+- **Vercel** — Settings → Deployments → klik "..." przy ostatnim production deploy → **Redeploy** (bez build cache, żeby `withSentryConfig` zassał env przy build).
 
 ### 1.3. Test capture (5 min po redeployu)
 
