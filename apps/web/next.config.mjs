@@ -34,7 +34,7 @@ const securityHeaders = [
       // Fonts: self
       "font-src 'self'",
       // API calls (configured at build time)
-      `connect-src 'self' ${API_URL} ${PROD_API_URL} https://*.supabase.co wss://*.supabase.co https://api.cloudinary.com`,
+      `connect-src 'self' ${API_URL} ${PROD_API_URL} https://*.supabase.co wss://*.supabase.co https://api.cloudinary.com https://*.ingest.sentry.io https://*.ingest.de.sentry.io https://*.ingest.us.sentry.io`,
       // Frames: Stripe billing portal + YouTube/Vimeo for blog video embeds
       "frame-src 'self' https://billing.stripe.com https://checkout.stripe.com https://www.youtube.com https://player.vimeo.com",
       // Strict object/media
@@ -81,4 +81,17 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+// Sentry wrapper — no-op when SENTRY_DSN is unset (DSN gating happens inside the
+// sentry.*.config.ts init blocks). Wrapping is safe to always apply.
+import { withSentryConfig } from '@sentry/nextjs';
+
+export default withSentryConfig(nextConfig, {
+  // Suppress build-time logs when no DSN is configured (e.g. CI without secrets).
+  silent: !process.env.SENTRY_AUTH_TOKEN,
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  // Source-map upload only runs when SENTRY_AUTH_TOKEN is present.
+  widenClientFileUpload: true,
+});
+

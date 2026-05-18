@@ -49,6 +49,9 @@ const envSchema = z.object({
 
   // Cron — secret key for internal scheduled endpoints (trial notifications etc.)
   CRON_SECRET: z.string().min(16).optional(),
+
+  // Sentry — optional; error tracking disabled when absent
+  SENTRY_DSN: z.string().url().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

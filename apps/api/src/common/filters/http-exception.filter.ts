@@ -7,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import * as Sentry from '@sentry/nestjs';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -39,12 +40,15 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         }
       }
     } else if (exception instanceof Error) {
-      // Log internally but never expose raw error messages to clients
-      // (they can contain DB schema details, file paths, etc.)
       this.logger.error(
         `Unhandled error: ${exception.message}`,
         exception.stack,
       );
+      Sentry.captureException(exception);
+    }
+
+    if (status >= 500 && exception instanceof HttpException) {
+      Sentry.captureException(exception);
     }
 
     response.status(status).json({
