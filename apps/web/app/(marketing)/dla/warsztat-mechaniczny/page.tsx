@@ -517,8 +517,8 @@ export default function MechanicLandingPage() {
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-            <table className="w-full text-sm">
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto shadow-sm">
+            <table className="w-full min-w-[480px] text-sm">
               <thead>
                 <tr style={{ background: '#f1f5f9' }} className="text-left">
                   <th className="px-5 py-3 font-semibold text-slate-700">Nowi klienci / mies.</th>

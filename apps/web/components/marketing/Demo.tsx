@@ -62,6 +62,20 @@ function LogoReveal() {
 
   return (
     <div ref={ref} className="flex justify-center lg:justify-end items-center">
+      <style>{`
+        @keyframes botiko-float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        @keyframes botiko-glow-pulse {
+          0%, 100% { opacity: 0.22; transform: scale(1.7); }
+          50% { opacity: 0.38; transform: scale(1.85); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .botiko-logo-float { animation: none !important; }
+          .botiko-logo-glow { animation: none !important; }
+        }
+      `}</style>
       <div
         style={{
           opacity: inView ? 1 : 0,
@@ -69,22 +83,30 @@ function LogoReveal() {
           transition: 'opacity 0.7s ease-out, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
         }}
       >
-        <div className="relative inline-block">
-          {/* Outer glow */}
+        <div
+          className="botiko-logo-float relative inline-block cursor-default"
+          style={{ animation: inView ? 'botiko-float 4s ease-in-out infinite' : 'none' }}
+        >
+          {/* Outer glow — pulses in sync with float */}
           <div
-            className="absolute inset-0 rounded-[2.5rem] blur-3xl"
-            style={{ background: '#6366F1', opacity: 0.22, transform: 'scale(1.7)' }}
+            className="botiko-logo-glow absolute inset-0 rounded-[2.5rem] blur-3xl"
+            style={{
+              background: '#6366F1',
+              opacity: 0.22,
+              transform: 'scale(1.7)',
+              animation: inView ? 'botiko-glow-pulse 4s ease-in-out infinite' : 'none',
+            }}
           />
-          {/* Card with even padding */}
+          {/* Card — hover scale */}
           <div
-            className="relative rounded-[2rem] p-10"
+            className="relative rounded-[2rem] p-8 transition-transform duration-300 hover:scale-[1.04]"
             style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.18)' }}
           >
             <Image
               src="/botiko-mark.svg"
               alt="Botiko"
-              width={96}
-              height={119}
+              width={120}
+              height={120}
             />
           </div>
         </div>
