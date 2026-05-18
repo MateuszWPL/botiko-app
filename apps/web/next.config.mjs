@@ -50,6 +50,21 @@ const nextConfig = {
     // Avoid re-exporting entire packages — only import what's used
     optimizePackageImports: ['@supabase/supabase-js', '@supabase/ssr'],
   },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.botiko.pl' }],
+        destination: 'https://botiko.pl/:path*',
+        permanent: true,
+      },
+      {
+        source: '/opengraph-image',
+        destination: '/opengraph-image.png',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
