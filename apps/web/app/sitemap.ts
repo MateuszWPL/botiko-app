@@ -4,17 +4,18 @@ import { getAllPosts, getAllCategories, getAllTags } from '@/lib/blog';
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://botiko.pl';
 
+  const now = new Date();
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: baseUrl, changeFrequency: 'weekly', priority: 1 },
-    { url: `${baseUrl}/blog`, changeFrequency: 'weekly', priority: 0.9 },
-{ url: `${baseUrl}/kontakt`, changeFrequency: 'yearly', priority: 0.5 },
-    { url: `${baseUrl}/dla/salon-beauty`, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${baseUrl}/dla/gabinet-spa`, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${baseUrl}/dla/restauracja`, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${baseUrl}/dla/warsztat-mechaniczny`, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${baseUrl}/dla/inna`, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${baseUrl}/prywatnosc`, changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${baseUrl}/regulamin`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: baseUrl, changeFrequency: 'weekly', priority: 1, lastModified: now },
+    { url: `${baseUrl}/blog`, changeFrequency: 'weekly', priority: 0.9, lastModified: now },
+    { url: `${baseUrl}/kontakt`, changeFrequency: 'yearly', priority: 0.5, lastModified: new Date('2026-03-01') },
+    { url: `${baseUrl}/dla/salon-beauty`, changeFrequency: 'monthly', priority: 0.8, lastModified: now },
+    { url: `${baseUrl}/dla/gabinet-spa`, changeFrequency: 'monthly', priority: 0.8, lastModified: now },
+    { url: `${baseUrl}/dla/restauracja`, changeFrequency: 'monthly', priority: 0.8, lastModified: now },
+    { url: `${baseUrl}/dla/warsztat-mechaniczny`, changeFrequency: 'monthly', priority: 0.8, lastModified: now },
+    { url: `${baseUrl}/dla/inna`, changeFrequency: 'monthly', priority: 0.7, lastModified: now },
+    { url: `${baseUrl}/prywatnosc`, changeFrequency: 'yearly', priority: 0.3, lastModified: new Date('2026-03-01') },
+    { url: `${baseUrl}/regulamin`, changeFrequency: 'yearly', priority: 0.3, lastModified: new Date('2026-03-01') },
   ];
 
   const posts = getAllPosts().map((post) => ({

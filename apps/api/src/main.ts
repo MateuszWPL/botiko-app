@@ -1,4 +1,6 @@
 import 'dotenv/config';
+// Sentry must be imported BEFORE NestFactory for instrumentation hooks to register.
+import './instrument';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { env } from './config/env';

@@ -13,25 +13,37 @@ import BlogFilters from '@/components/blog/BlogFilters';
 import Pagination from '@/components/blog/Pagination';
 import TagCloud from '@/components/blog/TagCloud';
 
-export const metadata: Metadata = {
-  title: 'Blog — Botiko.pl | AI dla polskich firm usługowych',
-  description:
-    'Artykuły o automatyzacji obsługi klienta, chatbotach AI i rozwoju małych firm usługowych w Polsce. Poradniki, analizy, case studies.',
-  alternates: { canonical: 'https://botiko.pl/blog' },
-  openGraph: {
-    title: 'Blog Botiko — AI dla małych firm usługowych',
-    description:
-      'Praktyczne artykuły o chatbotach AI, automatyzacji i pozyskiwaniu klientów dla salonów beauty, gabinetów i warsztatów.',
-    url: 'https://botiko.pl/blog',
-    type: 'website',
-  },
-};
-
 type SearchParams = {
   strona?: string;
   kategoria?: string;
   sortuj?: string;
 };
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}): Promise<Metadata> {
+  const page = Math.max(1, parseInt(searchParams.strona ?? '1', 10));
+  const canonical =
+    page > 1
+      ? `https://botiko.pl/blog?strona=${page}`
+      : 'https://botiko.pl/blog';
+
+  return {
+    title: 'Blog — Botiko.pl | AI dla polskich firm usługowych',
+    description:
+      'Artykuły o automatyzacji obsługi klienta, chatbotach AI i rozwoju małych firm usługowych w Polsce. Poradniki, analizy, case studies.',
+    alternates: { canonical },
+    openGraph: {
+      title: 'Blog Botiko — AI dla małych firm usługowych',
+      description:
+        'Praktyczne artykuły o chatbotach AI, automatyzacji i pozyskiwaniu klientów dla salonów beauty, gabinetów i warsztatów.',
+      url: canonical,
+      type: 'website',
+    },
+  };
+}
 
 export default async function BlogPage({
   searchParams,

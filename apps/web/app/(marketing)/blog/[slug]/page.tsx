@@ -95,10 +95,11 @@ export default async function BlogPostPage({
     ...(post.image && { image: `https://botiko.pl${post.image}` }),
     datePublished: post.date,
     dateModified: post.updatedAt ?? post.date,
+    inLanguage: 'pl-PL',
     author: {
-      '@type': 'Person',
+      '@type': 'Organization',
       name: post.author,
-      jobTitle: post.authorTitle,
+      url: 'https://botiko.pl',
     },
     publisher: {
       '@type': 'Organization',

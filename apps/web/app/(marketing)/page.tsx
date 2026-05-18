@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych',
     description:
       'Klienci piszą o 22:00. Bot odpowiada za Ciebie. 99 zł/mies. 14 dni za darmo.',
-    images: ['https://botiko.pl/twitter-image.png'],
+    images: ['https://botiko.pl/opengraph-image.png'],
   },
   alternates: {
     canonical: 'https://botiko.pl',

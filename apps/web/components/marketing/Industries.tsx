@@ -203,7 +203,7 @@ export default function Industries() {
               </ul>
 
               <Link
-                href="/register"
+                href="/rejestracja"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white cursor-pointer"
                 style={{ background: active.color, transition: 'opacity 0.2s ease, background 0.25s ease' }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')}

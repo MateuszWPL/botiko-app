@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     'bot obsługi klienta',
     'bot na stronę internetową',
     'automatyzacja obsługi klienta',
-    'automatyzacja obsługi klienta',
+    'bot dla małej firmy',
     'bot Polska',
     'lead generation',
     'Botiko',
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     title: 'Botiko.pl — Bot obsługi klienta 24/7',
     description:
       'Klienci piszą o 22:00. Bot odpowiada za Ciebie.',
-    images: ['/twitter-image.png'],
+    images: ['/opengraph-image.png'],
   },
   robots: {
     index: true,

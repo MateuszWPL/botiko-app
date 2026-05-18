@@ -150,7 +150,7 @@ export const mdxComponents = {
   },
 
   pre: ({ children }: ComponentPropsWithoutRef<'pre'>) => (
-    <pre className="my-6 p-5 rounded-xl bg-slate-900 overflow-x-auto text-slate-100 text-sm leading-relaxed">
+    <pre className="my-6 p-5 rounded-xl bg-slate-900 overflow-x-auto max-w-full text-slate-100 text-sm leading-relaxed">
       {children}
     </pre>
   ),
