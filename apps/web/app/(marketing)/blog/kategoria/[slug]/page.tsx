@@ -17,17 +17,25 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: { slug: string };
+  searchParams: { strona?: string };
 }): Promise<Metadata> {
   const categories = getAllCategories();
   const cat = categories.find((c) => c.slug === params.slug);
   if (!cat) return {};
 
+  const page = Math.max(1, parseInt(searchParams.strona ?? '1', 10));
+  const canonical =
+    page > 1
+      ? `https://botiko.pl/blog/kategoria/${cat.slug}?strona=${page}`
+      : `https://botiko.pl/blog/kategoria/${cat.slug}`;
+
   return {
     title: `${cat.name} — Blog Botiko.pl`,
     description: `Artykuły z kategorii "${cat.name}" — praktyczne porady o automatyzacji i AI dla małych firm usługowych.`,
-    alternates: { canonical: `https://botiko.pl/blog/kategoria/${cat.slug}` },
+    alternates: { canonical },
   };
 }
 

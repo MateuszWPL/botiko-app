@@ -63,6 +63,11 @@ const nextConfig = {
         destination: '/opengraph-image.png',
         permanent: true,
       },
+      {
+        source: '/blog/kategoria/narzedzzia',
+        destination: '/blog/kategoria/narzedzia',
+        permanent: true,
+      },
     ];
   },
   async headers() {
