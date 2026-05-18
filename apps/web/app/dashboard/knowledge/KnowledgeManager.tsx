@@ -191,7 +191,7 @@ function ContactTab({
 
       <div>
         <label className="block text-xs font-semibold text-slate-600 mb-1.5">Telefon</label>
-        <input type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="+48 123 456 789" className={inputClass} />
+        <input type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="Wpisz numer telefonu firmy" className={inputClass} />
       </div>
       <div>
         <label className="block text-xs font-semibold text-slate-600 mb-1.5">Email</label>
@@ -205,7 +205,7 @@ function ContactTab({
 
       <div>
         <label className="block text-xs font-semibold text-slate-600 mb-1.5">Adres</label>
-        <input type="text" value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} placeholder="ul. Kwiatowa 5, Białystok" className={inputClass} />
+        <input type="text" value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} placeholder="ul. Przykładowa 1, Twoje Miasto" className={inputClass} />
       </div>
 
       <div>
@@ -278,7 +278,7 @@ function FaqTab({
           type="text"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Ile kosztuje manicure hybrydowy?"
+          placeholder="Jakie są godziny otwarcia?"
           className={inputClass}
         />
       </div>
@@ -288,7 +288,7 @@ function FaqTab({
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
           rows={4}
-          placeholder="Manicure hybrydowy kosztuje 90 zł i trwa około 75 minut. Zapraszamy od poniedziałku do piątku w godzinach 9:00–18:00."
+          placeholder="Pracujemy od poniedziałku do piątku w godzinach 9:00–18:00, w soboty 10:00–15:00."
           className={`${inputClass} resize-none`}
         />
       </div>
@@ -352,7 +352,7 @@ function TextTab({
         value={content}
         onChange={(e) => setContent(e.target.value)}
         rows={6}
-        placeholder="np. Manicure klasyczny — 60 zł, 45 min. Dostępny codziennie 9-18. Przy pierwszej wizycie 10% rabatu."
+        placeholder="np. Usługa podstawowa — 80 zł, czas realizacji 45 min. Dostępna od poniedziałku do piątku 9:00–18:00."
         className={`${inputClass} resize-none`}
       />
       <div className="flex gap-3">
