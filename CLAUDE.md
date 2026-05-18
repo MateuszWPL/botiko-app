@@ -165,6 +165,10 @@ Enums: `Industry` (BEAUTY/HEALTH/FOOD/AUTO/OTHER), `Plan` (STARTER/PRO/PREMIUM �
 
 **Industry templates:** BEAUTY/HEALTH/FOOD/AUTO mają własne pliki w `apps/api/src/brand-templates/`. `OTHER` korzysta z generycznego szablonu — obsługuje każdą branżę usługową bez dedykowanego prompta.
 
+### Schema changes — zasada źródła prawdy
+- **Każda zmiana `apps/api/prisma/schema.prisma` MUSI mieć w tym samym commicie migrację Prisma** — `pnpm prisma migrate dev --name <opis>` w `apps/api/`. Railway robi `prisma migrate deploy` przy starcie API; bez migracji = produkcja pada (incydent: PR #50 dodał `Message.wasFallback` bez migracji → prod 500 → hotfix PR #52).
+- **`supabase/migrations/` służy WYŁĄCZNIE do RLS policies i rzeczy Postgres-specific** (extensions, GRANT-y). Nigdy nie duplikuj tu zmian DDL — to powoduje drift. Szczegóły w `supabase/migrations/README.md`.
+
 ### Moduły API (`apps/api/src/modules/`)
 | Moduł | Endpointy | Auth |
 |---|---|---|
