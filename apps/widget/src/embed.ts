@@ -1,4 +1,5 @@
 import { h, render } from 'preact';
+import { isAdminPath } from './widget-utils';
 import { useState, useEffect } from 'preact/hooks';
 import { Launcher } from './Launcher';
 import { ChatWindow } from './ChatWindow';
@@ -71,8 +72,7 @@ function Widget({
 
 async function init() {
   // Skip known CMS admin panels — widget has no business appearing in /wp-admin etc.
-  const path = window.location.pathname;
-  if (['/wp-admin', '/wp-login.php', '/administrator'].some((p) => path.startsWith(p))) return;
+  if (isAdminPath(window.location.pathname)) return;
 
   // Guard against double-init — synchronous flag na documentElement ustawiony PRZED
   // async init, odporny na race condition gdy dwa skrypty ładują się równolegle.

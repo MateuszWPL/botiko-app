@@ -6,7 +6,12 @@ import { AppModule } from './app.module';
 import { env } from './config/env';
 import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
 import helmet from 'helmet';
-import { type Request, type Response, type NextFunction } from 'express';
+import {
+  type Application,
+  type Request,
+  type Response,
+  type NextFunction,
+} from 'express';
 import cors from 'cors';
 
 /**
@@ -65,6 +70,10 @@ async function bootstrap() {
 
   // rawBody: true exposes req.rawBody for Stripe webhook signature verification
   const app = await NestFactory.create(AppModule, { rawBody: true });
+
+  // Railway (and most PaaS) terminate TLS at a reverse proxy. Without this,
+  // req.ip is always the proxy IP → ThrottlerGuard buckets all clients together.
+  (app.getHttpAdapter().getInstance() as Application).set('trust proxy', 1);
 
   app.use(helmet());
 

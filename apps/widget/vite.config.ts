@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 import preact from '@preact/preset-vite';
 import { resolve } from 'path';
@@ -36,6 +37,11 @@ function bundleSizeCheck(): Plugin {
 
 export default defineConfig({
   plugins: [preact(), bundleSizeCheck()],
+  test: {
+    environment: 'jsdom',
+    include: ['src/**/*.spec.ts'],
+    globals: false,
+  },
   server: {
     cors: true,
   },
