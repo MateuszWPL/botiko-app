@@ -7,6 +7,21 @@ const validBase = {
   consentGiven: true as const,
 };
 
+describe('createLeadSchema — botId (CUID validation)', () => {
+  it('akceptuje poprawny CUID', () => {
+    expect(createLeadSchema.safeParse(validBase).success).toBe(true);
+  });
+
+  it.each(['nie-cuid', '123', '', 'uuid-style-but-not-cuid'])(
+    'odrzuca botId "%s" (nie jest CUID)',
+    (botId) => {
+      expect(
+        createLeadSchema.safeParse({ ...validBase, botId }).success,
+      ).toBe(false);
+    },
+  );
+});
+
 describe('createLeadSchema — walidacja telefonu', () => {
   it.each([
     '+48 600 123 456',

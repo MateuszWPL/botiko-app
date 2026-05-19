@@ -132,8 +132,8 @@
 - [x] Brak `RESEND_API_KEY` → notyfikacje wyłączone, warn w logach, brak crasha
 
 #### Testowanie (manualne — po założeniu konta Resend)
-- [ ] Ręcznie: wypełnij formularz w widgecie → sprawdź email w skrzynce właściciela
-- [ ] Sprawdź że email nie ląduje w spamie (SPF/DKIM dla botiko.pl przez Resend dashboard)
+- [x] Ręcznie: wypełnij formularz w widgecie → sprawdź email w skrzynce właściciela
+- [x] Sprawdź że email nie ląduje w spamie (SPF/DKIM dla botiko.pl przez Resend dashboard)
 
 #### Testy automatyczne ✅
 - [x] `lead.service.spec.ts`: 6 testów — zapis leada, szyfrowanie PII, email call, brak emaila bez usera, błąd Resend nie propaguje, NotFoundException
@@ -179,7 +179,7 @@
 #### Stack do zainstalowania
 - [x] `lucide-react` — ikony SVG (zamiana wszystkich emoji)
 - [x] `sonner` — toast notifications (sukces/błąd/info) + `<Toaster />` w layout.tsx
-- [ ] `class-variance-authority` + `clsx` — warianty komponentów (opcjonalnie jeśli okaże się potrzebny)
+- [x] `class-variance-authority` + `clsx` — warianty komponentów (opcjonalnie jeśli okaże się potrzebny)
 
 #### Fundament — Design System
 - [x] **Paleta kolorów** — indigo-600 brand, slate-900 sidebar, białe karty z subtelnymi borderami
@@ -463,7 +463,7 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 - [x] `ChatService`: `checkPlanLimit()` blokuje gdy `isActive = false` → 403 (done — 2 testy)
 - [x] `ChatService`: miesięczny limit 1000 konwersacji (STARTER) — reset o 1. dnia miesiąca (done — 3 testy)
 - [x] `ChatService`: `domainWhitelist` w trybie prod blokuje `Origin` spoza listy (done — `domain-whitelist.guard.spec.ts` 16 testów)
-- [ ] `ChatService`: limit długości wiadomości per bot (P0 sec fix — w DTO Zod max 1000 chars, brak unit testu)
+- [x] `ChatService`: limit długości wiadomości per bot (P0 sec fix — w DTO Zod max 1000 chars) (done — `chat-message.dto.spec.ts`)
 
 **MessageSanitizer** (nowy — krytyczna warstwa pre-processingu)
 - [x] `message-sanitizer`: script/HTML injection → canned response + `action: 'sanitized'` (done — 115 testów)
@@ -523,11 +523,11 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 
 **Chat endpoint**
 - [x] `POST /api/v1/chat` bez `Origin` na produkcji → 403 [unit ✓ — `domain-whitelist.guard.spec.ts`]
-- [ ] `POST /api/v1/chat` z `botId` nie-CUID → 400 [unit pending — `chat-message.dto.spec.ts`]
+- [x] `POST /api/v1/chat` z `botId` nie-CUID → 400 [unit ✓ — `chat-message.dto.spec.ts`]
 - [x] `POST /api/v1/chat` z nieaktywnym tenantem → 403 [unit ✓ — `chat.service.spec.ts`]
 - [x] `POST /api/v1/chat` z wiadomością zawierającą `<script>` → canned response [unit ✓ — `message-sanitizer.spec.ts`]
 - [x] `POST /api/v1/chat` z prompt injection → canned response [unit ✓ — `message-sanitizer.spec.ts`]
-- [ ] `POST /api/v1/chat` z wiadomością >1000 znaków → 400 [unit pending — `chat-message.dto.spec.ts`]
+- [x] `POST /api/v1/chat` z wiadomością >1000 znaków → 400 [unit ✓ — `chat-message.dto.spec.ts`]
 - [ ] `POST /api/v1/chat` rate limit 20/min → pominięte (testuje bibliotekę Nest, nie nasz kod)
 
 **Leads endpoint**
@@ -535,7 +535,7 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 - [x] `POST /api/v1/leads` bez zgody RODO → 400 [unit ✓ — `create-lead.dto.spec.ts`]
 - [ ] `POST /api/v1/leads` rate limit 5/min → pominięte (testuje bibliotekę Nest)
 - [x] `POST /api/v1/leads` PII w DB zaszyfrowane [unit ✓ — `lead.service.spec.ts`]
-- [ ] `POST /api/v1/leads` z `botId` nie-CUID → 400 [unit pending — `create-lead.dto.spec.ts` już to ma]
+- [x] `POST /api/v1/leads` z `botId` nie-CUID → 400 [unit ✓ — `create-lead.dto.spec.ts`]
 
 **Bot config endpoint**
 - [x] `GET /api/v1/bot/:id/config` z nieaktywnym tenantem → 404 [unit ✓ — `bot.service.spec.ts`]
@@ -548,12 +548,12 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 - [ ] `POST /api/v1/auth/login` rate limit → pominięte
 - [ ] `POST /api/v1/auth/forgot-password` — metoda nie istnieje w kodzie, pominięte
 - [ ] `POST /api/v1/auth/reset-password` — nie zaimplementowane, pominięte
-- [ ] Anon-key nie bypassuje AuthGuard [unit pending — `auth.guard.spec.ts`]
+- [x] Anon-key nie bypassuje AuthGuard [unit ✓ — `auth.guard.spec.ts`]
 
 **Contact endpoint**
-- [ ] `POST /api/v1/contact` z błędnym `website` URL → 400 [unit pending — `create-contact.dto.spec.ts`]
+- [x] `POST /api/v1/contact` z błędnym `website` URL → 400 [unit ✓ — `create-contact.dto.spec.ts`]
 - [ ] `POST /api/v1/contact` rate limit → pominięte
-- [ ] `POST /api/v1/contact` escapeHtml z `'` [unit pending — `notification.service.spec.ts`]
+- [x] `POST /api/v1/contact` escapeHtml z `'` [unit ✓ — `notification.service.spec.ts`]
 
 **Billing webhook**
 - [x] `POST /api/v1/billing/webhook` z błędną sygnaturą → 400 [unit ✓ — `billing.service.spec.ts`]
@@ -594,15 +594,15 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 
 #### Security P0-P3 — testy regresji
 
-- [ ] P0: Anon-key nie bypassuje AuthGuard [unit pending — `auth.guard.spec.ts`]
+- [x] P0: Anon-key nie bypassuje AuthGuard [unit ✓ — `auth.guard.spec.ts`]
 - [x] P0: Stripe webhook idempotencja [unit ✓ — `billing.service.spec.ts` (P2002 handler)]
 - [x] P0: Domain whitelist w prod [unit ✓ — `domain-whitelist.guard.spec.ts`]
-- [ ] P0: Limit długości wiadomości >1000 znaków [unit pending — `chat-message.dto.spec.ts`]
+- [x] P0: Limit długości wiadomości >1000 znaków [unit ✓ — `chat-message.dto.spec.ts`]
 - [x] P1: `tenant.isActive = false` blokuje bot config [unit ✓ — `bot.service.spec.ts`]
-- [ ] P2: `botId` CUID validation [unit pending — `chat-message.dto.spec.ts`]
+- [x] P2: `botId` CUID validation [unit ✓ — `chat-message.dto.spec.ts`, `create-lead.dto.spec.ts`]
 - [x] P2: `website` URL validation na rejestracji [unit ✓ — `register.dto.spec.ts`]
-- [ ] P2: `website` URL validation na contact form [unit pending — `create-contact.dto.spec.ts`]
-- [ ] P3: `escapeHtml` pokrywa `'` [unit pending — `notification.service.spec.ts`]
+- [x] P2: `website` URL validation na contact form [unit ✓ — `create-contact.dto.spec.ts`]
+- [x] P3: `escapeHtml` pokrywa `'` [unit ✓ — `notification.service.spec.ts`]
 - [ ] Helmet headers — weryfikacja manualna w DevTools przed deploy (nie unit test)
 - [ ] CSP Cloudinary/YouTube — weryfikacja konfiguracji Next.js przed deploy (nie unit test)
 
