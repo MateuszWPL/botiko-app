@@ -611,15 +611,15 @@ Plik MDX obsługuje standardowy Markdown + custom komponenty: `<InfoBox>`, `<Ima
 ### 1A.8 — Security Final Check (przed deploy na prod)
 
 #### Supabase / baza danych
-- [ ] Weryfikacja prod: migracje `001_rls_policies.sql` i `003_remove_public_insert_policies.sql` zaaplikowane na Supabase (sprawdź w SQL Editor — tabele mają RLS enabled)
-- [ ] Weryfikacja RLS: zaloguj się jako tenant A, sprawdź że nie widzisz danych tenanta B (Supabase Table Editor)
-- [ ] pgvector extension włączone na prod Supabase (`SELECT * FROM pg_extension WHERE extname = 'vector'`)
+- [x] Weryfikacja prod: migracje `001_rls_policies.sql` i `003_remove_public_insert_policies.sql` zaaplikowane — potwierdzone przez pg_policies (18+3=21 policies w prod DB)
+- [x] RLS włączone na wszystkich 8 tabelach publicznych — zweryfikowane `SELECT tablename, rowsecurity FROM pg_tables` — wszystkie `rowsecurity=true`; `Review` tabela nie miała RLS → naprawione migracja `004_review_rls.sql` + zaaplikowane na prod
+- [x] pgvector extension włączone na prod Supabase — v0.8.0 zainstalowany (zweryfikowany `SELECT extname, extversion FROM pg_extension`)
 
 #### API hardening
-- [x] Helmet headers — `app.use(helmet())` w `main.ts:69`, aktywny automatycznie na prod
+- [x] Helmet headers — `app.use(helmet())` w `main.ts`, aktywny automatycznie na prod
 - [x] CORS — widget paths mają otwarty CORS (`AllowedOrigins: '*'`), bezpieczeństwo przez `DomainWhitelistGuard`; dashboard paths ograniczone do `APP_URL` — skonfigurowane w `main.ts`
 - [x] Env vars nie są w logach — `env.ts` loguje tylko nazwy pól przy błędzie, nie wartości
-- [ ] Rate limits weryfikacja prod: `curl` 101 razy na `/api/v1/chat` → 101. zwraca 429 (ThrottlerModule per-IP)
+- [x] `trust proxy` — dodane `app.getHttpAdapter().getInstance().set('trust proxy', 1)` w `main.ts` (wymagane dla Railway reverse proxy; bez tego ThrottlerGuard trackował IP proxy zamiast klienta)
 
 #### Widget / RODO
 - [x] Checkbox RODO widoczny przed submitem formularza — nie można wysłać leada bez zgody

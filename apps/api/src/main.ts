@@ -66,6 +66,10 @@ async function bootstrap() {
   // rawBody: true exposes req.rawBody for Stripe webhook signature verification
   const app = await NestFactory.create(AppModule, { rawBody: true });
 
+  // Railway (and most PaaS) terminate TLS at a reverse proxy. Without this,
+  // req.ip is always the proxy IP → ThrottlerGuard buckets all clients together.
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
   app.use(helmet());
 
   // Apply path-aware CORS before NestJS processes the request.
