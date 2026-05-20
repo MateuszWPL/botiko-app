@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { createHmac } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 import { Resend } from 'resend';
 import { PrismaService } from '../prisma/prisma.service';
 import { env } from '../config/env';
@@ -199,7 +199,14 @@ export class EmailService {
     const expected = createHmac('sha256', env.JWT_SECRET)
       .update(payload)
       .digest('base64url');
-    if (sig !== expected) return null;
+    const sigBuf = Buffer.from(sig, 'base64url');
+    const expectedBuf = Buffer.from(expected, 'base64url');
+    if (
+      sigBuf.length !== expectedBuf.length ||
+      !timingSafeEqual(sigBuf, expectedBuf)
+    ) {
+      return null;
+    }
     try {
       const { u, c } = JSON.parse(
         Buffer.from(payload, 'base64url').toString(),
