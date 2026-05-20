@@ -41,7 +41,7 @@ export const registerSchema = z.object({
     .max(72, 'Hasło jest zbyt długie')
     .regex(/[0-9]/, 'Hasło musi zawierać co najmniej jedną cyfrę')
     .regex(
-      /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/,
+      /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]/,
       'Hasło musi zawierać co najmniej jeden znak specjalny',
     ),
   websiteUrl: websiteUrlSchema,
