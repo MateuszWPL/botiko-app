@@ -41,7 +41,9 @@ export class EmailService {
     if (await this.alreadySent(opts.userId, 'welcome')) return;
     const tpl = welcomeEmail({
       firstName: opts.firstName,
-      unsubscribeUrl: this.unsubUrl(this.generateUnsubToken(opts.userId, 'onboarding')),
+      unsubscribeUrl: this.unsubUrl(
+        this.generateUnsubToken(opts.userId, 'onboarding'),
+      ),
     });
     await this.send(opts.email, tpl.subject, tpl.html);
     await this.logSent(opts.userId, 'welcome');
@@ -56,7 +58,9 @@ export class EmailService {
     if (await this.alreadySent(opts.userId, 'd1_reminder')) return;
     const tpl = onboardingReminderD1Email({
       firstName: opts.firstName,
-      unsubscribeUrl: this.unsubUrl(this.generateUnsubToken(opts.userId, 'onboarding')),
+      unsubscribeUrl: this.unsubUrl(
+        this.generateUnsubToken(opts.userId, 'onboarding'),
+      ),
     });
     await this.send(opts.email, tpl.subject, tpl.html);
     await this.logSent(opts.userId, 'd1_reminder');
@@ -77,7 +81,9 @@ export class EmailService {
       leadsCount: opts.leadsCount,
       conversationsCount: opts.conversationsCount,
       topQuestion: opts.topQuestion,
-      unsubscribeUrl: this.unsubUrl(this.generateUnsubToken(opts.userId, 'trial')),
+      unsubscribeUrl: this.unsubUrl(
+        this.generateUnsubToken(opts.userId, 'trial'),
+      ),
     });
     await this.send(opts.email, tpl.subject, tpl.html);
     await this.logSent(opts.userId, 'd7_halfway');
@@ -98,7 +104,9 @@ export class EmailService {
       leadsCount: opts.leadsCount,
       conversationsCount: opts.conversationsCount,
       trialEndsAt: opts.trialEndsAt,
-      unsubscribeUrl: this.unsubUrl(this.generateUnsubToken(opts.userId, 'trial')),
+      unsubscribeUrl: this.unsubUrl(
+        this.generateUnsubToken(opts.userId, 'trial'),
+      ),
     });
     await this.send(opts.email, tpl.subject, tpl.html);
     await this.logSent(opts.userId, 'd12_conversion');
@@ -112,7 +120,9 @@ export class EmailService {
     if (await this.alreadySent(opts.userId, 'd14_expired')) return;
     const tpl = trialExpiredD14Email({
       firstName: opts.firstName,
-      unsubscribeUrl: this.unsubUrl(this.generateUnsubToken(opts.userId, 'trial')),
+      unsubscribeUrl: this.unsubUrl(
+        this.generateUnsubToken(opts.userId, 'trial'),
+      ),
     });
     await this.send(opts.email, tpl.subject, tpl.html);
     await this.logSent(opts.userId, 'd14_expired');
@@ -170,20 +180,30 @@ export class EmailService {
   // ─── Unsubscribe tokens ────────────────────────────────────────────────────
 
   generateUnsubToken(userId: string, category: EmailCategory): string {
-    const payload = Buffer.from(JSON.stringify({ u: userId, c: category })).toString('base64url');
-    const sig = createHmac('sha256', env.JWT_SECRET).update(payload).digest('base64url');
+    const payload = Buffer.from(
+      JSON.stringify({ u: userId, c: category }),
+    ).toString('base64url');
+    const sig = createHmac('sha256', env.JWT_SECRET)
+      .update(payload)
+      .digest('base64url');
     return `${payload}.${sig}`;
   }
 
-  verifyUnsubToken(token: string): { userId: string; category: EmailCategory } | null {
+  verifyUnsubToken(
+    token: string,
+  ): { userId: string; category: EmailCategory } | null {
     const dot = token.lastIndexOf('.');
     if (dot < 0) return null;
     const payload = token.slice(0, dot);
     const sig = token.slice(dot + 1);
-    const expected = createHmac('sha256', env.JWT_SECRET).update(payload).digest('base64url');
+    const expected = createHmac('sha256', env.JWT_SECRET)
+      .update(payload)
+      .digest('base64url');
     if (sig !== expected) return null;
     try {
-      const { u, c } = JSON.parse(Buffer.from(payload, 'base64url').toString()) as {
+      const { u, c } = JSON.parse(
+        Buffer.from(payload, 'base64url').toString(),
+      ) as {
         u: string;
         c: EmailCategory;
       };
@@ -213,7 +233,10 @@ export class EmailService {
     return `${env.API_URL}/api/v1/email/unsubscribe?token=${encodeURIComponent(token)}`;
   }
 
-  private async alreadySent(userId: string, templateId: string): Promise<boolean> {
+  private async alreadySent(
+    userId: string,
+    templateId: string,
+  ): Promise<boolean> {
     const log = await this.prisma.emailLog.findUnique({
       where: { userId_templateId: { userId, templateId } },
       select: { id: true },
@@ -221,7 +244,10 @@ export class EmailService {
     return !!log;
   }
 
-  private async isOptedOut(userId: string, category: EmailCategory): Promise<boolean> {
+  private async isOptedOut(
+    userId: string,
+    category: EmailCategory,
+  ): Promise<boolean> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: { emailOptOut: true },

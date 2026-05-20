@@ -10,7 +10,10 @@ interface PaymentConfirmedVars {
   nextPaymentDate: string;
 }
 
-export function paymentConfirmedEmail(vars: PaymentConfirmedVars): { subject: string; html: string } {
+export function paymentConfirmedEmail(vars: PaymentConfirmedVars): {
+  subject: string;
+  html: string;
+} {
   const body = `
     <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.6;">
       Cześć ${escapeHtml(vars.firstName)},
@@ -64,7 +67,10 @@ interface RecurringInvoiceVars {
   invoiceUrl: string;
 }
 
-export function recurringInvoiceEmail(vars: RecurringInvoiceVars): { subject: string; html: string } {
+export function recurringInvoiceEmail(vars: RecurringInvoiceVars): {
+  subject: string;
+  html: string;
+} {
   const body = `
     <p style="margin:0 0 20px;font-size:15px;color:#475569;line-height:1.6;">
       Faktura VAT za miesiąc ${escapeHtml(vars.month)}/${escapeHtml(vars.year)}.
@@ -103,7 +109,10 @@ interface PaymentFailedVars {
   retryDate: string;
 }
 
-export function paymentFailedEmail(vars: PaymentFailedVars): { subject: string; html: string } {
+export function paymentFailedEmail(vars: PaymentFailedVars): {
+  subject: string;
+  html: string;
+} {
   const body = `
     <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.6;">
       Cześć ${escapeHtml(vars.firstName)},
@@ -139,7 +148,10 @@ interface SubscriptionCancelledVars {
   endDate: string;
 }
 
-export function subscriptionCancelledEmail(vars: SubscriptionCancelledVars): { subject: string; html: string } {
+export function subscriptionCancelledEmail(vars: SubscriptionCancelledVars): {
+  subject: string;
+  html: string;
+} {
   const body = `
     <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.6;">
       Cześć ${escapeHtml(vars.firstName)},

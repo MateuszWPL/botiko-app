@@ -57,7 +57,10 @@ export class LeadService {
     }
 
     if (!isTenantOnline(bot.tenant)) {
-      throw new ForbiddenException({ message: 'Service temporarily unavailable', code: 'SERVICE_INACTIVE' });
+      throw new ForbiddenException({
+        message: 'Service temporarily unavailable',
+        code: 'SERVICE_INACTIVE',
+      });
     }
 
     const id = randomUUID();

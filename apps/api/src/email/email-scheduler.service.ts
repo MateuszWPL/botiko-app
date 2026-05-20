@@ -95,7 +95,15 @@ export class EmailSchedulerService {
     isActive: boolean;
   }): Promise<number> {
     let sent = 0;
-    const { userId, email, firstName, ageDays, trialEndsAt, botId, hasKnowledge } = opts;
+    const {
+      userId,
+      email,
+      firstName,
+      ageDays,
+      trialEndsAt,
+      botId,
+      hasKnowledge,
+    } = opts;
 
     if (ageDays === 1 && !hasKnowledge) {
       await this.email.sendDripD1({ userId, email, firstName });
@@ -103,7 +111,9 @@ export class EmailSchedulerService {
     }
 
     if (ageDays === 7) {
-      const stats = botId ? await this.getBotStats(botId, opts.tenantId) : defaultStats();
+      const stats = botId
+        ? await this.getBotStats(botId, opts.tenantId)
+        : defaultStats();
       await this.email.sendDripD7({
         userId,
         email,
@@ -114,7 +124,9 @@ export class EmailSchedulerService {
     }
 
     if (ageDays === 12) {
-      const stats = botId ? await this.getBotStats(botId, opts.tenantId) : defaultStats();
+      const stats = botId
+        ? await this.getBotStats(botId, opts.tenantId)
+        : defaultStats();
       await this.email.sendDripD12({
         userId,
         email,
@@ -141,7 +153,11 @@ export class EmailSchedulerService {
   private async getBotStats(
     botId: string,
     tenantId: string,
-  ): Promise<{ leadsCount: number; conversationsCount: number; topQuestion: string }> {
+  ): Promise<{
+    leadsCount: number;
+    conversationsCount: number;
+    topQuestion: string;
+  }> {
     const [leadsCount, conversationsCount, topMessage] = await Promise.all([
       this.prisma.lead.count({ where: { tenantId } }),
       this.prisma.conversation.count({ where: { botId } }),
@@ -155,11 +171,16 @@ export class EmailSchedulerService {
     return {
       leadsCount,
       conversationsCount,
-      topQuestion: topMessage?.content.slice(0, 120) ?? 'Jakie są godziny otwarcia?',
+      topQuestion:
+        topMessage?.content.slice(0, 120) ?? 'Jakie są godziny otwarcia?',
     };
   }
 }
 
 function defaultStats() {
-  return { leadsCount: 0, conversationsCount: 0, topQuestion: 'Jakie są godziny otwarcia?' };
+  return {
+    leadsCount: 0,
+    conversationsCount: 0,
+    topQuestion: 'Jakie są godziny otwarcia?',
+  };
 }

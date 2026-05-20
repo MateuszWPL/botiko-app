@@ -15,9 +15,9 @@ describe('createLeadSchema — botId (CUID validation)', () => {
   it.each(['nie-cuid', '123', '', 'uuid-style-but-not-cuid'])(
     'odrzuca botId "%s" (nie jest CUID)',
     (botId) => {
-      expect(
-        createLeadSchema.safeParse({ ...validBase, botId }).success,
-      ).toBe(false);
+      expect(createLeadSchema.safeParse({ ...validBase, botId }).success).toBe(
+        false,
+      );
     },
   );
 });

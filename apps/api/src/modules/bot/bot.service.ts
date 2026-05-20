@@ -123,7 +123,9 @@ export class BotService {
         allowedDomains,
         ...(dto.companyName != null && { companyName: dto.companyName }),
         ...(dto.companyPhone != null && { companyPhone: dto.companyPhone }),
-        ...(dto.companyAddress != null && { companyAddress: dto.companyAddress }),
+        ...(dto.companyAddress != null && {
+          companyAddress: dto.companyAddress,
+        }),
       },
       select: BOT_SELECT,
     });

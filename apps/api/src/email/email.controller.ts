@@ -35,14 +35,30 @@ export class EmailController {
 
     const parsed = this.emailService.verifyUnsubToken(token);
     if (!parsed) {
-      res.status(400).send(unsubPage('Nieprawidłowy link', 'Link wygasł lub jest nieprawidłowy. Wróć do dashboardu, aby zarządzać powiadomieniami.'));
+      res
+        .status(400)
+        .send(
+          unsubPage(
+            'Nieprawidłowy link',
+            'Link wygasł lub jest nieprawidłowy. Wróć do dashboardu, aby zarządzać powiadomieniami.',
+          ),
+        );
       return;
     }
 
     await this.emailService.unsubscribe(parsed.userId, parsed.category);
-    this.logger.log(`User ${parsed.userId} unsubscribed from ${parsed.category}`);
+    this.logger.log(
+      `User ${parsed.userId} unsubscribed from ${parsed.category}`,
+    );
 
-    res.status(200).send(unsubPage('Wypisano z newslettera', 'Twoje preferencje zostały zapisane. Nie będziesz już otrzymywać tego typu wiadomości.'));
+    res
+      .status(200)
+      .send(
+        unsubPage(
+          'Wypisano z newslettera',
+          'Twoje preferencje zostały zapisane. Nie będziesz już otrzymywać tego typu wiadomości.',
+        ),
+      );
   }
 
   /**
@@ -50,7 +66,9 @@ export class EmailController {
    * Protected by CRON_SECRET header.
    */
   @Post('cron/drip')
-  async runDrip(@Query('secret') secret: string): Promise<{ processed: number; sent: number }> {
+  async runDrip(
+    @Query('secret') secret: string,
+  ): Promise<{ processed: number; sent: number }> {
     if (!env.CRON_SECRET || secret !== env.CRON_SECRET) {
       throw new UnauthorizedException('Invalid cron secret');
     }

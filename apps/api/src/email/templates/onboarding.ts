@@ -7,7 +7,10 @@ interface WelcomeVars {
   unsubscribeUrl: string;
 }
 
-export function welcomeEmail(vars: WelcomeVars): { subject: string; html: string } {
+export function welcomeEmail(vars: WelcomeVars): {
+  subject: string;
+  html: string;
+} {
   const name = escapeHtml(vars.firstName);
   const body = `
     <p style="margin:0 0 20px;font-size:15px;color:#475569;line-height:1.6;">
@@ -48,7 +51,10 @@ interface OnboardingReminderVars {
   unsubscribeUrl: string;
 }
 
-export function onboardingReminderD1Email(vars: OnboardingReminderVars): { subject: string; html: string } {
+export function onboardingReminderD1Email(vars: OnboardingReminderVars): {
+  subject: string;
+  html: string;
+} {
   const name = escapeHtml(vars.firstName);
   const body = `
     <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.6;">Cześć ${name},</p>
@@ -92,7 +98,10 @@ interface TrialHalfwayVars {
   unsubscribeUrl: string;
 }
 
-export function trialHalfwayD7Email(vars: TrialHalfwayVars): { subject: string; html: string } {
+export function trialHalfwayD7Email(vars: TrialHalfwayVars): {
+  subject: string;
+  html: string;
+} {
   const name = escapeHtml(vars.firstName);
   const body = `
     <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.6;">Cześć ${name},</p>
@@ -144,7 +153,10 @@ interface TrialConversionVars {
   unsubscribeUrl: string;
 }
 
-export function trialConversionD12Email(vars: TrialConversionVars): { subject: string; html: string } {
+export function trialConversionD12Email(vars: TrialConversionVars): {
+  subject: string;
+  html: string;
+} {
   const name = escapeHtml(vars.firstName);
   const body = `
     <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.6;">Cześć ${name},</p>
@@ -190,7 +202,10 @@ interface TrialExpiredVars {
   unsubscribeUrl: string;
 }
 
-export function trialExpiredD14Email(vars: TrialExpiredVars): { subject: string; html: string } {
+export function trialExpiredD14Email(vars: TrialExpiredVars): {
+  subject: string;
+  html: string;
+} {
   const name = escapeHtml(vars.firstName);
   const body = `
     <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.6;">Cześć ${name},</p>

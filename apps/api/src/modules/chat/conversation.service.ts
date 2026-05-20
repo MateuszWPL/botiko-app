@@ -205,9 +205,7 @@ export class ConversationService {
     ]);
 
     const fallbackRate =
-      totalAnswers > 0
-        ? Math.round((fallbackAnswers / totalAnswers) * 100)
-        : 0;
+      totalAnswers > 0 ? Math.round((fallbackAnswers / totalAnswers) * 100) : 0;
 
     return { totalAnswers, fallbackAnswers, fallbackRate, chunkCount };
   }
