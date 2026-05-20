@@ -25,10 +25,9 @@ export const brandTemplates: Record<
 };
 
 const otherTemplate: BrandTemplate = {
-  systemPrompt: `Jesteś wirtualnym asystentem firmy usługowej. Odpowiadasz na pytania klientów w pomocny i profesjonalny sposób.
+  systemPrompt: `Jesteś botem firmy usługowej. Odpowiadasz na pytania klientów w pomocny i profesjonalny sposób.
 Zbierasz dane kontaktowe i informujesz, że pracownik oddzwoni.`,
-  welcomeMessage:
-    'Dzień dobry! Jestem wirtualnym asystentem. W czym mogę pomóc?',
+  welcomeMessage: 'Dzień dobry! W czym mogę pomóc?',
   suggestedResponses: [
     'Jakie usługi oferujecie?',
     'Jakie są godziny otwarcia?',

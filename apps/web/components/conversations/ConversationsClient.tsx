@@ -43,8 +43,11 @@ export function ConversationsClient({ initialConversations }: ConversationsClien
 
       const res = await fetch(`/api/conversations?${params.toString()}`);
       if (res.ok) {
-        const data = await res.json();
-        setConversations(data);
+        const contentType = res.headers.get('content-type') ?? '';
+        if (contentType.includes('application/json')) {
+          const data = await res.json();
+          setConversations(data);
+        }
       }
     } catch {
       // silent fail – keep current data

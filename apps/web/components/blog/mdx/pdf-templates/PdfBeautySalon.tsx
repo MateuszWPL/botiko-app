@@ -70,7 +70,7 @@ export function PdfBeautySalon({ title }: { title: string }) {
 
         {/* Footer */}
         <div style={{ marginTop: '32px', paddingTop: '20px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '12px', fontWeight: 600, color: '#94a3b8' }}>botiko.pl — Asystentki AI dla salonów</span>
+          <span style={{ fontSize: '12px', fontWeight: 600, color: '#94a3b8' }}>botiko.pl — Boty AI dla salonów</span>
           <span style={{ fontSize: '11px', color: '#cbd5e1', fontStyle: 'italic' }}>Wersja: kopiuj-wklej · Placeholder gotowy</span>
         </div>
       </div>

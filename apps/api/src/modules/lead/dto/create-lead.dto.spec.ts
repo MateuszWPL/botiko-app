@@ -15,9 +15,9 @@ describe('createLeadSchema — botId (CUID validation)', () => {
   it.each(['nie-cuid', '123', '', 'uuid-style-but-not-cuid'])(
     'odrzuca botId "%s" (nie jest CUID)',
     (botId) => {
-      expect(
-        createLeadSchema.safeParse({ ...validBase, botId }).success,
-      ).toBe(false);
+      expect(createLeadSchema.safeParse({ ...validBase, botId }).success).toBe(
+        false,
+      );
     },
   );
 });
@@ -44,9 +44,12 @@ describe('createLeadSchema — walidacja telefonu', () => {
     },
   );
 
-  it('odrzuca numer krótszy niż 7 znaków', () => {
+  it('odrzuca numer z mniej niż 9 cyframi', () => {
     expect(
       createLeadSchema.safeParse({ ...validBase, phone: '12345' }).success,
+    ).toBe(false);
+    expect(
+      createLeadSchema.safeParse({ ...validBase, phone: '600 123 4' }).success,
     ).toBe(false);
   });
 

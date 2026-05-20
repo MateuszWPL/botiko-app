@@ -11,12 +11,18 @@ describe('registerSchema — walidacja hasła', () => {
     return registerSchema.safeParse({ ...base, password });
   }
 
-  it('akceptuje poprawne hasło (≥12 znaków, uppercase, cyfra)', () => {
-    expect(parse('StrongPass1234').success).toBe(true);
+  it('akceptuje poprawne hasło (≥12 znaków, cyfra, znak specjalny)', () => {
+    expect(parse('StrongPass1234!').success).toBe(true);
+  });
+
+  it('akceptuje hasło bez dużej litery (wielka litera NIE jest wymagana)', () => {
+    // Regresja: backend wymagał wcześniej wielkiej litery, frontend nie —
+    // przez co zielony wskaźnik nie zgadzał się z odrzuceniem rejestracji.
+    expect(parse('mojehaslo1234!').success).toBe(true);
   });
 
   it('odrzuca hasło krótsze niż 12 znaków', () => {
-    const result = parse('Short1A');
+    const result = parse('Krot1!');
     expect(result.success).toBe(false);
     if (!result.success) {
       const msgs = result.error.issues.map((i) => i.message);
@@ -24,40 +30,38 @@ describe('registerSchema — walidacja hasła', () => {
     }
   });
 
-  it('odrzuca hasło bez dużej litery', () => {
-    const result = parse('lowercase1234567');
+  it('odrzuca hasło bez znaku specjalnego', () => {
+    const result = parse('haslobezznaku123');
     expect(result.success).toBe(false);
     if (!result.success) {
       const msgs = result.error.issues.map((i) => i.message);
-      expect(msgs.some((m) => m.toLowerCase().includes('uppercase'))).toBe(
-        true,
-      );
+      expect(msgs.some((m) => m.toLowerCase().includes('specjaln'))).toBe(true);
     }
   });
 
   it('odrzuca hasło bez cyfry', () => {
-    const result = parse('NoDigitsAtAllHere');
+    const result = parse('haslobezcyfry!@#');
     expect(result.success).toBe(false);
     if (!result.success) {
       const msgs = result.error.issues.map((i) => i.message);
-      expect(msgs.some((m) => m.toLowerCase().includes('number'))).toBe(true);
+      expect(msgs.some((m) => m.toLowerCase().includes('cyfr'))).toBe(true);
     }
   });
 
   it('odrzuca hasło zbyt długie (>72 znaków)', () => {
-    const result = parse('A1' + 'x'.repeat(72));
+    const result = parse('a1!' + 'x'.repeat(72));
     expect(result.success).toBe(false);
   });
 
   it('akceptuje hasło dokładnie 12 znaków (granica dolna)', () => {
-    expect(parse('Abcdefgh1234').success).toBe(true);
+    expect(parse('abcdefgh123!').success).toBe(true);
   });
 });
 
 describe('registerSchema — walidacja websiteUrl', () => {
   const base = {
     email: 'test@example.com',
-    password: 'StrongPass1234',
+    password: 'StrongPass1234!',
     industry: 'BEAUTY' as const,
   };
 
@@ -109,7 +113,7 @@ describe('registerSchema — walidacja websiteUrl', () => {
 
 describe('registerSchema — walidacja email', () => {
   const base = {
-    password: 'StrongPass1234',
+    password: 'StrongPass1234!',
     websiteUrl: 'https://salon.pl',
     industry: 'BEAUTY' as const,
   };

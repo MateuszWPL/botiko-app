@@ -21,22 +21,24 @@ export function baseLayout(opts: BaseLayoutOptions): string {
         Bot obsługi klienta 24/7<br>
         <a href="${APP_URL}/regulamin" style="color:#94a3b8;">Regulamin</a> ·
         <a href="${APP_URL}/prywatnosc" style="color:#94a3b8;">Polityka prywatności</a>
-        ${opts.showUnsubscribe && opts.unsubscribeUrl
-          ? ` · <a href="${opts.unsubscribeUrl}" style="color:#94a3b8;">Wypisz się z newslettera</a>`
-          : ''
+        ${
+          opts.showUnsubscribe && opts.unsubscribeUrl
+            ? ` · <a href="${opts.unsubscribeUrl}" style="color:#94a3b8;">Wypisz się z newslettera</a>`
+            : ''
         }
       </p>
     </td>`;
 
-  const cta = opts.ctaText && opts.ctaUrl
-    ? `<div style="text-align:center;margin:24px 0;">
+  const cta =
+    opts.ctaText && opts.ctaUrl
+      ? `<div style="text-align:center;margin:24px 0;">
         <a href="${opts.ctaUrl}"
           style="display:inline-block;background:${headerColor};color:#fff;text-decoration:none;
                  padding:13px 32px;border-radius:8px;font-weight:600;font-size:15px;">
           ${opts.ctaText}
         </a>
       </div>`
-    : '';
+      : '';
 
   return `<!DOCTYPE html>
 <html lang="pl">

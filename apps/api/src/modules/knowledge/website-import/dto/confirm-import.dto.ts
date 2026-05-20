@@ -8,15 +8,28 @@ const selectedContactSchema = z.object({
 });
 
 const selectedServiceSchema = z.object({
-  name: z.string().min(2).max(120),
-  description: z.string().max(600).nullable().optional(),
-  price: z.string().max(100).nullable().optional(),
+  name: z
+    .string()
+    .min(2, 'Nazwa usługi musi mieć minimum 2 znaki')
+    .max(120, 'Nazwa usługi jest zbyt długa'),
+  description: z
+    .string()
+    .max(600, 'Opis usługi jest zbyt długi')
+    .nullable()
+    .optional(),
+  price: z.string().max(100, 'Cena jest zbyt długa').nullable().optional(),
   selected: z.boolean(),
 });
 
 const selectedFaqSchema = z.object({
-  question: z.string().min(5).max(400),
-  answer: z.string().min(5).max(1500),
+  question: z
+    .string()
+    .min(5, 'Pytanie musi mieć minimum 5 znaków')
+    .max(400, 'Pytanie jest zbyt długie'),
+  answer: z
+    .string()
+    .min(5, 'Odpowiedź musi mieć minimum 5 znaków')
+    .max(1500, 'Odpowiedź jest zbyt długa'),
   selected: z.boolean(),
 });
 

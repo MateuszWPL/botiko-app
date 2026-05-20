@@ -368,7 +368,9 @@ export class BillingService {
         );
         break;
       case 'invoice.payment_succeeded':
-        await this.onInvoicePaymentSucceeded(event.data.object as StripeInvoice);
+        await this.onInvoicePaymentSucceeded(
+          event.data.object as StripeInvoice,
+        );
         break;
       case 'invoice.payment_failed':
         // Audit A3: do NOT deactivate here. Stripe retries the charge
@@ -583,18 +585,31 @@ export class BillingService {
           firstName: emailToFirstName(ownerEmail),
           endDate,
         })
-        .catch((err: unknown) => this.logger.error('Failed to send cancellation email', err));
+        .catch((err: unknown) =>
+          this.logger.error('Failed to send cancellation email', err),
+        );
     }
   }
 
-  private async onInvoicePaymentSucceeded(invoice: StripeInvoice): Promise<void> {
+  private async onInvoicePaymentSucceeded(
+    invoice: StripeInvoice,
+  ): Promise<void> {
     const customerId =
-      typeof invoice.customer === 'string' ? invoice.customer : invoice.customer?.id;
+      typeof invoice.customer === 'string'
+        ? invoice.customer
+        : invoice.customer?.id;
     if (!customerId) return;
 
     const tenant = await this.prisma.tenant.findFirst({
       where: { stripeCustomerId: customerId },
-      select: { id: true, users: { where: { role: 'OWNER' }, take: 1, select: { id: true, email: true } } },
+      select: {
+        id: true,
+        users: {
+          where: { role: 'OWNER' },
+          take: 1,
+          select: { id: true, email: true },
+        },
+      },
     });
     if (!tenant) return;
 
@@ -602,9 +617,10 @@ export class BillingService {
     if (!ownerEmail) return;
 
     const firstName = emailToFirstName(ownerEmail);
-    const amountPln = invoice.amount_paid != null
-      ? `${(invoice.amount_paid / 100).toFixed(2)} ${(invoice.currency ?? 'pln').toUpperCase()}`
-      : '99,00 PLN';
+    const amountPln =
+      invoice.amount_paid != null
+        ? `${(invoice.amount_paid / 100).toFixed(2)} ${(invoice.currency ?? 'pln').toUpperCase()}`
+        : '99,00 PLN';
 
     // Get card details from Stripe charge (best-effort)
     let cardBrand = 'Karta';
@@ -614,9 +630,15 @@ export class BillingService {
         const charge = await this.stripe.charges.retrieve(invoice.charge, {
           expand: ['payment_method_details'],
         });
-        const card = (charge as unknown as { payment_method_details?: { card?: { brand?: string; last4?: string } } })
-          .payment_method_details?.card;
-        if (card?.brand) cardBrand = card.brand.charAt(0).toUpperCase() + card.brand.slice(1);
+        const card = (
+          charge as unknown as {
+            payment_method_details?: {
+              card?: { brand?: string; last4?: string };
+            };
+          }
+        ).payment_method_details?.card;
+        if (card?.brand)
+          cardBrand = card.brand.charAt(0).toUpperCase() + card.brand.slice(1);
         if (card?.last4) last4 = card.last4;
       } catch {
         // Non-critical — fall back to defaults
@@ -628,7 +650,11 @@ export class BillingService {
     if (isFirstPayment) {
       // Calculate next billing date (~30 days from period_end)
       const nextDate = invoice.period_end
-        ? new Date(invoice.period_end * 1000).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })
+        ? new Date(invoice.period_end * 1000).toLocaleDateString('pl-PL', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })
         : '';
       await this.emailService.sendPaymentConfirmed({
         email: ownerEmail,
@@ -654,14 +680,17 @@ export class BillingService {
         last4,
         periodStart: periodDate.toLocaleDateString('pl-PL'),
         periodEnd: periodEndDate.toLocaleDateString('pl-PL'),
-        invoiceUrl: invoice.hosted_invoice_url ?? `${env.APP_URL}/dashboard/billing`,
+        invoiceUrl:
+          invoice.hosted_invoice_url ?? `${env.APP_URL}/dashboard/billing`,
       });
     }
   }
 
   private async onInvoicePaymentFailed(invoice: StripeInvoice): Promise<void> {
     const customerId =
-      typeof invoice.customer === 'string' ? invoice.customer : invoice.customer?.id;
+      typeof invoice.customer === 'string'
+        ? invoice.customer
+        : invoice.customer?.id;
     this.logger.warn(
       `invoice.payment_failed for customer ${customerId ?? '<unknown>'} — awaiting subscription.updated before deactivating`,
     );
@@ -669,16 +698,21 @@ export class BillingService {
     if (!customerId) return;
     const tenant = await this.prisma.tenant.findFirst({
       where: { stripeCustomerId: customerId },
-      select: { users: { where: { role: 'OWNER' }, take: 1, select: { email: true } } },
+      select: {
+        users: { where: { role: 'OWNER' }, take: 1, select: { email: true } },
+      },
     });
     const ownerEmail = tenant?.users?.[0]?.email;
     if (!ownerEmail) return;
 
     // Estimate retry in ~3 days (Stripe's smart retry default)
-    const retryDate = new Date(Date.now() + 3 * 86_400_000).toLocaleDateString('pl-PL', {
-      day: 'numeric',
-      month: 'long',
-    });
+    const retryDate = new Date(Date.now() + 3 * 86_400_000).toLocaleDateString(
+      'pl-PL',
+      {
+        day: 'numeric',
+        month: 'long',
+      },
+    );
 
     await this.emailService.sendPaymentFailed({
       email: ownerEmail,

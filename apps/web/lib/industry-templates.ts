@@ -1,5 +1,5 @@
 /**
- * Industry-specific service templates for the onboarding step-3.
+ * Industry-specific service templates for the SetupWizard (step 3 — knowledge prefill).
  * Duplicated from apps/api/src/brand-templates — intentionally, per project conventions
  * (no shared packages between apps).
  */

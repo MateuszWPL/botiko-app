@@ -320,7 +320,7 @@ export function ChatWindow({
   }, []);
 
   const submitLead = async () => {
-    if (!lead.name.trim() || !phoneValid || !lead.consent) return;
+    if (lead.name.trim().length < 2 || !phoneValid || !lead.consent) return;
     setLead((s) => ({ ...s, loading: true, error: null }));
 
     try {
@@ -657,6 +657,7 @@ export function ChatWindow({
             Zostaw swój kontakt
           </div>
           <input type="text" placeholder="Imię i nazwisko" value={lead.name}
+            maxLength={100}
             onInput={(e) => setLead((s) => ({ ...s, name: (e.target as HTMLInputElement).value }))}
             style={inputStyle}
           />
@@ -698,10 +699,10 @@ export function ChatWindow({
           <div style={{ display: 'flex', gap: '6px', marginTop: '8px' }}>
             <button
               onClick={() => void submitLead()}
-              disabled={lead.loading || !lead.name.trim() || !phoneValid || !lead.consent}
+              disabled={lead.loading || lead.name.trim().length < 2 || !phoneValid || !lead.consent}
               style={{
                 ...btnStyle(primaryColor), flex: 1,
-                opacity: (lead.loading || !lead.name.trim() || !phoneValid || !lead.consent) ? 0.6 : 1,
+                opacity: (lead.loading || lead.name.trim().length < 2 || !phoneValid || !lead.consent) ? 0.6 : 1,
               }}
             >
               {lead.loading ? '...' : 'Wyślij'}

@@ -126,21 +126,35 @@ export default function ContactPageClient() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
-  const canGoStep2 = message.trim().length >= 10;
-  const canSubmit = name.trim().length >= 2 && email.includes('@') && message.trim().length >= 10;
+  // Lustrzane do create-contact.dto.ts — żeby front nie przepuszczał danych,
+  // które backend i tak odrzuci.
+  const emailLooksValid = /^\S+@\S+\.\S+$/.test(email.trim());
+  const canGoStep2 =
+    message.trim().length >= 10 && message.trim().length <= 4000;
+  const canSubmit =
+    name.trim().length >= 2 &&
+    emailLooksValid &&
+    message.trim().length >= 10 &&
+    message.trim().length <= 4000;
 
   async function handleSubmit() {
     if (!canSubmit) return;
     setSubmitting(true);
     setSubmitError(null);
     try {
+      // Backend waliduje website przez .url() — wymaga protokołu.
+      const normalizedWebsite = website.trim()
+        ? /^https?:\/\//i.test(website.trim())
+          ? website.trim()
+          : `https://${website.trim()}`
+        : undefined;
       await submitContactForm({
         topic,
         message,
         name,
         email,
         company: company || undefined,
-        website: website || undefined,
+        website: normalizedWebsite,
       });
       setSubmitted(true);
     } catch {
@@ -339,6 +353,7 @@ export default function ContactPageClient() {
                         value={company}
                         onChange={(e) => setCompany(e.currentTarget.value)}
                         placeholder="Nazwa firmy"
+                        maxLength={120}
                         className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/30"
                       />
                     </div>
@@ -348,6 +363,7 @@ export default function ContactPageClient() {
                         value={website}
                         onChange={(e) => setWebsite(e.currentTarget.value)}
                         placeholder="https://twojastrona.pl"
+                        maxLength={2048}
                         className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/30"
                       />
                     </div>
@@ -360,6 +376,7 @@ export default function ContactPageClient() {
                       onChange={(e) => setMessage(e.currentTarget.value)}
                       placeholder="Napisz krótko: branża, co sprzedajesz, jakie pytania zadają klienci, gdzie chcesz mieć bota (strona / Messenger / inne)."
                       rows={6}
+                      maxLength={4000}
                       className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/30 resize-none"
                     />
                     <p className="mt-2 text-xs text-slate-500">
@@ -393,15 +410,18 @@ export default function ContactPageClient() {
                         value={name}
                         onChange={(e) => setName(e.currentTarget.value)}
                         placeholder="Jak się do Ciebie zwracać?"
+                        maxLength={80}
                         className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/30"
                       />
                     </div>
                     <div>
                       <label className="text-sm font-semibold text-slate-900">E-mail</label>
                       <input
+                        type="email"
                         value={email}
                         onChange={(e) => setEmail(e.currentTarget.value)}
                         placeholder="Twój e-mail"
+                        maxLength={254}
                         className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/30"
                       />
                     </div>

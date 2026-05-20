@@ -204,6 +204,7 @@ export default function RegisterPage() {
                   onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
                   required
                   minLength={12}
+                  maxLength={72}
                   autoComplete="new-password"
                   placeholder="min. 12 znaków"
                   className="w-full px-4 py-3 pr-11 border border-slate-200 rounded-xl text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"

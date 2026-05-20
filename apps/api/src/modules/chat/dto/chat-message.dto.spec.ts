@@ -50,7 +50,7 @@ describe('chatMessageSchema — message (P0: limit długości)', () => {
     expect(result.success).toBe(false);
     if (!result.success) {
       const msgs = result.error.issues.map((i) => i.message);
-      expect(msgs.some((m) => m.toLowerCase().includes('long'))).toBe(true);
+      expect(msgs.some((m) => m.toLowerCase().includes('długa'))).toBe(true);
     }
   });
 
