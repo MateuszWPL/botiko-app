@@ -288,8 +288,8 @@ NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z bran
 **Co działa na produkcji:**
 - Core bot (RAG + OpenAI) z pełnym pre-processingiem wiadomości
 - Widget embedded (<12KB, Shadow DOM, natywnie zoptymalizowany pod WordPress; działa też na dowolnej innej stronie WWW)
-- Dashboard (10 stron: overview, leads, conversations, knowledge, knowledge-base, settings, embed, billing, help + strony onboardingu)
-- Onboarding wizard 5-krokowy (`/onboarding/step-1` … `/step-5`) — branża → dane firmy → wiedza → embed (WordPress-first) → finish
+- Dashboard (10 stron: overview, leads, conversations, knowledge, knowledge-base, settings, embed, billing, help)
+- Onboarding: modal `SetupWizard` (`components/dashboard/SetupWizard.tsx`) — 4 kroki: branża → dane firmy → wiedza → embed. Uruchamia się automatycznie po pierwszym logowaniu. Strony `/onboarding/step-1..5` zostały usunięte (martwy kod po refaktorze na modal).
 - Embed installer (`apps/web/app/dashboard/embed/EmbedCode.tsx`) — 2 ścieżki: WordPress (przez wtyczkę WPCode) + Inna strona (uniwersalny skrypt HTML)
 - 5 landing pages branżowych (`/dla/salon-beauty`, `/dla/gabinet-spa`, `/dla/restauracja`, `/dla/warsztat-mechaniczny`, `/dla/inna`) — każda z wzmianką WordPress-first
 - Stripe billing (STARTER 99 zł/mies., 14 dni trial, webhooks, idempotency guard, audit trail BillingEvent)

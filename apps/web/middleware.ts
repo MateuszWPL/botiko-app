@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 import { webEnv } from './lib/env';
 
-const PROTECTED_PATHS = ['/dashboard', '/onboarding'];
+const PROTECTED_PATHS = ['/dashboard'];
 const AUTH_PATHS = ['/login', '/register', '/forgot-password'];
 
 // Supabase session cookies always start with 'sb-'

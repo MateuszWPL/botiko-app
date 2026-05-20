@@ -23,7 +23,7 @@ export class DomainWhitelistGuard implements CanActivate {
 
     if (!botId) {
       throw new ForbiddenException({
-        message: 'botId is required',
+        message: 'Identyfikator bota jest wymagany',
         code: 'DOMAIN_NOT_ALLOWED',
       });
     }
@@ -35,7 +35,7 @@ export class DomainWhitelistGuard implements CanActivate {
 
     if (!bot) {
       throw new ForbiddenException({
-        message: 'Bot not found',
+        message: 'Nie znaleziono bota',
         code: 'DOMAIN_NOT_ALLOWED',
       });
     }
@@ -53,7 +53,7 @@ export class DomainWhitelistGuard implements CanActivate {
           `Blocked chat/lead for bot ${botId}: no allowedDomains configured`,
         );
         throw new ForbiddenException({
-          message: 'Bot is not properly configured',
+          message: 'Bot nie jest poprawnie skonfigurowany',
           code: 'DOMAIN_NOT_ALLOWED',
         });
       }
@@ -68,7 +68,7 @@ export class DomainWhitelistGuard implements CanActivate {
     if (!origin) {
       if (!isProduction) return true;
       throw new ForbiddenException({
-        message: 'Origin header is required',
+        message: 'Brak nagłówka Origin',
         code: 'DOMAIN_NOT_ALLOWED',
       });
     }
@@ -88,7 +88,7 @@ export class DomainWhitelistGuard implements CanActivate {
 
     if (!isAllowed) {
       throw new ForbiddenException({
-        message: 'Origin not allowed',
+        message: 'Domena nie jest dozwolona',
         code: 'DOMAIN_NOT_ALLOWED',
       });
     }

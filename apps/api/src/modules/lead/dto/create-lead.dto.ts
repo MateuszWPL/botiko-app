@@ -1,22 +1,30 @@
 import { z } from 'zod';
 
+// Numer telefonu — jedna reguła spójna z create-lead-manual.dto.ts oraz
+// z walidacją widgetu (apps/widget): polski numer to co najmniej 9 cyfr.
+export const phoneSchema = z
+  .string()
+  .trim()
+  .min(9, 'Numer telefonu jest zbyt krótki')
+  .max(20, 'Numer telefonu jest zbyt długi')
+  .regex(/^\+?[\d\s\-()]+$/, 'Nieprawidłowy format numeru telefonu')
+  .refine(
+    (v) => (v.match(/\d/g) ?? []).length >= 9,
+    'Numer telefonu musi zawierać co najmniej 9 cyfr',
+  );
+
 export const createLeadSchema = z.object({
-  botId: z.string().cuid('botId must be a valid CUID'),
+  botId: z.string().cuid('Nieprawidłowy identyfikator bota'),
   sessionId: z.string().max(128).optional(),
   name: z
     .string()
-    .min(2, 'Name must be at least 2 characters')
-    .max(100, 'Name is too long')
+    .min(2, 'Imię musi mieć minimum 2 znaki')
+    .max(100, 'Imię jest zbyt długie')
     .trim(),
-  phone: z
-    .string()
-    .min(7, 'Phone number is too short')
-    .max(20, 'Phone number is too long')
-    .regex(/^\+?[\d\s\-()]+$/, 'Invalid phone number format')
-    .trim(),
-  message: z.string().max(1000, 'Message is too long').trim().optional(),
+  phone: phoneSchema,
+  message: z.string().max(1000, 'Wiadomość jest zbyt długa').trim().optional(),
   consentGiven: z.literal(true, {
-    error: 'RODO consent is required',
+    error: 'Zgoda RODO jest wymagana',
   }),
 });
 

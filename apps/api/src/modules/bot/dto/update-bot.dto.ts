@@ -12,23 +12,25 @@ export const updateBotSchema = z
   .object({
     name: z
       .string()
-      .min(2, 'Bot name must be at least 2 characters')
-      .max(50, 'Bot name is too long')
+      .min(2, 'Nazwa bota musi mieć minimum 2 znaki')
+      .max(50, 'Nazwa bota jest zbyt długa')
       .trim()
       .optional(),
+    // Limity spójne z create-bot.dto.ts — edycja nie może odrzucać
+    // danych, które przeszły przy tworzeniu bota.
     welcomeMsg: z
       .string()
-      .min(10, 'Welcome message must be at least 10 characters')
-      .max(500, 'Welcome message is too long')
+      .min(2, 'Wiadomość powitalna musi mieć minimum 2 znaki')
+      .max(500, 'Wiadomość powitalna jest zbyt długa')
       .trim()
       .optional(),
     primaryColor: z
       .string()
-      .regex(hexColorRegex, 'Primary color must be a valid hex color')
+      .regex(hexColorRegex, 'Kolor musi być poprawnym kodem hex')
       .optional(),
     allowedDomains: z
-      .array(z.string().url('Each domain must be a valid URL'))
-      .max(5, 'Maximum 5 domains allowed per bot')
+      .array(z.string().url('Każda domena musi być poprawnym adresem URL'))
+      .max(5, 'Bot może mieć maksymalnie 5 dozwolonych domen')
       .optional(),
     isActive: z.boolean().optional(),
     offlineMessage: z.string().max(300).nullable().optional(),
@@ -41,12 +43,12 @@ export const updateBotSchema = z
       .optional()
       .nullable(),
     personality: z.string().max(1000).trim().optional().nullable(),
-    companyName: z.string().max(100).trim().optional().nullable(),
-    companyPhone: z.string().max(30).trim().optional().nullable(),
-    companyAddress: z.string().max(200).trim().optional().nullable(),
+    companyName: z.string().max(200).trim().optional().nullable(),
+    companyPhone: z.string().max(50).trim().optional().nullable(),
+    companyAddress: z.string().max(500).trim().optional().nullable(),
     suggestedQuestions: z
       .array(z.string().min(1).max(100).trim())
-      .max(5, 'Maximum 5 suggested questions')
+      .max(5, 'Maksymalnie 5 sugerowanych pytań')
       .optional(),
     leadFormAfterMessages: z.number().int().min(1).max(20).optional(),
     avatarEmoji: z.string().max(2048).optional(),
@@ -59,7 +61,7 @@ export const updateBotSchema = z
       return true;
     },
     {
-      message: 'businessHoursStart must be earlier than businessHoursEnd',
+      message: 'Godzina otwarcia musi być wcześniejsza niż godzina zamknięcia',
       path: ['businessHoursStart'],
     },
   );

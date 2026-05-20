@@ -32,13 +32,18 @@ const websiteUrlSchema = z
   });
 
 export const registerSchema = z.object({
-  email: z.string().email('Invalid email address').toLowerCase(),
+  email: z.string().email('Nieprawidłowy adres email').toLowerCase(),
+  // Reguła hasła musi być identyczna z frontendem (apps/web/lib/password.ts):
+  // 12 znaków + cyfra + znak specjalny. Brak wspólnego pakietu — celowa duplikacja.
   password: z
     .string()
-    .min(12, 'Password must be at least 12 characters')
-    .max(72, 'Password is too long')
-    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number'),
+    .min(12, 'Hasło musi mieć minimum 12 znaków')
+    .max(72, 'Hasło jest zbyt długie')
+    .regex(/[0-9]/, 'Hasło musi zawierać co najmniej jedną cyfrę')
+    .regex(
+      /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/,
+      'Hasło musi zawierać co najmniej jeden znak specjalny',
+    ),
   websiteUrl: websiteUrlSchema,
   industry: z.enum(['BEAUTY', 'HEALTH', 'FOOD', 'AUTO', 'OTHER']),
 });

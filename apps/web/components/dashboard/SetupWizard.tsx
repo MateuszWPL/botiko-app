@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { X, ChevronRight, ChevronLeft, Check, Bot, Copy, Loader2, Plus, Trash2 } from 'lucide-react';
 import { createClient } from '../../lib/supabase';
 import { WELCOME_STORAGE_KEY } from './WelcomeTrialModal';
@@ -307,7 +308,7 @@ function StepAppearance({ data, onChange }: { data: WizardData; onChange: (d: Pa
           value={data.botName}
           onChange={(e) => onChange({ botName: e.target.value })}
           maxLength={30}
-          placeholder="Ania, Asystentka, Pomocnik..."
+          placeholder="Ania, Tomek, Pomocnik..."
           className={inputClass}
           autoFocus
         />
@@ -615,6 +616,7 @@ interface SetupWizardProps {
 }
 
 export function SetupWizard({ isOpen, onClose }: SetupWizardProps) {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<WizardData>(DEFAULTS);
   const [botCreated, setBotCreated] = useState(false);
@@ -774,7 +776,7 @@ export function SetupWizard({ isOpen, onClose }: SetupWizardProps) {
             <button
               onClick={() => {
                 onClose();
-                window.location.reload();
+                router.refresh();
               }}
               className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-sm transition-all cursor-pointer"
             >

@@ -1,5 +1,5 @@
 export const foodTemplate = {
-  systemPrompt: `Jesteś wirtualnym asystentem restauracji / kawiarni / cateringu.
+  systemPrompt: `Jesteś botem restauracji / kawiarni / cateringu.
 Odpowiadasz na pytania gości w miły i pomocny sposób.
 Pomagasz w:
 - Informowaniu o menu i cenach
@@ -12,7 +12,7 @@ NIE przyjmujesz zamówień online — zbierasz dane kontaktowe i informujesz, ż
 Bądź gościnny i pomocny. Używaj ciepłego języka.`,
 
   welcomeMessage:
-    'Cześć! Jestem asystentem restauracji. Pomogę z pytaniami o menu, rezerwacje lub catering. W czym mogę pomóc?',
+    'Cześć! Pomogę z pytaniami o menu, rezerwacje lub catering. W czym mogę pomóc?',
 
   suggestedResponses: [
     'Jakie macie godziny otwarcia?',

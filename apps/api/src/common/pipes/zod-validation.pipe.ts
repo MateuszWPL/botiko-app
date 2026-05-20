@@ -18,7 +18,7 @@ export class ZodValidationPipe implements PipeTransform {
     if (!result.success) {
       const formatted = this.formatErrors(result.error);
       throw new BadRequestException({
-        message: 'Validation failed',
+        message: 'Walidacja nie powiodła się',
         details: formatted,
       });
     }
