@@ -7,7 +7,10 @@ export const chatMessageSchema = z.object({
     .string()
     .min(1, 'Identyfikator sesji jest wymagany')
     .max(64)
-    .regex(/^[a-zA-Z0-9_-]+$/, 'Identyfikator sesji zawiera nieprawidłowe znaki'),
+    .regex(
+      /^[a-zA-Z0-9_-]+$/,
+      'Identyfikator sesji zawiera nieprawidłowe znaki',
+    ),
   message: z
     .string()
     .min(1, 'Wiadomość nie może być pusta')

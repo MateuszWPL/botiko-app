@@ -17,11 +17,7 @@ export const createContactSchema = z.object({
     .trim()
     .email('Nieprawidłowy adres email')
     .max(254, 'Adres email jest zbyt długi'),
-  company: z
-    .string()
-    .trim()
-    .max(120, 'Nazwa firmy jest zbyt długa')
-    .optional(),
+  company: z.string().trim().max(120, 'Nazwa firmy jest zbyt długa').optional(),
   website: z
     .string()
     .trim()
