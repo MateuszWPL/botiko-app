@@ -73,6 +73,8 @@ async function bootstrap() {
 
   // Railway (and most PaaS) terminate TLS at a reverse proxy. Without this,
   // req.ip is always the proxy IP → ThrottlerGuard buckets all clients together.
+  // Value 1 = exactly one proxy hop (Railway's edge). Bump this if a CDN is
+  // ever placed in front, otherwise X-Forwarded-For becomes client-spoofable.
   (app.getHttpAdapter().getInstance() as Application).set('trust proxy', 1);
 
   app.use(helmet());
