@@ -22,24 +22,6 @@ Bądź konkretny i rzeczowy. Mów do klienta per "Pan/Pani".`,
     'Jakie są godziny pracy?',
   ],
 
-  faqTemplates: [
-    {
-      question: 'Ile kosztuje przegląd techniczny?',
-      answer:
-        'Koszt przeglądu zależy od rodzaju pojazdu. Proszę zostawić numer telefonu — zadzwonimy z wyceną.',
-    },
-    {
-      question: 'Czy oferujecie auto zastępcze?',
-      answer:
-        'Tak, przy naprawach trwających powyżej 1 dnia możemy zapewnić pojazd zastępczy. Prosimy o wcześniejsze zgłoszenie.',
-    },
-    {
-      question: 'Jak długo czekać na naprawę?',
-      answer:
-        'Czas realizacji zależy od rodzaju usterki. Drobne naprawy realizujemy często tego samego dnia. Skontaktujemy się z wyceną i terminem.',
-    },
-  ],
-
   industry: 'AUTO' as const,
   primaryColor: '#64748B',
 };

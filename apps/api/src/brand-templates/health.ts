@@ -22,24 +22,6 @@ Mów do pacjenta per "Pan/Pani". Bądź profesjonalny i empatyczny.`,
     'Jak długo trwa rehabilitacja?',
   ],
 
-  faqTemplates: [
-    {
-      question: 'Czy wymagane jest skierowanie?',
-      answer:
-        'Na pierwszą wizytę prywatną skierowanie nie jest wymagane. Prosimy jednak o przyniesienie dostępnej dokumentacji medycznej.',
-    },
-    {
-      question: 'Jak umówić się na wizytę?',
-      answer:
-        'Proszę zostawić numer telefonu — skontaktujemy się w ciągu kilku godzin, by ustalić termin.',
-    },
-    {
-      question: 'Czy zabieg jest bolesny?',
-      answer:
-        'Zabiegi są dostosowane do indywidualnej tolerancji pacjenta. Przed zabiegiem omawiamy wszelkie obawy.',
-    },
-  ],
-
   industry: 'HEALTH' as const,
   primaryColor: '#06B6D4',
 };
