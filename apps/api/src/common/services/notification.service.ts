@@ -93,8 +93,8 @@ export class NotificationService {
       ? 'Aktywuj plan — 99 zł/mies.'
       : 'Aktywuj subskrypcję →';
     const bodyText = isExpired
-      ? `Cześć ${safeName},<br><br>Twój 14-dniowy okres próbny Botiko.pl właśnie wygasł.<br><strong>Bot przestał odpowiadać na wiadomości klientów.</strong><br><br>Aktywuj plan Starter za 99 zł/mies. aby przywrócić działanie bota.`
-      : `Cześć ${safeName},<br><br>Twój 14-dniowy trial Botiko.pl kończy się za <strong>${data.daysLeft} ${data.daysLeft === 1 ? 'dzień' : 'dni'}</strong>.<br><br>Aktywuj subskrypcję teraz, żeby bot działał nieprzerwanie po zakończeniu trialu.`;
+      ? `Cześć ${safeName},<br><br>Twój okres próbny Botiko.pl właśnie wygasł.<br><strong>Bot przestał odpowiadać na wiadomości klientów.</strong><br><br>Aktywuj plan Starter za 99 zł/mies. aby przywrócić działanie bota.`
+      : `Cześć ${safeName},<br><br>Twój trial Botiko.pl kończy się za <strong>${data.daysLeft} ${data.daysLeft === 1 ? 'dzień' : 'dni'}</strong>.<br><br>Aktywuj subskrypcję teraz, żeby bot działał nieprzerwanie po zakończeniu trialu.`;
 
     const html = `<!DOCTYPE html>
 <html lang="pl">

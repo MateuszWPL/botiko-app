@@ -172,6 +172,7 @@ export class BotService {
             industry: true,
             isActive: true,
             createdAt: true,
+            trialEndsAt: true,
             stripeSubscriptionId: true,
           },
         },

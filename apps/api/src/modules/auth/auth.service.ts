@@ -80,6 +80,7 @@ export class AuthService {
             industry: dto.industry,
             plan: 'STARTER',
             isActive: true,
+            trialEndsAt: new Date(Date.now() + 14 * 86_400_000),
           },
         });
 

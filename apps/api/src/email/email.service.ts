@@ -73,6 +73,7 @@ export class EmailService {
     leadsCount: number;
     conversationsCount: number;
     topQuestion: string;
+    trialDaysLeft: number;
   }): Promise<void> {
     if (await this.isOptedOut(opts.userId, 'trial')) return;
     if (await this.alreadySent(opts.userId, 'd7_halfway')) return;
@@ -81,6 +82,7 @@ export class EmailService {
       leadsCount: opts.leadsCount,
       conversationsCount: opts.conversationsCount,
       topQuestion: opts.topQuestion,
+      trialDaysLeft: opts.trialDaysLeft,
       unsubscribeUrl: this.unsubUrl(
         this.generateUnsubToken(opts.userId, 'trial'),
       ),

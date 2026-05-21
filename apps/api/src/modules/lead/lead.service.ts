@@ -45,6 +45,7 @@ export class LeadService {
           select: {
             isActive: true,
             createdAt: true,
+            trialEndsAt: true,
             stripeSubscriptionId: true,
             users: { select: { email: true }, take: 1 },
           },

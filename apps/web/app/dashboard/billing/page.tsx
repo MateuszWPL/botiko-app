@@ -10,6 +10,7 @@ interface BillingStatus {
   hasSubscription: boolean;
   stripeCustomerId: string | null;
   trialEndsAt: string | null;
+  trialDaysTotal: number | null;
 }
 
 export default async function BillingPage() {

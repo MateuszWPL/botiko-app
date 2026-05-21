@@ -11,6 +11,7 @@ interface BillingStatus {
   hasSubscription: boolean;
   stripeCustomerId: string | null;
   trialEndsAt: string | null;
+  trialDaysTotal: number | null;
 }
 
 interface Props {
@@ -159,13 +160,22 @@ export default function BillingClient({ status, fetchError }: Props) {
           <div className="flex items-start gap-3 mb-4">
             <CheckCircle2 className="w-4 h-4 text-indigo-500 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-indigo-900 mb-0.5">14-dniowy okres próbny</p>
+              <p className="text-sm font-semibold text-indigo-900 mb-0.5">
+                {status.trialDaysTotal
+                  ? `${status.trialDaysTotal}-dniowy okres próbny`
+                  : 'Okres próbny'}
+              </p>
               <p className="text-xs text-indigo-700">
                 Przetestuj Botiko za darmo. Karta kredytowa wymagana dopiero po zakończeniu trialu.
               </p>
             </div>
           </div>
-          {status.trialEndsAt && <TrialCountdown trialEndsAt={status.trialEndsAt} />}
+          {status.trialEndsAt && (
+            <TrialCountdown
+              trialEndsAt={status.trialEndsAt}
+              totalDays={status.trialDaysTotal ?? 14}
+            />
+          )}
         </div>
       )}
 
@@ -176,7 +186,7 @@ export default function BillingClient({ status, fetchError }: Props) {
           <div>
             <p className="text-sm font-semibold text-red-900 mb-0.5">Trial wygasł</p>
             <p className="text-xs text-red-700">
-              14-dniowy okres próbny się skończył
+              Okres próbny się skończył
               {mounted && status.trialEndsAt &&
                 ` ${new Date(status.trialEndsAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long' })}`}
               . Bot nie odpowiada na wiadomości. Wykup subskrypcję, aby przywrócić działanie.
@@ -243,13 +253,18 @@ export default function BillingClient({ status, fetchError }: Props) {
   );
 }
 
-function TrialCountdown({ trialEndsAt }: { trialEndsAt: string }) {
-  const TOTAL_DAYS = 14;
+function TrialCountdown({
+  trialEndsAt,
+  totalDays,
+}: {
+  trialEndsAt: string;
+  totalDays: number;
+}) {
   const end = new Date(trialEndsAt);
   const msLeft = end.getTime() - Date.now();
   const daysLeft = Math.max(0, Math.ceil(msLeft / (1000 * 60 * 60 * 24)));
-  const elapsed = TOTAL_DAYS - daysLeft;
-  const progress = Math.min(100, Math.max(0, (elapsed / TOTAL_DAYS) * 100));
+  const elapsed = totalDays - daysLeft;
+  const progress = Math.min(100, Math.max(0, (elapsed / totalDays) * 100));
   const barColor =
     daysLeft <= 2 ? 'bg-red-400' : daysLeft <= 5 ? 'bg-amber-400' : 'bg-indigo-400';
 
