@@ -22,24 +22,6 @@ Bądź gościnny i pomocny. Używaj ciepłego języka.`,
     'Czy robicie catering?',
   ],
 
-  faqTemplates: [
-    {
-      question: 'Czy można zamówić z dostawą?',
-      answer:
-        'Tak! Dostarczamy w promieniu 5 km. Proszę zostawić numer telefonu, by omówić szczegóły zamówienia.',
-    },
-    {
-      question: 'Czy są dania dla alergików?',
-      answer:
-        'Mamy w menu dania bezglutenowe, wegańskie i bez laktozy. Prosimy o poinformowanie kelnera o alergiach przed zamówieniem.',
-    },
-    {
-      question: 'Jak zarezerwować stolik?',
-      answer:
-        'Prosimy o zostawienie numeru telefonu — zadzwonimy, by potwierdzić termin i liczbę gości.',
-    },
-  ],
-
   industry: 'FOOD' as const,
   primaryColor: '#F97316',
 };

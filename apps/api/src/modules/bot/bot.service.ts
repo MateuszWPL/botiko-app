@@ -7,7 +7,6 @@ import {
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { getBrandTemplate } from '../../brand-templates';
-import { KnowledgeService } from '../knowledge/knowledge.service';
 import { isTenantOnline } from '../../common/tenant-status';
 import type { CreateBotDto } from './dto/create-bot.dto';
 import type { UpdateBotDto } from './dto/update-bot.dto';
@@ -84,10 +83,7 @@ const BOT_SELECT = {
 export class BotService {
   private readonly logger = new Logger(BotService.name);
 
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly knowledgeService: KnowledgeService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(tenantId: string, dto: CreateBotDto): Promise<BotDetail> {
     const existing = await this.prisma.bot.count({ where: { tenantId } });
@@ -130,36 +126,8 @@ export class BotService {
       select: BOT_SELECT,
     });
 
-    if (tenant) {
-      const template = getBrandTemplate(tenant.industry);
-      void this.seedFaqTemplates(tenantId, bot.id, template.faqTemplates);
-    }
-
     this.logger.log(`Bot created: ${bot.id} for tenant: ${tenantId}`);
     return this.castBot(bot);
-  }
-
-  private seedFaqTemplates(
-    tenantId: string,
-    botId: string,
-    faqs: Array<{ question: string; answer: string }>,
-  ): Promise<void> {
-    if (faqs.length === 0) return Promise.resolve();
-
-    return (async () => {
-      for (const faq of faqs) {
-        const content = `Pytanie: ${faq.question}\nOdpowiedź: ${faq.answer}`;
-        try {
-          await this.knowledgeService.addChunk(tenantId, botId, { content });
-        } catch (err: unknown) {
-          const msg = err instanceof Error ? err.message : String(err);
-          this.logger.warn(`FAQ seed failed for bot ${botId}: ${msg}`);
-        }
-      }
-      this.logger.log(
-        `FAQ templates seeded for bot: ${botId} (${String(faqs.length)} chunks)`,
-      );
-    })();
   }
 
   async getPublicConfig(botId: string): Promise<BotPublicConfig> {
