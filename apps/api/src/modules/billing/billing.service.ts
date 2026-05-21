@@ -10,6 +10,7 @@ import {
 import StripeLib from 'stripe';
 import { Plan } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
+import { trialEndDate } from '../../common/tenant-status';
 import { NotificationService } from '../../common/services/notification.service';
 import { EmailService, emailToFirstName } from '../../email/email.service';
 import { env } from '../../config/env';
@@ -20,6 +21,7 @@ export interface BillingStatus {
   hasSubscription: boolean;
   stripeCustomerId: string | null;
   trialEndsAt: string | null;
+  trialDaysTotal: number | null;
 }
 
 // Stripe v22 + nodenext CJS: StripeLib is StripeConstructor (callable)
@@ -121,6 +123,7 @@ export class BillingService {
         stripeCustomerId: true,
         stripeSubscriptionId: true,
         createdAt: true,
+        trialEndsAt: true,
       },
     });
 
@@ -131,20 +134,26 @@ export class BillingService {
     // last-write wins in unexpected ways). Trial expiry is handled exclusively
     // by the cron endpoint `POST /api/v1/billing/cron/trial-notifications`,
     // which runs once per day. Read-only here.
-    const trialEndsAt = tenant.stripeSubscriptionId
-      ? null
-      : (() => {
-          const d = new Date(tenant.createdAt);
-          d.setDate(d.getDate() + 14);
-          return d.toISOString();
-        })();
+    const onTrial = !tenant.stripeSubscriptionId;
+    const trialEnd = trialEndDate(tenant);
+    // Total trial length (createdAt → trialEndsAt), so the dashboard progress
+    // bar renders correctly for 14-day trials and longer pilot periods alike.
+    const trialDaysTotal = onTrial
+      ? Math.max(
+          1,
+          Math.round(
+            (trialEnd.getTime() - tenant.createdAt.getTime()) / 86_400_000,
+          ),
+        )
+      : null;
 
     return {
       plan: tenant.plan,
       isActive: tenant.isActive,
       hasSubscription: !!tenant.stripeSubscriptionId,
       stripeCustomerId: tenant.stripeCustomerId,
-      trialEndsAt,
+      trialEndsAt: onTrial ? trialEnd.toISOString() : null,
+      trialDaysTotal,
     };
   }
 
@@ -167,6 +176,7 @@ export class BillingService {
         name: true,
         isActive: true,
         createdAt: true,
+        trialEndsAt: true,
         lastTrialEmailSentAt: true,
         users: { select: { email: true }, take: 1 },
       },
@@ -177,8 +187,7 @@ export class BillingService {
     let emails = 0;
 
     for (const tenant of tenants) {
-      const trialEnd = new Date(tenant.createdAt);
-      trialEnd.setDate(trialEnd.getDate() + 14);
+      const trialEnd = trialEndDate(tenant);
 
       const msLeft = trialEnd.getTime() - now.getTime();
       const daysLeft = Math.ceil(msLeft / (1000 * 60 * 60 * 24));

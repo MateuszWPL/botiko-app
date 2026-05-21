@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { trialEndDate } from '../common/tenant-status';
 import { EmailService, emailToFirstName } from './email.service';
 
 /**
@@ -8,11 +9,14 @@ import { EmailService, emailToFirstName } from './email.service';
  * Called externally via POST /api/v1/email/cron/drip (CRON_SECRET guarded).
  * Trigger from Railway/Vercel Cron/Upstash at 09:00 Warsaw time daily.
  *
- * Milestone logic (relative to Tenant.createdAt):
- *   D+1  — onboarding reminder (if bot has no knowledge chunks)
- *   D+7  — trial halfway (stats summary)
- *   D+12 — conversion push (2 days left warning)
- *   D+14 — trial expired notice
+ * Milestone logic:
+ *   D+1         — onboarding reminder (signup+1, if bot has no knowledge)
+ *   D+7         — first-week stats summary (signup+7)
+ *   2 days left — conversion push (relative to trialEndsAt)
+ *   expired     — trial expired notice (relative to trialEndsAt)
+ *
+ * The conversion/expiry milestones key off trialEndsAt (not createdAt), so
+ * longer pilot periods get the right emails on the right days.
  *
  * Idempotency: EmailLog table prevents duplicate sends.
  */
@@ -31,6 +35,7 @@ export class EmailSchedulerService {
       select: {
         id: true,
         createdAt: true,
+        trialEndsAt: true,
         isActive: true,
         bots: {
           take: 1,
@@ -65,7 +70,7 @@ export class EmailSchedulerService {
           firstName,
           tenantId: tenant.id,
           ageDays,
-          trialEndsAt: new Date(tenant.createdAt.getTime() + 14 * 86_400_000),
+          trialEndsAt: trialEndDate(tenant),
           botId: tenant.bots[0]?.id,
           hasKnowledge: (tenant.bots[0]?._count.knowledge ?? 0) > 0,
           isActive: tenant.isActive,
@@ -105,6 +110,12 @@ export class EmailSchedulerService {
       hasKnowledge,
     } = opts;
 
+    // Days left relative to the explicit trial end — correct for standard
+    // 14-day trials and longer pilot periods alike.
+    const trialDaysLeft = Math.ceil(
+      (trialEndsAt.getTime() - Date.now()) / 86_400_000,
+    );
+
     if (ageDays === 1 && !hasKnowledge) {
       await this.email.sendDripD1({ userId, email, firstName });
       sent++;
@@ -118,12 +129,13 @@ export class EmailSchedulerService {
         userId,
         email,
         firstName,
+        trialDaysLeft,
         ...stats,
       });
       sent++;
     }
 
-    if (ageDays === 12) {
+    if (trialDaysLeft === 2) {
       const stats = botId
         ? await this.getBotStats(botId, opts.tenantId)
         : defaultStats();
@@ -142,7 +154,7 @@ export class EmailSchedulerService {
       sent++;
     }
 
-    if (ageDays >= 14) {
+    if (trialDaysLeft <= 0) {
       await this.email.sendDripD14({ userId, email, firstName });
       sent++;
     }

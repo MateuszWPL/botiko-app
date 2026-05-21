@@ -95,6 +95,7 @@ interface TrialHalfwayVars {
   leadsCount: number;
   conversationsCount: number;
   topQuestion: string;
+  trialDaysLeft: number;
   unsubscribeUrl: string;
 }
 
@@ -103,10 +104,12 @@ export function trialHalfwayD7Email(vars: TrialHalfwayVars): {
   html: string;
 } {
   const name = escapeHtml(vars.firstName);
+  const daysLeft = Math.max(0, vars.trialDaysLeft);
+  const daysLabel = `${daysLeft} ${daysLeft === 1 ? 'dzień' : 'dni'}`;
   const body = `
     <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.6;">Cześć ${name},</p>
     <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.6;">
-      Minął tydzień. Zostało 7 dni trialu. Krótkie podsumowanie:
+      Minął pierwszy tydzień z Botiko. Do końca trialu ${daysLabel}. Krótkie podsumowanie:
     </p>
     <table width="100%" cellpadding="0" cellspacing="0"
       style="border:1px solid #e2e8f0;border-radius:8px;overflow:hidden;font-size:14px;margin-bottom:20px;">
@@ -133,7 +136,7 @@ export function trialHalfwayD7Email(vars: TrialHalfwayVars): {
     <p style="margin:0;font-size:14px;color:#475569;">Zespół Botiko</p>`;
 
   return {
-    subject: `${vars.leadsCount > 0 ? `${vars.leadsCount} leadów w tydzień. Warto?` : 'Półmetek trialu — podsumowanie'}`,
+    subject: `${vars.leadsCount > 0 ? `${vars.leadsCount} leadów w tydzień. Warto?` : 'Pierwszy tydzień z Botiko — podsumowanie'}`,
     html: baseLayout({
       title: 'Tydzień z Botiko — oto co się wydarzyło',
       body,

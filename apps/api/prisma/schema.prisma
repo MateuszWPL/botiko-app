@@ -17,6 +17,10 @@ model Tenant {
   stripeSubscriptionId   String?
   tokenUsage             Int       @default(0)
   lastTrialEmailSentAt   DateTime?
+  /// Explicit trial end. Nullable only for legacy rows backfilled to
+  /// createdAt + 14 days; always set on new registrations. Extend this
+  /// to grant longer trials / free pilot periods without touching createdAt.
+  trialEndsAt            DateTime?
   createdAt              DateTime  @default(now())
   bots                   Bot[]
   users                  User[]
