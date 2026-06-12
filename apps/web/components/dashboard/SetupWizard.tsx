@@ -32,7 +32,6 @@ interface WizardData {
   botName: string;
   primaryColor: string;
   welcomeMsg: string;
-  industry: string;
 }
 
 const DEFAULTS: WizardData = {
@@ -46,7 +45,6 @@ const DEFAULTS: WizardData = {
   botName: '',
   primaryColor: '#6366F1',
   welcomeMsg: 'Dzień dobry! W czym mogę pomóc?',
-  industry: 'BEAUTY',
 };
 
 function loadWizard(): WizardData {

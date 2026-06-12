@@ -1,12 +1,8 @@
 jest.mock('../../prisma/prisma.service', () => ({ PrismaService: jest.fn() }));
-jest.mock('../knowledge/knowledge.service', () => ({
-  KnowledgeService: jest.fn(),
-}));
 jest.mock('../../brand-templates', () => ({
   getBrandTemplate: jest.fn().mockReturnValue({
     systemPrompt: 'You are a helpful assistant.',
     suggestedResponses: ['Jakie są godziny otwarcia?', 'Ile kosztuje zabieg?'],
-    faqTemplates: [],
   }),
 }));
 
@@ -14,7 +10,6 @@ import { Test } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { BotService } from './bot.service';
 import { PrismaService } from '../../prisma/prisma.service';
-import { KnowledgeService } from '../knowledge/knowledge.service';
 
 const mockBotRow = {
   id: 'bot-1',
@@ -53,11 +48,7 @@ function buildPrismaMock(botFindResult: object | null = mockBotRow) {
 
 async function buildService(prisma = buildPrismaMock()) {
   const module = await Test.createTestingModule({
-    providers: [
-      BotService,
-      { provide: PrismaService, useValue: prisma },
-      { provide: KnowledgeService, useValue: { addChunk: jest.fn() } },
-    ],
+    providers: [BotService, { provide: PrismaService, useValue: prisma }],
   }).compile();
 
   return { service: module.get(BotService), prisma };

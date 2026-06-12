@@ -22,24 +22,6 @@ Jeśli nie znasz odpowiedzi, powiedz: "Chętnie przekażę Pani pytanie naszemu 
     'Jakie są godziny otwarcia?',
   ],
 
-  faqTemplates: [
-    {
-      question: 'Jak mogę się umówić na wizytę?',
-      answer:
-        'Zostawcie Panie swój numer telefonu, a nasza pracownica oddzwoni w ciągu kilku godzin, by ustalić termin.',
-    },
-    {
-      question: 'Czy oferujecie vouchery prezentowe?',
-      answer:
-        'Tak! Mamy vouchery na wszystkie zabiegi — świetny pomysł na prezent. Proszę zostawić kontakt, by dowiedzieć się więcej.',
-    },
-    {
-      question: 'Jak długo trwa manicure?',
-      answer:
-        'Standardowy manicure trwa około 60 minut. Manicure hybrydowy to ok. 75-90 minut.',
-    },
-  ],
-
   industry: 'BEAUTY' as const,
   primaryColor: '#EC4899',
 };

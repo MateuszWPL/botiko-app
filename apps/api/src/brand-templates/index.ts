@@ -9,7 +9,6 @@ export interface BrandTemplate {
   systemPrompt: string;
   welcomeMessage: string;
   suggestedResponses: string[];
-  faqTemplates: Array<{ question: string; answer: string }>;
   industry: Industry;
   primaryColor: string;
 }
@@ -33,7 +32,6 @@ Zbierasz dane kontaktowe i informujesz, że pracownik oddzwoni.`,
     'Jakie są godziny otwarcia?',
     'Jak się skontaktować?',
   ],
-  faqTemplates: [],
   industry: 'OTHER',
   primaryColor: '#6366F1',
 };
