@@ -28,6 +28,9 @@ export async function generateMetadata({
     title: `#${tag.name} — Blog Botiko.pl`,
     description: `Artykuły oznaczone tagiem "${tag.name}" — chatboty AI i automatyzacja dla polskich firm usługowych.`,
     alternates: { canonical: `https://botiko.pl/blog/tag/${tag.slug}` },
+    // Tag pages are thin/overlapping content — keep them usable for visitors
+    // but out of the index. Links are still followed so posts get discovered.
+    robots: { index: false, follow: true },
   };
 }
 

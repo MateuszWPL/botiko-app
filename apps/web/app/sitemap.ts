@@ -1,5 +1,9 @@
 import type { MetadataRoute } from 'next';
-import { getAllPosts, getAllCategories, getAllTags } from '@/lib/blog';
+import {
+  getAllPosts,
+  getIndexableCategories,
+  getCategoryLastModified,
+} from '@/lib/blog';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://botiko.pl';
@@ -25,17 +29,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: post.featured ? 0.85 : 0.75,
   }));
 
-  const categories = getAllCategories().map((cat) => ({
+  // Only categories with enough posts to be worth indexing. Tag pages and thin
+  // categories are intentionally excluded — they dilute crawl budget and are
+  // marked `noindex` on the page itself.
+  const categories = getIndexableCategories().map((cat) => ({
     url: `${baseUrl}/blog/kategoria/${cat.slug}`,
+    lastModified: getCategoryLastModified(cat.slug) ?? now,
     changeFrequency: 'weekly' as const,
     priority: 0.6,
   }));
 
-  const tags = getAllTags().map((tag) => ({
-    url: `${baseUrl}/blog/tag/${tag.slug}`,
-    changeFrequency: 'weekly' as const,
-    priority: 0.5,
-  }));
-
-  return [...staticRoutes, ...posts, ...categories, ...tags];
+  return [...staticRoutes, ...posts, ...categories];
 }

@@ -41,6 +41,7 @@ const INDUSTRIES = [
   {
     id: 'beauty',
     label: 'Salon beauty',
+    href: '/dla/salon-beauty',
     Icon: IconScissors,
     color: '#EC4899',
     bg: '#FDF2F8',
@@ -55,6 +56,7 @@ const INDUSTRIES = [
   {
     id: 'health',
     label: 'Gabinet',
+    href: '/dla/gabinet-spa',
     Icon: IconStethoscope,
     color: '#06B6D4',
     bg: '#ECFEFF',
@@ -69,6 +71,7 @@ const INDUSTRIES = [
   {
     id: 'food',
     label: 'Restauracja',
+    href: '/dla/restauracja',
     Icon: IconUtensils,
     color: '#F97316',
     bg: '#FFF7ED',
@@ -83,6 +86,7 @@ const INDUSTRIES = [
   {
     id: 'auto',
     label: 'Warsztat',
+    href: '/dla/warsztat-mechaniczny',
     Icon: IconWrench,
     color: '#64748B',
     bg: '#F8FAFC',
@@ -97,6 +101,7 @@ const INDUSTRIES = [
   {
     id: 'other',
     label: 'Inna branża',
+    href: '/dla/inna',
     Icon: IconStar,
     color: '#6366F1',
     bg: '#EEF2FF',
@@ -202,18 +207,30 @@ export default function Industries() {
                 ))}
               </ul>
 
-              <Link
-                href="/rejestracja"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white cursor-pointer"
-                style={{ background: active.color, transition: 'opacity 0.2s ease, background 0.25s ease' }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
-              >
-                Wypróbuj dla {active.label.toLowerCase()}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </Link>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+                <Link
+                  href="/rejestracja"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-white cursor-pointer"
+                  style={{ background: active.color, transition: 'opacity 0.2s ease, background 0.25s ease' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')}
+                  onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+                >
+                  Wypróbuj dla {active.label.toLowerCase()}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Link>
+                <Link
+                  href={active.href}
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold cursor-pointer hover:underline"
+                  style={{ color: active.color }}
+                >
+                  Zobacz stronę: bot dla {active.label.toLowerCase()}
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Link>
+              </div>
             </div>
 
             {/* Right — chat preview */}
