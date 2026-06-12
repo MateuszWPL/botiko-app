@@ -5,6 +5,7 @@ import {
   Patch,
   Body,
   Param,
+  Headers,
   UseGuards,
   UsePipes,
   HttpCode,
@@ -30,8 +31,11 @@ export class BotController {
   // Public endpoint — widget fetches bot config (no auth required)
   @Get(':id/config')
   @Throttle({ default: { limit: 30, ttl: 60000 } })
-  getConfig(@Param('id') id: string): Promise<BotPublicConfig> {
-    return this.botService.getPublicConfig(id);
+  getConfig(
+    @Param('id') id: string,
+    @Headers('origin') origin?: string,
+  ): Promise<BotPublicConfig> {
+    return this.botService.getPublicConfig(id, origin);
   }
 
   @Get()
