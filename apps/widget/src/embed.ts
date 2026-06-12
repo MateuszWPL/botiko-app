@@ -17,7 +17,9 @@ interface BotConfig {
   businessDays: number[];
   suggestedQuestions: string[];
   avatarEmoji: string;
-  allowedDomains: string[];
+  // Server-computed: whether this Origin may embed the bot. The API no longer
+  // exposes the raw domain list (avoids leaking the tenant's domains).
+  domainAllowed: boolean;
 }
 
 function Widget({
@@ -115,7 +117,7 @@ async function init() {
     businessDays: [],
     suggestedQuestions: ['Czym możesz mi pomóc?', 'Jakie są godziny pracy?', 'Jak się skontaktować?'],
     avatarEmoji: '',
-    allowedDomains: [],
+    domainAllowed: true,
   };
 
   try {
@@ -127,14 +129,11 @@ async function init() {
     // use defaults — bot still works without remote config
   }
 
-  // If allowedDomains is non-empty and current origin isn't whitelisted → show offline.
-  // Security is still enforced server-side; this is UX-only (no chat prompt, red dot).
-  if (config.allowedDomains.length > 0) {
-    const origin = window.location.origin.toLowerCase();
-    const allowed = config.allowedDomains.some((d) => d.toLowerCase() === origin);
-    if (!allowed) {
-      config.online = false;
-    }
+  // The API computes domainAllowed from the Origin header. When this Origin
+  // isn't whitelisted → show offline. Security is still enforced server-side;
+  // this is UX-only (no chat prompt, red dot).
+  if (!config.domainAllowed) {
+    config.online = false;
   }
 
   // Shadow DOM — isolates widget CSS from host page

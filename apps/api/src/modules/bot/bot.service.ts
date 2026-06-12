@@ -33,7 +33,12 @@ export interface BotPublicConfig {
   suggestedQuestions: string[];
   leadFormAfterMessages: number;
   avatarEmoji: string;
-  allowedDomains: string[];
+  /**
+   * Whether the requesting Origin may embed this bot. Computed server-side
+   * from the Origin header so the public config does not leak the tenant's
+   * full domain list. The authoritative gate stays in DomainWhitelistGuard.
+   */
+  domainAllowed: boolean;
 }
 
 export interface BotDetail {
@@ -162,7 +167,10 @@ export class BotService {
     })();
   }
 
-  async getPublicConfig(botId: string): Promise<BotPublicConfig> {
+  async getPublicConfig(
+    botId: string,
+    requestOrigin?: string,
+  ): Promise<BotPublicConfig> {
     const bot = await this.prisma.bot.findFirst({
       where: { id: botId },
       select: {
@@ -207,7 +215,7 @@ export class BotService {
       suggestedQuestions,
       leadFormAfterMessages: rest.leadFormAfterMessages,
       avatarEmoji: rest.avatarEmoji,
-      allowedDomains: rest.allowedDomains,
+      domainAllowed: isOriginAllowed(rest.allowedDomains, requestOrigin),
     };
   }
 
@@ -364,4 +372,37 @@ export class BotService {
       businessSchedule: this.parseSchedule(raw.businessSchedule),
     };
   }
+}
+
+/**
+ * Whether `origin` is allowed to embed a bot given its `allowedDomains`.
+ *
+ * Mirrors DomainWhitelistGuard's matching (www-insensitive hostname compare).
+ * Returns true when the bot has no domains configured yet (so the widget shows
+ * online during onboarding) or when the Origin header is absent (UX-only field;
+ * the server-side guard remains the real gate). Only an Origin that is present
+ * AND demonstrably not in the list yields false.
+ */
+function isOriginAllowed(
+  allowedDomains: string[],
+  requestOrigin?: string,
+): boolean {
+  if (allowedDomains.length === 0) return true;
+  if (!requestOrigin) return true;
+
+  let incomingHost: string;
+  try {
+    incomingHost = new URL(requestOrigin).hostname.replace(/^www\./, '');
+  } catch {
+    return false;
+  }
+
+  return allowedDomains.some((domain) => {
+    try {
+      const allowedHost = new URL(domain).hostname.replace(/^www\./, '');
+      return allowedHost === incomingHost;
+    } catch {
+      return false;
+    }
+  });
 }
