@@ -9,6 +9,13 @@ const LINKS = {
     { label: 'Demo', href: '/#demo' },
     { label: 'WordPress', href: '/#faq' },
   ],
+  'Dla branż': [
+    { label: 'Salon beauty', href: '/dla/salon-beauty' },
+    { label: 'Gabinet / SPA', href: '/dla/gabinet-spa' },
+    { label: 'Restauracja', href: '/dla/restauracja' },
+    { label: 'Warsztat samochodowy', href: '/dla/warsztat-mechaniczny' },
+    { label: 'Inna firma usługowa', href: '/dla/inna' },
+  ],
   Firma: [
     { label: 'Blog', href: '/blog' },
     { label: 'Kontakt', href: '/kontakt' },
@@ -24,7 +31,7 @@ export default function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-400">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
           {/* Brand */}
           <div>
             <Link href="/" className="inline-flex items-center mb-4">
