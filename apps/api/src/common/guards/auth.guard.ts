@@ -51,6 +51,25 @@ function gcCache(): void {
   }
 }
 
+/**
+ * Reads the `exp` claim (in ms) from a JWT without verifying its signature —
+ * verification is done by Supabase's getUser(). Used only to cap how long a
+ * verified token may stay in the local cache. Returns null if the token can't
+ * be parsed or has no numeric exp.
+ */
+function decodeJwtExpMs(token: string): number | null {
+  const parts = token.split('.');
+  if (parts.length !== 3) return null;
+  try {
+    const payload = JSON.parse(
+      Buffer.from(parts[1], 'base64url').toString('utf8'),
+    ) as { exp?: unknown };
+    return typeof payload.exp === 'number' ? payload.exp * 1000 : null;
+  } catch {
+    return null;
+  }
+}
+
 @Injectable()
 export class AuthGuard implements CanActivate {
   private readonly supabase = createClient(
@@ -84,12 +103,24 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('User has no associated tenant');
     }
 
-    this.toCache(token, {
-      userId: data.user.id,
-      email: data.user.email ?? '',
-      tenantId,
-      expiresAt: Date.now() + CACHE_TTL_MS,
-    });
+    // Cache for up to CACHE_TTL_MS, but never beyond the token's own exp —
+    // otherwise a token that expires in a few seconds would keep working for
+    // the full local TTL after its first use.
+    const now = Date.now();
+    const tokenExpMs = decodeJwtExpMs(token);
+    const expiresAt =
+      tokenExpMs !== null
+        ? Math.min(now + CACHE_TTL_MS, tokenExpMs)
+        : now + CACHE_TTL_MS;
+
+    if (expiresAt > now) {
+      this.toCache(token, {
+        userId: data.user.id,
+        email: data.user.email ?? '',
+        tenantId,
+        expiresAt,
+      });
+    }
 
     request.user = {
       id: data.user.id,
