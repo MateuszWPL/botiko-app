@@ -46,12 +46,29 @@ function checkMappedIPv4(ip: string): boolean {
   return false;
 }
 
+/**
+ * Returns true if the given resolved address must NOT be connected to
+ * (private, loopback, link-local, or otherwise non-public).
+ * Unknown address families are blocked by default (fail closed).
+ */
+export function isBlockedAddress(address: string, family: number): boolean {
+  if (family === 4) return isPrivateIPv4(address);
+  if (family === 6) return isPrivateIPv6(address) || checkMappedIPv4(address);
+  return true;
+}
+
+const DEV_LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '::1']);
+
+function devLocalhostAllowed(hostname: string): boolean {
+  return (
+    process.env.DEV_ALLOW_LOCALHOST === 'true' &&
+    DEV_LOCAL_HOSTS.has(hostname.toLowerCase())
+  );
+}
+
 export async function assertSafePublicHost(hostname: string): Promise<void> {
   // Allow localhost in dev (explicit env flag required — never default true in prod)
-  if (
-    process.env.DEV_ALLOW_LOCALHOST === 'true' &&
-    (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1')
-  ) {
+  if (devLocalhostAllowed(hostname)) {
     return;
   }
 
@@ -65,19 +82,88 @@ export async function assertSafePublicHost(hostname: string): Promise<void> {
   }
 
   for (const { address, family } of addresses) {
-    if (family === 4 && isPrivateIPv4(address)) {
+    if (isBlockedAddress(address, family)) {
       throw new BadRequestException({
         code: 'SSRF_BLOCKED',
         message: `Adres IP ${address} jest prywatny i nie może być skanowany.`,
       });
     }
-    if (family === 6) {
-      if (isPrivateIPv6(address) || checkMappedIPv4(address)) {
-        throw new BadRequestException({
-          code: 'SSRF_BLOCKED',
-          message: `Adres IPv6 ${address} jest prywatny i nie może być skanowany.`,
-        });
+  }
+}
+
+interface LookupAddress {
+  address: string;
+  family: number;
+}
+
+type LookupCallback = (
+  err: NodeJS.ErrnoException | null,
+  address: string | LookupAddress[],
+  family?: number,
+) => void;
+
+/**
+ * Custom DNS lookup for the HTTP(S) agent that re-validates every resolved
+ * address at connection time. This closes the DNS-rebinding TOCTOU gap: the
+ * pre-flight `assertSafePublicHost` check and the socket's own resolution
+ * are otherwise two independent lookups, so an attacker controlling DNS could
+ * return a public IP for the check and a private one (e.g. cloud metadata at
+ * 169.254.169.254) for the actual connection. Because this lookup is what the
+ * socket uses, the address we validate is the address we connect to.
+ *
+ * TLS is unaffected — SNI and certificate validation still use the original
+ * hostname, only the resolved IP is pinned by this function.
+ */
+export function secureLookup(
+  hostname: string,
+  options: dns.LookupOneOptions | dns.LookupAllOptions | number,
+  callback: LookupCallback,
+): void {
+  const wantsAll = typeof options === 'object' && options.all === true;
+  const requestedFamily =
+    typeof options === 'object' ? options.family : options;
+
+  const allowPrivate = devLocalhostAllowed(hostname);
+
+  dns.lookup(hostname, { all: true, family: 0 }, (err, resolved) => {
+    if (err) {
+      callback(err, '', 0);
+      return;
+    }
+
+    const list = resolved as LookupAddress[];
+
+    if (!allowPrivate) {
+      for (const a of list) {
+        if (isBlockedAddress(a.address, a.family)) {
+          const blocked = new Error(
+            `Adres ${a.address} jest prywatny i nie może być pobrany.`,
+          ) as NodeJS.ErrnoException;
+          blocked.code = 'SSRF_BLOCKED';
+          callback(blocked, '', 0);
+          return;
+        }
       }
     }
-  }
+
+    const candidates =
+      requestedFamily === 4 || requestedFamily === 6
+        ? list.filter((a) => a.family === requestedFamily)
+        : list;
+
+    if (candidates.length === 0) {
+      const notFound = new Error(
+        `Brak adresów IP dla hosta ${hostname}.`,
+      ) as NodeJS.ErrnoException;
+      notFound.code = 'ENOTFOUND';
+      callback(notFound, '', 0);
+      return;
+    }
+
+    if (wantsAll) {
+      callback(null, candidates);
+    } else {
+      callback(null, candidates[0].address, candidates[0].family);
+    }
+  });
 }

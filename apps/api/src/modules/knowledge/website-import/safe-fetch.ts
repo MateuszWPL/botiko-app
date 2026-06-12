@@ -1,5 +1,8 @@
+import http from 'node:http';
+import https from 'node:https';
+import type { Readable } from 'node:stream';
 import { BadRequestException } from '@nestjs/common';
-import { assertSafePublicHost } from './ssrf-guard';
+import { assertSafePublicHost, secureLookup } from './ssrf-guard';
 import { validateAndNormalizeImportUrl } from './url-validator';
 
 const BOTIKO_USER_AGENT = 'BotikoBot/1.0 (+https://botiko.pl)';
@@ -18,6 +21,133 @@ export interface SafeFetchOptions {
   tenantWebsiteUrl?: string;
 }
 
+class FetchTimeoutError extends Error {
+  constructor() {
+    super('Request timed out');
+    this.name = 'FetchTimeoutError';
+  }
+}
+
+interface RawResponse {
+  status: number;
+  location: string | null;
+  contentType: string;
+  body: Readable;
+}
+
+/**
+ * Single GET request over native http/https with SSRF-safe DNS pinning.
+ *
+ * Redirects are NOT followed here (`secureLookup` would still guard them, but
+ * we follow manually in safeFetch so each hop is re-validated against the
+ * tenant's domain too). Compression is not requested, so the body is returned
+ * as-is without needing gzip/br decoding.
+ */
+function requestOnce(url: URL, timeoutMs: number): Promise<RawResponse> {
+  return new Promise((resolve, reject) => {
+    const transport = url.protocol === 'http:' ? http : https;
+    const req = transport.request(
+      url,
+      {
+        method: 'GET',
+        headers: {
+          'User-Agent': BOTIKO_USER_AGENT,
+          Accept: 'text/html,application/xhtml+xml;q=0.9',
+          'Accept-Language': 'pl,en;q=0.5',
+          // Identity only — native http does not auto-decompress.
+          'Accept-Encoding': 'identity',
+        },
+        lookup: secureLookup,
+        timeout: timeoutMs,
+      },
+      (res) => {
+        const location = res.headers.location;
+        resolve({
+          status: res.statusCode ?? 0,
+          location: typeof location === 'string' ? location : null,
+          contentType: res.headers['content-type'] ?? '',
+          body: res,
+        });
+      },
+    );
+
+    req.on('timeout', () => {
+      req.destroy(new FetchTimeoutError());
+    });
+    req.on('error', (err) => reject(err));
+    req.end();
+  });
+}
+
+function readBodyWithLimit(body: Readable, maxBytes: number): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    let totalBytes = 0;
+    let finished = false;
+
+    const finish = (fn: () => void) => {
+      if (finished) return;
+      finished = true;
+      body.destroy();
+      fn();
+    };
+
+    body.on('data', (chunk: Buffer) => {
+      totalBytes += chunk.byteLength;
+      if (totalBytes > maxBytes) {
+        // Stop reading — we have enough; truncate at the limit.
+        chunks.push(chunk);
+        finish(() =>
+          resolve(
+            new TextDecoder('utf-8', { fatal: false }).decode(
+              Buffer.concat(chunks),
+            ),
+          ),
+        );
+        return;
+      }
+      chunks.push(chunk);
+    });
+
+    body.on('end', () => {
+      finish(() =>
+        resolve(
+          new TextDecoder('utf-8', { fatal: false }).decode(
+            Buffer.concat(chunks),
+          ),
+        ),
+      );
+    });
+
+    body.on('error', (err) => finish(() => reject(err)));
+  });
+}
+
+function mapRequestError(err: unknown, hostname: string): BadRequestException {
+  if (err instanceof FetchTimeoutError) {
+    return new BadRequestException({
+      code: 'TIMEOUT',
+      message: 'Strona za wolno odpowiada (limit 10s).',
+    });
+  }
+  const code =
+    err && typeof err === 'object' && 'code' in err
+      ? (err as { code?: string }).code
+      : undefined;
+  if (code === 'SSRF_BLOCKED') {
+    return new BadRequestException({
+      code: 'SSRF_BLOCKED',
+      message:
+        err instanceof Error
+          ? err.message
+          : 'Adres prywatny nie może być pobrany.',
+    });
+  }
+  return new BadRequestException(
+    `Nie można połączyć się ze stroną ${hostname}. Sprawdź czy adres jest poprawny.`,
+  );
+}
+
 export async function safeFetch(
   url: URL,
   opts: SafeFetchOptions = {},
@@ -27,57 +157,32 @@ export async function safeFetch(
   let currentUrl = url;
   let redirectCount = 0;
 
-  // Validate initial host
+  // Friendly pre-flight check (nice errors). The real SSRF guarantee comes
+  // from secureLookup, which re-validates the IP at socket-connect time.
   await assertSafePublicHost(currentUrl.hostname);
 
   while (true) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), timeoutMs);
-
-    let response: Response;
+    let response: RawResponse;
     try {
-      response = await fetch(currentUrl.toString(), {
-        method: 'GET',
-        headers: {
-          'User-Agent': BOTIKO_USER_AGENT,
-          Accept: 'text/html,application/xhtml+xml;q=0.9',
-          'Accept-Language': 'pl,en;q=0.5',
-        },
-        redirect: 'manual',
-        signal: controller.signal,
-      });
+      response = await requestOnce(currentUrl, timeoutMs);
     } catch (err) {
-      clearTimeout(timeout);
-      if (err instanceof Error && err.name === 'AbortError') {
-        throw new BadRequestException({
-          code: 'TIMEOUT',
-          message: 'Strona za wolno odpowiada (limit 10s).',
-        });
-      }
-      throw new BadRequestException(
-        `Nie można połączyć się ze stroną ${currentUrl.hostname}. Sprawdź czy adres jest poprawny.`,
-      );
+      throw mapRequestError(err, currentUrl.hostname);
     }
-    clearTimeout(timeout);
 
     // Handle redirects manually to re-validate each destination
-    if (
-      response.status >= 300 &&
-      response.status < 400 &&
-      response.headers.get('location')
-    ) {
+    if (response.status >= 300 && response.status < 400 && response.location) {
+      response.body.destroy();
       if (redirectCount >= MAX_REDIRECTS) {
         throw new BadRequestException(
           'Zbyt wiele przekierowań (max 3). Sprawdź URL.',
         );
       }
-      const location = response.headers.get('location')!;
       let nextUrl: URL;
       try {
-        nextUrl = new URL(location, currentUrl.toString());
+        nextUrl = new URL(response.location, currentUrl.toString());
       } catch {
         throw new BadRequestException(
-          `Nieprawidłowy URL przekierowania: ${location}`,
+          `Nieprawidłowy URL przekierowania: ${response.location}`,
         );
       }
 
@@ -93,6 +198,7 @@ export async function safeFetch(
     }
 
     if (response.status === 403) {
+      response.body.destroy();
       throw new BadRequestException({
         code: 'ROBOTS_DISALLOWED',
         message: `Strona ${currentUrl.hostname} odmówiła dostępu (403).`,
@@ -100,55 +206,37 @@ export async function safeFetch(
     }
 
     if (response.status === 404) {
+      response.body.destroy();
       throw new BadRequestException(
         `Strona ${currentUrl.pathname} nie istnieje (404).`,
       );
     }
 
-    if (!response.ok) {
+    if (response.status < 200 || response.status >= 300) {
+      response.body.destroy();
       throw new BadRequestException(
         `Strona odpowiedziała błędem ${response.status}.`,
       );
     }
 
-    const contentType = response.headers.get('content-type') ?? '';
+    const contentType = response.contentType;
     const isHtml = ACCEPTED_CONTENT_TYPES.some((t) =>
       contentType.toLowerCase().includes(t),
     );
     if (!isHtml) {
+      response.body.destroy();
       throw new BadRequestException({
         code: 'NON_HTML_CONTENT',
         message: `URL nie wskazuje na stronę HTML (typ: ${contentType || 'nieznany'}).`,
       });
     }
 
-    // Stream body with byte limit
-    const reader = response.body?.getReader();
-    if (!reader) {
-      throw new BadRequestException('Brak treści w odpowiedzi serwera.');
-    }
-
-    const chunks: Uint8Array[] = [];
-    let totalBytes = 0;
-
+    let html: string;
     try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        totalBytes += value.byteLength;
-        if (totalBytes > maxBytes) {
-          reader.cancel().catch(() => {});
-          break;
-        }
-        chunks.push(value);
-      }
+      html = await readBodyWithLimit(response.body, maxBytes);
     } catch {
       throw new BadRequestException('Błąd podczas pobierania treści strony.');
     }
-
-    const html = new TextDecoder('utf-8', { fatal: false }).decode(
-      concatUint8Arrays(chunks),
-    );
 
     return {
       html,
@@ -156,15 +244,4 @@ export async function safeFetch(
       finalUrl: currentUrl.toString(),
     };
   }
-}
-
-function concatUint8Arrays(arrays: Uint8Array[]): Uint8Array {
-  const totalLen = arrays.reduce((acc, a) => acc + a.byteLength, 0);
-  const result = new Uint8Array(totalLen);
-  let offset = 0;
-  for (const arr of arrays) {
-    result.set(arr, offset);
-    offset += arr.byteLength;
-  }
-  return result;
 }
