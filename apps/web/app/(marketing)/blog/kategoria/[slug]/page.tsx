@@ -5,6 +5,7 @@ import {
   getPostsByCategory,
   getAllTags,
   getPaginatedPosts,
+  MIN_INDEXABLE_CATEGORY_POSTS,
 } from '@/lib/blog';
 import PostCard from '@/components/blog/PostCard';
 import Breadcrumbs from '@/components/blog/Breadcrumbs';
@@ -32,10 +33,16 @@ export async function generateMetadata({
       ? `https://botiko.pl/blog/kategoria/${cat.slug}?strona=${page}`
       : `https://botiko.pl/blog/kategoria/${cat.slug}`;
 
+  // Index only substantial categories, and only their first page. Thin
+  // categories and deep pagination are noindex,follow (links still crawled).
+  const indexable =
+    cat.count >= MIN_INDEXABLE_CATEGORY_POSTS && page === 1;
+
   return {
     title: `${cat.name} — Blog Botiko.pl`,
     description: `Artykuły z kategorii "${cat.name}" — praktyczne porady o automatyzacji i AI dla małych firm usługowych.`,
     alternates: { canonical },
+    robots: { index: indexable, follow: true },
   };
 }
 

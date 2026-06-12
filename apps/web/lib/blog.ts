@@ -156,6 +156,32 @@ export function getPostsByCategory(categorySlug: string): PostMeta[] {
   return getAllPosts().filter((p) => p.categorySlug === categorySlug);
 }
 
+/**
+ * Minimum posts a category needs before it's worth indexing. Categories with
+ * fewer entries are thin content (often 1 post = duplicate of the post itself),
+ * so they get `noindex` and are kept out of the sitemap.
+ */
+export const MIN_INDEXABLE_CATEGORY_POSTS = 3;
+
+/** Categories substantial enough to index (≥ MIN_INDEXABLE_CATEGORY_POSTS). */
+export function getIndexableCategories(): Array<{
+  name: string;
+  slug: string;
+  count: number;
+}> {
+  return getAllCategories().filter(
+    (c) => c.count >= MIN_INDEXABLE_CATEGORY_POSTS,
+  );
+}
+
+/** Date of the newest post in a category — used for sitemap `lastmod`. */
+export function getCategoryLastModified(categorySlug: string): Date | undefined {
+  const posts = getPostsByCategory(categorySlug); // sorted newest-first
+  const newest = posts[0];
+  if (!newest) return undefined;
+  return new Date(newest.updatedAt ?? newest.date);
+}
+
 export function getPostsByTag(tagSlug: string): PostMeta[] {
   return getAllPosts().filter((p) =>
     p.tags.some((t) => slugify(t) === tagSlug)
