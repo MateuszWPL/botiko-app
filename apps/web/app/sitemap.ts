@@ -12,6 +12,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, changeFrequency: 'weekly', priority: 1, lastModified: now },
     { url: `${baseUrl}/blog`, changeFrequency: 'weekly', priority: 0.9, lastModified: now },
+    { url: `${baseUrl}/faq`, changeFrequency: 'monthly', priority: 0.7, lastModified: now },
+    { url: `${baseUrl}/o-nas`, changeFrequency: 'monthly', priority: 0.5, lastModified: now },
     { url: `${baseUrl}/kontakt`, changeFrequency: 'yearly', priority: 0.5, lastModified: new Date('2026-03-01') },
     { url: `${baseUrl}/dla/salon-beauty`, changeFrequency: 'monthly', priority: 0.8, lastModified: now },
     { url: `${baseUrl}/dla/gabinet-spa`, changeFrequency: 'monthly', priority: 0.8, lastModified: now },

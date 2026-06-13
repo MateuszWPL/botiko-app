@@ -1,5 +1,18 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import JsonLd from '@/components/seo/JsonLd';
+import { SITE_URL, breadcrumbListSchema } from '@/lib/seo';
+
+const JSON_LD_ABOUT = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'O Botiko',
+  url: `${SITE_URL}/o-nas`,
+  inLanguage: 'pl-PL',
+  mainEntity: { '@id': `${SITE_URL}/#organization` },
+  description:
+    'Botiko to jednoosobowy projekt z Białegostoku — bot obsługi klienta 24/7 dla polskich firm usługowych.',
+};
 
 export const metadata: Metadata = {
   title: 'O nas — jednoosobowy projekt z Białegostoku',
@@ -59,6 +72,15 @@ const VALUES = [
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-bg">
+      <JsonLd
+        data={[
+          JSON_LD_ABOUT,
+          breadcrumbListSchema([
+            { label: 'Botiko.pl', href: '/' },
+            { label: 'O nas' },
+          ]),
+        ]}
+      />
       {/* Hero */}
       <section
         className="relative overflow-hidden"

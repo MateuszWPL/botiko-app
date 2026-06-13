@@ -17,7 +17,9 @@ const LINKS = {
     { label: 'Inna firma usługowa', href: '/dla/inna' },
   ],
   Firma: [
+    { label: 'O nas', href: '/o-nas' },
     { label: 'Blog', href: '/blog' },
+    { label: 'FAQ', href: '/faq' },
     { label: 'Kontakt', href: '/kontakt' },
   ],
   Prawo: [

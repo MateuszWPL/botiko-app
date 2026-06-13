@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import JsonLd from '@/components/seo/JsonLd';
+import { organizationSchema, websiteSchema } from '@/lib/seo';
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
@@ -86,6 +88,7 @@ export default function RootLayout({
   return (
     <html lang="pl">
       <body className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
+        <JsonLd data={[organizationSchema(), websiteSchema()]} />
         {children}
       </body>
     </html>

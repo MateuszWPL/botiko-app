@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import JsonLd from '@/components/seo/JsonLd';
+import { breadcrumbListSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Bot dla restauracji — odpowiada gościom 24/7 i zbiera leady',
@@ -172,6 +174,12 @@ export default function RestaurantLandingPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_SERVICE) }}
+      />
+      <JsonLd
+        data={breadcrumbListSchema([
+          { label: 'Botiko.pl', href: '/' },
+          { label: 'Restauracja' },
+        ])}
       />
 
       {/* ─── Hero ─────────────────────────────────────────────────────────── */}

@@ -221,7 +221,9 @@ export function extractToc(content: string): TocItem[] {
   return items;
 }
 
-export const POSTS_PER_PAGE = 6;
+// 12 keeps the full ~31-post catalogue within 3 pages, so crawlers reach every
+// post without deep pagination diluting crawl budget.
+export const POSTS_PER_PAGE = 12;
 
 export function getPaginatedPosts(
   posts: PostMeta[],
