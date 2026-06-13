@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import JsonLd from '@/components/seo/JsonLd';
+import CityLinks from '@/components/marketing/CityLinks';
+import { breadcrumbListSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Bot dla warsztatu samochodowego — odpowiada klientom 24/7 i zbiera leady',
@@ -168,6 +171,12 @@ export default function MechanicLandingPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_SERVICE) }}
+      />
+      <JsonLd
+        data={breadcrumbListSchema([
+          { label: 'Botiko.pl', href: '/' },
+          { label: 'Warsztat samochodowy' },
+        ])}
       />
 
       {/* ─── Hero ─────────────────────────────────────────────────────────── */}
@@ -764,6 +773,8 @@ export default function MechanicLandingPage() {
           </div>
         </div>
       </section>
+
+      <CityLinks industrySlug="warsztat-mechaniczny" />
     </>
   );
 }

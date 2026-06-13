@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Moon, PhoneOff, RefreshCw } from 'lucide-react';
+import JsonLd from '@/components/seo/JsonLd';
+import CityLinks from '@/components/marketing/CityLinks';
+import { breadcrumbListSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Bot dla salonu beauty — odpowiada klientkom 24/7 i zbiera leady',
@@ -91,6 +94,12 @@ export default function BeautyLandingPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_SERVICE) }}
+      />
+      <JsonLd
+        data={breadcrumbListSchema([
+          { label: 'Botiko.pl', href: '/' },
+          { label: 'Salon beauty' },
+        ])}
       />
 
       {/* Hero */}
@@ -468,6 +477,8 @@ export default function BeautyLandingPage() {
           </div>
         </div>
       </section>
+
+      <CityLinks industrySlug="salon-beauty" />
     </>
   );
 }

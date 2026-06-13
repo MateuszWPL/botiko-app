@@ -53,21 +53,8 @@ export const metadata: Metadata = {
   },
 };
 
-const JSON_LD_ORGANIZATION = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Botiko.pl',
-  url: 'https://botiko.pl',
-  logo: 'https://botiko.pl/botiko-logo-full.svg',
-  contactPoint: {
-    '@type': 'ContactPoint',
-    email: 'kontakt@botiko.pl',
-    contactType: 'customer service',
-    availableLanguage: 'Polish',
-    areaServed: 'PL',
-  },
-};
-
+// Organization + WebSite entities are emitted site-wide from app/layout.tsx.
+// The homepage keeps the LocalBusiness + SoftwareApplication specifics.
 const JSON_LD_LOCAL_BUSINESS = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
@@ -111,11 +98,7 @@ const JSON_LD_SOFTWARE = {
 export default function HomePage() {
   return (
     <>
-      {/* JSON-LD Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_ORGANIZATION) }}
-      />
+      {/* JSON-LD Schema (Organization + WebSite come from the root layout) */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_LOCAL_BUSINESS) }}

@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import JsonLd from '@/components/seo/JsonLd';
+import CityLinks from '@/components/marketing/CityLinks';
+import { breadcrumbListSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Bot dla gabinetu SPA — odpowiada klientom 24/7 i zbiera leady',
@@ -153,6 +156,12 @@ export default function SpaLandingPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_SERVICE) }}
+      />
+      <JsonLd
+        data={breadcrumbListSchema([
+          { label: 'Botiko.pl', href: '/' },
+          { label: 'Gabinet / SPA' },
+        ])}
       />
 
       {/* ─── Hero ─────────────────────────────────────────────────────────── */}
@@ -780,6 +789,8 @@ export default function SpaLandingPage() {
           </div>
         </div>
       </section>
+
+      <CityLinks industrySlug="gabinet-spa" />
     </>
   );
 }

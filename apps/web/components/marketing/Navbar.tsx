@@ -68,8 +68,8 @@ const BLOG_ITEM: DropItem = {
 
 const NAV_LINKS = [
   { label: 'Jak działa', href: '#jak-dziala' },
-  { label: 'Cennik',     href: '#cennik' },
-  { label: 'FAQ',        href: '#faq' },
+  { label: 'Cennik',     href: '/cennik' },
+  { label: 'O nas',      href: '/o-nas' },
   { label: 'Kontakt',    href: '/kontakt' },
 ];
 

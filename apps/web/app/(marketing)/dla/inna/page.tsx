@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import JsonLd from '@/components/seo/JsonLd';
+import { breadcrumbListSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Bot dla Twojej firmy usługowej — odpowiada klientom 24/7 i zbiera leady',
@@ -215,6 +217,12 @@ export default function InnaLandingPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_SERVICE) }}
+      />
+      <JsonLd
+        data={breadcrumbListSchema([
+          { label: 'Botiko.pl', href: '/' },
+          { label: 'Inna firma usługowa' },
+        ])}
       />
 
       {/* ─── Hero ─────────────────────────────────────────────────────────── */}

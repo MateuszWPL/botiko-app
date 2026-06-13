@@ -4,10 +4,10 @@ import Link from 'next/link';
 const LINKS = {
   Produkt: [
     { label: 'Jak działa', href: '/#jak-dziala' },
-    { label: 'Branże', href: '/#branze' },
-    { label: 'Cennik', href: '/#cennik' },
+    { label: 'Cennik', href: '/cennik' },
+    { label: 'Porównania', href: '/porownanie' },
+    { label: 'Bot na WordPress', href: '/integracje/wordpress' },
     { label: 'Demo', href: '/#demo' },
-    { label: 'WordPress', href: '/#faq' },
   ],
   'Dla branż': [
     { label: 'Salon beauty', href: '/dla/salon-beauty' },
@@ -17,7 +17,10 @@ const LINKS = {
     { label: 'Inna firma usługowa', href: '/dla/inna' },
   ],
   Firma: [
+    { label: 'O nas', href: '/o-nas' },
     { label: 'Blog', href: '/blog' },
+    { label: 'Narzędzia', href: '/narzedzia' },
+    { label: 'FAQ', href: '/faq' },
     { label: 'Kontakt', href: '/kontakt' },
   ],
   Prawo: [
