@@ -188,14 +188,40 @@ export function getPostsByTag(tagSlug: string): PostMeta[] {
   );
 }
 
+/**
+ * Related posts with tiered selection so internal links cross topic clusters:
+ * 1) same category, 2) posts sharing ≥1 tag (cross-category), 3) most recent.
+ * Tags are optional for backward compatibility.
+ */
 export function getRelatedPosts(
   currentSlug: string,
   categorySlug: string,
-  count = 3
+  count = 3,
+  tags: string[] = []
 ): PostMeta[] {
-  return getAllPosts()
-    .filter((p) => p.slug !== currentSlug && p.categorySlug === categorySlug)
-    .slice(0, count);
+  const all = getAllPosts().filter((p) => p.slug !== currentSlug);
+  const picked: PostMeta[] = [];
+  const seen = new Set<string>();
+
+  const add = (posts: PostMeta[]): void => {
+    for (const p of posts) {
+      if (picked.length >= count) break;
+      if (seen.has(p.slug)) continue;
+      seen.add(p.slug);
+      picked.push(p);
+    }
+  };
+
+  add(all.filter((p) => p.categorySlug === categorySlug));
+
+  if (picked.length < count && tags.length > 0) {
+    const tagSet = new Set(tags.map((t) => t.toLowerCase()));
+    add(all.filter((p) => p.tags.some((t) => tagSet.has(t.toLowerCase()))));
+  }
+
+  if (picked.length < count) add(all);
+
+  return picked.slice(0, count);
 }
 
 /** Extract H2/H3 headings from raw MDX content for Table of Contents */

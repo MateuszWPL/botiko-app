@@ -1,0 +1,73 @@
+---
+title: "Jak ustawić bota na WordPress krok po kroku (3 sposoby)"
+excerpt: "Najprostszy sposób to darmowa wtyczka WPCode — 5 minut, bez programisty. Pokazujemy też wstawienie kodu w motyw i co z dedykowaną wtyczką. Pełna instrukcja."
+date: "2026-06-12"
+category: "Poradniki"
+categorySlug: "poradniki"
+tags: ["WordPress", "poradnik", "wdrożenie", "chatbot AI"]
+author: "Botiko"
+authorTitle: "Redakcja Botiko.pl"
+image: "/blog/default-hero.jpg"
+imageAlt: "Pulpit WordPress — jak ustawić bota krok po kroku"
+---
+
+**Najprostszy sposób na dodanie bota do WordPress to darmowa wtyczka WPCode: kopiujesz kod z panelu Botiko, wklejasz go w sekcji „Header" i bot pojawia się na stronie — całość zajmuje około 5 minut, bez edycji motywu i bez programisty.** Poniżej trzy sposoby, od najprostszego do najbardziej technicznego.
+
+## Sposób 1: wtyczka WPCode (zalecany, ~5 minut)
+
+To metoda, którą polecamy każdemu — bez dotykania plików motywu.
+
+1. W panelu Botiko skopiuj swój fragment kodu (jedna linijka `<script>` z identyfikatorem bota).
+2. W WordPress wejdź w **Wtyczki → Dodaj nową**, wyszukaj „WPCode", zainstaluj i aktywuj.
+3. Otwórz **WPCode → Header & Footer** i wklej kod w polu **Header**. Zapisz.
+4. Otwórz swoją stronę — w prawym dolnym rogu pojawi się okienko bota.
+
+Pełną wersję tej instrukcji z dodatkowymi wskazówkami znajdziesz na stronie [bot na WordPress](/integracje/wordpress).
+
+## Sposób 2: wstawienie kodu w motyw (dla zaawansowanych)
+
+Jeśli wolisz nie instalować wtyczki, możesz dodać kod bezpośrednio w motywie. **Uwaga: rób to tylko na motywie potomnym (child theme)**, inaczej aktualizacja motywu usunie zmianę.
+
+Kod bota wstawiasz przed zamykającym znacznikiem `</head>` w pliku `header.php` motywu potomnego albo przez hook `wp_head` w `functions.php`. To rozwiązanie wymaga ostrożności — błąd w `functions.php` potrafi wyłączyć stronę, dlatego dla większości firm sposób 1 jest bezpieczniejszy.
+
+## Sposób 3: dedykowana wtyczka Botiko (wkrótce)
+
+Pracujemy nad dedykowaną wtyczką Botiko w katalogu **WordPress.org** — instalacja jednym kliknięciem, bez ręcznego wklejania kodu. Do czasu jej premiery rekomendujemy WPCode (sposób 1). Chcesz dołączyć do listy oczekujących? Napisz na kontakt@botiko.pl.
+
+## Czy bot spowolni stronę WordPress
+
+Nie w odczuwalny sposób. Skrypt bota ładuje się asynchronicznie i nie blokuje renderowania strony, a sam widget jest lekki. Działa na każdym motywie (Astra, Divi, Elementor, OceanWP) i z każdym builderem, bo jest niezależny od warstwy prezentacji.
+
+Więcej w naszym [przewodniku Botiko dla WordPress](/blog/botiko-dla-wordpress-przewodnik-2026).
+
+<FAQ
+  items={[
+    {
+      q: "Jak dodać chatbota do WordPress bez programisty?",
+      a: "Najprościej przez darmową wtyczkę WPCode: kopiujesz kod z panelu Botiko, wklejasz go w sekcji Header i zapisujesz. Bot pojawia się na całej stronie. Cała operacja zajmuje około 5 minut i nie wymaga edycji motywu."
+    },
+    {
+      q: "Czy muszę edytować pliki motywu?",
+      a: "Nie. Przy metodzie z WPCode w ogóle nie dotykasz plików motywu — wszystko robisz w panelu WordPress. Edycja motywu to opcja dla zaawansowanych i tylko na motywie potomnym."
+    },
+    {
+      q: "Czy bot zniknie po aktualizacji motywu?",
+      a: "Jeśli zainstalowałeś go przez WPCode — nie, bo kod jest niezależny od motywu. Zniknie tylko wtedy, gdy wstawiłeś go bezpośrednio w motywie nadrzędnym (dlatego zawsze używaj motywu potomnego lub WPCode)."
+    },
+    {
+      q: "Czy Botiko działa na WooCommerce?",
+      a: "Tak. Botiko to skrypt ładowany w sekcji Header, więc działa na stronie WordPress niezależnie od tego, czy korzystasz z WooCommerce, Elementora czy klasycznego motywu."
+    }
+  ]}
+/>
+
+## Podsumowanie
+
+Dodanie bota do WordPress jest prostsze, niż się wydaje: wtyczka WPCode załatwia sprawę w 5 minut, bez programisty i bez ryzyka dla motywu. Metoda w kodzie motywu jest dla zaawansowanych, a dedykowana wtyczka Botiko jest w drodze. Zacznij od [strony bot na WordPress](/integracje/wordpress) albo od razu przetestuj bota za darmo.
+
+<CTABlock
+  title="Uruchom bota na swojej stronie WordPress"
+  description="14 dni za darmo, bez karty. Instalacja przez WPCode w 5 minut."
+  cta="Zacznij za darmo"
+  href="/rejestracja"
+/>
