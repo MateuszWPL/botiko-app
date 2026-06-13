@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 import JsonLd from '@/components/seo/JsonLd';
 import { organizationSchema, websiteSchema } from '@/lib/seo';
@@ -90,6 +91,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`} suppressHydrationWarning>
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
