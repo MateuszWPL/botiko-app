@@ -19,6 +19,7 @@ const LINKS = {
   Firma: [
     { label: 'O nas', href: '/o-nas' },
     { label: 'Blog', href: '/blog' },
+    { label: 'Narzędzia', href: '/narzedzia' },
     { label: 'FAQ', href: '/faq' },
     { label: 'Kontakt', href: '/kontakt' },
   ],

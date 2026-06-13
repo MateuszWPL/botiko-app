@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Moon, PhoneOff, RefreshCw } from 'lucide-react';
 import JsonLd from '@/components/seo/JsonLd';
+import CityLinks from '@/components/marketing/CityLinks';
 import { breadcrumbListSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
@@ -476,6 +477,8 @@ export default function BeautyLandingPage() {
           </div>
         </div>
       </section>
+
+      <CityLinks industrySlug="salon-beauty" />
     </>
   );
 }
