@@ -84,7 +84,7 @@ export default async function BlogPostPage({
   if (!post) notFound();
 
   const toc = extractToc(post.content);
-  const relatedPosts = getRelatedPosts(post.slug, post.categorySlug, 3);
+  const relatedPosts = getRelatedPosts(post.slug, post.categorySlug, 3, post.tags);
 
   // Article JSON-LD
   const jsonLd = {
