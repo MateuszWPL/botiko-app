@@ -4,7 +4,7 @@ import { Globe } from 'lucide-react';
 import { LinkedInIcon, GitHubIcon } from '@/components/icons/SocialIcons';
 import JsonLd from '@/components/seo/JsonLd';
 import { SITE_URL, breadcrumbListSchema } from '@/lib/seo';
-import { AUTHOR, personSchema } from '@/lib/author';
+import { AUTHOR } from '@/lib/author';
 
 const JSON_LD_ABOUT = {
   '@context': 'https://schema.org',
@@ -78,8 +78,8 @@ export default function AboutPage() {
     <main className="min-h-screen bg-bg">
       <JsonLd
         data={[
+          // personSchema() is emitted globally in the root layout — not repeated here.
           JSON_LD_ABOUT,
-          personSchema(),
           breadcrumbListSchema([
             { label: 'Botiko.pl', href: '/' },
             { label: 'O nas' },

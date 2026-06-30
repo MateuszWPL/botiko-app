@@ -20,7 +20,7 @@ import PostCard from '@/components/blog/PostCard';
 import IndustryCta from '@/components/blog/IndustryCta';
 import AuthorBox from '@/components/blog/AuthorBox';
 import { AUTHOR } from '@/lib/author';
-import { FOUNDER_PERSON_ID } from '@/lib/seo';
+import { FOUNDER_PERSON_ID, breadcrumbListSchema } from '@/lib/seo';
 import { rehypeHeadingIds } from '@/components/blog/mdx/rehypeHeadingIds';
 
 export async function generateStaticParams() {
@@ -124,11 +124,20 @@ export default async function BlogPostPage({
     keywords: post.tags.join(', '),
   };
 
+  // Breadcrumb trail (matches the visible <Breadcrumbs> below; emitted here
+  // because the Breadcrumbs component is pure UI and no longer injects JSON-LD).
+  const breadcrumbJsonLd = breadcrumbListSchema([
+    { label: 'Strona główna', href: '/' },
+    { label: 'Blog', href: '/blog' },
+    { label: post.category, href: `/blog/kategoria/${post.categorySlug}` },
+    { label: post.title },
+  ]);
+
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLd, breadcrumbJsonLd]) }}
       />
 
       <article>

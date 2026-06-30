@@ -7,6 +7,7 @@ import {
   getAllLocalParams,
   getLocalPage,
   getCitiesForIndustry,
+  isIndexableLocalCity,
 } from '@/lib/local-seo';
 import {
   SITE_URL,
@@ -37,6 +38,12 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical: url },
+    // Only the Białystok pages match a genuine local presence; the rest stay
+    // crawlable for direct/ad traffic but are kept out of the index to avoid
+    // near-duplicate/doorway penalties.
+    robots: isIndexableLocalCity(city.slug)
+      ? undefined
+      : { index: false, follow: true },
     openGraph: {
       title: `Bot dla ${industry.labelGenitive} ${city.name}`,
       description,
