@@ -101,6 +101,24 @@ model Bot {
   conversations         Conversation[]
   knowledge             KnowledgeChunk[]
   importJobs            KnowledgeImportJob[]
+  pairingTokens         BotPairingToken[]
+}
+
+/// Short-lived, single-use tokens for the WordPress "one-click pairing" flow.
+/// Generated in the dashboard (owner-authenticated), redeemed by the official
+/// WordPress plugin to authorize that site's domain. Only the SHA-256 hash of
+/// the token is stored — the raw value is shown once in the dashboard.
+model BotPairingToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  botId     String
+  bot       Bot       @relation(fields: [botId], references: [id], onDelete: Cascade)
+  tenantId  String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([botId])
 }
 
 model KnowledgeChunk {

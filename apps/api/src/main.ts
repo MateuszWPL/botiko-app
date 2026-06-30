@@ -33,7 +33,7 @@ import cors from 'cors';
  * middleware applied before NestJS's CORS handler.
  */
 const WIDGET_PATH =
-  /^\/api\/v1\/(chat|leads|bot\/[^/]+\/config|contact|billing\/webhook)/;
+  /^\/api\/v1\/(chat|leads|bot\/[^/]+\/config|bot\/pair|contact|billing\/webhook)/;
 
 function buildCorsMiddleware(appUrl: string) {
   const openCors = cors({ origin: true, credentials: true });

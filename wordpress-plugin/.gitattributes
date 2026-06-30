@@ -1,0 +1,5 @@
+# Force LF for plugin source so distributed files are consistent across OSes.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.mo binary

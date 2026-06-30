@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<ruleset name="Botiko">
+	<description>Coding standards for the Botiko WordPress plugin.</description>
+
+	<file>.</file>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="basepath" value="."/>
+	<arg name="parallel" value="8"/>
+	<arg value="sp"/>
+	<arg name="colors"/>
+
+	<config name="minimum_supported_wp_version" value="5.8"/>
+	<config name="testVersion" value="7.4-"/>
+
+	<rule ref="WordPress"/>
+	<rule ref="WordPress-Extra"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- Single text domain for i18n. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="botiko"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- All globals must be prefixed to avoid collisions. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="botiko"/>
+				<element value="Botiko"/>
+				<element value="BOTIKO"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

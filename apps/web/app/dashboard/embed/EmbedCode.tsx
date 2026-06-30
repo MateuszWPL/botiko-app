@@ -12,6 +12,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { createClient } from '@/lib/supabase';
 import { EmptyStateClient } from '../../../components/ui/EmptyStateClient';
 
 export interface Bot {
@@ -23,6 +24,8 @@ export interface Bot {
 const WIDGET_URL =
   process.env.NEXT_PUBLIC_WIDGET_URL ??
   (process.env.NODE_ENV === 'development' ? 'http://localhost:5173' : 'https://widget.botiko.pl');
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 // ── FAQ animated answer ────────────────────────────────────────────────────
 
@@ -383,6 +386,109 @@ function RadarIcon({ className }: { className?: string }) {
 
 // ── Main component ─────────────────────────────────────────────────────────
 
+// ── Official WordPress plugin: one-click pairing code ──────────────────────
+
+function PluginPairing({ botId }: { botId: string }) {
+  const [code, setCode] = useState<string | null>(null);
+  const [expiresAt, setExpiresAt] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [remaining, setRemaining] = useState(0);
+
+  useEffect(() => {
+    if (expiresAt === null) return;
+    const tick = () =>
+      setRemaining(Math.max(0, Math.round((expiresAt - Date.now()) / 1000)));
+    tick();
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
+  }, [expiresAt]);
+
+  const generate = async () => {
+    setLoading(true);
+    try {
+      const supabase = createClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const res = await fetch(`${API_URL}/api/v1/bot/${botId}/pairing-token`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${session?.access_token ?? ''}` },
+      });
+      if (!res.ok) throw new Error('failed');
+      const data = (await res.json()) as { token: string; expiresAt: string };
+      setCode(data.token);
+      setExpiresAt(new Date(data.expiresAt).getTime());
+      setCopied(false);
+    } catch {
+      toast.error('Nie udało się wygenerować kodu. Spróbuj ponownie.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const copy = async () => {
+    if (!code) return;
+    await navigator.clipboard.writeText(code);
+    setCopied(true);
+    toast.success('Kod skopiowany do schowka');
+    setTimeout(() => setCopied(false), 2500);
+  };
+
+  const expired = expiresAt !== null && remaining <= 0;
+  const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
+  const ss = String(remaining % 60).padStart(2, '0');
+
+  return (
+    <div className="mb-6 rounded-xl border border-indigo-200 bg-indigo-50/60 p-5">
+      <div className="flex items-center gap-2 mb-1.5">
+        <span className="inline-flex items-center rounded-full bg-indigo-600 px-2 py-0.5 text-[11px] font-semibold text-white">
+          Zalecane
+        </span>
+        <h3 className="text-sm font-bold text-slate-800">
+          Oficjalna wtyczka Botiko — połącz jednym kodem
+        </h3>
+      </div>
+      <p className="text-sm text-slate-600 leading-relaxed mb-3">
+        Zainstaluj wtyczkę „Botiko” z katalogu WordPress, wygeneruj poniżej kod i
+        wklej go w&nbsp;<span className="whitespace-nowrap">Ustawienia → Botiko</span>.
+        Kod pobierze Twojego bota i automatycznie autoryzuje domenę tej strony.
+      </p>
+
+      {!code || expired ? (
+        <button
+          type="button"
+          onClick={generate}
+          disabled={loading}
+          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60 transition-colors"
+        >
+          {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+          {expired ? 'Wygeneruj nowy kod' : 'Generuj kod połączenia'}
+        </button>
+      ) : (
+        <div>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 select-all rounded-lg border border-slate-200 bg-white px-3 py-2 font-mono text-sm text-slate-800 break-all">
+              {code}
+            </code>
+            <button
+              type="button"
+              onClick={copy}
+              aria-label="Kopiuj kod"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+            </button>
+          </div>
+          <p className="mt-2 text-xs text-slate-500">
+            Kod jednorazowy, ważny jeszcze {mm}:{ss}. Wklej go w panelu WordPress.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function EmbedCode({ bots }: { bots: Bot[] }) {
   const [selectedBot, setSelectedBot] = useState(bots[0]?.id ?? '');
   const [mainCopied, setMainCopied] = useState(false);
@@ -550,6 +656,10 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
           className="p-5 sm:p-6"
           style={{ animation: 'botiko-tab-in 0.22s ease both' }}
         >
+          {activePlatform === 'wordpress' && selectedBot && (
+            <PluginPairing botId={selectedBot} />
+          )}
+
           {currentPlatform.warning && (
             <div className="mb-5 flex gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
               <svg

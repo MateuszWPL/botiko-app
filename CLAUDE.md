@@ -30,8 +30,9 @@ apps/web/      → Next.js 14 App Router + Tailwind v4 (dashboard + landing page
 apps/api/      → NestJS + Prisma (REST API, port 3001)
 apps/widget/   → Preact + Vite (embed script, port 5173, target <12KB gzip)
 supabase/      → SQL migrations + RLS policies
+wordpress-plugin/ → oficjalna wtyczka WordPress (PHP) — osadza widget + one-click pairing (osobny toolchain: composer/PHPCS/SVN)
 docs/CODEMAPS/ → 6 plików architektonicznych (ENG): INDEX, backend, frontend, widget, database, integrations
-.github/workflows/ → ci.yml (4 joby: API lint+test, Web lint+tsc, Widget size, E2E Playwright)
+.github/workflows/ → ci.yml (5 jobów: API lint+test, Web lint+tsc, Widget size, E2E Playwright, WordPress plugin PHPCS+build)
 apps/api/src/brand-templates/ → szablony promptów per branża (beauty, health, food, auto + generyczny)
 ```
 

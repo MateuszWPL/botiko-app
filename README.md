@@ -12,6 +12,7 @@ Polska SaaS platforma AI chatbot B2B dla mikro i małych firm usługowych.
 apps/web/     — Next.js 14 + Tailwind v4 (Frontend + Dashboard)
 apps/api/     — NestJS + Prisma (Backend REST API)
 apps/widget/  — Preact + Vite (Embed script <12KB)
+wordpress-plugin/ — Oficjalna wtyczka WordPress (PHP) — osadza widget + one-click pairing
 ```
 
 ---

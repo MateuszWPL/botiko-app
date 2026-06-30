@@ -150,3 +150,40 @@ jobs:
         env:
           VERCEL_ORG_ID: team_XxFAcXoIM9oL0z3SW1a1QMBj
           VERCEL_PROJECT_ID: prj_mqx686XbMFMs9Rn9zt6qhxlW3ykx
+
+  wp-plugin:
+    name: WordPress plugin (PHPCS + build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: wordpress-plugin/botiko
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer, cs2pr
+          coverage: none
+
+      - name: PHP syntax lint
+        run: |
+          find . -name '*.php' -print0 | xargs -0 -n1 -P4 php -l
+
+      - name: Install dev dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: PHPCS (WordPress Coding Standards)
+        run: vendor/bin/phpcs --report-full --runtime-set ignore_warnings_on_exit 1
+
+      - name: Build distributable ZIP
+        run: bash ../build.sh
+
+      - name: Upload plugin ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: botiko-wordpress-plugin
+          path: wordpress-plugin/dist/botiko.zip
+          if-no-files-found: error
