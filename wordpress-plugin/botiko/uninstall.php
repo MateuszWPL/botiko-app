@@ -17,9 +17,9 @@ delete_transient( 'botiko_status' );
 
 // Multisite: clean each site's option.
 if ( is_multisite() ) {
-	$site_ids = get_sites( array( 'fields' => 'ids' ) );
-	foreach ( $site_ids as $site_id ) {
-		switch_to_blog( $site_id );
+	$botiko_site_ids = get_sites( array( 'fields' => 'ids' ) );
+	foreach ( $botiko_site_ids as $botiko_site_id ) {
+		switch_to_blog( $botiko_site_id );
 		delete_option( 'botiko_settings' );
 		delete_transient( 'botiko_status' );
 		restore_current_blog();

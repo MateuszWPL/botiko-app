@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Botiko_Api {
 
 	const STATUS_TRANSIENT = 'botiko_status';
-	const STATUS_TTL       = 60; // seconds
+	const STATUS_TTL       = 60; // Seconds.
 
 	/**
 	 * Settings store.

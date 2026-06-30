@@ -108,11 +108,12 @@ class Botiko_Embed {
 		// The widget loader is an external script keyed by the data-bot-id
 		// attribute; wp_enqueue_script cannot carry that attribute cleanly, so
 		// we print an escaped tag instead.
-		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
+		// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript
 		printf(
 			'<script src="%1$s" data-bot-id="%2$s" async></script>' . "\n",
 			esc_url( $src ),
 			esc_attr( $bot_id )
 		);
+		// phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedScript
 	}
 }
