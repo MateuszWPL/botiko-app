@@ -3,10 +3,12 @@ import 'server-only';
 import type { FaqEntry } from '@/lib/seo';
 
 /**
- * Data for /porownanie/[slug] pages. Comparisons stay fair and factual — they
- * contrast Botiko with *approaches* (manual replies, generic AI), not named
- * competitors, to avoid misleading or disparaging claims. High commercial
- * intent ("botiko vs ...") and good fodder for AI "który bot wybrać" answers.
+ * Data for /porownanie/[slug] pages. Comparisons stay fair and factual.
+ * Most contrast Botiko with *approaches* (manual replies, generic AI). We also
+ * include named-competitor pages (e.g. Botiko vs Tidio) where search intent
+ * demands it ("tidio alternatywa") — kept to nominative fair use: verifiable,
+ * non-disparaging, and WITHOUT hard competitor pricing (it changes; link to the
+ * source instead). High commercial intent and good fodder for AI answers.
  */
 
 export type CompareCell = boolean | string;
@@ -89,6 +91,44 @@ export const COMPARISONS: Comparison[] = [
       {
         q: 'Czy mogę po prostu wkleić ChatGPT na stronę za darmo?',
         a: 'Technicznie tak, ale stracisz znajomość cennika, zbieranie leadów, szablony branżowe i dashboard — i zwykle potrzebujesz programisty. Botiko daje to gotowe za 99 zł miesięcznie.',
+      },
+    ],
+  },
+  {
+    slug: 'botiko-vs-tidio',
+    title: 'Botiko vs Tidio — alternatywa dla firmy usługowej',
+    metaTitle: 'Botiko vs Tidio — polska alternatywa dla firmy usługowej',
+    metaDescription:
+      'Szukasz alternatywy dla Tidio? Porównanie dla mikrofirmy usługowej: rynek docelowy, model cenowy, szablony branżowe, język i rezerwacje. Kiedy lepszy jest Tidio, a kiedy Botiko.',
+    h1: 'Botiko a Tidio — co wybrać dla małej firmy usługowej',
+    intro:
+      'Tidio to dojrzałe, wielokanałowe narzędzie do live chatu i chatbotów, popularne zwłaszcza w e-commerce. Botiko jest węższe: zrobione pod polską mikrofirmę usługową — salon, gabinet, restaurację, warsztat. Poniżej uczciwe porównanie, żeby wybrać świadomie. Ceny Tidio zmieniają się i zależą od planu — aktualne sprawdzisz na tidio.com.',
+    optionA: 'Botiko',
+    optionB: 'Tidio',
+    rows: [
+      { feature: 'Rynek docelowy', a: 'Polskie mikrofirmy usługowe (beauty, SPA, gastro, auto)', b: 'Globalnie, mocno e-commerce/sklepy (np. Shopify)' },
+      { feature: 'Gotowe szablony branżowe usługowe', a: true, b: 'Raczej ogólne / pod e-commerce' },
+      { feature: 'Model cenowy', a: 'Jeden płaski plan 99 zł/mies (PLN), AI w cenie', b: 'Freemium + tiery liczone w USD; AI (Lyro) zwykle dodatkowo płatne' },
+      { feature: 'Obsługa wielu kanałów (Messenger, Instagram, WhatsApp)', a: 'Skupienie na widgecie na stronie', b: true },
+      { feature: 'Bot odpowiada z Twojej bazy wiedzy (cennik/FAQ)', a: true, b: 'Tak, w planach z AI' },
+      { feature: 'Odsyła do rezerwacji (Booksy/Calendly) zamiast budować osobny system', a: true, b: 'Nastawione na e-commerce, nie na rezerwacje usługowe' },
+      { feature: 'Instalacja na WordPress', a: 'Natywnie, przez wtyczkę', b: true },
+      { feature: 'Wsparcie i komunikacja po polsku', a: true, b: 'Globalny dostawca, produkt anglojęzyczny first' },
+    ],
+    verdict:
+      'Jeśli prowadzisz sklep internetowy i potrzebujesz obsługi na wielu kanałach oraz rozbudowanych przepływów automatyzacji — Tidio jest do tego stworzone i będzie mocniejsze. Botiko wybierz, gdy jesteś mikrofirmą usługową i zależy Ci na bocie po polsku, który odpowiada z Twojego cennika, ma gotowy szablon branżowy, odsyła do rezerwacji i kosztuje przewidywalne 99 zł miesięcznie z AI w cenie.',
+    faqs: [
+      {
+        q: 'Czy Botiko jest tańsze od Tidio?',
+        a: 'Botiko ma jeden płaski plan 99 zł miesięcznie (PLN) z AI w cenie. Tidio działa w modelu freemium z płatnymi tierami liczonymi w USD, gdzie funkcje AI bywają dodatkowo płatne, a koszt rośnie wraz z ruchem i liczbą operatorów. Co wyjdzie taniej, zależy od Twojego użycia — porównaj aktualny cennik Tidio na tidio.com z płaskim 99 zł.',
+      },
+      {
+        q: 'Kiedy lepszym wyborem jest Tidio?',
+        a: 'Gdy prowadzisz e-commerce, potrzebujesz obsługi na wielu kanałach (Messenger, Instagram, WhatsApp) i rozbudowanych automatyzacji. Tidio jest dojrzałe i bogate w funkcje — w tych scenariuszach wygrywa.',
+      },
+      {
+        q: 'Czy łatwo przejść z Tidio na Botiko?',
+        a: 'Tak. Konfiguracja Botiko to ok. 15 minut: wpisujesz cennik i FAQ, wklejasz kod lub instalujesz wtyczkę na WordPress. Nie migrujesz danych — bot startuje od Twojej bazy wiedzy.',
       },
     ],
   },
