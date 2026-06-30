@@ -35,7 +35,7 @@ Badania HubSpot z 2025: **82% klientów oczekuje odpowiedzi w ciągu 24 godzin**
 
 ### Problem: tracisz czas na powtarzające się pytania
 
-Co czwarty dzień jej pracownicy/właścicielka spędzają na odpowiadaniu na pytania, które mieszczą się w jednym zdaniu:
+Sporą część dnia właścicielka lub pracownicy spędzają na odpowiadaniu na pytania, które mieszczą się w jednym zdaniu:
 - "Ile kosztuje?"
 - "Jaki macie czas otwarcia?"
 - "Czy przyjmujecie rezerwacje online?"
@@ -48,9 +48,9 @@ Każda z tych wiadomości **przerywa** pracę. Po 10 przerwaniach dziennie — �
 Dobry bot to nie "cykające narzędzie". To realne wsparcie, które:
 - Odpowiada o 2 w nocy tak samo konsekwentnie jak o 14:00
 - Nigdy nie pomyli ceny (bo przeczyta ją z bazy danych, nie z pamięci)
-- Obsługi 10 klientek jednocześnie
+- Obsługuje 10 klientek jednocześnie
 - Tworzy leady, które Ty oddzwaniasz — gorące kontakty, nie zimne
-- Uczy się z Twoich odpowiedzi (system RAG — pozbiera pytania, Ty je edytujesz raz, bot zna na zawsze)
+- Odpowiada na podstawie Twojej wiedzy (system RAG — [czym jest baza wiedzy bota](/blog/baza-wiedzy-rag-co-to-jest-dla-firmy): pozbierasz pytania, edytujesz odpowiedzi raz, bot zna je na zawsze)
 
 ## Gdzie automatyzacja działa najlepiej (i gdzie nie)
 
@@ -96,7 +96,20 @@ Bot NIE powinien negocjować refund. Powinien przekierować do Ciebie z notatką
 
 **3. Sprzedaż usług premium**
 
-Paquiety, pakiety leczenia, usługi na zamówienie — to wymaga dyskusji, nie prostego "TAK/NIE".
+Pakiety usług, kuracje, usługi na zamówienie — to wymaga dyskusji, nie prostego "TAK/NIE".
+
+<ComparisonTable
+  title="Co automatyzować, a co zostawić człowiekowi"
+  headers={["Sytuacja", "Bot (pierwsza linia)", "Człowiek"]}
+  highlightColumn={1}
+  rows={[
+    ["Pytanie o cennik / godziny / dostępność", "Tak — natychmiast, 24/7", "Niepotrzebnie"],
+    ["Zebranie imienia i telefonu (lead)", "Tak — automatycznie", "Opcjonalnie"],
+    ["Kwalifikacja medyczna / przeciwwskazania", "Przekazuje do Ciebie", "Tak"],
+    ["Reklamacja, niezadowolony klient", "Oznacza PILNE, zbiera kontakt", "Tak"],
+    ["Sprzedaż pakietu premium / kuracji", "Wstępne pytania", "Tak — domyka"],
+  ]}
+/>
 
 ## Jak wygląda praktyczne wdrożenie
 
@@ -142,8 +155,10 @@ Ty edytujesz szablonowy tekst na Twoje ceny, godziny, usługi. Bot się uczy z t
 Bot podaje Ci kod (1 linia HTML). Wklejasz na stronę. Bot działa.
 
 ```html
-<script data-bot-id="your-bot-id" src="https://botiko.pl/embed.js"></script>
+<script src="https://widget.botiko.pl/embed.js" data-bot-id="TWOJ-BOT-ID" async></script>
 ```
+
+Na WordPress wklejasz ten kod przez darmową wtyczkę WPCode — pełna instrukcja w [przewodniku Botiko dla WordPress](/blog/botiko-dla-wordpress-przewodnik-2026).
 
 Gotowe. Klientki już widzą czat.
 
@@ -233,27 +248,42 @@ Po 6 miesiącach:
   buttonText="Zarejestruj się"
 />
 
----
+## Ile to kosztuje i czy się zwróci
 
-## FAQ
+Automatyzacja w modelu SaaS to wydatek rzędu kilkudziesięciu–kilkuset złotych miesięcznie (Botiko: 99 zł/mies.), bez kosztu wdrożenia. Pełny rozkład cen i progu zwrotu znajdziesz w artykule [ile kosztuje chatbot dla firmy usługowej](/blog/ile-kosztuje-chatbot-dla-firmy-uslugowej-2026). A skoro bot zbiera dane kontaktowe klientów — warto wiedzieć, że robi to [zgodnie z RODO](/blog/chatbot-a-rodo-dane-klientow).
 
-**P: Czy bot będzie wyglądać jak ChatGPT?**
-O: Nie. Bot ma interfejs dostosowany do Twojej branży — wygląda profesjonalnie i naturalnie.
-
-**P: Czy musisz być tech-savvy żeby go skonfigurować?**
-O: Nie. Szablony robią 80% pracy. Ty tylko edytujesz tekst — jak w Wordzie.
-
-**P: Ile czasu zajmuje wdrożenie?**
-O: 1-2 godziny od rejestracji do działającego bota na stronie. Setup się robi raz, potem bot pracuje sam.
-
-**P: Czy klientki będą niezadowolone, że mówią z botem?**
-O: Na początku mogą mieć opór. Ale gdy bot odpowiada w 2 sekundy, a ty w 2 godziny — szybko się przyzwyczają. (I zawsze mogą prosić o rozmowę z tobą.)
-
-**P: Co jeśli bot powie coś źle?**
-O: Edytujesz odpowiedź w dashboardzie — zmiana działa natychmiast dla wszystkich kolejnych rozmów.
-
-**P: Czy bot może obsługiwać rezerwacje?**
-O: Nie bezpośrednio — bot nie zna Twojego kalendarza. Zbiera dane kontaktowe i preferencje klientki, a następnie odsyła ją do Booksy lub zostawia Ci lead do oddzwonienia. Rezerwację potwierdzasz Ty.
+<FAQ
+  items={[
+    {
+      q: "Czy bot AI zastąpi pracownika lub recepcję?",
+      a: "Nie zastąpi, ale przejmie powtarzalną pierwszą linię (cennik, godziny, dostępność) i obsługę po godzinach. Szerzej rozkładamy to w artykule „Czy bot AI zastąpi recepcjonistkę”."
+    },
+    {
+      q: "Czy bot będzie wyglądać jak ChatGPT?",
+      a: "Nie. Bot ma interfejs dostosowany do Twojej branży — wygląda profesjonalnie i naturalnie, a nie jak generyczny czat."
+    },
+    {
+      q: "Czy muszę być tech-savvy, żeby go skonfigurować?",
+      a: "Nie. Gotowe szablony branżowe robią 80% pracy. Ty tylko edytujesz tekst (ceny, godziny, usługi) — jak w edytorze tekstu."
+    },
+    {
+      q: "Ile czasu zajmuje wdrożenie?",
+      a: "Zwykle 1–2 godziny od rejestracji do działającego bota na stronie. Setup robisz raz, potem bot pracuje sam."
+    },
+    {
+      q: "Czy klienci będą niezadowoleni, że piszą z botem?",
+      a: "Do prostych pytań wolą natychmiastową odpowiedź o 22:00 niż czekanie do rana. Bot jest oznaczony uczciwie jako bot, a kontakt z człowiekiem pozostaje na wyciągnięcie ręki."
+    },
+    {
+      q: "Co jeśli bot powie coś źle?",
+      a: "Edytujesz odpowiedź w dashboardzie — zmiana działa natychmiast dla wszystkich kolejnych rozmów."
+    },
+    {
+      q: "Czy bot może obsługiwać rezerwacje?",
+      a: "Nie bezpośrednio — bot nie zna Twojego kalendarza. Zbiera dane kontaktowe i preferencje klienta, a następnie odsyła do Booksy lub zostawia Ci lead do oddzwonienia. Rezerwację potwierdzasz Ty."
+    }
+  ]}
+/>
 
 ---
 
