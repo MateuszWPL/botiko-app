@@ -85,7 +85,9 @@ class Botiko_Pairing {
 	public function ajax_connect() {
 		$this->authorize();
 
-		$raw_code = isset( $_POST['code'] ) ? wp_unslash( $_POST['code'] ) : '';
+		// Nonce + capability are verified in authorize() above.
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$raw_code = isset( $_POST['code'] ) ? sanitize_text_field( wp_unslash( $_POST['code'] ) ) : '';
 		$code     = self::sanitize_pairing_code( $raw_code );
 		if ( '' === $code ) {
 			wp_send_json_error( array( 'message' => __( 'Nieprawidłowy kod połączenia.', 'botiko' ) ), 400 );
