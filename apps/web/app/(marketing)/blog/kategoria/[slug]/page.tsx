@@ -11,6 +11,8 @@ import PostCard from '@/components/blog/PostCard';
 import Breadcrumbs from '@/components/blog/Breadcrumbs';
 import Pagination from '@/components/blog/Pagination';
 import TagCloud from '@/components/blog/TagCloud';
+import JsonLd from '@/components/seo/JsonLd';
+import { breadcrumbListSchema } from '@/lib/seo';
 
 export async function generateStaticParams() {
   return getAllCategories().map((c) => ({ slug: c.slug }));
@@ -64,6 +66,13 @@ export default async function CategoryPage({
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white overflow-x-hidden">
+      <JsonLd
+        data={breadcrumbListSchema([
+          { label: 'Strona główna', href: '/' },
+          { label: 'Blog', href: '/blog' },
+          { label: cat.name },
+        ])}
+      />
       {/* Header */}
       <div
         className="relative overflow-hidden text-white pt-32 pb-24 px-4"
