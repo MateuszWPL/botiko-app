@@ -17,6 +17,7 @@ import { mdxComponents } from '@/components/blog/mdx/components';
 import Breadcrumbs from '@/components/blog/Breadcrumbs';
 import TableOfContents from '@/components/blog/TableOfContents';
 import PostCard from '@/components/blog/PostCard';
+import IndustryCta from '@/components/blog/IndustryCta';
 import { rehypeHeadingIds } from '@/components/blog/mdx/rehypeHeadingIds';
 
 export async function generateStaticParams() {
@@ -32,7 +33,8 @@ export async function generateMetadata({
   if (!post) return {};
 
   return {
-    title: `${post.title} — Blog Botiko.pl`,
+    // Szablon `%s | Botiko.pl` z layoutu dokłada brand — nie dublujemy go w tytule.
+    title: post.title,
     description: post.excerpt,
     alternates: { canonical: `https://botiko.pl/blog/${post.slug}` },
     openGraph: {
@@ -293,6 +295,9 @@ export default async function BlogPostPage({
               </div>
             </aside>
           </div>
+
+          {/* Kontekstowy link do strony pieniężnej /dla/* (linkowanie wewnętrzne) */}
+          <IndustryCta categorySlug={post.categorySlug} />
 
           {/* Related posts */}
           {relatedPosts.length > 0 && (

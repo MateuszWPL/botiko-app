@@ -10,7 +10,8 @@ import Faq from '@/components/marketing/Faq';
 import CtaBanner from '@/components/marketing/CtaBanner';
 
 export const metadata: Metadata = {
-  title: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych',
+  // `absolute` pomija szablon `%s | Botiko.pl` — brand prowadzi i nie dubluje się w <title>.
+  title: { absolute: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych' },
   description:
     'Bot, który odpowiada na pytania klientów 24/7. Gotowe szablony branżowe, baza wiedzy i leady w panelu. Wklejasz kod na stronę i działa. 14 dni za darmo, bez umowy.',
   keywords: [

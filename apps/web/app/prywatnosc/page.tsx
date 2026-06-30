@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Polityka Prywatności — Botiko.pl',
+  title: 'Polityka Prywatności',
   description:
     'Informacje o przetwarzaniu danych osobowych przez Botiko.pl zgodnie z RODO.',
 };
