@@ -135,13 +135,17 @@ Scope (opcjonalny): `api`, `web`, `widget`
 
 ## Dokumentacja Kontekstu
 
+**`DOCS.md` to mapa wszystkich dokumentów (funkcja → dokument).** Zacznij tam, jeśli szukasz, gdzie co mieszka.
+
 ### Dla AI (Claude)
-- `CLAUDE.md` — Pełny kontekst architektoniczny
+- `CLAUDE.md` — Pełny kontekst architektoniczny + konwencje
 - `TASK.md` — Mapa zadań (roadmapa, etapy)
-- `.cursorrules` — Zasady dla Cursor IDE
+- `docs/AI-COMMANDS.md` — Quick reference komend / agentów / MCP
 
 ### Dla Całego Zespołu
+- `DOCS.md` — Indeks całej dokumentacji
 - `/docs/CODEMAPS/` — Detailowana architektura techniczna (angielski)
+- `/docs/seo/` — Playbook i audyty SEO/GEO
 - README.md files w każdym app (`apps/api/README.md`, etc.)
 
 ---

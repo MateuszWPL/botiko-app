@@ -31,7 +31,7 @@
 ### 0.4 Context files
 - [x] `CLAUDE.md` — pełny kontekst dla Claude Code CLI (tech + biznes)
 - [x] `.cursorrules` — skrócony kontekst dla Cursor (produkt, zasady, brand)
-- [x] `Task.md` — roadmapa projektu (ten plik)
+- [x] `TASK.md` — roadmapa projektu (ten plik)
 - [x] Usunąć `.botiko-context` (był duplikatem `.cursorrules`) ✓ usunięty
 - [x] Usunąć pliki .docx/.pdf z repozytorium (przeniesione do docs/)
 
