@@ -16,6 +16,8 @@ Dodajesz / zmieniasz / usuwasz dokument? Zaktualizuj tę tabelę w tym samym com
 | **Instrukcje dla Claude / konwencje / git flow** | [`CLAUDE.md`](CLAUDE.md) | PL | zmiana konwencji, architektury, zasad pracy |
 | **Ta mapa dokumentacji** | [`DOCS.md`](DOCS.md) | PL | dodanie / przeniesienie / usunięcie dowolnego dokumentu |
 | **Roadmapa / zadania (fazy 0–2)** | [`TASK.md`](TASK.md) | PL | po każdym ukończonym / nowym tasku |
+| **Dziennik prac (co ZROBIONE, data + agent)** | [`WORKLOG.md`](WORKLOG.md) | PL | po każdym logicznym etapie pracy |
+| **Workflow agentów (kiedy którego agenta, definition of done)** | [`docs/AGENT-WORKFLOW.md`](docs/AGENT-WORKFLOW.md) | PL | zmiana procesu pracy / zestawu agentów |
 | **Pełny kontekst produktu (marka, marketing, oferta)** — do Claude.ai Projects | [`BOTIKO_CONTEXT.md`](BOTIKO_CONTEXT.md) | PL | zmiana pozycjonowania, oferty, marki |
 | **Architektura techniczna (3 apki, RAG, schema, integracje)** | [`docs/CODEMAPS/`](docs/CODEMAPS/INDEX.md) | ENG | zmiana architektury / modułów / schematu DB |
 | **Produkcyjne env + deploy (Railway/Vercel)** | [`docs/PRODUCTION_ENV.md`](docs/PRODUCTION_ENV.md) | PL | zmiana zmiennych środowiskowych / hostingu |
@@ -39,10 +41,12 @@ Root (minimalny):
   README.md            — wejście do repo
   CLAUDE.md            — instrukcje dla Claude + konwencje
   DOCS.md              — TEN plik (mapa dokumentacji)
-  TASK.md              — roadmapa
+  TASK.md              — roadmapa (co PLANUJEMY)
+  WORKLOG.md           — dziennik prac (co ZROBIONE)
   BOTIKO_CONTEXT.md    — pełny kontekst produktu (użycie zewnętrzne)
 
 docs/
+  AGENT-WORKFLOW.md    — proces pracy z subagentami
   AI-COMMANDS.md       — quick ref komend AI
   PRODUCTION_ENV.md    — env + deploy
   CODEMAPS/            — architektura (INDEX + backend/frontend/widget/database/integrations)

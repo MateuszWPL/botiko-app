@@ -261,6 +261,16 @@ git add apps/api/src/...    # jawnie, żeby nie commitować .env przez pomyłkę
 
 Merge możliwy tylko gdy wszystkie 4 przechodzą. Claude informuje o statusie CI.
 
+## Workflow agentów (armia subagentów)
+
+Claude orkiestruje zespół subagentów i dobiera ich do etapu pracy automatycznie. Pełny proces — kiedy którego agenta i „definition of done" — w [`docs/AGENT-WORKFLOW.md`](docs/AGENT-WORKFLOW.md).
+
+**7 ról:** architekt/plan (`architect`/`planner`) · builder (`build-error-resolver`) · security/RODO (`security-reviewer`) · logika biznesowa (`botiko-business`) · poprawność treści PL (`botiko-content`) · SEO/GEO (`claude-seo:*`) · dokumentacja (`doc-updater`). Agenci `botiko-business` i `botiko-content` są wersjonowane w repo (`.claude/agents/`).
+
+**Pipeline:** plan → build → review równoległy (security + content + business, zależnie od typu zmiany) → fix → docs → **wpis do [`WORKLOG.md`](WORKLOG.md)** → commit/PR.
+
+**Dziennik prac:** po każdym logicznym etapie Claude dopisuje wpis do `WORKLOG.md` (data, dzień, co zrobione, którzy agenci sprawdzili, status) — to backlog + historia w jednym miejscu. `TASK.md` = co PLANUJEMY, `WORKLOG.md` = co ZROBIONE.
+
 ## Brand Colors
 
 ```
