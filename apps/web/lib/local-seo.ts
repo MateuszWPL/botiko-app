@@ -372,3 +372,16 @@ export function getAllLocalParams(): { branza: string; miasto: string }[] {
 export function getCitiesForIndustry(industrySlug: string): City[] {
   return getIndustry(industrySlug) ? CITIES : [];
 }
+
+/**
+ * Botiko has a genuine local presence only in Białystok (founder location).
+ * The other-city landing pages stay reachable for direct/ad traffic, but are
+ * marked `noindex` and kept out of the sitemap — their copy is ~93% shared
+ * across cities, so asking Google to rank them invites near-duplicate/doorway
+ * penalties for cities where there is no real local presence.
+ */
+export const INDEXABLE_CITY_SLUGS = ['bialystok'] as const;
+
+export function isIndexableLocalCity(citySlug: string): boolean {
+  return (INDEXABLE_CITY_SLUGS as readonly string[]).includes(citySlug);
+}

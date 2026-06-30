@@ -28,6 +28,8 @@ export type PostFrontmatter = {
   image?: string;
   imageAlt?: string;
   featured?: boolean;
+  /** When true, the post is hidden from listings/sitemap regardless of date. */
+  draft?: boolean;
 };
 
 export type PostMeta = Omit<PostFrontmatter, 'image' | 'imageAlt'> & {
@@ -75,7 +77,7 @@ function _getAllPosts(): PostMeta[] {
   today.setHours(23, 59, 59, 999);
 
   return posts
-    .filter((p) => p.date && new Date(p.date) <= today)
+    .filter((p) => !p.draft && p.date && new Date(p.date) <= today)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 

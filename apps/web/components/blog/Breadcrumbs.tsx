@@ -12,25 +12,10 @@ export default function Breadcrumbs({
   items: BreadcrumbItem[];
   variant?: 'light' | 'dark';
 }) {
-  // JSON-LD BreadcrumbList structured data
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.label,
-      ...(item.href ? { item: `https://botiko.pl${item.href}` } : {}),
-    })),
-  };
-
+  // Pure UI — the BreadcrumbList JSON-LD is emitted by the page itself (via
+  // `breadcrumbListSchema()` in a <JsonLd> block) so we don't double-declare it.
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <nav aria-label="Breadcrumb">
+    <nav aria-label="Breadcrumb">
         <ol
           className={`flex flex-wrap items-center gap-1.5 text-sm ${
             variant === 'dark' ? 'text-white/70' : 'text-slate-500'
@@ -82,6 +67,5 @@ export default function Breadcrumbs({
           ))}
         </ol>
       </nav>
-    </>
   );
 }

@@ -30,6 +30,14 @@ export function GET(): Response {
 - [O nas](${SITE_URL}/o-nas): historia i podejście do produktu.
 - [Kontakt](${SITE_URL}/kontakt): formularz kontaktowy i e-mail.
 
+## Cennik, porównania i narzędzia
+- [Cennik](${SITE_URL}/cennik): jeden plan 99 zł/mies., 14 dni za darmo, co zawiera.
+- [Bot na WordPress](${SITE_URL}/integracje/wordpress): instalacja przez wtyczkę w 5 minut.
+- [Porównania](${SITE_URL}/porownanie): bot a inne rozwiązania (ręczne odpowiadanie, ChatGPT na stronie).
+- [Narzędzia](${SITE_URL}/narzedzia): darmowe kalkulatory dla firm usługowych.
+- [Kalkulator ROI bota](${SITE_URL}/narzedzia/kalkulator-roi-bota): czy 99 zł/mies. się zwróci.
+- [Kalkulator utraconych klientów](${SITE_URL}/narzedzia/kalkulator-utraconych-klientow): ile tracisz na nieodebranych pytaniach.
+
 ## Strony branżowe
 - [Bot dla salonu beauty](${SITE_URL}/dla/salon-beauty): manicure, rzęsy, brwi, kosmetologia.
 - [Bot dla gabinetu / SPA](${SITE_URL}/dla/gabinet-spa): masaże, zabiegi, aromaterapia.
