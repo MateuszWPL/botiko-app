@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import JsonLd from '@/components/seo/JsonLd';
 import CityLinks from '@/components/marketing/CityLinks';
-import { breadcrumbListSchema } from '@/lib/seo';
+import { breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Bot dla gabinetu SPA — odpowiada klientom 24/7 i zbiera leady',
@@ -36,6 +36,29 @@ const JSON_LD_SERVICE = {
     priceCurrency: 'PLN',
   },
 };
+
+const FAQS = [
+  {
+    q: 'Czy bot działa z moim systemem rezerwacji (Booksy, Calendly)?',
+    a: 'Bot nie łączy się bezpośrednio z systemem rezerwacji — zbiera dane kontaktowe klienta i odsyła go do Booksy, Calendly lub Twojego numeru telefonu. Ty decydujesz, gdzie przyjmujesz zapisy i masz pełną kontrolę nad kalendarzem.',
+  },
+  {
+    q: 'Co jeśli klient zapyta o coś, czego bot nie wie?',
+    a: 'Bot grzecznie informuje, że nie ma tej informacji i proponuje pozostawienie kontaktu. Nic nie wymyśla — jeśli nie ma danych w bazie wiedzy, nie odpowie na temat.',
+  },
+  {
+    q: 'Czy muszę mieć swoją stronę www?',
+    a: 'Nie. Widget możesz też wstawić na profil Linktree, Landing page Canva, czy inny serwis obsługujący własny HTML. Wystarczy jeden tag skryptu.',
+  },
+  {
+    q: 'Ile czasu zajmuje konfiguracja?',
+    a: 'Rejestracja i pierwsza wersja bota — około 15–20 minut. Wklejasz cennik, opisy zabiegów i FAQ. Bot działa od razu. Możesz uzupełniać bazę wiedzy stopniowo.',
+  },
+  {
+    q: 'Czy mogę zmienić wygląd widgetu pod moją markę?',
+    a: 'Tak. W ustawieniach wybierasz kolor główny, nazwę bota i avatar. Widget może być stonowany (biały, pastelowy) lub wyraźny — dopasowany do Twojego stylu.',
+  },
+];
 
 const PAIN_POINTS = [
   {
@@ -158,10 +181,13 @@ export default function SpaLandingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_SERVICE) }}
       />
       <JsonLd
-        data={breadcrumbListSchema([
-          { label: 'Botiko.pl', href: '/' },
-          { label: 'Gabinet / SPA' },
-        ])}
+        data={[
+          breadcrumbListSchema([
+            { label: 'Botiko.pl', href: '/' },
+            { label: 'Gabinet / SPA' },
+          ]),
+          faqPageSchema(FAQS),
+        ]}
       />
 
       {/* ─── Hero ─────────────────────────────────────────────────────────── */}
@@ -696,28 +722,7 @@ export default function SpaLandingPage() {
           </div>
 
           <div className="flex flex-col gap-4">
-            {[
-              {
-                q: 'Czy bot działa z moim systemem rezerwacji (Booksy, Calendly)?',
-                a: 'Bot nie łączy się bezpośrednio z systemem rezerwacji — zbiera dane kontaktowe klienta i odsyła go do Booksy, Calendly lub Twojego numeru telefonu. Ty decydujesz, gdzie przyjmujesz zapisy i masz pełną kontrolę nad kalendarzem.',
-              },
-              {
-                q: 'Co jeśli klient zapyta o coś, czego bot nie wie?',
-                a: 'Bot grzecznie informuje, że nie ma tej informacji i proponuje pozostawienie kontaktu. Nic nie wymyśla — jeśli nie ma danych w bazie wiedzy, nie odpowie na temat.',
-              },
-              {
-                q: 'Czy muszę mieć swoją stronę www?',
-                a: 'Nie. Widget możesz też wstawić na profil Linktree, Landing page Canva, czy inny serwis obsługujący własny HTML. Wystarczy jeden tag skryptu.',
-              },
-              {
-                q: 'Ile czasu zajmuje konfiguracja?',
-                a: 'Rejestracja i pierwsza wersja bota — około 15–20 minut. Wklejasz cennik, opisy zabiegów i FAQ. Bot działa od razu. Możesz uzupełniać bazę wiedzy stopniowo.',
-              },
-              {
-                q: 'Czy mogę zmienić wygląd widgetu pod moją markę?',
-                a: 'Tak. W ustawieniach wybierasz kolor główny, nazwę bota i avatar. Widget może być stonowany (biały, pastelowy) lub wyraźny — dopasowany do Twojego stylu.',
-              },
-            ].map((f) => (
+            {FAQS.map((f) => (
               <div
                 key={f.q}
                 className="rounded-2xl p-6 border border-slate-100 bg-white"
