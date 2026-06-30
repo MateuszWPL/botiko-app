@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Globe } from 'lucide-react';
+import { LinkedInIcon, GitHubIcon } from '@/components/icons/SocialIcons';
 import JsonLd from '@/components/seo/JsonLd';
 import { SITE_URL, breadcrumbListSchema } from '@/lib/seo';
+import { AUTHOR, personSchema } from '@/lib/author';
 
 const JSON_LD_ABOUT = {
   '@context': 'https://schema.org',
@@ -10,6 +13,7 @@ const JSON_LD_ABOUT = {
   url: `${SITE_URL}/o-nas`,
   inLanguage: 'pl-PL',
   mainEntity: { '@id': `${SITE_URL}/#organization` },
+  about: { '@id': `${SITE_URL}/#person` },
   description:
     'Botiko to jednoosobowy projekt z Białegostoku — bot obsługi klienta 24/7 dla polskich firm usługowych.',
 };
@@ -75,6 +79,7 @@ export default function AboutPage() {
       <JsonLd
         data={[
           JSON_LD_ABOUT,
+          personSchema(),
           breadcrumbListSchema([
             { label: 'Botiko.pl', href: '/' },
             { label: 'O nas' },
@@ -155,8 +160,68 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Values */}
+      {/* Founder */}
       <section className="py-20 bg-bg">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <p className="text-sm font-semibold text-brand uppercase tracking-widest mb-3">
+            Kto za tym stoi
+          </p>
+          <div className="bg-white rounded-2xl p-7 sm:p-9 shadow-sm border border-slate-100">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-5">
+              <div className="shrink-0 w-20 h-20 rounded-full bg-brand-soft text-brand flex items-center justify-center text-2xl font-bold">
+                {AUTHOR.initials}
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-2xl font-extrabold text-text">
+                  {AUTHOR.name}
+                </h2>
+                <p className="text-brand font-semibold mb-4">{AUTHOR.role}</p>
+                <p className="text-slate-600 leading-relaxed mb-4">
+                  23 lata, inżynier oprogramowania i student Politechniki
+                  Białostockiej. Od 3 lat w software developmencie — z 40+
+                  zbudowanymi stronami i aplikacjami na koncie. Botiko piszę i
+                  rozwijam samodzielnie: od kodu i modeli AI, po rozmowy
+                  z właścicielami salonów, gabinetów, restauracji i warsztatów.
+                  Dlatego produkt jest konkretny, a nie „magiczny” — i dlatego
+                  na Twoje pytanie odpowiadam osobiście, nie przez infolinię.
+                </p>
+                <div className="flex flex-wrap items-center gap-4">
+                  <a
+                    href={AUTHOR.sameAs[0]}
+                    target="_blank"
+                    rel="noopener noreferrer me"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand transition-colors"
+                  >
+                    <LinkedInIcon className="w-4 h-4" />
+                    LinkedIn
+                  </a>
+                  <a
+                    href={AUTHOR.sameAs[1]}
+                    target="_blank"
+                    rel="noopener noreferrer me"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand transition-colors"
+                  >
+                    <GitHubIcon className="w-4 h-4" />
+                    GitHub
+                  </a>
+                  <a
+                    href={AUTHOR.sameAs[2]}
+                    target="_blank"
+                    rel="noopener noreferrer me"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand transition-colors"
+                  >
+                    <Globe className="w-4 h-4" />
+                    mateuszworonowicz.pl
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Values */}
+      <section className="py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <p className="text-sm font-semibold text-brand uppercase tracking-widest mb-3">Zasady</p>
@@ -181,7 +246,7 @@ export default function AboutPage() {
       </section>
 
       {/* Contact CTA */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-bg">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-text mb-4">Masz pytanie? Napisz bezpośrednio</h2>
           <p className="text-slate-500 mb-8 leading-relaxed">
