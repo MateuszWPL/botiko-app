@@ -1,0 +1,148 @@
+.botiko-wrap {
+	max-width: 760px;
+}
+
+.botiko-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.botiko-logo {
+	font-size: 26px;
+	line-height: 1;
+}
+
+.botiko-card {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 20px 24px;
+	margin: 16px 0;
+	box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.04 );
+}
+
+.botiko-card h2 {
+	margin-top: 0;
+}
+
+/* Connection */
+.botiko-connection {
+	border-left: 4px solid #6366f1;
+}
+
+.botiko-connected-line {
+	font-size: 15px;
+}
+
+.botiko-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	margin-right: 6px;
+	font-size: 13px;
+	color: #fff;
+}
+
+.botiko-badge-ok {
+	background: #10b981;
+}
+
+.botiko-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 6px 0 12px;
+}
+
+.botiko-chip {
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	background: #f0f0f1;
+	color: #50575e;
+	text-decoration: none;
+	line-height: 1.6;
+}
+
+.botiko-chip-ok {
+	background: #e7f7ef;
+	color: #0a7a4c;
+}
+
+.botiko-chip-warn {
+	background: #fcf3e6;
+	color: #8a5a00;
+}
+
+.botiko-meta code {
+	font-size: 12px;
+}
+
+.botiko-actions {
+	display: flex;
+	gap: 8px;
+	margin-top: 12px;
+}
+
+.botiko-lead {
+	font-size: 14px;
+	max-width: 56ch;
+}
+
+.botiko-connect-row {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	flex-wrap: wrap;
+	margin: 10px 0;
+}
+
+.botiko-connect-row input {
+	flex: 1 1 320px;
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.botiko-connect-msg {
+	min-height: 20px;
+	margin: 4px 0;
+	font-size: 13px;
+}
+
+.botiko-connect-msg.is-error {
+	color: #b32d2e;
+}
+
+.botiko-connect-msg.is-ok {
+	color: #0a7a4c;
+}
+
+.botiko-hint,
+.botiko-version {
+	color: #646970;
+	font-size: 13px;
+}
+
+.botiko-manual {
+	margin-top: 16px;
+	padding-top: 12px;
+	border-top: 1px solid #f0f0f1;
+}
+
+.botiko-manual summary {
+	cursor: pointer;
+	color: #2271b1;
+}
+
+.botiko-pages {
+	margin-top: 10px;
+}
+
+.botiko-help ul {
+	list-style: disc;
+	margin-left: 18px;
+}
