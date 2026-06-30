@@ -2,8 +2,10 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
   Logger,
 } from '@nestjs/common';
+import { createHash, randomBytes } from 'node:crypto';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { getBrandTemplate } from '../../brand-templates';
@@ -310,6 +312,107 @@ export class BotService {
     return this.findById(tenantId, botId);
   }
 
+  /**
+   * Generate a short-lived, single-use pairing token for the WordPress plugin.
+   * Owner-authenticated (the controller enforces AuthGuard + TenantGuard).
+   * Only the SHA-256 hash is stored; the raw token is returned once.
+   */
+  async createPairingToken(
+    tenantId: string,
+    botId: string,
+  ): Promise<{ token: string; expiresAt: Date }> {
+    const bot = await this.prisma.bot.findFirst({
+      where: { id: botId, tenantId },
+      select: { id: true },
+    });
+    if (!bot) {
+      throw new ForbiddenException('Bot not found or access denied');
+    }
+
+    // Keep at most one active pairing token per bot.
+    await this.prisma.botPairingToken.deleteMany({ where: { botId } });
+
+    const token = `botiko_pair_${randomBytes(24).toString('hex')}`;
+    const expiresAt = new Date(Date.now() + PAIRING_TTL_MS);
+
+    await this.prisma.botPairingToken.create({
+      data: {
+        tokenHash: hashToken(token),
+        botId,
+        tenantId,
+        expiresAt,
+      },
+    });
+
+    this.logger.log(`Pairing token issued for bot: ${botId}`);
+    return { token, expiresAt };
+  }
+
+  /**
+   * Redeem a pairing token from the WordPress plugin: marks the token used
+   * (atomically, single-use) and authorizes the site's domain on the bot.
+   * Public endpoint, gated solely by possession of the unguessable token.
+   */
+  async redeemPairing(
+    token: string,
+    domain: string,
+  ): Promise<{ botId: string; botName: string }> {
+    const tokenHash = hashToken(token);
+
+    return this.prisma.$transaction(async (tx) => {
+      // Atomic single-use claim: only an unused, unexpired token flips to used.
+      const claimed = await tx.botPairingToken.updateMany({
+        where: { tokenHash, usedAt: null, expiresAt: { gt: new Date() } },
+        data: { usedAt: new Date() },
+      });
+
+      if (claimed.count !== 1) {
+        const existing = await tx.botPairingToken.findUnique({
+          where: { tokenHash },
+        });
+        if (!existing) {
+          throw new BadRequestException('Nieprawidłowy kod połączenia.');
+        }
+        if (existing.usedAt) {
+          throw new BadRequestException(
+            'Ten kod został już użyty. Wygeneruj nowy w panelu Botiko.',
+          );
+        }
+        throw new BadRequestException(
+          'Kod połączenia wygasł. Wygeneruj nowy w panelu Botiko.',
+        );
+      }
+
+      const tokenRow = await tx.botPairingToken.findUnique({
+        where: { tokenHash },
+        select: { botId: true },
+      });
+      const bot = await tx.bot.findUnique({
+        where: { id: tokenRow!.botId },
+        select: { id: true, name: true, allowedDomains: true },
+      });
+      if (!bot) {
+        throw new BadRequestException('Bot już nie istnieje.');
+      }
+
+      const next = addSiteDomain(bot.allowedDomains, domain);
+      if (next === null) {
+        throw new BadRequestException(
+          'Osiągnięto limit 5 domen. Usuń jedną w panelu Botiko, aby dodać tę stronę.',
+        );
+      }
+      if (next !== bot.allowedDomains) {
+        await tx.bot.update({
+          where: { id: bot.id },
+          data: { allowedDomains: next },
+        });
+      }
+
+      this.logger.log(`Bot ${bot.id} paired with domain (one-click).`);
+      return { botId: bot.id, botName: bot.name };
+    });
+  }
+
   private parseSchedule(raw: unknown): DaySchedule[] | null {
     if (!raw || !Array.isArray(raw)) return null;
     return raw as DaySchedule[];
@@ -373,4 +476,45 @@ function isOriginAllowed(
       return false;
     }
   });
+}
+
+/** Pairing tokens are valid for 15 minutes. */
+const PAIRING_TTL_MS = 15 * 60 * 1000;
+
+/** SHA-256 of a raw pairing token — only the hash is ever persisted. */
+function hashToken(token: string): string {
+  return createHash('sha256').update(token).digest('hex');
+}
+
+/**
+ * Add a paired site's domain to a bot's allow-list.
+ *
+ * Returns the original array unchanged when the host is already allowed
+ * (www-insensitive — idempotent re-pairing), a new array with the domain
+ * appended when there is room, or `null` when the 5-domain limit blocks it.
+ * Mirrors the create() convention of storing both `https://host` and the www
+ * variant. `originUrl` is a validated URL (Zod `.url()` upstream).
+ */
+function addSiteDomain(existing: string[], originUrl: string): string[] | null {
+  let host: string;
+  try {
+    host = new URL(originUrl).hostname.replace(/^www\./, '');
+  } catch {
+    return existing;
+  }
+
+  const already = existing.some((d) => {
+    try {
+      return new URL(d).hostname.replace(/^www\./, '') === host;
+    } catch {
+      return false;
+    }
+  });
+  if (already) return existing;
+
+  if (existing.length >= 5) return null;
+
+  const variants = [`https://${host}`, `https://www.${host}`];
+  const room = 5 - existing.length;
+  return [...existing, ...variants.slice(0, room)];
 }
