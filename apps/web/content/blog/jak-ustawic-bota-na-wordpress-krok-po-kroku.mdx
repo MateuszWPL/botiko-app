@@ -38,7 +38,30 @@ Pracujemy nad dedykowaną wtyczką Botiko w katalogu **WordPress.org** — insta
 
 Nie w odczuwalny sposób. Skrypt bota ładuje się asynchronicznie i nie blokuje renderowania strony, a sam widget jest lekki. Działa na każdym motywie (Astra, Divi, Elementor, OceanWP) i z każdym builderem, bo jest niezależny od warstwy prezentacji.
 
-Więcej w naszym [przewodniku Botiko dla WordPress](/blog/botiko-dla-wordpress-przewodnik-2026).
+Więcej szczegółów (WooCommerce, Elementor, Yoast, cache, RODO) znajdziesz w obszernym [przewodniku Botiko dla WordPress](/blog/botiko-dla-wordpress-przewodnik-2026) — ten artykuł jest skróconą instrukcją „od czego zacząć".
+
+## Który sposób wybrać
+
+<ComparisonTable
+  title="3 sposoby instalacji — porównanie"
+  headers={["Sposób", "Dla kogo", "Czas", "Ryzyko"]}
+  highlightColumn={0}
+  rows={[
+    ["1. WPCode (zalecany)", "Każdy, bez programisty", "~5 min", "Brak"],
+    ["2. Kod w motywie potomnym", "Zaawansowani", "10–20 min", "Błąd może wyłączyć stronę"],
+    ["3. Dedykowana wtyczka", "Wkrótce", "1 klik", "—"],
+  ]}
+/>
+
+## Bot się nie pokazuje? Szybki troubleshooting
+
+Jeśli po instalacji nie widzisz okienka czatu, sprawdź po kolei:
+
+1. **Patrzysz na stronę, nie na panel.** Bot celowo nie ładuje się w `/wp-admin` — otwórz stronę w trybie incognito.
+2. **Snippet/kod jest zapisany i aktywny** w WPCode.
+3. **Poprawny `data-bot-id`** — porównaj z tym z [dashboardu Botiko](https://botiko.pl/dashboard/embed).
+4. **Wyczyść cache** (WP Rocket, W3 Total Cache, cache hostingu) po dodaniu kodu.
+5. **Konflikt z optymalizacją JS** — jeśli wtyczka cache „odracza" lub łączy skrypty, dodaj `widget.botiko.pl` do wyjątków.
 
 <FAQ
   items={[
@@ -57,6 +80,14 @@ Więcej w naszym [przewodniku Botiko dla WordPress](/blog/botiko-dla-wordpress-p
     {
       q: "Czy Botiko działa na WooCommerce?",
       a: "Tak. Botiko to skrypt ładowany w sekcji Header, więc działa na stronie WordPress niezależnie od tego, czy korzystasz z WooCommerce, Elementora czy klasycznego motywu."
+    },
+    {
+      q: "Gdzie wkleić kod — w Header czy w Footer?",
+      a: "Obie lokalizacje działają. Skrypt ładuje się asynchronicznie, więc footer jest minimalnie lepszy dla wydajności, ale różnica jest niezauważalna. W WPCode możesz użyć pola Header albo ustawić snippet na Site Wide Footer — wybierz, co wygodniejsze."
+    },
+    {
+      q: "Czy instalacja na WordPress jest darmowa?",
+      a: "Sama instalacja i wtyczka WPCode są darmowe. Płacisz tylko abonament Botiko (99 zł/mies., 14 dni za darmo) za działającego bota — nie za montaż na stronie."
     }
   ]}
 />
