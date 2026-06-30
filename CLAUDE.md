@@ -35,10 +35,11 @@ docs/CODEMAPS/ → 6 plików architektonicznych (ENG): INDEX, backend, frontend,
 apps/api/src/brand-templates/ → szablony promptów per branża (beauty, health, food, auto + generyczny)
 ```
 
-**Dokumentacja pomocnicza w root:**
+**Dokumentacja — `DOCS.md` to mapa-źródło prawdy (funkcja → dokument).** Najważniejsze:
+- `DOCS.md` — indeks wszystkich dokumentów; przy dodaniu/przeniesieniu/usunięciu docsa zaktualizuj go w tym samym commicie
 - `TASK.md` — szczegółowy checklist faz (1A, 1B…) — tu szukaj deployment checklist (§1A.6)
-- `AI-COMMANDS.md` — quick reference komend Claude Code / MCP
-- `DOCUMENTATION_SUMMARY.md` — indeks wszystkich dokumentów
+- `docs/AI-COMMANDS.md` — quick reference komend Claude Code / MCP
+- `docs/seo/PLAYBOOK.md` — playbook SEO/GEO (on-page + off-page + backlog)
 - `README.md` — setup instructions + architecture overview
 
 ---
