@@ -329,20 +329,22 @@ export class BotService {
       throw new ForbiddenException('Bot not found or access denied');
     }
 
-    // Keep at most one active pairing token per bot.
-    await this.prisma.botPairingToken.deleteMany({ where: { botId } });
-
     const token = `botiko_pair_${randomBytes(24).toString('hex')}`;
     const expiresAt = new Date(Date.now() + PAIRING_TTL_MS);
 
-    await this.prisma.botPairingToken.create({
-      data: {
-        tokenHash: hashToken(token),
-        botId,
-        tenantId,
-        expiresAt,
-      },
-    });
+    // Keep at most one active pairing token per bot — delete + create atomically
+    // so two concurrent "generate" clicks can't leave two valid tokens.
+    await this.prisma.$transaction([
+      this.prisma.botPairingToken.deleteMany({ where: { botId } }),
+      this.prisma.botPairingToken.create({
+        data: {
+          tokenHash: hashToken(token),
+          botId,
+          tenantId,
+          expiresAt,
+        },
+      }),
+    ]);
 
     this.logger.log(`Pairing token issued for bot: ${botId}`);
     return { token, expiresAt };
@@ -502,6 +504,8 @@ function addSiteDomain(existing: string[], originUrl: string): string[] | null {
   } catch {
     return existing;
   }
+  // Defence in depth: a hostless URL (e.g. `https://`) must never be stored.
+  if (host === '') return existing;
 
   const already = existing.some((d) => {
     try {

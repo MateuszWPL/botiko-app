@@ -35,8 +35,13 @@ function buildPrisma() {
       updateMany: jest.fn().mockResolvedValue({ count: 1 }),
       findUnique: jest.fn().mockResolvedValue({ botId: 'bot-1' }),
     },
-    // Interactive transaction: run the callback with the same mock as `tx`.
-    $transaction: jest.fn((cb: (tx: unknown) => unknown) => cb(prisma)),
+    // Supports both forms: array (createPairingToken) and interactive callback
+    // (redeemPairing, which runs against the same mock as `tx`).
+    $transaction: jest.fn((arg: unknown) =>
+      Array.isArray(arg)
+        ? Promise.all(arg as unknown[])
+        : (arg as (tx: unknown) => unknown)(prisma),
+    ),
   };
   return prisma;
 }

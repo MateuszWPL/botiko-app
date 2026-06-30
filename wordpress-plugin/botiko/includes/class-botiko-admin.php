@@ -168,13 +168,8 @@ class Botiko_Admin {
 			<div class="botiko-connected" <?php echo $has_bot ? '' : 'style="display:none"'; ?>>
 				<p class="botiko-connected-line">
 					<span class="botiko-badge botiko-badge-ok">✓</span>
-					<?php
-					printf(
-						/* translators: %s: bot name */
-						esc_html__( 'Połączono: %s', 'botiko' ),
-						'<strong class="botiko-bot-name">' . esc_html( $bot_name ? $bot_name : __( 'Twój bot', 'botiko' ) ) . '</strong>'
-					);
-					?>
+					<?php esc_html_e( 'Połączono:', 'botiko' ); ?>
+					<strong class="botiko-bot-name"><?php echo esc_html( $bot_name ? $bot_name : __( 'Twój bot', 'botiko' ) ); ?></strong>
 				</p>
 				<p class="botiko-chips"><?php $this->render_status_chips( $status ); ?></p>
 				<p class="botiko-meta">
@@ -234,8 +229,7 @@ class Botiko_Admin {
 		if ( ! empty( $status['domain_allowed'] ) ) {
 			echo '<span class="botiko-chip botiko-chip-ok">' . esc_html__( '✓ Domena autoryzowana', 'botiko' ) . '</span>';
 		} else {
-			$url = esc_url( BOTIKO_DASHBOARD_URL . '/settings' );
-			echo '<a class="botiko-chip botiko-chip-warn" href="' . $url . '" target="_blank" rel="noopener noreferrer">'
+			echo '<a class="botiko-chip botiko-chip-warn" href="' . esc_url( BOTIKO_DASHBOARD_URL . '/settings' ) . '" target="_blank" rel="noopener noreferrer">'
 				. esc_html__( '⚠ Domena nieautoryzowana — dodaj w panelu', 'botiko' ) . '</a>';
 		}
 
