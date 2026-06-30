@@ -7,7 +7,7 @@ import { SITE_URL, breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 const URL = `${SITE_URL}/integracje/wordpress`;
 
 export const metadata: Metadata = {
-  title: 'Bot na WordPress — jak dodać Botiko w 5 minut',
+  title: 'Bot na WordPress — instalacja w 5 minut',
   description:
     'Jak zainstalować bota obsługi klienta na stronie WordPress: krok po kroku przez darmową wtyczkę WPCode, bez edycji motywu i bez programisty. Działa na ~93% polskich stron.',
   alternates: { canonical: URL },

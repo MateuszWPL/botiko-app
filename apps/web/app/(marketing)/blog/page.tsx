@@ -19,19 +19,14 @@ type SearchParams = {
   sortuj?: string;
 };
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}): Promise<Metadata> {
-  const page = Math.max(1, parseInt(searchParams.strona ?? '1', 10));
-  const canonical =
-    page > 1
-      ? `https://botiko.pl/blog?strona=${page}`
-      : 'https://botiko.pl/blog';
+export async function generateMetadata(): Promise<Metadata> {
+  // Listy paginowane (?strona=N) konsolidujemy do /blog — każdy wpis ma własny
+  // URL w sitemapie, więc canonical do strony bazowej nie sieroci treści,
+  // a usuwa duplikaty „alternatywna strona z canonical" w GSC.
+  const canonical = 'https://botiko.pl/blog';
 
   return {
-    title: 'Blog — Botiko.pl | AI dla polskich firm usługowych',
+    title: 'Blog — AI dla polskich firm usługowych',
     description:
       'Artykuły o automatyzacji obsługi klienta, chatbotach AI i rozwoju małych firm usługowych w Polsce. Poradniki, analizy, case studies.',
     alternates: { canonical },

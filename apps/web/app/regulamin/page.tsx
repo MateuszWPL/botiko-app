@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Regulamin — Botiko.pl',
+  title: 'Regulamin świadczenia usług',
   description: 'Regulamin świadczenia usług Botiko.pl — platforma AI chatbot dla firm usługowych.',
   alternates: { canonical: 'https://botiko.pl/regulamin' },
   robots: { index: true, follow: true },

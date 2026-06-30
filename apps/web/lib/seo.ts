@@ -12,6 +12,9 @@ export const SITE_NAME = 'Botiko.pl';
 export const CONTACT_EMAIL = 'kontakt@botiko.pl';
 export const MONTHLY_PRICE_PLN = '99';
 
+/** @id of the founder Person entity (defined in full by lib/author.ts on /o-nas). */
+export const FOUNDER_PERSON_ID = `${SITE_URL}/#person`;
+
 /** Absolute URL helper — accepts a leading-slash path or a full URL. */
 export function absoluteUrl(path: string): string {
   if (path.startsWith('http')) return path;
@@ -28,6 +31,7 @@ export function organizationSchema() {
     url: SITE_URL,
     logo: `${SITE_URL}/botiko-logo-full.svg`,
     email: CONTACT_EMAIL,
+    founder: { '@id': FOUNDER_PERSON_ID },
     foundingLocation: {
       '@type': 'Place',
       address: { '@type': 'PostalAddress', addressLocality: 'Białystok', addressCountry: 'PL' },

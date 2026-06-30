@@ -6,7 +6,7 @@ import Navbar from '@/components/marketing/Navbar';
 import Footer from '@/components/marketing/Footer';
 
 export const metadata: Metadata = {
-  title: 'Strona nie znaleziona (404) — Botiko.pl',
+  title: 'Strona nie znaleziona (404)',
   description: 'Botiko nie odnalazło tej strony, ale z łatwością znajduje odpowiedzi dla klientów.',
 };
 

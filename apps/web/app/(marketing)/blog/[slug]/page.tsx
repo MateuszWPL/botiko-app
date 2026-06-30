@@ -17,6 +17,10 @@ import { mdxComponents } from '@/components/blog/mdx/components';
 import Breadcrumbs from '@/components/blog/Breadcrumbs';
 import TableOfContents from '@/components/blog/TableOfContents';
 import PostCard from '@/components/blog/PostCard';
+import IndustryCta from '@/components/blog/IndustryCta';
+import AuthorBox from '@/components/blog/AuthorBox';
+import { AUTHOR } from '@/lib/author';
+import { FOUNDER_PERSON_ID } from '@/lib/seo';
 import { rehypeHeadingIds } from '@/components/blog/mdx/rehypeHeadingIds';
 
 export async function generateStaticParams() {
@@ -32,7 +36,8 @@ export async function generateMetadata({
   if (!post) return {};
 
   return {
-    title: `${post.title} — Blog Botiko.pl`,
+    // Szablon `%s | Botiko.pl` z layoutu dokłada brand — nie dublujemy go w tytule.
+    title: post.title,
     description: post.excerpt,
     alternates: { canonical: `https://botiko.pl/blog/${post.slug}` },
     openGraph: {
@@ -97,9 +102,12 @@ export default async function BlogPostPage({
     dateModified: post.updatedAt ?? post.date,
     inLanguage: 'pl-PL',
     author: {
-      '@type': 'Organization',
-      name: post.author,
-      url: 'https://botiko.pl',
+      '@type': 'Person',
+      '@id': FOUNDER_PERSON_ID,
+      name: AUTHOR.name,
+      url: AUTHOR.url,
+      jobTitle: AUTHOR.role,
+      sameAs: [...AUTHOR.sameAs],
     },
     publisher: {
       '@type': 'Organization',
@@ -293,6 +301,12 @@ export default async function BlogPostPage({
               </div>
             </aside>
           </div>
+
+          {/* Box „o autorze" — realne autorstwo (sygnał E-E-A-T) */}
+          <AuthorBox />
+
+          {/* Kontekstowy link do strony pieniężnej /dla/* (linkowanie wewnętrzne) */}
+          <IndustryCta categorySlug={post.categorySlug} />
 
           {/* Related posts */}
           {relatedPosts.length > 0 && (

@@ -6,7 +6,7 @@ import { ALL_FAQS, FAQ_GROUPS, HOME_FAQS } from '@/lib/faq';
 import { faqPageSchema, breadcrumbListSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'FAQ — najczęstsze pytania o Botiko',
+  title: 'FAQ — najczęstsze pytania o bocie obsługi klienta',
   description:
     'Odpowiedzi na najczęstsze pytania o Botiko: ile kosztuje bot, jak działa na WordPress, czy zastąpi recepcjonistkę, co z RODO i jak szybko go uruchomisz.',
   alternates: { canonical: 'https://botiko.pl/faq' },
