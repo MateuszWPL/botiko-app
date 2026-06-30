@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import JsonLd from '@/components/seo/JsonLd';
 import CityLinks from '@/components/marketing/CityLinks';
-import { breadcrumbListSchema } from '@/lib/seo';
+import { breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Bot dla warsztatu samochodowego — odpowiada klientom 24/7 i zbiera leady',
@@ -36,6 +36,29 @@ const JSON_LD_SERVICE = {
     priceCurrency: 'PLN',
   },
 };
+
+const FAQS = [
+  {
+    q: 'Czy bot działa z moim systemem kalendarza (Booksy, Google Calendar)?',
+    a: 'Bot nie integruje się bezpośrednio z kalendarzem — zbiera dane klienta i odsyła do Booksy lub Twojego linku rezerwacyjnego. Ty potwierdzasz termin i planujesz stanowisko. Masz pełną kontrolę nad harmonogramem.',
+  },
+  {
+    q: 'Czy bot może podawać ceny napraw?',
+    a: 'Tak, jeśli wpiszesz orientacyjne widełki do bazy wiedzy. Bot zawsze zaznacza, że dokładna wycena jest możliwa dopiero po obejrzeniu auta. To chroni Cię przed sytuacją, gdy klient trzyma Cię za słowo na podstawie rozmowy przez internet.',
+  },
+  {
+    q: 'Co gdy klient opisuje usterkę, której bot nie rozpoznaje?',
+    a: 'Bot zbiera opis objawów i kontakt, po czym odpisuje, że mechanik oddzwoni z oceną. Nic nie wymyśla — jeśli coś wykracza poza bazę wiedzy, grzecznie odsyła do rozmowy z człowiekiem.',
+  },
+  {
+    q: 'Czy bot obsłuży sezon wymiany opon kiedy telefon dzwoni non stop?',
+    a: 'To jeden z głównych przypadków użycia. Bot obsługuje dziesiątki zapytań jednocześnie, zbiera kontakty i preferencje (rozmiar opon, termin) — Ty oddzwaniasz z potwierdzeniem. Bez chaosu telefonicznego w październiku i kwietniu.',
+  },
+  {
+    q: 'Czy muszę mieć stronę www, żeby używać Botiko?',
+    a: 'Nie. Widget możesz wstawić na profil Linktree, stronę na Canva, wizytówkę Google lub każdą inną stronę obsługującą własny HTML. Wystarczy jeden tag skryptu — działa też z WordPress i Webflow.',
+  },
+];
 
 const PAIN_POINTS = [
   {
@@ -173,10 +196,13 @@ export default function MechanicLandingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_SERVICE) }}
       />
       <JsonLd
-        data={breadcrumbListSchema([
-          { label: 'Botiko.pl', href: '/' },
-          { label: 'Warsztat samochodowy' },
-        ])}
+        data={[
+          breadcrumbListSchema([
+            { label: 'Botiko.pl', href: '/' },
+            { label: 'Warsztat samochodowy' },
+          ]),
+          faqPageSchema(FAQS),
+        ]}
       />
 
       {/* ─── Hero ─────────────────────────────────────────────────────────── */}
@@ -684,28 +710,7 @@ export default function MechanicLandingPage() {
           </div>
 
           <div className="flex flex-col gap-4">
-            {[
-              {
-                q: 'Czy bot działa z moim systemem kalendarza (Booksy, Google Calendar)?',
-                a: 'Bot nie integruje się bezpośrednio z kalendarzem — zbiera dane klienta i odsyła do Booksy lub Twojego linku rezerwacyjnego. Ty potwierdzasz termin i planujesz stanowisko. Masz pełną kontrolę nad harmonogramem.',
-              },
-              {
-                q: 'Czy bot może podawać ceny napraw?',
-                a: 'Tak, jeśli wpiszesz orientacyjne widełki do bazy wiedzy. Bot zawsze zaznacza, że dokładna wycena jest możliwa dopiero po obejrzeniu auta. To chroni Cię przed sytuacją, gdy klient trzyma Cię za słowo na podstawie rozmowy przez internet.',
-              },
-              {
-                q: 'Co gdy klient opisuje usterkę, której bot nie rozpoznaje?',
-                a: 'Bot zbiera opis objawów i kontakt, po czym odpisuje, że mechanik oddzwoni z oceną. Nic nie wymyśla — jeśli coś wykracza poza bazę wiedzy, grzecznie odsyła do rozmowy z człowiekiem.',
-              },
-              {
-                q: 'Czy bot obsłuży sezon wymiany opon kiedy telefon dzwoni non stop?',
-                a: 'To jeden z głównych przypadków użycia. Bot obsługuje dziesiątki zapytań jednocześnie, zbiera kontakty i preferencje (rozmiar opon, termin) — Ty oddzwaniasz z potwierdzeniem. Bez chaosu telefonicznego w październiku i kwietniu.',
-              },
-              {
-                q: 'Czy muszę mieć stronę www, żeby używać Botiko?',
-                a: 'Nie. Widget możesz wstawić na profil Linktree, stronę na Canva, wizytówkę Google lub każdą inną stronę obsługującą własny HTML. Wystarczy jeden tag skryptu — działa też z WordPress i Webflow.',
-              },
-            ].map((f) => (
+            {FAQS.map((f) => (
               <div key={f.q} className="rounded-2xl p-6 border border-slate-100 bg-white">
                 <p className="font-semibold text-text mb-2">{f.q}</p>
                 <p className="text-slate-500 text-sm leading-relaxed">{f.a}</p>

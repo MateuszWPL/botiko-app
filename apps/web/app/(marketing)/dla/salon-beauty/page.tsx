@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { Moon, PhoneOff, RefreshCw } from 'lucide-react';
 import JsonLd from '@/components/seo/JsonLd';
 import CityLinks from '@/components/marketing/CityLinks';
-import { breadcrumbListSchema } from '@/lib/seo';
+import IndustryFaqSection from '@/components/marketing/IndustryFaqSection';
+import { breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Bot dla salonu beauty — odpowiada klientkom 24/7 i zbiera leady',
@@ -37,6 +38,33 @@ const JSON_LD_SERVICE = {
     priceCurrency: 'PLN',
   },
 };
+
+const FAQS = [
+  {
+    q: 'Czy bot umawia wizyty i zapisuje na manicure?',
+    a: 'Bot nie rezerwuje terminu samodzielnie — odpowiada na pytania o usługi i ceny, zbiera imię i numer telefonu, a następnie odsyła klientkę do Twojego systemu rezerwacji (np. Booksy) albo zostawia Ci lead do oddzwonienia. Kalendarzem zarządzasz Ty, bot przejmuje pytania i pierwszy kontakt — także o 22:00.',
+  },
+  {
+    q: 'Skąd bot wie, ile kosztuje manicure hybrydowy czy stylizacja rzęs?',
+    a: 'Z Twojej bazy wiedzy. Podczas konfiguracji wpisujesz cennik, godziny i opisy usług — bot odpowiada wyłącznie na tej podstawie i nie zgaduje. Jeśli czegoś nie wie, prosi o kontakt zamiast wymyślać.',
+  },
+  {
+    q: 'Czy bot działa na WordPress?',
+    a: 'Tak. Botiko jest natywnie zoptymalizowane pod WordPress — instalacja przez wtyczkę zajmuje ok. 5 minut. Działa też na każdej innej stronie WWW: wklejasz jeden fragment kodu i bot startuje.',
+  },
+  {
+    q: 'Czy bot integruje się z Booksy?',
+    a: 'Bot nie integruje się z Booksy bezpośrednio, ale kieruje do niego klientki jednym jasnym linkiem. Odpowiada na pytania przed rezerwacją (cennik, czas zabiegu, dostępność), a do zapisu odsyła do Twojego Booksy lub innego systemu.',
+  },
+  {
+    q: 'Ile kosztuje bot dla salonu i czy jest umowa?',
+    a: '99 zł miesięcznie, jeden plan, bez ukrytych dodatków i bez umowy długoterminowej. Zaczynasz od 14 dni za darmo, bez podawania karty. Rezygnujesz, kiedy chcesz.',
+  },
+  {
+    q: 'Czy muszę umieć programować, żeby uruchomić bota?',
+    a: 'Nie. Konfiguracja zajmuje ~15 minut: wybierasz branżę, wpisujesz cennik i FAQ, wklejasz kod (lub instalujesz wtyczkę na WordPress). Bez programisty i bez agencji.',
+  },
+];
 
 const PAIN_ICON_CLASS = 'w-5 h-5 text-pink-500';
 
@@ -96,10 +124,13 @@ export default function BeautyLandingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_SERVICE) }}
       />
       <JsonLd
-        data={breadcrumbListSchema([
-          { label: 'Botiko.pl', href: '/' },
-          { label: 'Salon beauty' },
-        ])}
+        data={[
+          breadcrumbListSchema([
+            { label: 'Botiko.pl', href: '/' },
+            { label: 'Salon beauty' },
+          ]),
+          faqPageSchema(FAQS),
+        ]}
       />
 
       {/* Hero */}
@@ -392,6 +423,9 @@ export default function BeautyLandingPage() {
           </p>
         </div>
       </section>
+
+      {/* FAQ */}
+      <IndustryFaqSection items={FAQS} heading="Najczęstsze pytania — bot dla salonu beauty" />
 
       {/* CTA */}
       <section className="py-20 bg-bg">

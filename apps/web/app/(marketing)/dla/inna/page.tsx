@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import JsonLd from '@/components/seo/JsonLd';
-import { breadcrumbListSchema } from '@/lib/seo';
+import { breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Bot dla Twojej firmy usługowej — odpowiada klientom 24/7 i zbiera leady',
@@ -34,6 +34,29 @@ const JSON_LD_SERVICE = {
     priceCurrency: 'PLN',
   },
 };
+
+const FAQS = [
+  {
+    q: 'Moja branża nie jest na liście — czy Botiko zadziała?',
+    a: 'Tak. Bot nie jest ograniczony do konkretnych branż — działa na bazie wiedzy, którą mu podasz. Jeśli możesz opisać swoją ofertę słowami (usługi, ceny, FAQ), bot będzie odpowiadał na te pytania. Sprawdza się wszędzie tam, gdzie klienci pytają o to samo wiele razy.',
+  },
+  {
+    q: 'Czy muszę mieć stronę www?',
+    a: 'Nie. Widget możesz wstawić na profil Linktree, stronę Canva, wizytówkę w Google lub każdy serwis obsługujący własny HTML. Wystarczy jeden tag skryptu. Działa też z WordPress, Wix, Squarespace i Webflow.',
+  },
+  {
+    q: 'Czy bot działa z Booksy, Calendly albo moim własnym systemem?',
+    a: 'Bot nie integruje się bezpośrednio — zbiera dane kontaktowe klienta i odsyła do Booksy, Calendly lub Twojego linku rezerwacyjnego. Ty masz pełną kontrolę nad kalendarzem i potwierdzasz spotkania samodzielnie.',
+  },
+  {
+    q: 'Ile czasu zajmuje konfiguracja?',
+    a: 'Rejestracja i podstawowa konfiguracja — ok. 15–20 minut. Wklejasz opis usług, ceny i FAQ. Bot działa od razu. Możesz uzupełniać bazę wiedzy w dowolnym momencie, gdy coś się zmienia.',
+  },
+  {
+    q: 'Co gdy klient zapyta o coś, o czym bot nie wie?',
+    a: 'Bot grzecznie informuje, że nie ma tej odpowiedzi i proponuje pozostawienie kontaktu do oddzwonienia. Nic nie wymyśla — odpowiada tylko na podstawie Twojej bazy wiedzy.',
+  },
+];
 
 const USE_CASES = [
   {
@@ -219,10 +242,13 @@ export default function InnaLandingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_SERVICE) }}
       />
       <JsonLd
-        data={breadcrumbListSchema([
-          { label: 'Botiko.pl', href: '/' },
-          { label: 'Inna firma usługowa' },
-        ])}
+        data={[
+          breadcrumbListSchema([
+            { label: 'Botiko.pl', href: '/' },
+            { label: 'Inna firma usługowa' },
+          ]),
+          faqPageSchema(FAQS),
+        ]}
       />
 
       {/* ─── Hero ─────────────────────────────────────────────────────────── */}
@@ -595,28 +621,7 @@ export default function InnaLandingPage() {
           </div>
 
           <div className="flex flex-col gap-4">
-            {[
-              {
-                q: 'Moja branża nie jest na liście — czy Botiko zadziała?',
-                a: 'Tak. Bot nie jest ograniczony do konkretnych branż — działa na bazie wiedzy, którą mu podasz. Jeśli możesz opisać swoją ofertę słowami (usługi, ceny, FAQ), bot będzie odpowiadał na te pytania. Sprawdza się wszędzie tam, gdzie klienci pytają o to samo wiele razy.',
-              },
-              {
-                q: 'Czy muszę mieć stronę www?',
-                a: 'Nie. Widget możesz wstawić na profil Linktree, stronę Canva, wizytówkę w Google lub każdy serwis obsługujący własny HTML. Wystarczy jeden tag skryptu. Działa też z WordPress, Wix, Squarespace i Webflow.',
-              },
-              {
-                q: 'Czy bot działa z Booksy, Calendly albo moim własnym systemem?',
-                a: 'Bot nie integruje się bezpośrednio — zbiera dane kontaktowe klienta i odsyła do Booksy, Calendly lub Twojego linku rezerwacyjnego. Ty masz pełną kontrolę nad kalendarzem i potwierdzasz spotkania samodzielnie.',
-              },
-              {
-                q: 'Ile czasu zajmuje konfiguracja?',
-                a: 'Rejestracja i podstawowa konfiguracja — ok. 15–20 minut. Wklejasz opis usług, ceny i FAQ. Bot działa od razu. Możesz uzupełniać bazę wiedzy w dowolnym momencie, gdy coś się zmienia.',
-              },
-              {
-                q: 'Co gdy klient zapyta o coś, o czym bot nie wie?',
-                a: 'Bot grzecznie informuje, że nie ma tej odpowiedzi i proponuje pozostawienie kontaktu do oddzwonienia. Nic nie wymyśla — odpowiada tylko na podstawie Twojej bazy wiedzy.',
-              },
-            ].map((f) => (
+            {FAQS.map((f) => (
               <div key={f.q} className="rounded-2xl p-6 border border-slate-100 bg-white">
                 <p className="font-semibold text-text mb-2">{f.q}</p>
                 <p className="text-slate-500 text-sm leading-relaxed">{f.a}</p>

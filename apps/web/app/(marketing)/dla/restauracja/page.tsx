@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import JsonLd from '@/components/seo/JsonLd';
 import CityLinks from '@/components/marketing/CityLinks';
-import { breadcrumbListSchema } from '@/lib/seo';
+import { breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Bot dla restauracji — odpowiada gościom 24/7 i zbiera leady',
@@ -36,6 +36,29 @@ const JSON_LD_SERVICE = {
     priceCurrency: 'PLN',
   },
 };
+
+const FAQS = [
+  {
+    q: 'Czy bot działa z moim systemem rezerwacji (Restaumatic, OpenTable)?',
+    a: 'Bot nie integruje się bezpośrednio z systemami rezerwacji — zbiera dane kontaktowe i preferencje gościa, a następnie odsyła do Booksy, Restaumatic lub Twojego numeru telefonu. Ty potwierdzasz i zarządzasz stolikami.',
+  },
+  {
+    q: 'Czy bot może odpowiadać na pytania o alergeny i diety specjalne?',
+    a: 'Tak, jeśli wpiszesz tę informację do bazy wiedzy. Bot może opisać składniki i alergeny konkretnych dań, dostępność opcji wegańskich czy bezglutenowych — na podstawie dokładnie tego, co mu podasz.',
+  },
+  {
+    q: 'Menu się często zmienia — czy muszę za każdym razem aktualizować bota?',
+    a: 'Menu sezonowe i specjały dnia możesz aktualizować kiedy chcesz w panelu. Dla menu, które zmienia się codziennie, bot najlepiej sprawdza się jako informacja o ofercie stałej, natomiast dla dnia polecasz konkretną stronę lub fanpage.',
+  },
+  {
+    q: 'Czy bot obsłuży zapytanie o catering i duże eventy?',
+    a: 'Tak. Bot zbiera wstępne informacje (liczba osób, data, rodzaj eventu, budżet) i kontakt. Rano masz brief do rozmowy zamiast pisania od nowa. To szczególnie przydatne przy zapytaniach spływających wieczorami i w weekendy.',
+  },
+  {
+    q: 'Czy widget pasuje do wyglądu mojej strony restauracji?',
+    a: 'W ustawieniach wybierasz kolor główny, nazwę bota i avatar. Widget może być ciepły (burgundy, czerń, złoto) albo jasny — dopasowany do Twojego brandu. Minimalistyczny w rogu strony, widoczny, gdy potrzebny.',
+  },
+];
 
 const PAIN_POINTS = [
   {
@@ -177,10 +200,13 @@ export default function RestaurantLandingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_SERVICE) }}
       />
       <JsonLd
-        data={breadcrumbListSchema([
-          { label: 'Botiko.pl', href: '/' },
-          { label: 'Restauracja' },
-        ])}
+        data={[
+          breadcrumbListSchema([
+            { label: 'Botiko.pl', href: '/' },
+            { label: 'Restauracja' },
+          ]),
+          faqPageSchema(FAQS),
+        ]}
       />
 
       {/* ─── Hero ─────────────────────────────────────────────────────────── */}
@@ -689,28 +715,7 @@ export default function RestaurantLandingPage() {
           </div>
 
           <div className="flex flex-col gap-4">
-            {[
-              {
-                q: 'Czy bot działa z moim systemem rezerwacji (Restaumatic, OpenTable)?',
-                a: 'Bot nie integruje się bezpośrednio z systemami rezerwacji — zbiera dane kontaktowe i preferencje gościa, a następnie odsyła do Booksy, Restaumatic lub Twojego numeru telefonu. Ty potwierdzasz i zarządzasz stolikami.',
-              },
-              {
-                q: 'Czy bot może odpowiadać na pytania o alergeny i diety specjalne?',
-                a: 'Tak, jeśli wpiszesz tę informację do bazy wiedzy. Bot może opisać składniki i alergeny konkretnych dań, dostępność opcji wegańskich czy bezglutenowych — na podstawie dokładnie tego, co mu podasz.',
-              },
-              {
-                q: 'Menu się często zmienia — czy muszę za każdym razem aktualizować bota?',
-                a: 'Menu sezonowe i specjały dnia możesz aktualizować kiedy chcesz w panelu. Dla menu, które zmienia się codziennie, bot najlepiej sprawdza się jako informacja o ofercie stałej, natomiast dla dnia polecasz konkretną stronę lub fanpage.',
-              },
-              {
-                q: 'Czy bot obsłuży zapytanie o catering i duże eventy?',
-                a: 'Tak. Bot zbiera wstępne informacje (liczba osób, data, rodzaj eventu, budżet) i kontakt. Rano masz brief do rozmowy zamiast pisania od nowa. To szczególnie przydatne przy zapytaniach spływających wieczorami i w weekendy.',
-              },
-              {
-                q: 'Czy widget pasuje do wyglądu mojej strony restauracji?',
-                a: 'W ustawieniach wybierasz kolor główny, nazwę bota i avatar. Widget może być ciepły (burgundy, czerń, złoto) albo jasny — dopasowany do Twojego brandu. Minimalistyczny w rogu strony, widoczny, gdy potrzebny.',
-              },
-            ].map((f) => (
+            {FAQS.map((f) => (
               <div key={f.q} className="rounded-2xl p-6 border border-slate-100 bg-white">
                 <p className="font-semibold text-text mb-2">{f.q}</p>
                 <p className="text-slate-500 text-sm leading-relaxed">{f.a}</p>
