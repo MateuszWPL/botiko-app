@@ -4,7 +4,7 @@ import {
   getIndexableCategories,
   getCategoryLastModified,
 } from '@/lib/blog';
-import { getAllLocalParams } from '@/lib/local-seo';
+import { getAllLocalParams, isIndexableLocalCity } from '@/lib/local-seo';
 import { getAllComparisonSlugs } from '@/lib/comparisons';
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -50,12 +50,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Programmatic branża × miasto landing pages (quality-gated in lib/local-seo).
-  const localPages = getAllLocalParams().map(({ branza, miasto }) => ({
-    url: `${baseUrl}/dla/${branza}/${miasto}`,
-    lastModified: now,
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
-  }));
+  // Only indexable cities (Białystok) are submitted — other cities are noindex
+  // to avoid near-duplicate/doorway pages where there is no real local presence.
+  const localPages = getAllLocalParams()
+    .filter(({ miasto }) => isIndexableLocalCity(miasto))
+    .map(({ branza, miasto }) => ({
+      url: `${baseUrl}/dla/${branza}/${miasto}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }));
 
   const comparisons = getAllComparisonSlugs().map(({ slug }) => ({
     url: `${baseUrl}/porownanie/${slug}`,
