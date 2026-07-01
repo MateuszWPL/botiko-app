@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       Botiko — bot obsługi klienta 24/7
+ * Plugin Name:       Botiko — AI Customer Service Bot
  * Plugin URI:        https://botiko.pl/integracje/wordpress
- * Description:        Dodaje do Twojej strony bota Botiko, który odpowiada klientom 24/7 i zbiera kontakty. Połącz stronę jednym kodem — bez edycji motywu.
- * Version:           1.0.2
+ * Description:        Add the Botiko customer-service bot to your site. It answers visitors 24/7 and captures leads. Connect your site with a single code, no theme editing.
+ * Version:           1.0.3
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Botiko
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'BOTIKO_VERSION', '1.0.2' );
+define( 'BOTIKO_VERSION', '1.0.3' );
 define( 'BOTIKO_PLUGIN_FILE', __FILE__ );
 define( 'BOTIKO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BOTIKO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

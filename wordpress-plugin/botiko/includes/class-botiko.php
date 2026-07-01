@@ -89,17 +89,7 @@ final class Botiko {
 			$this->notices = new Botiko_Notices( $this->settings );
 		}
 
-		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_action( 'plugins_loaded', array( $this, 'init_modules' ) );
-	}
-
-	/**
-	 * Load translations.
-	 *
-	 * @return void
-	 */
-	public function load_textdomain() {
-		load_plugin_textdomain( 'botiko', false, dirname( BOTIKO_PLUGIN_BASENAME ) . '/languages' );
 	}
 
 	/**
