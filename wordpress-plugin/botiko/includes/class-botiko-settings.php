@@ -137,7 +137,7 @@ class Botiko_Settings {
 				add_settings_error(
 					self::OPTION_KEY,
 					'botiko_bad_bot_id',
-					esc_html__( 'Nieprawidłowy Bot ID. Skopiuj go dokładnie z panelu Botiko.', 'botiko' )
+					esc_html__( 'Nieprawidłowy Bot ID. Skopiuj go dokładnie z panelu Botiko.', 'botiko-ai-customer-service-bot' )
 				);
 			}
 		}

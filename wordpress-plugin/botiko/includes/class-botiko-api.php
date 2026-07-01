@@ -62,7 +62,7 @@ class Botiko_Api {
 	public function get_status( $force = false ) {
 		$bot_id = $this->settings->get( 'bot_id', '' );
 		if ( '' === $bot_id ) {
-			return new WP_Error( 'no_bot_id', __( 'Brak Bot ID.', 'botiko' ) );
+			return new WP_Error( 'no_bot_id', __( 'Brak Bot ID.', 'botiko-ai-customer-service-bot' ) );
 		}
 
 		if ( ! $force ) {
@@ -90,15 +90,15 @@ class Botiko_Api {
 
 		$code = (int) wp_remote_retrieve_response_code( $response );
 		if ( 404 === $code ) {
-			return new WP_Error( 'not_found', __( 'Nie znaleziono bota o tym ID.', 'botiko' ) );
+			return new WP_Error( 'not_found', __( 'Nie znaleziono bota o tym ID.', 'botiko-ai-customer-service-bot' ) );
 		}
 		if ( $code < 200 || $code >= 300 ) {
-			return new WP_Error( 'http_error', __( 'Botiko API zwróciło błąd. Spróbuj ponownie za chwilę.', 'botiko' ) );
+			return new WP_Error( 'http_error', __( 'Botiko API zwróciło błąd. Spróbuj ponownie za chwilę.', 'botiko-ai-customer-service-bot' ) );
 		}
 
 		$body = json_decode( wp_remote_retrieve_body( $response ), true );
 		if ( ! is_array( $body ) || empty( $body['id'] ) ) {
-			return new WP_Error( 'bad_response', __( 'Nieoczekiwana odpowiedź z Botiko API.', 'botiko' ) );
+			return new WP_Error( 'bad_response', __( 'Nieoczekiwana odpowiedź z Botiko API.', 'botiko-ai-customer-service-bot' ) );
 		}
 
 		$data = array(
@@ -164,12 +164,12 @@ class Botiko_Api {
 		if ( $code < 200 || $code >= 300 ) {
 			$message = is_array( $body ) && ! empty( $body['message'] )
 				? (string) $body['message']
-				: __( 'Nie udało się połączyć. Sprawdź kod i spróbuj ponownie.', 'botiko' );
+				: __( 'Nie udało się połączyć. Sprawdź kod i spróbuj ponownie.', 'botiko-ai-customer-service-bot' );
 			return new WP_Error( 'pair_failed', $message );
 		}
 
 		if ( ! is_array( $body ) || empty( $body['botId'] ) ) {
-			return new WP_Error( 'bad_response', __( 'Nieoczekiwana odpowiedź z Botiko API.', 'botiko' ) );
+			return new WP_Error( 'bad_response', __( 'Nieoczekiwana odpowiedź z Botiko API.', 'botiko-ai-customer-service-bot' ) );
 		}
 
 		return array(

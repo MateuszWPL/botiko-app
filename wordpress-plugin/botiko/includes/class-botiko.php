@@ -114,7 +114,7 @@ final class Botiko {
 	 * @return void
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cloning is not allowed.', 'botiko' ), '1.0.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cloning is not allowed.', 'botiko-ai-customer-service-bot' ), '1.0.0' );
 	}
 
 	/**
@@ -123,6 +123,6 @@ final class Botiko {
 	 * @return void
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Unserializing is not allowed.', 'botiko' ), '1.0.0' );
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Unserializing is not allowed.', 'botiko-ai-customer-service-bot' ), '1.0.0' );
 	}
 }

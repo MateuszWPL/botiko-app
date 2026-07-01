@@ -60,7 +60,7 @@ class Botiko_Pairing {
 	 */
 	private function authorize() {
 		if ( ! current_user_can( self::CAPABILITY ) ) {
-			wp_send_json_error( array( 'message' => __( 'Brak uprawnień.', 'botiko' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Brak uprawnień.', 'botiko-ai-customer-service-bot' ) ), 403 );
 		}
 		check_ajax_referer( self::NONCE_ACTION, 'nonce' );
 	}
@@ -90,7 +90,7 @@ class Botiko_Pairing {
 		$raw_code = isset( $_POST['code'] ) ? sanitize_text_field( wp_unslash( $_POST['code'] ) ) : '';
 		$code     = self::sanitize_pairing_code( $raw_code );
 		if ( '' === $code ) {
-			wp_send_json_error( array( 'message' => __( 'Nieprawidłowy kod połączenia.', 'botiko' ) ), 400 );
+			wp_send_json_error( array( 'message' => __( 'Nieprawidłowy kod połączenia.', 'botiko-ai-customer-service-bot' ) ), 400 );
 		}
 
 		$result = $this->api->pair( $code );
@@ -112,7 +112,7 @@ class Botiko_Pairing {
 
 		wp_send_json_success(
 			array(
-				'message' => __( 'Połączono! Bot jest już na Twojej stronie.', 'botiko' ),
+				'message' => __( 'Połączono! Bot jest już na Twojej stronie.', 'botiko-ai-customer-service-bot' ),
 				'status'  => is_wp_error( $status ) ? null : $status,
 			)
 		);
@@ -135,7 +135,7 @@ class Botiko_Pairing {
 		);
 		$this->api->flush_status();
 
-		wp_send_json_success( array( 'message' => __( 'Rozłączono.', 'botiko' ) ) );
+		wp_send_json_success( array( 'message' => __( 'Rozłączono.', 'botiko-ai-customer-service-bot' ) ) );
 	}
 
 	/**
