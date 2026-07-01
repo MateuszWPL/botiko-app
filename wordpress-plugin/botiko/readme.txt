@@ -4,7 +4,7 @@ Tags: chatbot, customer service, live chat, lead generation, ai
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,9 @@ This plugin connects to the Botiko service so the customer-service bot can work:
 Use of the Botiko service is subject to its terms (https://botiko.pl/regulamin) and privacy policy (https://botiko.pl/prywatnosc).
 
 == Changelog ==
+
+= 1.0.5 =
+* Text domain aligned with the plugin slug (WordPress.org requirement).
 
 = 1.0.4 =
 * Corrected the in-plugin "rate this plugin" link to the directory slug.

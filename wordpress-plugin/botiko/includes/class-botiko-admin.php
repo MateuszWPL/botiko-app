@@ -96,8 +96,8 @@ class Botiko_Admin {
 	 */
 	public function add_menu() {
 		add_menu_page(
-			__( 'Botiko', 'botiko' ),
-			__( 'Botiko', 'botiko' ),
+			__( 'Botiko', 'botiko-ai-customer-service-bot' ),
+			__( 'Botiko', 'botiko-ai-customer-service-bot' ),
 			'manage_options',
 			self::PAGE_SLUG,
 			array( $this, 'render_page' ),
@@ -152,10 +152,10 @@ class Botiko_Admin {
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( Botiko_Pairing::NONCE_ACTION ),
 				'i18n'    => array(
-					'connecting'   => __( 'Łączenie…', 'botiko' ),
-					'checking'     => __( 'Sprawdzanie…', 'botiko' ),
-					'genericError' => __( 'Coś poszło nie tak. Spróbuj ponownie.', 'botiko' ),
-					'confirmReset' => __( 'Rozłączyć stronę z botem?', 'botiko' ),
+					'connecting'   => __( 'Łączenie…', 'botiko-ai-customer-service-bot' ),
+					'checking'     => __( 'Sprawdzanie…', 'botiko-ai-customer-service-bot' ),
+					'genericError' => __( 'Coś poszło nie tak. Spróbuj ponownie.', 'botiko-ai-customer-service-bot' ),
+					'confirmReset' => __( 'Rozłączyć stronę z botem?', 'botiko-ai-customer-service-bot' ),
 				),
 			)
 		);
@@ -174,7 +174,7 @@ class Botiko_Admin {
 		$status = $this->settings->has_bot_id() ? $this->api->get_status() : null;
 		?>
 		<div class="wrap botiko-wrap">
-			<h1 class="screen-reader-text"><?php esc_html_e( 'Botiko', 'botiko' ); ?></h1>
+			<h1 class="screen-reader-text"><?php esc_html_e( 'Botiko', 'botiko-ai-customer-service-bot' ); ?></h1>
 
 			<?php $this->render_header(); ?>
 
@@ -188,11 +188,11 @@ class Botiko_Admin {
 						<?php settings_fields( 'botiko_settings_group' ); ?>
 						<div class="botiko-card__head">
 							<?php self::the_icon( 'sliders' ); ?>
-							<h2><?php esc_html_e( 'Wyświetlanie', 'botiko' ); ?></h2>
+							<h2><?php esc_html_e( 'Wyświetlanie', 'botiko-ai-customer-service-bot' ); ?></h2>
 						</div>
 						<?php $this->render_display_settings(); ?>
 						<div class="botiko-submit">
-							<?php submit_button( __( 'Zapisz ustawienia', 'botiko' ), 'primary', 'submit', false ); ?>
+							<?php submit_button( __( 'Zapisz ustawienia', 'botiko-ai-customer-service-bot' ), 'primary', 'submit', false ); ?>
 						</div>
 					</form>
 				</div>
@@ -225,7 +225,7 @@ class Botiko_Admin {
 				/>
 				<div>
 					<p class="botiko-header__tagline">
-						<?php esc_html_e( 'Bot obsługi klienta 24/7 — odpowiada na pytania i zbiera kontakty, gdy Ciebie nie ma.', 'botiko' ); ?>
+						<?php esc_html_e( 'Bot obsługi klienta 24/7 — odpowiada na pytania i zbiera kontakty, gdy Ciebie nie ma.', 'botiko-ai-customer-service-bot' ); ?>
 					</p>
 				</div>
 			</div>
@@ -234,14 +234,14 @@ class Botiko_Admin {
 					<?php
 					printf(
 						/* translators: %s: plugin version. */
-						esc_html__( 'wersja %s', 'botiko' ),
+						esc_html__( 'wersja %s', 'botiko-ai-customer-service-bot' ),
 						esc_html( BOTIKO_VERSION )
 					);
 					?>
 				</span>
 				<a class="botiko-pill" href="<?php echo esc_url( BOTIKO_DASHBOARD_URL . '/overview' ); ?>" target="_blank" rel="noopener noreferrer">
 					<?php self::the_icon( 'external' ); ?>
-					<?php esc_html_e( 'Panel Botiko', 'botiko' ); ?>
+					<?php esc_html_e( 'Panel Botiko', 'botiko-ai-customer-service-bot' ); ?>
 				</a>
 			</div>
 		</div>
@@ -263,64 +263,64 @@ class Botiko_Admin {
 		<div class="botiko-card botiko-connection" data-connected="<?php echo $has_bot ? '1' : '0'; ?>">
 			<div class="botiko-card__head">
 				<?php self::the_icon( 'plug' ); ?>
-				<h2><?php esc_html_e( 'Połączenie', 'botiko' ); ?></h2>
+				<h2><?php esc_html_e( 'Połączenie', 'botiko-ai-customer-service-bot' ); ?></h2>
 			</div>
 
 			<div class="botiko-connected" <?php echo $has_bot ? '' : 'style="display:none"'; ?>>
 				<p class="botiko-connected-line">
 					<span class="botiko-avatar"><?php self::the_icon( 'check' ); ?></span>
 					<span>
-						<?php esc_html_e( 'Połączono z botem', 'botiko' ); ?><br />
-						<strong class="botiko-bot-name"><?php echo esc_html( $bot_name ? $bot_name : __( 'Twój bot', 'botiko' ) ); ?></strong>
+						<?php esc_html_e( 'Połączono z botem', 'botiko-ai-customer-service-bot' ); ?><br />
+						<strong class="botiko-bot-name"><?php echo esc_html( $bot_name ? $bot_name : __( 'Twój bot', 'botiko-ai-customer-service-bot' ) ); ?></strong>
 					</span>
 				</p>
 				<p class="botiko-chips"><?php $this->render_status_chips( $status ); ?></p>
 				<p class="botiko-meta">
-					<?php esc_html_e( 'Bot ID:', 'botiko' ); ?>
+					<?php esc_html_e( 'Bot ID:', 'botiko-ai-customer-service-bot' ); ?>
 					<code><?php echo esc_html( $this->mask_id( $bot_id ) ); ?></code>
 				</p>
 				<p class="botiko-actions">
 					<button type="button" class="button" id="botiko-refresh">
 						<?php self::the_icon( 'refresh' ); ?>
-						<?php esc_html_e( 'Sprawdź status', 'botiko' ); ?>
+						<?php esc_html_e( 'Sprawdź status', 'botiko-ai-customer-service-bot' ); ?>
 					</button>
 					<button type="button" class="button button-link-delete" id="botiko-disconnect">
 						<?php self::the_icon( 'unplug' ); ?>
-						<?php esc_html_e( 'Rozłącz', 'botiko' ); ?>
+						<?php esc_html_e( 'Rozłącz', 'botiko-ai-customer-service-bot' ); ?>
 					</button>
 				</p>
 				<?php if ( ! $connected ) : ?>
 					<div class="botiko-callout">
 						<?php self::the_icon( 'alert' ); ?>
-						<span><?php esc_html_e( 'Bot ID wpisany ręcznie. Pamiętaj, aby dodać domenę tej strony w panelu Botiko → Ustawienia → Domeny — inaczej czat się pokaże, ale nie odpowie.', 'botiko' ); ?></span>
+						<span><?php esc_html_e( 'Bot ID wpisany ręcznie. Pamiętaj, aby dodać domenę tej strony w panelu Botiko → Ustawienia → Domeny — inaczej czat się pokaże, ale nie odpowie.', 'botiko-ai-customer-service-bot' ); ?></span>
 					</div>
 				<?php endif; ?>
 			</div>
 
 			<div class="botiko-disconnected" <?php echo $has_bot ? 'style="display:none"' : ''; ?>>
 				<p class="botiko-lead">
-					<?php esc_html_e( 'Jeden kod połączy Twoją stronę z botem i autoryzuje tę domenę — bez edycji motywu. Wygeneruj go w panelu Botiko → Instalacja → WordPress.', 'botiko' ); ?>
+					<?php esc_html_e( 'Jeden kod połączy Twoją stronę z botem i autoryzuje tę domenę — bez edycji motywu. Wygeneruj go w panelu Botiko → Instalacja → WordPress.', 'botiko-ai-customer-service-bot' ); ?>
 				</p>
 				<div class="botiko-connect-row">
-					<input type="text" id="botiko-code" class="regular-text" autocomplete="off" spellcheck="false" placeholder="botiko_pair_…" aria-label="<?php esc_attr_e( 'Kod połączenia', 'botiko' ); ?>" />
+					<input type="text" id="botiko-code" class="regular-text" autocomplete="off" spellcheck="false" placeholder="botiko_pair_…" aria-label="<?php esc_attr_e( 'Kod połączenia', 'botiko-ai-customer-service-bot' ); ?>" />
 					<button type="button" class="button button-primary button-hero" id="botiko-connect">
 						<?php self::the_icon( 'plug' ); ?>
-						<?php esc_html_e( 'Połącz stronę', 'botiko' ); ?>
+						<?php esc_html_e( 'Połącz stronę', 'botiko-ai-customer-service-bot' ); ?>
 					</button>
 				</div>
 				<p class="botiko-connect-msg" role="status" aria-live="polite"></p>
 				<p>
 					<a class="botiko-link" href="<?php echo esc_url( BOTIKO_DASHBOARD_URL . '/embed' ); ?>" target="_blank" rel="noopener noreferrer">
-						<?php esc_html_e( 'Gdzie znajdę kod połączenia?', 'botiko' ); ?>
+						<?php esc_html_e( 'Gdzie znajdę kod połączenia?', 'botiko-ai-customer-service-bot' ); ?>
 						<?php self::the_icon( 'external' ); ?>
 					</a>
 				</p>
 
 				<details class="botiko-manual">
-					<summary><?php esc_html_e( 'Mam już Bot ID — wpiszę ręcznie', 'botiko' ); ?></summary>
-					<p class="botiko-hint"><?php esc_html_e( 'Wklej Bot ID poniżej i zapisz. Domenę dodasz osobno w panelu Botiko.', 'botiko' ); ?></p>
+					<summary><?php esc_html_e( 'Mam już Bot ID — wpiszę ręcznie', 'botiko-ai-customer-service-bot' ); ?></summary>
+					<p class="botiko-hint"><?php esc_html_e( 'Wklej Bot ID poniżej i zapisz. Domenę dodasz osobno w panelu Botiko.', 'botiko-ai-customer-service-bot' ); ?></p>
 					<p>
-						<input type="text" name="<?php echo esc_attr( Botiko_Settings::OPTION_KEY ); ?>[bot_id]" form="botiko-settings-form" class="regular-text" autocomplete="off" spellcheck="false" placeholder="<?php esc_attr_e( 'np. clx1a2b3c4d5e6f7g8h9i0', 'botiko' ); ?>" />
+						<input type="text" name="<?php echo esc_attr( Botiko_Settings::OPTION_KEY ); ?>[bot_id]" form="botiko-settings-form" class="regular-text" autocomplete="off" spellcheck="false" placeholder="<?php esc_attr_e( 'np. clx1a2b3c4d5e6f7g8h9i0', 'botiko-ai-customer-service-bot' ); ?>" />
 					</p>
 				</details>
 			</div>
@@ -338,28 +338,28 @@ class Botiko_Admin {
 		if ( is_wp_error( $status ) || ! is_array( $status ) ) {
 			echo '<span class="botiko-chip botiko-chip-warn">';
 			self::the_icon( 'alert' );
-			echo esc_html__( 'Status niedostępny', 'botiko' ) . '</span>';
+			echo esc_html__( 'Status niedostępny', 'botiko-ai-customer-service-bot' ) . '</span>';
 			return;
 		}
 
 		if ( ! empty( $status['domain_allowed'] ) ) {
 			echo '<span class="botiko-chip botiko-chip-ok">';
 			self::the_icon( 'shield-check' );
-			echo esc_html__( 'Domena autoryzowana', 'botiko' ) . '</span>';
+			echo esc_html__( 'Domena autoryzowana', 'botiko-ai-customer-service-bot' ) . '</span>';
 		} else {
 			echo '<a class="botiko-chip botiko-chip-warn" href="' . esc_url( BOTIKO_DASHBOARD_URL . '/settings' ) . '" target="_blank" rel="noopener noreferrer">';
 			self::the_icon( 'alert' );
-			echo esc_html__( 'Dodaj domenę w panelu', 'botiko' ) . '</a>';
+			echo esc_html__( 'Dodaj domenę w panelu', 'botiko-ai-customer-service-bot' ) . '</a>';
 		}
 
 		if ( ! empty( $status['online'] ) ) {
 			echo '<span class="botiko-chip botiko-chip-ok">';
 			self::the_icon( 'dot' );
-			echo esc_html__( 'Online', 'botiko' ) . '</span>';
+			echo esc_html__( 'Online', 'botiko-ai-customer-service-bot' ) . '</span>';
 		} else {
 			echo '<span class="botiko-chip botiko-chip-off">';
 			self::the_icon( 'dot-outline' );
-			echo esc_html__( 'Offline', 'botiko' ) . '</span>';
+			echo esc_html__( 'Offline', 'botiko-ai-customer-service-bot' ) . '</span>';
 		}
 	}
 
@@ -377,23 +377,23 @@ class Botiko_Admin {
 		$show_pages = in_array( $mode, array( 'include', 'exclude' ), true );
 		?>
 		<div class="botiko-field">
-			<p class="botiko-field__label"><?php esc_html_e( 'Bot na stronie', 'botiko' ); ?></p>
+			<p class="botiko-field__label"><?php esc_html_e( 'Bot na stronie', 'botiko-ai-customer-service-bot' ); ?></p>
 			<label class="botiko-check">
 				<input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[enabled]" value="1" <?php checked( $enabled ); ?> />
-				<span><?php esc_html_e( 'Pokazuj bota na froncie strony', 'botiko' ); ?></span>
+				<span><?php esc_html_e( 'Pokazuj bota na froncie strony', 'botiko-ai-customer-service-bot' ); ?></span>
 			</label>
 		</div>
 
 		<div class="botiko-field">
-			<p class="botiko-field__label"><?php esc_html_e( 'Gdzie pokazywać', 'botiko' ); ?></p>
+			<p class="botiko-field__label"><?php esc_html_e( 'Gdzie pokazywać', 'botiko-ai-customer-service-bot' ); ?></p>
 			<fieldset class="botiko-radios" id="botiko-display-mode">
-				<label><input type="radio" name="<?php echo esc_attr( $opt ); ?>[display_mode]" value="all" <?php checked( $mode, 'all' ); ?> /> <span><?php esc_html_e( 'Na wszystkich stronach', 'botiko' ); ?></span></label>
-				<label><input type="radio" name="<?php echo esc_attr( $opt ); ?>[display_mode]" value="exclude" <?php checked( $mode, 'exclude' ); ?> /> <span><?php esc_html_e( 'Wszędzie oprócz wybranych', 'botiko' ); ?></span></label>
-				<label><input type="radio" name="<?php echo esc_attr( $opt ); ?>[display_mode]" value="include" <?php checked( $mode, 'include' ); ?> /> <span><?php esc_html_e( 'Tylko na wybranych', 'botiko' ); ?></span></label>
+				<label><input type="radio" name="<?php echo esc_attr( $opt ); ?>[display_mode]" value="all" <?php checked( $mode, 'all' ); ?> /> <span><?php esc_html_e( 'Na wszystkich stronach', 'botiko-ai-customer-service-bot' ); ?></span></label>
+				<label><input type="radio" name="<?php echo esc_attr( $opt ); ?>[display_mode]" value="exclude" <?php checked( $mode, 'exclude' ); ?> /> <span><?php esc_html_e( 'Wszędzie oprócz wybranych', 'botiko-ai-customer-service-bot' ); ?></span></label>
+				<label><input type="radio" name="<?php echo esc_attr( $opt ); ?>[display_mode]" value="include" <?php checked( $mode, 'include' ); ?> /> <span><?php esc_html_e( 'Tylko na wybranych', 'botiko-ai-customer-service-bot' ); ?></span></label>
 			</fieldset>
 
 			<div class="botiko-pages" id="botiko-pages" <?php echo $show_pages ? '' : 'hidden'; ?>>
-				<label for="botiko-page-ids"><?php esc_html_e( 'Wybrane strony', 'botiko' ); ?></label>
+				<label for="botiko-page-ids"><?php esc_html_e( 'Wybrane strony', 'botiko-ai-customer-service-bot' ); ?></label>
 				<select id="botiko-page-ids" name="<?php echo esc_attr( $opt ); ?>[page_ids][]" multiple size="7">
 					<?php
 					$pages = get_pages( array( 'sort_column' => 'menu_order,post_title' ) );
@@ -409,15 +409,15 @@ class Botiko_Admin {
 					}
 					?>
 				</select>
-				<span class="description"><?php esc_html_e( 'Przytrzymaj Ctrl (Windows) lub Cmd (Mac), aby zaznaczyć kilka stron.', 'botiko' ); ?></span>
+				<span class="description"><?php esc_html_e( 'Przytrzymaj Ctrl (Windows) lub Cmd (Mac), aby zaznaczyć kilka stron.', 'botiko-ai-customer-service-bot' ); ?></span>
 			</div>
 		</div>
 
 		<div class="botiko-field">
-			<p class="botiko-field__label"><?php esc_html_e( 'Tryb testowy', 'botiko' ); ?></p>
+			<p class="botiko-field__label"><?php esc_html_e( 'Tryb testowy', 'botiko-ai-customer-service-bot' ); ?></p>
 			<label class="botiko-check">
 				<input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[admin_test_mode]" value="1" <?php checked( $test_mode ); ?> />
-				<span><?php esc_html_e( 'Pokaż bota tylko zalogowanym administratorom (zanim udostępnisz go klientom).', 'botiko' ); ?></span>
+				<span><?php esc_html_e( 'Pokaż bota tylko zalogowanym administratorom (zanim udostępnisz go klientom).', 'botiko-ai-customer-service-bot' ); ?></span>
 			</label>
 		</div>
 		<?php
@@ -434,10 +434,10 @@ class Botiko_Admin {
 			<div class="botiko-note">
 				<span class="botiko-note__ico"><?php self::the_icon( 'palette' ); ?></span>
 				<div>
-					<strong><?php esc_html_e( 'Wygląd bota zmienisz w panelu', 'botiko' ); ?></strong>
-					<p><?php esc_html_e( 'Kolor, godziny pracy i sugerowane pytania są wspólne dla wszystkich stron i ustawiasz je w panelu Botiko.', 'botiko' ); ?></p>
+					<strong><?php esc_html_e( 'Wygląd bota zmienisz w panelu', 'botiko-ai-customer-service-bot' ); ?></strong>
+					<p><?php esc_html_e( 'Kolor, godziny pracy i sugerowane pytania są wspólne dla wszystkich stron i ustawiasz je w panelu Botiko.', 'botiko-ai-customer-service-bot' ); ?></p>
 					<a class="botiko-link" href="<?php echo esc_url( BOTIKO_DASHBOARD_URL . '/settings' ); ?>" target="_blank" rel="noopener noreferrer">
-						<?php esc_html_e( 'Otwórz ustawienia bota', 'botiko' ); ?>
+						<?php esc_html_e( 'Otwórz ustawienia bota', 'botiko-ai-customer-service-bot' ); ?>
 						<?php self::the_icon( 'external' ); ?>
 					</a>
 				</div>
@@ -455,20 +455,20 @@ class Botiko_Admin {
 		$links = array(
 			array(
 				'icon'  => 'book',
-				'title' => __( 'Dokumentacja', 'botiko' ),
-				'sub'   => __( 'Instalacja i najczęstsze pytania', 'botiko' ),
+				'title' => __( 'Dokumentacja', 'botiko-ai-customer-service-bot' ),
+				'sub'   => __( 'Instalacja i najczęstsze pytania', 'botiko-ai-customer-service-bot' ),
 				'url'   => 'https://botiko.pl/integracje/wordpress',
 			),
 			array(
 				'icon'  => 'grid',
-				'title' => __( 'Panel Botiko', 'botiko' ),
-				'sub'   => __( 'Leady, rozmowy, baza wiedzy', 'botiko' ),
+				'title' => __( 'Panel Botiko', 'botiko-ai-customer-service-bot' ),
+				'sub'   => __( 'Leady, rozmowy, baza wiedzy', 'botiko-ai-customer-service-bot' ),
 				'url'   => BOTIKO_DASHBOARD_URL . '/overview',
 			),
 			array(
 				'icon'  => 'lifebuoy',
-				'title' => __( 'Pomoc i kontakt', 'botiko' ),
-				'sub'   => __( 'Napisz do nas — pomożemy', 'botiko' ),
+				'title' => __( 'Pomoc i kontakt', 'botiko-ai-customer-service-bot' ),
+				'sub'   => __( 'Napisz do nas — pomożemy', 'botiko-ai-customer-service-bot' ),
 				'url'   => 'mailto:kontakt@botiko.pl',
 			),
 		);
@@ -476,7 +476,7 @@ class Botiko_Admin {
 		<div class="botiko-card botiko-resources">
 			<div class="botiko-card__head">
 				<?php self::the_icon( 'compass' ); ?>
-				<h2><?php esc_html_e( 'Przydatne linki', 'botiko' ); ?></h2>
+				<h2><?php esc_html_e( 'Przydatne linki', 'botiko-ai-customer-service-bot' ); ?></h2>
 			</div>
 			<div class="botiko-resources__list">
 				<?php
@@ -510,11 +510,11 @@ class Botiko_Admin {
 					<?php self::the_icon( 'star' ); ?>
 				<?php endfor; ?>
 			</span>
-			<h2><?php esc_html_e( 'Podoba Ci się Botiko?', 'botiko' ); ?></h2>
-			<p><?php esc_html_e( 'Twoja opinia pomaga innym mikrofirmom i motywuje nas do rozwoju wtyczki. Zajmie minutę.', 'botiko' ); ?></p>
+			<h2><?php esc_html_e( 'Podoba Ci się Botiko?', 'botiko-ai-customer-service-bot' ); ?></h2>
+			<p><?php esc_html_e( 'Twoja opinia pomaga innym mikrofirmom i motywuje nas do rozwoju wtyczki. Zajmie minutę.', 'botiko-ai-customer-service-bot' ); ?></p>
 			<a class="button button-primary" href="<?php echo esc_url( self::review_url() ); ?>" target="_blank" rel="noopener noreferrer">
 				<?php self::the_icon( 'star' ); ?>
-				<?php esc_html_e( 'Oceń wtyczkę', 'botiko' ); ?>
+				<?php esc_html_e( 'Oceń wtyczkę', 'botiko-ai-customer-service-bot' ); ?>
 			</a>
 		</div>
 		<?php
@@ -531,12 +531,12 @@ class Botiko_Admin {
 			<?php
 			printf(
 				/* translators: %s: plugin version. */
-				esc_html__( 'Botiko %s', 'botiko' ),
+				esc_html__( 'Botiko %s', 'botiko-ai-customer-service-bot' ),
 				esc_html( BOTIKO_VERSION )
 			);
 			?>
 			·
-			<a href="https://botiko.pl" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'botiko.pl', 'botiko' ); ?></a>
+			<a href="https://botiko.pl" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'botiko.pl', 'botiko-ai-customer-service-bot' ); ?></a>
 		</p>
 		<?php
 	}
