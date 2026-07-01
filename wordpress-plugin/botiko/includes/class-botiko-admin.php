@@ -86,7 +86,7 @@ class Botiko_Admin {
 		 *
 		 * @param string $url Reviews URL.
 		 */
-		return (string) apply_filters( 'botiko_review_url', 'https://wordpress.org/support/plugin/botiko/reviews/#new-post' );
+		return (string) apply_filters( 'botiko_review_url', 'https://wordpress.org/support/plugin/botiko-ai-customer-service-bot/reviews/#new-post' );
 	}
 
 	/**
