@@ -202,7 +202,7 @@ export default function Pricing() {
               <div className="flex flex-col gap-7 mb-8">
                 <div>
                   <div className="flex justify-between items-center mb-3">
-                    <label className="text-sm font-semibold text-text">
+                    <label htmlFor="roi-clients" className="text-sm font-semibold text-text">
                       Nowi klienci przez bota / miesiąc
                     </label>
                     <span className="text-lg font-extrabold text-brand tabular-nums w-8 text-right">
@@ -210,12 +210,14 @@ export default function Pricing() {
                     </span>
                   </div>
                   <input
+                    id="roi-clients"
                     type="range"
                     min={1}
                     max={20}
                     value={displayClients}
                     onChange={(e) => handleClientsChange(Number(e.target.value))}
                     className="w-full cursor-pointer accent-brand h-2 rounded-full"
+                    aria-label="Nowi klienci przez bota miesięcznie"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
                     <span>1 klient</span><span>20 klientów</span>
@@ -224,7 +226,7 @@ export default function Pricing() {
 
                 <div>
                   <div className="flex justify-between items-center mb-3">
-                    <label className="text-sm font-semibold text-text">
+                    <label htmlFor="roi-avg" className="text-sm font-semibold text-text">
                       Średnia wartość wizyty / zamówienia
                     </label>
                     <span className="text-lg font-extrabold text-brand tabular-nums w-16 text-right">
@@ -232,12 +234,14 @@ export default function Pricing() {
                     </span>
                   </div>
                   <input
+                    id="roi-avg"
                     type="range"
                     min={50}
                     max={500}
                     value={displayAvg}
                     onChange={(e) => handleAvgChange(Number(e.target.value))}
                     className="w-full cursor-pointer accent-brand h-2 rounded-full"
+                    aria-label="Średnia wartość wizyty lub zamówienia w złotych"
                   />
                   <div className="flex justify-between text-xs text-slate-400 mt-1">
                     <span>50 zł</span><span>500 zł</span>

@@ -25,6 +25,14 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-01 (środa)
 
+### PageSpeed: LCP hero + labelki suwaków (a11y/agentic) — Claude — branch fix/pagespeed-lcp-a11y
+- Co zrobione:
+  - **LCP** (mobile 5,4 s → element LCP malował się ~3,4 s po FCP): `<h1>` hero miał `animate-fade-in-up` (opacity 0→1), a animowanie opacity elementu LCP opóźnia Largest Contentful Paint. Nowy keyframe `heroRise` (tylko `transform: translateY`, bez opacity) + klasa `animate-hero-rise` z guardem `prefers-reduced-motion`. Wszystkie elementy above-the-fold hero (badge, h1, opis, CTA, mockup) malują się teraz od razu przy pełnej widoczności — entrance zachowany, ale bez kosztu LCP.
+  - **Dostępność 89 + Przeglądanie agentowe 2/3** („Form elements must have labels"): dwa suwaki `range` w `Pricing.tsx` (kalkulator ROI) nie miały powiązanych labeli. Dodane `htmlFor`/`id` do widocznych `<label>` + `aria-label`. Pozostałe suwaki (`ROICalculator`, `LostClientsCalculator`) już miały `aria-label`.
+- Pliki/obszar: `apps/web/components/marketing/Hero.tsx`, `apps/web/components/marketing/Pricing.tsx`, `apps/web/app/globals.css`
+- Review: type-check czysty (jedyny błąd pre-existujący: brak `@vercel/speed-insights` w lokalnym env). Weryfikacja wyniku PSI po deployu.
+- Status: 🔄 wdrożone w kodzie — do potwierdzenia re-runem PageSpeed Insights po merge
+
 ### Porządki repo + spójność oferty — Claude — PR #82, #83
 - Co zrobione:
   - **Spójność cen** (audyt subagentem): `docs/CODEMAPS/*` miały nieaktualne 149 PLN (10 miejsc, m.in. „Stripe charges") → 99 zł. Kod billingu był OK. Naprawiony over-promise rezerwacji w `blog/chatbot-recepcja.mdx` (live sloty, „integracja z systemem rezerwacji", tabela, FAQ) — bot odsyła do Booksy/Calendly. Usunięte martwe PRO/PREMIUM w `BillingClient.tsx` (MVP = jeden plan).

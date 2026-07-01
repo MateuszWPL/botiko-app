@@ -502,7 +502,7 @@ export default function Hero() {
           {/* Left — copy */}
           <div className="min-w-0">
             <div
-              className="animate-fade-in-up inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
+              className="animate-hero-rise inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6"
               style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.2)', color: '#a5b4fc' }}
             >
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
@@ -510,7 +510,7 @@ export default function Hero() {
             </div>
 
             <h1
-              className="animate-fade-in-up text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.08] tracking-tight mb-6 w-full"
+              className="animate-hero-rise text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.08] tracking-tight mb-6 w-full"
               style={{ animationDelay: '0.1s' }}
             >
               Klienci piszą o 22:00.
@@ -526,7 +526,7 @@ export default function Hero() {
             </h1>
 
             <p
-              className="animate-fade-in-up text-lg text-indigo-200 leading-relaxed mb-8 max-w-lg"
+              className="animate-hero-rise text-lg text-indigo-200 leading-relaxed mb-8 max-w-lg"
               style={{ animationDelay: '0.2s' }}
             >
               Gotowy bot dla każdej firmy usługowej — odpowiada na pytania klientów,
@@ -535,7 +535,7 @@ export default function Hero() {
             </p>
 
             <div
-              className="animate-fade-in-up flex flex-col sm:flex-row gap-3 mb-10 items-stretch sm:items-center"
+              className="animate-hero-rise flex flex-col sm:flex-row gap-3 mb-10 items-stretch sm:items-center"
               style={{ animationDelay: '0.3s' }}
             >
               <Link
@@ -560,14 +560,14 @@ export default function Hero() {
               </a>
             </div>
 
-            <p className="animate-fade-in-up text-sm text-indigo-300" style={{ animationDelay: '0.35s' }}>
+            <p className="animate-hero-rise text-sm text-indigo-300" style={{ animationDelay: '0.35s' }}>
               Karta kredytowa niewymagana · Konfiguracja w 15 minut · Cancel kiedy chcesz
             </p>
           </div>
 
           {/* Right — animated chat mockup */}
           <div
-            className="animate-fade-in-up flex flex-col justify-center items-center lg:items-start"
+            className="animate-hero-rise flex flex-col justify-center items-center lg:items-start"
             style={{ animationDelay: '0.2s' }}
           >
             <ChatMockup />
