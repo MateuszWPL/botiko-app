@@ -45,15 +45,29 @@
 			return;
 		}
 		if ( busy ) {
-			btn.dataset.label = btn.textContent;
+			// Preserve the inline SVG + label so we can restore it verbatim.
+			btn.dataset.markup = btn.innerHTML;
 			btn.textContent = busyLabel;
 			btn.disabled = true;
 		} else {
-			if ( btn.dataset.label ) {
-				btn.textContent = btn.dataset.label;
+			if ( btn.dataset.markup ) {
+				btn.innerHTML = btn.dataset.markup;
 			}
 			btn.disabled = false;
 		}
+	}
+
+	// Progressive disclosure: show the page picker only for include/exclude.
+	var modeGroup = $( 'botiko-display-mode' );
+	var pagesBox = $( 'botiko-pages' );
+	if ( modeGroup && pagesBox ) {
+		modeGroup.addEventListener( 'change', function ( e ) {
+			if ( ! e.target || 'radio' !== e.target.type ) {
+				return;
+			}
+			var needsPages = 'include' === e.target.value || 'exclude' === e.target.value;
+			pagesBox.hidden = ! needsPages;
+		} );
 	}
 
 	// Connect.

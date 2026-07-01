@@ -29,7 +29,7 @@ Konto Botiko jest wymagane. Wygląd bota, godziny pracy i sugerowane pytania kon
 == Installation ==
 
 1. Zainstaluj i aktywuj wtyczkę (Wtyczki → Dodaj nową → wyszukaj „Botiko", albo wyślij ZIP).
-2. Wejdź w Ustawienia → Botiko.
+2. W menu WordPress kliknij pozycję „Botiko".
 3. W panelu Botiko (botiko.pl → Instalacja → WordPress) wygeneruj kod połączenia.
 4. Wklej kod w polu „Połącz stronę" i kliknij przycisk. Gotowe — bot pojawi się na froncie strony.
 
