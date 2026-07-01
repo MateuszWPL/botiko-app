@@ -93,6 +93,18 @@ body {
 .animate-float      { animation: float 4s ease-in-out infinite; }
 .animate-pulse-ring { animation: pulse-ring 2.2s ease infinite; }
 
+/* Wejście dla treści above-the-fold (hero): tylko transform, bez opacity —
+   element LCP maluje się od razu przy pełnej widoczności, więc animacja
+   nie opóźnia Largest Contentful Paint. */
+@keyframes heroRise {
+  from { transform: translateY(12px); }
+  to   { transform: translateY(0); }
+}
+.animate-hero-rise { animation: heroRise 0.5s ease both; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-rise { animation: none; }
+}
+
 .typing-dot {
   display: inline-block;
   animation: typing 1.4s infinite;
