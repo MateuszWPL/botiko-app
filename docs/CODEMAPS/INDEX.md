@@ -10,7 +10,7 @@
 Botiko.pl is a B2B SaaS AI chatbot platform for Polish micro and small service businesses (beauty salons, healthcare clinics, restaurants, auto shops). The platform consists of three separate applications with independent deployments and development cycles.
 
 **Core Value Proposition:**  
-24/7 AI bot on customer websites → answers inquiries + collects leads → ROI = 1 lead (150-300 PLN) vs bot cost (149 PLN/month).
+24/7 AI bot on customer websites → answers inquiries + collects leads → ROI = 1 lead (150-300 PLN) vs bot cost (99 PLN/month).
 
 ---
 
@@ -159,7 +159,7 @@ Helmet (security headers) → CORS (open for widget) → Throttler (rate limits)
 
 **Enums:**
 - `Industry`: BEAUTY, HEALTH, FOOD, AUTO, OTHER
-- `Plan`: STARTER (149 PLN/mies, 14d trial), PRO, PREMIUM
+- `Plan`: STARTER (99 PLN/mies, 14d trial), PRO, PREMIUM
 - `LeadStatus`: NEW, CONTACTED, CONVERTED, LOST
 - `MsgRole`: USER, ASSISTANT
 

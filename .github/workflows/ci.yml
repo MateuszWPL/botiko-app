@@ -139,7 +139,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build (enforces <13KB gzip)
+      - name: Build (enforces <14KB gzip)
         run: pnpm build
         env:
           VITE_API_URL: https://api.botiko.pl

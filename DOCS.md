@@ -31,7 +31,6 @@ Dodajesz / zmieniasz / usuwasz dokument? Zaktualizuj tę tabelę w tym samym com
 | **Per-apka: setup, skrypty, deploy** | `apps/{api,web,widget}/README.md` | ENG | zmiana w danej aplikacji |
 
 > Blog (treść marketingowa) żyje w `apps/web/content/blog/*.mdx`, nie tutaj — to treść produktu, nie dokumentacja.
-> Binaria planistyczne (`docs/Botiko_MasterPlan_v2*`) to materiały źródłowe, nie żywa dokumentacja.
 
 ---
 
