@@ -50,13 +50,13 @@ class Botiko_Notices {
 			return;
 		}
 
-		// Don't nag on the plugin's own settings screen.
+		// Don't nag on the plugin's own screen.
 		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-		if ( $screen && 'settings_page_botiko' === $screen->id ) {
+		if ( $screen && 'toplevel_page_botiko' === $screen->id ) {
 			return;
 		}
 
-		$url = admin_url( 'options-general.php?page=botiko' );
+		$url = Botiko_Admin::page_url();
 		printf(
 			'<div class="notice notice-info is-dismissible"><p>%1$s <a href="%2$s">%3$s</a></p></div>',
 			esc_html__( 'Botiko jest prawie gotowe — połącz swoją stronę z botem, aby zaczął odpowiadać klientom.', 'botiko' ),
@@ -74,7 +74,7 @@ class Botiko_Notices {
 	public function action_links( $links ) {
 		$settings_link = sprintf(
 			'<a href="%1$s">%2$s</a>',
-			esc_url( admin_url( 'options-general.php?page=botiko' ) ),
+			esc_url( Botiko_Admin::page_url() ),
 			esc_html__( 'Ustawienia', 'botiko' )
 		);
 		array_unshift( $links, $settings_link );

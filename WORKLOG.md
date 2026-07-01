@@ -25,6 +25,18 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-01 (środa)
 
+### Przeprojektowanie panelu wtyczki (UX/UI) — Claude — branch `feat/wordpress-plugin`
+- Co zrobione:
+  - **Menu top-level** z logo Botiko (base64 SVG mark) zamiast pozycji w „Ustawienia" (`add_menu_page`); zaktualizowane URL-e i `screen->id` w notices + hook `enqueue`.
+  - **Zero emoji/znaków-jako-ikon** — cały panel na inline SVG (styl Lucide, `currentColor`), wypisywane przez `wp_kses()` z allowlistą svg/path/line/circle/polyline/polygon. Usunięte 🤖 ✓ ⚠ ● ○.
+  - **Branded header** (gradient marki + biały wordmark `botiko-logo-white.svg` + pill wersji/panelu), układ 2-kolumnowy (main + sidebar), karty z zaokrągleniami/cieniem.
+  - **Naprawiony rozjeżdżający się napis** „Przytrzymaj Ctrl/Cmd" — hint jako blok pod selectem (nie inline), select 100% szer.; picker stron chowa się dla trybu „wszystkie" (progressive disclosure w JS).
+  - **Rozbudowana pomoc** (sidebar): karta „Przydatne linki" (dokumentacja / panel / kontakt) z ikonami, karta-notka „wygląd zmienisz w panelu", **karta z prośbą o opinię** (gwiazdki + „Oceń wtyczkę" → wp.org reviews, filtrowalny URL).
+  - Przebudowany ZIP do uploadu (`C:\…\Downloads\botiko.zip`, 15 plików).
+- Pliki/obszar: `wordpress-plugin/botiko/includes/class-botiko-admin.php` (rewrite), `assets/admin.css` (rewrite), `assets/admin.js`, `assets/botiko-logo-white.svg` (nowy), `includes/class-botiko-notices.php`, `readme.txt`
+- Review: reguła „SVG nie emoji" zapisana w pamięci (rozszerzona na PHP/WordPress). PHP niesprawdzalne lokalnie (brak PHP) — walidacja przez CI (PHPCS + php -l).
+- Status: 🔄 czeka na zielony CI (PHPCS) + wizualną akceptację użytkownika
+
 ### Oficjalna wtyczka WordPress + one-click pairing — Claude — branch `feat/wordpress-plugin`
 - Co zrobione:
   - **M1 — rdzeń wtyczki (PHP)** w `wordpress-plugin/botiko/`: Settings API, wstrzyknięcie loadera widgetu w `wp_footer` (skip `wp-admin`), reguły wyświetlania + tryb testowy, panel statusu przez publiczny `/bot/:id/config` (`domainAllowed`), i18n PL+EN, `uninstall.php`, `readme.txt`, GPLv2. Bezpieczeństwo: nonce, `manage_options`, sanityzacja (CUID), escapowanie.
