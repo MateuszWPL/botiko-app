@@ -25,14 +25,14 @@ Paczka zawiera **tylko** pliki runtime z `wordpress-plugin/botiko/` (bez `compos
 2. **Zgłoś wtyczkę**: https://wordpress.org/plugins/developers/add/ → wgraj `botiko.zip`.
 3. **Plugin Check + review** — automat (Plugin Check) + człowiek z zespołu Plugins. Trwa zwykle od kilku dni do ~2 tygodni. Na maile z `plugins@wordpress.org` odpowiadaj szybko i konkretnie.
    - Częste uwagi: escapowanie/sanityzacja (mamy), deklaracja „External services" w `readme.txt` (mamy — sekcja o `widget.botiko.pl` i `api.botiko.pl`), brak śledzenia bez zgody (mamy), prefiksy `botiko_`/`Botiko_` (mamy).
-   - Nazwa/slug: proponowany slug `botiko`. Zespół może go zmienić, jeśli zajęty. Tagi w `readme.txt` **nie** mogą zawierać „WordPress".
-4. **Po akceptacji** dostajesz repozytorium **SVN**: `https://plugins.svn.wordpress.org/botiko/` ze strukturą:
+   - Nazwa/slug: slug wynika z „Plugin Name" (`Botiko — AI Customer Service Bot`) → **`botiko-ai-customer-service-bot`**. Tagi w `readme.txt` **nie** mogą zawierać „WordPress".
+4. **Po akceptacji** dostajesz repozytorium **SVN**: `https://plugins.svn.wordpress.org/botiko-ai-customer-service-bot/` ze strukturą:
    ```
    /trunk         → aktualny kod wtyczki (zawartość botiko/)
-   /tags/1.0.2    → zamrożone wydanie (== Stable tag w readme.txt)
+   /tags/1.0.4    → zamrożone wydanie (== Stable tag w readme.txt)
    /assets        → icon-*.png, icon.svg, banner-*.png, screenshot-*.png
    ```
-   `Stable tag: 1.0.2` w `readme.txt` wskazuje, które wydanie jest „live".
+   `Stable tag: 1.0.4` w `readme.txt` wskazuje, które wydanie jest „live".
 
 ---
 
@@ -47,8 +47,8 @@ Wydanie:
 ```bash
 # 1. podbij wersję w botiko.php (Version + BOTIKO_VERSION) i readme.txt (Stable tag + changelog)
 # 2. tag = czysta wersja (musi = Stable tag; SVN tag = nazwa git taga)
-git tag 1.0.3 && git push origin 1.0.3
-# 3. workflow zbuduje i wypchnie /trunk + /tags/1.0.3 + /assets
+git tag 1.0.5 && git push origin 1.0.5
+# 3. workflow zbuduje i wypchnie /trunk + /tags/1.0.5 + /assets
 ```
 
 Bez sekretów/dostępu workflow jest nieaktywny (nie zaszkodzi).
@@ -66,7 +66,7 @@ Bez sekretów/dostępu workflow jest nieaktywny (nie zaszkodzi).
 | `banner-1544x500.png` | 1544×500 | ✅ |
 | `screenshot-1.png` … | dowolny | ⏳ do zrobienia — patrz niżej |
 
-**Screenshoty** (opcjonalne do akceptacji, ale podnoszą konwersję): zrób 3–4 czyste zrzuty panelu wtyczki (v1.0.2) i zapisz jako `screenshot-1.png`…`screenshot-4.png` w `.wordpress-org/`. Kolejność i opisy są już w `readme.txt` → sekcja `== Screenshots ==`:
+**Screenshoty** (opcjonalne do akceptacji, ale podnoszą konwersję): zrób 3–4 czyste zrzuty panelu wtyczki (v1.0.4) i zapisz jako `screenshot-1.png`…`screenshot-4.png` w `.wordpress-org/`. Kolejność i opisy są już w `readme.txt` → sekcja `== Screenshots ==`:
 1. Połączenie strony jednym kodem
 2. Status na żywo (połączono, domena autoryzowana, online)
 3. Reguły wyświetlania i tryb testowy
@@ -76,7 +76,7 @@ Bez sekretów/dostępu workflow jest nieaktywny (nie zaszkodzi).
 
 ## PO publikacji (dopiero wtedy!)
 
-Gdy wtyczka jest **realnie w katalogu** (`https://wordpress.org/plugins/botiko/`):
+Gdy wtyczka jest **realnie w katalogu** (`https://wordpress.org/plugins/botiko-ai-customer-service-bot/`):
 
 1. `apps/web/app/integracje/wordpress/page.tsx` — z „pracujemy nad" na „zainstaluj oficjalną wtyczkę z katalogu WordPress.org" + link.
 2. `apps/web/app/dashboard/embed/EmbedCode.tsx` — dodaj ścieżkę „Zainstaluj wtyczkę Botiko z katalogu".

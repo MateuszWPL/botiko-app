@@ -40,6 +40,6 @@ jobs:
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-          SLUG: botiko
+          SLUG: botiko-ai-customer-service-bot
           BUILD_DIR: ./build/botiko
           ASSETS_DIR: ./wordpress-plugin/.wordpress-org
