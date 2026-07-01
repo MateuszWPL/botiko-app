@@ -25,6 +25,16 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-01 (środa)
 
+### Zgłoszenie wtyczki do wp.org + zgodność z Plugin Check — Claude — PR #78, #79, #80
+- Co zrobione:
+  - **Fix builda Railway** (PR #77): `railway.json` buildCommand ustawiał `NODE_ENV=production` → `pnpm install` przycinał devDeps (prisma, @nestjs/cli) → `prisma generate` padał. Prefiks `NODE_ENV=development` + `--frozen-lockfile`.
+  - **Plugin Check — runda 1** (PR #78, v1.0.3): readme.txt w całości po angielsku (wymóg wp.org), `Tested up to: 7.0`, usunięto `load_plugin_textdomain()`, Plugin Name/Description po angielsku (UI panelu zostaje PL).
+  - **Slug** (PR #79, v1.0.4): slug wynika z nazwy → `botiko-ai-customer-service-bot`. Zsynchronizowano review URL w panelu, `SLUG` w `wp-deploy.yml`, `PUBLISHING.md`.
+  - **Plugin Check — runda 2** (PR #80, v1.0.5): 72 błędy `TextDomainMismatch` — text domain musi = slug. Zmieniono text domain we wszystkich wywołaniach i18n + nagłówek + `phpcs.xml.dist` + `.pot`; `build.sh` pakuje ZIP do folderu = slug (folder instalacji musi = text domain). `PAGE_SLUG` bez zmian.
+- Pliki/obszar: `apps/api/railway.json`, `wordpress-plugin/botiko/*`, `wordpress-plugin/build.sh`, `.github/workflows/wp-deploy.yml`, `wordpress-plugin/PUBLISHING.md`
+- Review: **Plugin Check = 0 błędów** (potwierdzone przez użytkownika). CI zielone na każdym PR.
+- Status: ✅ wtyczka zgłoszona do katalogu wp.org, czeka na review zespołu Plugins (~1–10 dni)
+
 ### M4 — przygotowanie do publikacji w wp.org — Claude — branch `chore/wordpress-org-publishing`
 - Co zrobione:
   - **Merge** PR #75 (przeprojektowany panel) do `main` — PR #74 (pairing) już wcześniej wdrożony na produkcję; endpointy `/bot/pair` i `/bot/:id/pairing-token` żywe (zweryfikowane curl: 200/401/400).
