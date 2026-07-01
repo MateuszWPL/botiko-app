@@ -25,6 +25,17 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-01 (środa)
 
+### M4 — przygotowanie do publikacji w wp.org — Claude — branch `chore/wordpress-org-publishing`
+- Co zrobione:
+  - **Merge** PR #75 (przeprojektowany panel) do `main` — PR #74 (pairing) już wcześniej wdrożony na produkcję; endpointy `/bot/pair` i `/bot/:id/pairing-token` żywe (zweryfikowane curl: 200/401/400).
+  - **Assety katalogu** w `wordpress-plugin/.wordpress-org/`: `icon.svg` (gradient marki + biały mark), `icon-256/128.png`, `banner-772x250.png`, `banner-1544x500.png` (wygenerowane z brand SVG: svglib+cairo render + Pillow gradient/tekst). Screenshoty — do dorobienia przez użytkownika z żywego panelu (opisy już w `readme.txt`).
+  - **Automatyzacja wydań**: `.github/workflows/wp-deploy.yml` (10up action, trigger na tag semver, nieaktywny do czasu sekretów SVN_USERNAME/PASSWORD + akceptacji wp.org).
+  - **Guide**: `wordpress-plugin/PUBLISHING.md` (proces zgłoszenia + wydań + „co PO publikacji"); wpis w `DOCS.md`.
+  - Wersja wtyczki 1.0.2 (cache-bust CSS + poprawki: wyśrodkowane pola wyboru, link do `/dashboard/overview`).
+- Pliki/obszar: `wordpress-plugin/.wordpress-org/`, `wordpress-plugin/PUBLISHING.md`, `.github/workflows/wp-deploy.yml`, `DOCS.md`, `wordpress-plugin/botiko/*` (v1.0.2)
+- Review: CI zielone (PHPCS + build). Landing/EmbedCode/SetupWizard **świadomie NIE zmieniane** — dopiero po realnej publikacji w katalogu (bez fałszywych obietnic).
+- Status: ✅ assety + tooling + docs gotowe · ⏸ samo zgłoszenie do wp.org + review (~1–2 tyg) = akcja użytkownika (konto wp.org, upload ZIP)
+
 ### Przeprojektowanie panelu wtyczki (UX/UI) — Claude — branch `feat/wordpress-plugin`
 - Co zrobione:
   - **Menu top-level** z logo Botiko (base64 SVG mark) zamiast pozycji w „Ustawienia" (`add_menu_page`); zaktualizowane URL-e i `screen->id` w notices + hook `enqueue`.

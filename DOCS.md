@@ -27,6 +27,7 @@ Dodajesz / zmieniasz / usuwasz dokument? Zaktualizuj tę tabelę w tym samym com
 | **Treść: baza wiedzy bota (do wgrania)** | [`docs/content/bot-knowledge-base.md`](docs/content/bot-knowledge-base.md) | PL | zmiana oferty / FAQ / danych firmy |
 | **Treść: zestaw maili (Resend)** | [`docs/content/emails.md`](docs/content/emails.md) | PL | zmiana szablonów / dripów mailowych |
 | **Migracje DB — zasady (RLS vs Prisma)** | [`supabase/migrations/README.md`](supabase/migrations/README.md) | PL/ENG | zmiana procesu migracji |
+| **Wtyczka WordPress — publikacja w katalogu (wp.org)** | [`wordpress-plugin/PUBLISHING.md`](wordpress-plugin/PUBLISHING.md) | PL | zmiana procesu wydań / assetów wtyczki |
 | **Per-apka: setup, skrypty, deploy** | `apps/{api,web,widget}/README.md` | ENG | zmiana w danej aplikacji |
 
 > Blog (treść marketingowa) żyje w `apps/web/content/blog/*.mdx`, nie tutaj — to treść produktu, nie dokumentacja.
