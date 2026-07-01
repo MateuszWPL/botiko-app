@@ -4,7 +4,7 @@ Tags: chatbot, bot, obsługa klienta, customer service, lead generation
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,9 @@ Ta wtyczka łączy się z usługą Botiko, aby działał bot obsługi klienta:
 Korzystanie z usługi Botiko podlega regulaminowi (https://botiko.pl/regulamin) i polityce prywatności (https://botiko.pl/prywatnosc).
 
 == Changelog ==
+
+= 1.0.1 =
+* Przeprojektowany panel: osobna pozycja „Botiko" w menu z logo, firmowy nagłówek, układ dwukolumnowy, ikony wektorowe, sekcja pomocy i ocen.
 
 = 1.0.0 =
 * Pierwsze wydanie: osadzanie widgetu, łączenie jednym kodem, status na żywo, reguły wyświetlania, tryb testowy.

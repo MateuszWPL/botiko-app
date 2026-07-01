@@ -174,7 +174,7 @@ class Botiko_Admin {
 		$status = $this->settings->has_bot_id() ? $this->api->get_status() : null;
 		?>
 		<div class="wrap botiko-wrap">
-			<h1><?php esc_html_e( 'Botiko', 'botiko' ); ?></h1>
+			<h1 class="screen-reader-text"><?php esc_html_e( 'Botiko', 'botiko' ); ?></h1>
 
 			<?php $this->render_header(); ?>
 

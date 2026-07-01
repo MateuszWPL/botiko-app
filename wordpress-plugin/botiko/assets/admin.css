@@ -10,17 +10,13 @@
 	margin-right: 20px;
 }
 
-/* Hide the default WP <h1> — we render our own branded header. */
-.botiko-wrap > h1:first-child {
-	display: none;
-}
-
-/* Icons ------------------------------------------------------------------ */
+/* Icons — block display removes the inline baseline gap so icons sit level
+   with adjacent text inside flex rows. */
 .botiko-ico {
+	display: block;
 	width: 18px;
 	height: 18px;
 	flex: 0 0 auto;
-	vertical-align: middle;
 }
 
 /* Branded header --------------------------------------------------------- */
@@ -28,32 +24,34 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 20px;
+	gap: 16px 24px;
 	flex-wrap: wrap;
 	background: linear-gradient( 135deg, #6366f1 0%, #4338ca 100% );
-	border-radius: 14px;
-	padding: 22px 28px;
-	margin: 16px 0 22px;
-	box-shadow: 0 10px 30px -12px rgba( 67, 56, 202, 0.55 );
+	border-radius: 12px;
+	padding: 14px 22px;
+	margin: 10px 0 20px;
+	box-shadow: 0 8px 22px -14px rgba( 67, 56, 202, 0.6 );
 }
 
 .botiko-header__brand {
 	display: flex;
 	align-items: center;
 	gap: 16px;
+	flex-wrap: wrap;
 }
 
 .botiko-header__logo {
-	height: 30px;
+	height: 24px;
 	width: auto;
 	display: block;
 }
 
 .botiko-header__tagline {
-	color: rgba( 255, 255, 255, 0.85 );
-	font-size: 13px;
-	margin: 4px 0 0;
-	max-width: 46ch;
+	color: rgba( 255, 255, 255, 0.9 );
+	font-size: 12.5px;
+	line-height: 1.4;
+	margin: 0;
+	max-width: 52ch;
 }
 
 .botiko-header__meta {
@@ -238,13 +236,20 @@ a.botiko-chip-warn:hover {
 .botiko-actions {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 8px;
+	gap: 10px;
+	margin-top: 4px;
 }
 
-.botiko-actions .button {
+/* Any button that carries an icon: line up icon + label on one row. */
+.botiko-card .button {
 	display: inline-flex;
 	align-items: center;
-	gap: 6px;
+	gap: 7px;
+}
+
+.botiko-card .button .botiko-ico {
+	width: 16px;
+	height: 16px;
 }
 
 /* Disconnected / connect flow */
