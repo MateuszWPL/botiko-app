@@ -1,0 +1,45 @@
+name: Deploy plugin to WordPress.org
+
+# Publishes the Botiko plugin to the WordPress.org SVN repo on a version tag.
+# INACTIVE until the plugin is approved and these repo secrets are set:
+#   SVN_USERNAME, SVN_PASSWORD  (your wordpress.org credentials)
+#
+# Release: bump Version + BOTIKO_VERSION in botiko.php and Stable tag in
+# readme.txt, then push a plain semver tag that MATCHES the version — the SVN
+# tag created equals the git tag, and must equal `Stable tag`.
+#   git tag 1.0.3 && git push origin 1.0.3
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  deploy:
+    name: WordPress.org SVN deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stage clean plugin directory
+        run: |
+          mkdir -p build/botiko
+          rsync -a \
+            --exclude '.git*' \
+            --exclude 'composer.json' \
+            --exclude 'composer.lock' \
+            --exclude 'phpcs.xml.dist' \
+            --exclude 'vendor' \
+            --exclude 'node_modules' \
+            wordpress-plugin/botiko/ build/botiko/
+
+      - name: Deploy to WordPress.org
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          generate-zip: true
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: botiko
+          BUILD_DIR: ./build/botiko
+          ASSETS_DIR: ./wordpress-plugin/.wordpress-org
