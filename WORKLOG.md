@@ -25,6 +25,15 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-01 (środa)
 
+### Porządki repo + spójność oferty — Claude — PR #82, #83
+- Co zrobione:
+  - **Spójność cen** (audyt subagentem): `docs/CODEMAPS/*` miały nieaktualne 149 PLN (10 miejsc, m.in. „Stripe charges") → 99 zł. Kod billingu był OK. Naprawiony over-promise rezerwacji w `blog/chatbot-recepcja.mdx` (live sloty, „integracja z systemem rezerwacji", tabela, FAQ) — bot odsyła do Booksy/Calendly. Usunięte martwe PRO/PREMIUM w `BillingClient.tsx` (MVP = jeden plan).
+  - **Kontekst**: `CLAUDE.md` — aktualny stan (wtyczka WP zgłoszona do wp.org), roadmapa Fazy 2, limit widgetu ujednolicony do 14 KB (był rozjazd 12/13/14), lista 5 jobów CI. Nowa zasada: **commity/PR bez śladów AI** + wpis w pamięci.
+  - **Sprzątanie**: usunięte binaria `MasterPlan` i nietrackowany `botiko.pl-audit/` (raport został w `docs/seo/audyt-2026-06-30.md`), usunięty nieużywany `components/ui/Spinner.tsx`, emoji z `apps/api/README.md`. Emoji w szablonach PDF świadomie zostawione.
+- Pliki/obszar: `docs/CODEMAPS/*`, `CLAUDE.md`, `DOCS.md`, `.github/workflows/ci.yml`, `apps/web` (BillingClient, chatbot-recepcja, Spinner), `apps/api/README.md`
+- Review: audyt cen/oferty + raport martwego kodu przez subagentów; CI zielone na obu PR-ach.
+- Status: ✅ done — repo uporządkowane i spójne przed kolejnymi zmianami
+
 ### Zgłoszenie wtyczki do wp.org + zgodność z Plugin Check — Claude — PR #78, #79, #80
 - Co zrobione:
   - **Fix builda Railway** (PR #77): `railway.json` buildCommand ustawiał `NODE_ENV=production` → `pnpm install` przycinał devDeps (prisma, @nestjs/cli) → `prisma generate` padał. Prefiks `NODE_ENV=development` + `--frozen-lockfile`.
