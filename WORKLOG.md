@@ -25,6 +25,14 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-01 (środa)
 
+### Nowy wpis blogowy „Urlop bez utraty klientów" + fix lokalnego dev — Claude — branch feat/blog-urlop
+- Co zrobione:
+  - **Nowy post MDX** `urlop-bez-utraty-klientow-firma-uslugowa.mdx` (temat sezonowy: bot odbiera pytania, gdy właściciel jest na urlopie). Answer-first, box „W skrócie", InfoBox ze **zweryfikowaną statystyką** (78% klientów kupuje u firmy, która odpowie pierwsza — Vendasta/Lead Connect 2025), Callout, CTABlock, FAQ, 4 linki wewnętrzne (pytania-nocne, WordPress, ROI, leady). 3 grafiki (hero + 2 inline) wygenerowane przez Gemini nano banana (AI Studio), zoptymalizowane do webp (81/48/96 KB) w `public/blog/`.
+  - **Fix lokalnego dev** (`apps/web`): `.env.local` nie miał wymaganych `NEXT_PUBLIC_SUPABASE_*` (middleware 500 na każdej trasie) → dodane placeholdery; `node_modules` był niekompletny (brak `@vercel/speed-insights`) → reinstall pnpm 9. Szczegóły w pamięci projektu.
+- Pliki/obszar: `apps/web/content/blog/urlop-*.mdx`, `apps/web/public/blog/urlop-*.webp`
+- Review: **botiko-content — 0 blokerów** (język marki, cena 99 zł, brak obietnic rezerwacji → Booksy/Calendly, autor Mateusz Woronowicz, bez emoji, statystyka ocytowana). Poprawione niespójne cudzysłowy. Zweryfikowane renderem lokalnym (HTTP 200).
+- Status: 🔄 wpis gotowy, data publikacji 15.07.2026 (auto-publish); PR do review
+
 ### PageSpeed: LCP hero + labelki suwaków (a11y/agentic) — Claude — branch fix/pagespeed-lcp-a11y
 - Co zrobione:
   - **LCP** (mobile 5,4 s → element LCP malował się ~3,4 s po FCP): `<h1>` hero miał `animate-fade-in-up` (opacity 0→1), a animowanie opacity elementu LCP opóźnia Largest Contentful Paint. Nowy keyframe `heroRise` (tylko `transform: translateY`, bez opacity) + klasa `animate-hero-rise` z guardem `prefers-reduced-motion`. Wszystkie elementy above-the-fold hero (badge, h1, opis, CTA, mockup) malują się teraz od razu przy pełnej widoczności — entrance zachowany, ale bez kosztu LCP.
