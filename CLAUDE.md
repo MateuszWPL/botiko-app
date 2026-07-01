@@ -28,7 +28,7 @@ Botiko.pl — polska SaaS platforma AI chatbot B2B dla mikro/małych firm usług
 ```
 apps/web/      → Next.js 14 App Router + Tailwind v4 (dashboard + landing pages, port 3000)
 apps/api/      → NestJS + Prisma (REST API, port 3001)
-apps/widget/   → Preact + Vite (embed script, port 5173, target <12KB gzip)
+apps/widget/   → Preact + Vite (embed script, port 5173, target <14KB gzip)
 supabase/      → SQL migrations + RLS policies
 wordpress-plugin/ → oficjalna wtyczka WordPress (PHP) — osadza widget + one-click pairing (osobny toolchain: composer/PHPCS/SVN)
 docs/CODEMAPS/ → 6 plików architektonicznych (ENG): INDEX, backend, frontend, widget, database, integrations
@@ -77,7 +77,7 @@ pnpm e2e:ui          # Playwright E2E z UI
 ### Widget (`apps/widget`)
 ```bash
 pnpm dev             # Vite dev server
-pnpm build           # Build dist/embed.js — rzuca błąd jeśli >12KB gzip
+pnpm build           # Build dist/embed.js — rzuca błąd jeśli >14KB gzip
 pnpm build:watch     # Build w trybie watch
 pnpm preview         # Preview zbudowanego bundle
 ```
@@ -254,13 +254,19 @@ git add apps/api/src/...    # jawnie, żeby nie commitować .env przez pomyłkę
 - `node_modules/`, `.next/`, `dist/`
 - Sekrety, klucze API, tokeny
 
-### CI (GitHub Actions) — uruchamia się automatycznie na każdym PR
-- `API (lint + test)` — ESLint + Jest (~297 testów jednostkowych + Supertest E2E)
-- `Web (lint + type-check)` — ESLint + tsc
-- `Widget (build + size check)` — Vite build z limitem <12KB gzip
-- `Web E2E (Playwright)` — smoke testy landing pages (24 testy, chromium only)
+### Styl commitów i PR — bez śladów AI
+- **Nie dodawaj** stopki `Co-Authored-By: Claude …` do commitów ani `🤖 Generated with …` do opisów PR.
+- Commit message i opis PR piszemy rzeczowo, po polsku, bez wzmianek o AI/asystencie.
+- Dotyczy też komentarzy w kodzie i treści — żadnych „Made by Claude" itp.
 
-Merge możliwy tylko gdy wszystkie 4 przechodzą. Claude informuje o statusie CI.
+### CI (GitHub Actions) — uruchamia się automatycznie na każdym PR
+- `API (lint + test)` — ESLint + Jest (testy jednostkowe + Supertest E2E)
+- `Web (lint + type-check)` — ESLint + tsc
+- `Widget (build + size check)` — Vite build z limitem <14KB gzip
+- `E2E — landing pages (Playwright)` — smoke testy landing pages (chromium only)
+- `WordPress plugin (PHPCS + build)` — php -l + PHPCS (WordPress + Extra) + build ZIP
+
+Merge możliwy tylko gdy wszystkie przechodzą. Claude informuje o statusie CI.
 
 ## Workflow agentów (armia subagentów)
 
@@ -287,9 +293,9 @@ NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z bran
 - Ból: "tracisz klientki o 22:00 bo nie odbierasz"
 - ROI: "1 klientka = 150-300 zł. Bot = 99 zł/mies."
 
-## Aktualny stan projektu (2026-05-14)
+## Aktualny stan projektu (2026-07-01)
 
-**Faza:** 1A ukończona — **MVP zdeployowane na produkcji** (`botiko.pl`, zaindeksowane w Google). Wchodzimy w Fazę 2 (piloty, pierwsi klienci).
+**Faza:** 1A ukończona — **MVP zdeployowane na produkcji** (`botiko.pl`, zaindeksowane w Google). Jesteśmy w Fazie 2 (piloty, pierwsi klienci). Oficjalna wtyczka WordPress zbudowana i **zgłoszona do katalogu WordPress.org** (czeka na review).
 
 **Infrastruktura produkcyjna:**
 - **Web** (`apps/web`) → Vercel, auto-deploy po merge na `main`
@@ -299,10 +305,11 @@ NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z bran
 
 **Co działa na produkcji:**
 - Core bot (RAG + OpenAI) z pełnym pre-processingiem wiadomości
-- Widget embedded (<12KB, Shadow DOM, natywnie zoptymalizowany pod WordPress; działa też na dowolnej innej stronie WWW)
+- Widget embedded (<14KB, Shadow DOM, natywnie zoptymalizowany pod WordPress; działa też na dowolnej innej stronie WWW)
 - Dashboard (10 stron: overview, leads, conversations, knowledge, knowledge-base, settings, embed, billing, help)
 - Onboarding: modal `SetupWizard` (`components/dashboard/SetupWizard.tsx`) — 4 kroki: branża → dane firmy → wiedza → embed. Uruchamia się automatycznie po pierwszym logowaniu. Strony `/onboarding/step-1..5` zostały usunięte (martwy kod po refaktorze na modal).
-- Embed installer (`apps/web/app/dashboard/embed/EmbedCode.tsx`) — 2 ścieżki: WordPress (przez wtyczkę WPCode) + Inna strona (uniwersalny skrypt HTML)
+- Embed installer (`apps/web/app/dashboard/embed/EmbedCode.tsx`) — WordPress (generowanie kodu połączenia dla oficjalnej wtyczki + fallback WPCode) i Inna strona (uniwersalny skrypt HTML)
+- Oficjalna wtyczka WordPress (`wordpress-plugin/botiko/`) — osadza widget bez edycji motywu, one-click pairing (autoryzacja domeny kodem), panel statusu; instalowalna z ZIP, zgłoszona do wp.org (slug `botiko-ai-customer-service-bot`). Proces wydań: `wordpress-plugin/PUBLISHING.md`
 - 5 landing pages branżowych (`/dla/salon-beauty`, `/dla/gabinet-spa`, `/dla/restauracja`, `/dla/warsztat-mechaniczny`, `/dla/inna`) — każda z wzmianką WordPress-first
 - Stripe billing (STARTER 99 zł/mies., 14 dni trial, webhooks, idempotency guard, audit trail BillingEvent)
 - System emailowy (Resend) — szablony, drip scheduler onboardingowy, powiadomienia o leadach, billing webhooks
@@ -310,7 +317,7 @@ NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z bran
 - Landing page marketingowy + blog SEO + formularz kontaktowy
 - Finalny brand kit (`apps/web/public/botiko-*.svg` — wordmark + znak, warianty light/dark/white)
 - Security hardening (CORS, UUID validation, HTML escaping, HTTP error handling, walidacja hasła: 12 znaków + cyfra + znak specjalny)
-- Pokrycie testami: 297+ testów jednostkowych (Jest) + 24 E2E landing pages (Playwright) + E2E API (Supertest); 4-jobowy CI zielony
+- Pokrycie testami: testy jednostkowe (Jest) + E2E landing pages (Playwright) + E2E API (Supertest); 5-jobowy CI zielony (API, Web, Widget, E2E, WordPress plugin)
 
 ### Blog — content runway
 
@@ -326,4 +333,5 @@ NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z bran
 
 **W roadmapie (Faza 2+):**
 - Piloty: cold outreach, 3 darmowe piloty 30-dniowe, case studies
-- Dedykowana wtyczka Botiko do katalogu WordPress.org — kanał akwizycji bez udziału supportu
+- Wtyczka WordPress.org: po akceptacji review → deploy przez SVN (`.github/workflows/wp-deploy.yml`), dorobienie screenshotów, aktualizacja landingu/EmbedCode/SetupWizard na „zainstaluj z katalogu"
+- SEO off-page (główny bloker wzrostu): backlinki, Google Business Profile, wzmianki marki — patrz `docs/seo/PLAYBOOK.md` i `docs/seo/audyt-2026-06-30.md`

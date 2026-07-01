@@ -59,7 +59,7 @@ enum Industry {
 }
 
 enum Plan {
-  STARTER    // 149 PLN/mies, 1000 convos/month
+  STARTER    // 99 PLN/mies, 1000 convos/month
   PRO        // Future
   PREMIUM    // Future
 }
@@ -370,7 +370,7 @@ Subscription tier:
 
 ```prisma
 enum Plan {
-  STARTER    // 149 PLN/month, 1000 conversations/month, basic features
+  STARTER    // 99 PLN/month, 1000 conversations/month, basic features
   PRO        // Future (300 PLN/month, 10k conversations, more features)
   PREMIUM    // Future (1000 PLN/month, unlimited, white-label)
 }

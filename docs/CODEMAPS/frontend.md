@@ -441,7 +441,7 @@ export function useBots() {
 **Sections:**
 - Hero (headline, CTA)
 - Features (RAG, 24/7, Stripe, multi-industry)
-- Pricing (STARTER 149 PLN/mies, 14d trial)
+- Pricing (STARTER 99 PLN/mies, 14d trial)
 - Brand logos / testimonials
 - Call-to-action (Sign up, Contact)
 - Footer (links, privacy, terms, contact)

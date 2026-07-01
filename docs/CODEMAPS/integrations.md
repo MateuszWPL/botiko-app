@@ -232,7 +232,7 @@ Supabase can trigger webhooks on table changes (database webhooks). For MVP, we 
 
 ### Purpose
 
-- Subscription billing (STARTER: 149 PLN/month)
+- Subscription billing (STARTER: 99 PLN/month)
 - 14-day free trial
 - Checkout flow (password → payment)
 - Customer portal (manage subscription)
@@ -257,7 +257,7 @@ In Stripe dashboard (manual setup):
 
 ```
 Product: "Botiko STARTER"
-  Price: "149 PLN"
+  Price: "99 PLN"
   Billing cycle: Monthly
   Trial: 14 days (automatic)
 ```
@@ -364,7 +364,7 @@ Handled by Stripe (configured in product):
 
 ```
 14-day trial = Stripe charges 0 for first 14 days
-After 14 days = Stripe charges 149 PLN
+After 14 days = Stripe charges 99 PLN
 If customer cancels during trial = No charge
 ```
 
@@ -555,7 +555,7 @@ Billing Flow
     ↓
 User clicks "Upgrade" → Stripe checkout
     ↓
-Stripe charges 149 PLN (or waives trial)
+Stripe charges 99 PLN (or waives trial)
     ↓
 Stripe webhook → NestJS endpoint
     ↓
@@ -651,7 +651,7 @@ Resend provides click/open rates in dashboard. Useful for monitoring trial warni
 
 ### Stripe
 - Processing fee: 2.9% + $0.30 per transaction
-- 15 customers × 149 PLN × 2.9% + $0.30 = ~50 PLN/month (~$13)
+- 15 customers × 99 PLN × 2.9% + $0.30 = ~50 PLN/month (~$13)
 
 ### Supabase
 - Database: PostgreSQL included, pgvector included
