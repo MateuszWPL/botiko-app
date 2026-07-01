@@ -1,11 +1,11 @@
 # Botiko — API (NestJS + Prisma)
 
 Backend REST API dla platformy Botiko. Obsługuje:
-- 🤖 RAG pipeline (embeddings + OpenAI)
-- 👥 Multi-tenant auth (Supabase JWT)
-- 💳 Stripe billing (subscriptions)
-- 💬 Widget chat (public endpoints)
-- 📧 Email notifications (Resend)
+- RAG pipeline (embeddings + OpenAI)
+- Multi-tenant auth (Supabase JWT)
+- Stripe billing (subscriptions)
+- Widget chat (public endpoints)
+- Email notifications (Resend)
 
 ---
 

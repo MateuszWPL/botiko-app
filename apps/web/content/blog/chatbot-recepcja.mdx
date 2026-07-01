@@ -52,10 +52,10 @@ Bot: "Strzyżenie damskie 85 zł, męskie 65 zł, dzieciece 50 zł. Średni czas
 
 Recepcjonistka w tym czasie **obsługuje 3 klientki w siedzibie** — bo nie siedzi przyklejona do telefonu.
 
-### Dostępność terminu
-Bot: "Mamy wolne: jutro 14:00, 16:30, w czwartek cały dzień po 15:00."
+### Rezerwacja terminu
+Bot: "Termin zarezerwujesz w 30 sekund w naszym Booksy (podam link). Wolisz, żebyśmy oddzwonili? Zostaw imię i numer, a obsługa dobierze godzinę."
 
-To zajmuje Ci 10 sekund ręcznie (sprawdzenie kalendarza). Botowi 1 sekundę (integracja z systemem rezerwacji).
+Bot **nie zarządza Twoim kalendarzem** — odsyła do Twojego narzędzia rezerwacji (Booksy, Calendly) albo zbiera kontakt do oddzwonienia. Zero ryzyka podwójnej rezerwacji, zero integracji do wdrażania.
 
 ### Wstępna rejestracja nowej klientki
 Bot: "To Twoja pierwsza wizyta? Mogę prosić o imię, numer telefonu i czy masz jakiekolwiek uczulenia?"
@@ -110,7 +110,7 @@ Przykład: recepcjonistka, która spędzała kilka godzin dziennie na Messengerz
 | Zadanie | Recepcjonistka | Bot |
 |---------|--------------|-----|
 | Odpowiedź na "ile kosztuje" | 5 minut | 5 sekund |
-| Wymyślenie dostępnego terminu | 5 minut | 1 sekunda |
+| Odesłanie do rezerwacji (Booksy) | 5 minut | 1 sekunda |
 | Obsługa 10 pytań jednocześnie | Niemożliwe | Naturalnie |
 | Odpowiedź o 22:00 | Nie pracuje | Zawsze dostępny |
 | Relacja z klientką | ★★★★★ | ★☆☆☆☆ |
@@ -181,7 +181,7 @@ Brak zaufania do bota = zły bot. Bot, w którym recepcjonistka ma zaufanie = ma
 ## FAQ
 
 **P: Czy bot będzie obsługiwać rezerwacje?**
-O: Bot pyta o dostępny termin i klientka wybiera — następnie Ty/recepcjonistka potwierdzacie w systemie. Bot nie ma bezpośredniego dostępu do kalendarza (jeszcze).
+O: Bot nie zarządza kalendarzem. Odsyła klientkę do Twojego narzędzia rezerwacji (Booksy, Calendly) albo zbiera imię i numer, a recepcjonistka oddzwania i ustala termin.
 
 **P: Co jeśli bot będzie odpowiadać na Messengerze zamiast recepcjonistki?**
 O: To design. Bot obsługuje pytania, klientka może zawsze prosić o rozmowę z człowiekiem — wtedy przekierowujemy do recepcjonistki.

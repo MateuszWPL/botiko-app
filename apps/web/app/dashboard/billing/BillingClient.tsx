@@ -19,16 +19,13 @@ interface Props {
   fetchError: string | null;
 }
 
+// MVP ma jeden plan (STARTER 99 zł/mies). Nieznany plan spada na fallback niżej.
 const PLAN_LABELS: Record<string, string> = {
   STARTER: 'Starter',
-  PRO: 'Pro',
-  PREMIUM: 'Premium',
 };
 
 const PLAN_LIMITS: Record<string, string> = {
   STARTER: '1 000 rozmów / mies.',
-  PRO: '2 000 rozmów / mies.',
-  PREMIUM: 'Bez limitu',
 };
 
 export default function BillingClient({ status, fetchError }: Props) {
