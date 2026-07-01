@@ -398,10 +398,18 @@ a.botiko-chip-warn:hover {
 .botiko-radios label,
 .botiko-check {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	gap: 8px;
 	font-size: 14px;
 	line-height: 1.4;
+}
+
+/* Neutralize WordPress' default vertical margins so the control centers
+   cleanly against its label text. */
+.botiko-radios input,
+.botiko-check input {
+	margin: 0;
+	flex: 0 0 auto;
 }
 
 .botiko-pages {

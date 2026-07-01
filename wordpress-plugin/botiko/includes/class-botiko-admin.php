@@ -239,7 +239,7 @@ class Botiko_Admin {
 					);
 					?>
 				</span>
-				<a class="botiko-pill" href="<?php echo esc_url( BOTIKO_DASHBOARD_URL ); ?>" target="_blank" rel="noopener noreferrer">
+				<a class="botiko-pill" href="<?php echo esc_url( BOTIKO_DASHBOARD_URL . '/overview' ); ?>" target="_blank" rel="noopener noreferrer">
 					<?php self::the_icon( 'external' ); ?>
 					<?php esc_html_e( 'Panel Botiko', 'botiko' ); ?>
 				</a>
@@ -463,7 +463,7 @@ class Botiko_Admin {
 				'icon'  => 'grid',
 				'title' => __( 'Panel Botiko', 'botiko' ),
 				'sub'   => __( 'Leady, rozmowy, baza wiedzy', 'botiko' ),
-				'url'   => BOTIKO_DASHBOARD_URL,
+				'url'   => BOTIKO_DASHBOARD_URL . '/overview',
 			),
 			array(
 				'icon'  => 'lifebuoy',
