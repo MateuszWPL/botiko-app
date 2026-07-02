@@ -18,8 +18,8 @@ build/
 .env.production
 .env*.local
 
-# Docs & internal files — not for the repo
-docs/
+# Internal files — not for the repo
+# (docs/ JEST w repo — patrz DOCS.md; wcześniejsza reguła "docs/" cicho blokowała nowe dokumenty)
 BotikoIcons/
 botiko-bot-knowledge-base.md
 botiko-emails.md
