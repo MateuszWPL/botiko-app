@@ -47,6 +47,41 @@ interface ChatWindowProps {
 }
 
 const CHAT_TIMEOUT_MS = 30_000;
+
+// Turn bare URLs in assistant text into styled, clickable chips. XSS-safe —
+// JSX text/attr nodes only (never innerHTML) and only http(s) is matched, so
+// javascript:/data: can't be injected. Colors use the shadow-DOM CSS vars so
+// the chip stays readable regardless of the tenant's primary colour.
+const URL_RE = /(https?:\/\/[^\s]+)/g;
+function linkify(text: string) {
+  return text.split(URL_RE).map((part, i) =>
+    /^https?:\/\//.test(part) ? (
+      <a
+        key={i}
+        href={part}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: 'inline-block',
+          maxWidth: '100%',
+          padding: '2px 8px',
+          margin: '1px 0',
+          borderRadius: '6px',
+          backgroundColor: 'var(--botiko-primary, #6366F1)',
+          color: 'var(--botiko-on-primary, #fff)',
+          fontSize: '13px',
+          fontWeight: 600,
+          textDecoration: 'none',
+          wordBreak: 'break-all',
+        }}
+      >
+        {part}
+      </a>
+    ) : (
+      part
+    ),
+  );
+}
 // Reveal-buffer pacing — uniform typewriter feel regardless of whether tokens
 // arrive from OpenAI in small chunks or from a canned response as one blob.
 const REVEAL_TICK_MS = 28;
@@ -365,7 +400,7 @@ export function ChatWindow({
         left: '0',
         top: viewport ? `${viewport.offsetTop}px` : '0',
         width: '100%',
-        height: viewport ? `${viewport.height}px` : '100%',
+        height: viewport ? `${viewport.height}px` : '100dvh',
         borderRadius: '0',
       }
     : { position: 'fixed' as const, bottom: '92px', right: '24px', width: '360px', height: '540px', borderRadius: '16px' };
@@ -399,7 +434,7 @@ export function ChatWindow({
       <div
         style={{
           backgroundColor: `var(--botiko-primary, ${primaryColor})`,
-          color: '#fff',
+          color: 'var(--botiko-on-primary, #fff)',
           padding: '12px 16px',
           display: 'flex',
           alignItems: 'center',
@@ -437,7 +472,7 @@ export function ChatWindow({
               flexShrink: 0,
               animation: online ? 'botiko-pulse 2s ease infinite' : 'none',
             }} />
-            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)' }}>
+            <span style={{ fontSize: '11px', color: 'var(--botiko-on-primary, #fff)', opacity: 0.8 }}>
               {online ? 'Online · odpowiada błyskawicznie' : 'Niedostępny'}
             </span>
           </div>
@@ -458,7 +493,7 @@ export function ChatWindow({
               background: showSuggestions ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.15)',
               border: 'none',
               borderRadius: '8px',
-              color: '#fff',
+              color: 'var(--botiko-on-primary, #fff)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -483,7 +518,7 @@ export function ChatWindow({
             background: 'rgba(255,255,255,0.15)',
             border: 'none',
             borderRadius: '8px',
-            color: '#fff',
+            color: 'var(--botiko-on-primary, #fff)',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -559,7 +594,7 @@ export function ChatWindow({
                 justifyContent: 'center',
                 fontSize: '10px',
                 fontWeight: 700,
-                color: '#fff',
+                color: 'var(--botiko-on-primary, #fff)',
                 flexShrink: 0,
                 marginBottom: '2px',
                 overflow: 'hidden',
@@ -574,12 +609,12 @@ export function ChatWindow({
               backgroundColor: msg.role === 'user'
                 ? `var(--botiko-primary, ${primaryColor})`
                 : '#f1f5f9',
-              color: msg.role === 'user' ? '#fff' : '#0f172a',
+              color: msg.role === 'user' ? 'var(--botiko-on-primary, #fff)' : '#0f172a',
               fontSize: '14px',
               lineHeight: '1.5',
               wordBreak: 'break-word',
             }}>
-              {msg.content}
+              {msg.role === 'assistant' ? linkify(msg.content) : msg.content}
             </div>
           </div>
         ))}
@@ -592,7 +627,7 @@ export function ChatWindow({
               width: '24px', height: '24px', borderRadius: '50%',
               backgroundColor: `var(--botiko-primary, ${primaryColor})`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '10px', fontWeight: 700, color: '#fff', flexShrink: 0,
+              fontSize: '10px', fontWeight: 700, color: 'var(--botiko-on-primary, #fff)', flexShrink: 0,
               overflow: 'hidden',
             }}>
               <AvatarContent />
@@ -639,7 +674,7 @@ export function ChatWindow({
                 onMouseEnter={(e) => {
                   (e.currentTarget as HTMLButtonElement).style.backgroundColor =
                     `var(--botiko-primary, ${primaryColor})`;
-                  (e.currentTarget as HTMLButtonElement).style.color = '#fff';
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--botiko-on-primary, #fff)';
                 }}
                 onMouseLeave={(e) => {
                   (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
@@ -866,7 +901,7 @@ function btnStyle(color: string) {
     padding: '8px 14px',
     borderRadius: '8px',
     backgroundColor: `var(--botiko-primary, ${color})`,
-    color: '#fff',
+    color: 'var(--botiko-on-primary, #fff)',
     border: 'none',
     cursor: 'pointer',
     fontSize: '14px',
