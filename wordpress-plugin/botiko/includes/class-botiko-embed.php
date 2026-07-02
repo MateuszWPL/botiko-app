@@ -10,10 +10,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Prints the Botiko widget loader into the site footer when the configured
+ * Enqueues the Botiko widget loader in the site footer when the configured
  * display rules allow it.
  */
 class Botiko_Embed {
+
+	/**
+	 * Registered script handle for the widget loader.
+	 *
+	 * @var string
+	 */
+	const SCRIPT_HANDLE = 'botiko-widget';
 
 	/**
 	 * Settings store.
@@ -37,7 +44,8 @@ class Botiko_Embed {
 	 * @return void
 	 */
 	public function register_hooks() {
-		add_action( 'wp_footer', array( $this, 'render' ), 20 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
+		add_filter( 'script_loader_tag', array( $this, 'filter_script_tag' ), 10, 2 );
 	}
 
 	/**
@@ -93,27 +101,48 @@ class Botiko_Embed {
 	}
 
 	/**
-	 * Output the widget loader script tag.
+	 * Enqueue the widget loader in the footer when display rules allow it.
 	 *
 	 * @return void
 	 */
-	public function render() {
+	public function enqueue() {
 		if ( ! $this->should_render() ) {
 			return;
 		}
 
-		$bot_id = $this->settings->get( 'bot_id', '' );
-		$src    = trailingslashit( BOTIKO_WIDGET_URL ) . 'embed.js';
-
-		// The widget loader is an external script keyed by the data-bot-id
-		// attribute; wp_enqueue_script cannot carry that attribute cleanly, so
-		// we print an escaped tag instead.
-		// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript
-		printf(
-			'<script src="%1$s" data-bot-id="%2$s" async></script>' . "\n",
-			esc_url( $src ),
-			esc_attr( $bot_id )
+		wp_enqueue_script(
+			self::SCRIPT_HANDLE,
+			trailingslashit( BOTIKO_WIDGET_URL ) . 'embed.js',
+			array(),
+			null,
+			true
 		);
-		// phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedScript
+
+		// WP 6.3+ honours the async strategy; older versions ignore it safely.
+		wp_script_add_data( self::SCRIPT_HANDLE, 'strategy', 'async' );
+	}
+
+	/**
+	 * Add the data-bot-id attribute to the widget loader tag.
+	 *
+	 * The loader reads its bot identifier from this attribute; other scripts
+	 * are returned untouched.
+	 *
+	 * @param string $tag    The full script tag HTML.
+	 * @param string $handle The registered script handle.
+	 * @return string
+	 */
+	public function filter_script_tag( $tag, $handle ) {
+		if ( self::SCRIPT_HANDLE !== $handle ) {
+			return $tag;
+		}
+
+		$bot_id = $this->settings->get( 'bot_id', '' );
+
+		return str_replace(
+			' src=',
+			' data-bot-id="' . esc_attr( $bot_id ) . '" src=',
+			$tag
+		);
 	}
 }

@@ -25,6 +25,16 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-02 (czwartek)
 
+### Poprawki wtyczki WordPress po review wp.org (v1.0.6) — Claude — branch fix/wp-plugin-review-enqueue
+- Co zrobione (2 uwagi z review `P0TDX334837HGN`):
+  - **Enqueue widgetu**: `Botiko_Embed` przepisane z surowego `printf('<script data-bot-id async>')` na `wp_footer` → `wp_enqueue_script()` na `wp_enqueue_scripts` (footer, strategia `async` przez `wp_script_add_data`, back-compat od WP 5.8). `data-bot-id` doklejane przez filtr `script_loader_tag`. Usunięte `phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript` — sniff przechodzi naturalnie.
+  - **Contributors**: `readme.txt` `botiko` → `mateuszworonowicz` (username właściciela na wp.org).
+  - Bump wersji 1.0.5 → 1.0.6 (`botiko.php` header + `BOTIKO_VERSION`, `readme.txt` Stable tag), wpis do changelogu.
+  - Samodzielny przegląd „get ahead of us": ABSPATH guardy OK we wszystkich plikach (`uninstall.php` używa `WP_UNINSTALL_PLUGIN` — poprawnie); reszta enqueue/escaping/nonce bez zastrzeżeń.
+- Pliki/obszar: `wordpress-plugin/botiko/includes/class-botiko-embed.php`, `readme.txt`, `botiko.php`
+- Review: kod zgodny z podlinkowaną dokumentacją make.wordpress.org (async strategy 6.3 + script attributes 5.7); PHPCS/`php -l` lokalnie niedostępne (brak PHP na maszynie) → weryfikacja w CI job `WordPress plugin`
+- Status: 🔄 czeka na test na czystym WP (WP_DEBUG) + re-upload ZIP 1.0.6 przez „Add your plugin" i odpowiedź na maila
+
 ### Audyt strategiczny + plan działania — Claude — branch docs/plan-dzialania
 - Co zrobione:
   - **Pełny audyt strategiczny**: web research konkurencji (Tidio/Lyro, Smartsupp Mira, polska nisza: BeautyBoost AI, Smart-Asystenci, AutomatyzujSalon), benchmarki churnu SMB SaaS, dane GUS o stronach WWW mikrofirm; walkthrough na żywo botiko.pl + dashboard + widget (Chrome).
