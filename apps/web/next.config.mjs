@@ -49,6 +49,14 @@ const nextConfig = {
   experimental: {
     // Avoid re-exporting entire packages — only import what's used
     optimizePackageImports: ['@supabase/supabase-js', '@supabase/ssr'],
+    // Ensure the WordPress plugin ZIP (read at request time by the protected
+    // download route, and living outside /public) is bundled into the
+    // serverless function on Vercel.
+    outputFileTracingIncludes: {
+      '/dashboard/embed/plugin-download': [
+        './app/dashboard/embed/plugin-download/botiko-plugin.zip',
+      ],
+    },
   },
   async redirects() {
     return [

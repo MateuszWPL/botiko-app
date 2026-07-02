@@ -10,6 +10,8 @@ import {
   Terminal,
   HelpCircle,
   Loader2,
+  Download,
+  Info,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '@/lib/supabase';
@@ -386,6 +388,38 @@ function RadarIcon({ className }: { className?: string }) {
 
 // ── Main component ─────────────────────────────────────────────────────────
 
+// ── Official WordPress plugin: download the ZIP (logged-in only) ────────────
+
+function PluginDownload() {
+  return (
+    <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50/60 p-5">
+      <div className="flex items-center gap-2 mb-1.5">
+        <span className="inline-flex items-center rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] font-semibold text-white">
+          Gotowe do pobrania
+        </span>
+        <h3 className="text-sm font-bold text-slate-800">Pobierz wtyczkę Botiko</h3>
+      </div>
+      <p className="text-sm text-slate-600 leading-relaxed mb-3">
+        Wtyczka jest gotowa i działa już teraz. Pobierz plik ZIP, a w panelu WordPress wejdź w&nbsp;
+        <span className="whitespace-nowrap">Wtyczki → Dodaj nową → Wyślij wtyczkę</span>, wgraj plik i&nbsp;aktywuj.
+        Następnie połącz stronę kodem poniżej. Publikacja w katalogu WordPress.org jest w&nbsp;trakcie weryfikacji.
+      </p>
+      <a
+        href="/dashboard/embed/plugin-download"
+        download
+        className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+      >
+        <Download className="w-4 h-4" />
+        Pobierz wtyczkę (.zip)
+      </a>
+      <p className="mt-2 flex items-start gap-1.5 text-xs text-slate-500">
+        <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+        Wersja 1.0.6 · plik dostępny tylko dla zalogowanych użytkowników.
+      </p>
+    </div>
+  );
+}
+
 // ── Official WordPress plugin: one-click pairing code ──────────────────────
 
 function PluginPairing({ botId }: { botId: string }) {
@@ -450,7 +484,7 @@ function PluginPairing({ botId }: { botId: string }) {
         </h3>
       </div>
       <p className="text-sm text-slate-600 leading-relaxed mb-3">
-        Zainstaluj wtyczkę „Botiko” z katalogu WordPress, wygeneruj poniżej kod i
+        Po zainstalowaniu wtyczki (pobierz ją wyżej) wygeneruj poniżej kod i
         wklej go w&nbsp;<span className="whitespace-nowrap">Ustawienia → Botiko</span>.
         Kod pobierze Twojego bota i automatycznie autoryzuje domenę tej strony.
       </p>
@@ -657,7 +691,10 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
           style={{ animation: 'botiko-tab-in 0.22s ease both' }}
         >
           {activePlatform === 'wordpress' && selectedBot && (
-            <PluginPairing botId={selectedBot} />
+            <>
+              <PluginDownload />
+              <PluginPairing botId={selectedBot} />
+            </>
           )}
 
           {currentPlatform.warning && (
