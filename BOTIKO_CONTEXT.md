@@ -821,7 +821,7 @@ Kanały: dashboard, email miesięczny raport
 
 ### Nasz positioning
 
-> "Botiko to jedyny bot obsługi klienta zaprojektowany specjalnie dla polskich mikrofirm usługowych. Gotowy szablon branżowy, polska komunikacja, RODO, wdrożenie w 15 minut. 99 zł miesięcznie."
+> "Botiko to bot obsługi klienta zaprojektowany specjalnie dla polskich mikrofirm usługowych. Gotowy szablon branżowy, polska komunikacja, RODO, wdrożenie w 15 minut. 99 zł miesięcznie."
 
 ---
 

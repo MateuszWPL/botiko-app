@@ -26,7 +26,7 @@ const LINKS = {
   Prawo: [
     { label: 'Polityka prywatności', href: '/prywatnosc' },
     { label: 'Regulamin', href: '/regulamin' },
-    { label: 'RODO / DPA', href: 'mailto:rodo@botiko.pl' },
+    { label: 'RODO / DPA', href: 'mailto:kontakt@botiko.pl' },
   ],
 };
 
@@ -90,7 +90,7 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs">
-            © {new Date().getFullYear()} Botiko.pl — Projekt z Białegostoku. Działamy w całej Polsce.
+            © {new Date().getFullYear()} Botiko.pl — bot AI dla polskich firm usługowych.
           </p>
           <div className="flex items-center gap-2 text-xs">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />

@@ -157,7 +157,7 @@ export default function TermsPage() {
                 Użytkownik jest administratorem danych osobowych Klientów końcowych (leadów) zebranych
                 przez bota i zobowiązany jest do przetwarzania ich zgodnie z RODO. Botiko.pl jest
                 podmiotem przetwarzającym w rozumieniu art. 28 RODO. Na wniosek możemy podpisać
-                umowę powierzenia (DPA) — pisz na rodo@botiko.pl.
+                umowę powierzenia (DPA) — pisz na kontakt@botiko.pl.
               </li>
               <li>
                 Zabronione jest używanie Botiko.pl do świadczenia usług niezgodnych z prawem,

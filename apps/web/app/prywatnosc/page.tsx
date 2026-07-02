@@ -35,7 +35,7 @@ export default function PrywatnoScPage() {
             <p className="text-slate-600 text-sm leading-relaxed">
               Administratorem danych osobowych jest <strong>Botiko.pl</strong> (kontakt: kontakt@botiko.pl).
               W sprawach dotyczących ochrony danych osobowych możesz skontaktować się z nami pod adresem:{' '}
-              <a href="mailto:rodo@botiko.pl" className="text-brand hover:underline">rodo@botiko.pl</a>.
+              <a href="mailto:kontakt@botiko.pl" className="text-brand hover:underline">kontakt@botiko.pl</a>.
             </p>
           </section>
 
@@ -104,7 +104,7 @@ export default function PrywatnoScPage() {
             </ul>
             <p className="text-slate-600 text-sm leading-relaxed mt-3">
               Aby skorzystać z praw, napisz na:{' '}
-              <a href="mailto:rodo@botiko.pl" className="text-brand hover:underline">rodo@botiko.pl</a>.
+              <a href="mailto:kontakt@botiko.pl" className="text-brand hover:underline">kontakt@botiko.pl</a>.
               Masz też prawo złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych (UODO).
             </p>
           </section>
@@ -134,7 +134,7 @@ export default function PrywatnoScPage() {
               Jeśli Twoja firma przetwarza dane osobowe przy użyciu Botiko.pl (np. leady od klientów) i jesteś zobowiązany
               do posiadania umowy powierzenia przetwarzania z podwykonawcami — możemy podpisać DPA.
               Napisz na:{' '}
-              <a href="mailto:rodo@botiko.pl" className="text-brand hover:underline">rodo@botiko.pl</a>.
+              <a href="mailto:kontakt@botiko.pl" className="text-brand hover:underline">kontakt@botiko.pl</a>.
             </p>
           </section>
 

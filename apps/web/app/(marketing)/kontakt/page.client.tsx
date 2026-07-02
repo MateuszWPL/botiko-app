@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import Image from 'next/image';
 import { webEnv } from '@/lib/env';
 
 type ContactTopic = 'DEMO' | 'WDROZENIE' | 'CENNIK' | 'WSPOLPRACA' | 'INNE';
@@ -258,8 +257,8 @@ export default function ContactPageClient() {
                 </div>
 
                 <p className="text-indigo-100 leading-relaxed" style={{ fontSize: '15px' }}>
-                  Pisze do Ciebie ktoś z zespołu Botiko — nie bot filtrujący zapytania, nie automatyczna kolejka.
-                  Odpowiadamy w ciągu 1 dnia roboczego.
+                  Piszę do Ciebie ja — Mateusz Woronowicz, twórca Botiko. Nie bot filtrujący zapytania,
+                  nie automatyczna kolejka. Odpiszę w ciągu 1 dnia roboczego.
                 </p>
 
                 <div
@@ -285,11 +284,11 @@ export default function ContactPageClient() {
                       overflow: 'hidden',
                     }}
                   >
-                    <Image src="/botiko-mark-white.svg" alt="" width={20} height={25} style={{ display: 'block' }} />
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: '#fff', letterSpacing: '0.02em' }}>MW</span>
                   </div>
                   <div style={{ minWidth: 0 }}>
-                    <p style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>Zespół Botiko</p>
-                    <p style={{ fontSize: '12px', color: '#A5B4FC' }}>Białystok · Polska</p>
+                    <p style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>Mateusz Woronowicz</p>
+                    <p style={{ fontSize: '12px', color: '#A5B4FC' }}>Twórca Botiko</p>
                   </div>
                 </div>
               </div>
@@ -374,7 +373,7 @@ export default function ContactPageClient() {
                     <textarea
                       value={message}
                       onChange={(e) => setMessage(e.currentTarget.value)}
-                      placeholder="Napisz krótko: branża, co sprzedajesz, jakie pytania zadają klienci, gdzie chcesz mieć bota (strona / Messenger / inne)."
+                      placeholder="Napisz krótko: branża, co sprzedajesz, jakie pytania zadają klienci, gdzie chcesz mieć bota (strona / inne)."
                       rows={6}
                       maxLength={4000}
                       className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/30 resize-none"
