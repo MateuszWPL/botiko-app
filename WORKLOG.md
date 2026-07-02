@@ -25,6 +25,16 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-02 (czwartek)
 
+### PR4 quick-winy: bugi produktowe P0/P1/P2 (po dokładnej analizie) — Claude — PR #92–95
+- Kontekst: analiza całego PR4 z `docs/PLAN-DZIALANIA.md` (3 równoległe agenty). Ustalenia zmieniające plan: P0.3 mobilny viewport **już zrobiony** (commit `0a7abec`); P0.2 podgląd z edycją **już istnieje**; „3 zdania" to dosłownie `about: "max 3 zdania"` w prompcie.
+- **#92 (P0.4)** ucinane odpowiedzi: RAG `maxTokens` 600→1000, powitania 150→200; `chatStream` łapie `finish_reason`, log przy `length`.
+- **#93 (P0.1/P0.3/P1.5)** widget: `onPrimary()` luminancja → `--botiko-on-primary` (kontrast przy jasnym kolorze), fallback `100dvh`, klikalne chipy z linkami w odpowiedziach. Build 13.5KB gzip (<14).
+- **#94 (P2.7 cleanup)** usunięty martwy route `/dashboard/knowledge-base`.
+- **#95 (P0.2)** skaner WWW: limity ekstrakcji w górę (services 20→40, faq 15→30, tekst 8k→14k, agregat 50k→90k, output 4k→8k), `about` „max 3 zdania"→„5-6 zdań", komunikat przy chudej treści (<600 zn.).
+- Odłożone (świadomie): **P1.6 karta mapy** (wymaga adresu w configu/SSE), **P0.2 headless render** (po pilotach), **P2.7 główne** — 1 pole „wklej cokolwiek" + endpoint klasyfikacji (duże, ~1-2 dni).
+- Review: security-reviewer + botiko-business (przy auto-lead), botiko-content (treści); wszystkie CI zielone, PR-y zmergowane.
+- Status: ✅ done (quick-winy); ⏸ 3 większe pozycje czekają na decyzję/kolejny sprint
+
 ### Auto-otwarcie formularza leada przy intencji kontaktu — Claude — PR #91 — branch feat/bot-auto-lead-form
 - Co zrobione: bot sam otwiera istniejące okienko leada (imię i nazwisko + telefon, bez zmian pól) gdy wykryje, że user zostawia/prosi o kontakt. Hybryda: tanie wzorce (regex e-mail/telefon + frazy) → dla niejasnych jedno tanie zapytanie gpt-4o-mini (TAK/NIE). Sygnał w done-event streamu, liczony równolegle (twardy 1s guard). Przy pewnej intencji podpowiedź w system prompcie, by bot słownie zaprosił do kontaktu. Widget: flag `autoOpened` (raz na sesję, ręczne zamknięcie respektowane).
 - Pliki/obszar: `apps/api/src/modules/chat/{message-sanitizer,chat.service}.ts` (+ spec), `apps/widget/src/ChatWindow.tsx`
