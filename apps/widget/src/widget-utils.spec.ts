@@ -8,8 +8,34 @@ import {
   parseSseFrames,
   loadSession,
   saveSession,
+  onPrimary,
   ABORT_ERROR_MSG,
 } from './widget-utils';
+
+// ── onPrimary — kontrastowy kolor tekstu na tle primary ──────────────────────
+
+describe('onPrimary — czytelny kolor na tle primary', () => {
+  it.each([
+    ['#6366F1', '#fff'], // indygo (domyślny) → biały
+    ['#0F172A', '#fff'], // ciemny → biały
+    ['#EC4899', '#fff'], // róż beauty → biały
+  ])('ciemne/nasycone tło %s → %s', (bg, fg) => {
+    expect(onPrimary(bg)).toBe(fg);
+  });
+
+  it.each([
+    ['#FDE047', '#0f172a'], // żółty → ciemny tekst
+    ['#FFFFFF', '#0f172a'], // biały → ciemny tekst
+    ['#A7F3D0', '#0f172a'], // jasny mięta → ciemny tekst
+  ])('jasne tło %s → %s', (bg, fg) => {
+    expect(onPrimary(bg)).toBe(fg);
+  });
+
+  it('zwraca biały dla niepoprawnego wejścia (fallback)', () => {
+    expect(onPrimary('#xyz')).toBe('#fff');
+    expect(onPrimary('')).toBe('#fff');
+  });
+});
 
 // ── isAdminPath ───────────────────────────────────────────────────────────────
 
