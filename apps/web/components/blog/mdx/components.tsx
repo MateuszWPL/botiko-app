@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { ComponentPropsWithoutRef } from 'react';
+import { Children, isValidElement, type ComponentPropsWithoutRef, type ReactNode } from 'react';
 import InfoBox from './InfoBox';
 import ImageGallery from './ImageGallery';
 import VideoEmbed from './VideoEmbed';
@@ -11,20 +11,12 @@ import { ComparisonTable } from './ComparisonTable';
 import { FAQ } from './FAQ';
 import { ROICalculator } from './ROICalculator';
 
-// Custom blog components available inside MDX files
-export const mdxComponents = {
-  InfoBox,
-  ImageGallery,
-  VideoEmbed,
-  CallToAction,
-  DownloadPdf,
-  Callout,
-  CTABlock,
-  ComparisonTable,
-  FAQ,
-  ROICalculator,
-
-  img: ({ src, alt }: ComponentPropsWithoutRef<'img'>) => (
+// Markdown images render as a <figure> (block element). Extracted to a named
+// component so the `p` renderer can detect a lone image child and skip the <p>
+// wrapper — otherwise a standalone markdown image becomes <figure> inside <p>,
+// which is invalid HTML and triggers a React hydration error.
+function BlogImage({ src, alt }: ComponentPropsWithoutRef<'img'>) {
+  return (
     <figure className="my-8">
       <div className="relative w-full rounded-xl overflow-hidden bg-slate-100">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -41,7 +33,30 @@ export const mdxComponents = {
         </figcaption>
       )}
     </figure>
-  ),
+  );
+}
+
+// True when a paragraph's children include a block-level image figure.
+function hasBlockImageChild(children: ReactNode): boolean {
+  return Children.toArray(children).some(
+    (child) => isValidElement(child) && child.type === BlogImage,
+  );
+}
+
+// Custom blog components available inside MDX files
+export const mdxComponents = {
+  InfoBox,
+  ImageGallery,
+  VideoEmbed,
+  CallToAction,
+  DownloadPdf,
+  Callout,
+  CTABlock,
+  ComparisonTable,
+  FAQ,
+  ROICalculator,
+
+  img: BlogImage,
 
   a: ({ href, children, ...rest }: ComponentPropsWithoutRef<'a'>) => {
     const isInternal = href?.startsWith('/') || href?.startsWith('#');
@@ -87,9 +102,11 @@ export const mdxComponents = {
     </h4>
   ),
 
-  p: ({ children }: ComponentPropsWithoutRef<'p'>) => (
-    <p className="text-slate-700 leading-relaxed mb-5">{children}</p>
-  ),
+  p: ({ children }: ComponentPropsWithoutRef<'p'>) => {
+    // A lone markdown image renders as a <figure> — never wrap it in <p>.
+    if (hasBlockImageChild(children)) return <>{children}</>;
+    return <p className="text-slate-700 leading-relaxed mb-5">{children}</p>;
+  },
 
   ul: ({ children }: ComponentPropsWithoutRef<'ul'>) => (
     <ul className="my-5 space-y-2 pl-0 list-none">{children}</ul>
