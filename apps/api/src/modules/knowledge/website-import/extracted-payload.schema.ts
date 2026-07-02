@@ -22,7 +22,7 @@ export const extractedPayloadSchema = z.object({
         sourceUrl: z.string().max(500).nullable().optional(),
       }),
     )
-    .max(20)
+    .max(40)
     .default([]),
   faq: z
     .array(
@@ -32,7 +32,7 @@ export const extractedPayloadSchema = z.object({
         sourceUrl: z.string().max(500).nullable().optional(),
       }),
     )
-    .max(15)
+    .max(30)
     .default([]),
   hours: z
     .object({

@@ -25,7 +25,7 @@ Schemat JSON który musisz zwrócić:
     { "question": "pytanie", "answer": "odpowiedź", "sourceUrl": "adres podstrony skąd pochodzi ta informacja lub null" }
   ],
   "hours": { "raw": "godziny otwarcia jako tekst lub null" },
-  "about": "krótki opis firmy (max 3 zdania) lub null"
+  "about": "opis firmy (max 5-6 zdań) lub null"
 }
 
 ATRYBUCJA ŹRÓDŁA:
@@ -39,13 +39,13 @@ ZASADY EKSTRAKCJI USŁUG I CEN:
 - Jeśli strona nie zawiera realnego cennika usług — zwróć pustą tablicę "services": []. Lepiej zwrócić mniej niż zmyślić.
 - Nie zgaduj cen. Nie uśredniaj. Przepisuj dokładnie tak, jak są na stronie.
 
-LIMITY: max 20 usług w "services", max 15 par w "faq".
+LIMITY: max 40 usług w "services", max 30 par w "faq".
 Ceny podawaj w formacie tekstowym dokładnie jak na stronie (np. "od 80 zł", "80-150 zł", "80 zł").
 Telefon preferuj w formacie +48 XXX XXX XXX.
 Zachowaj polskie znaki diakrytyczne.
 Jeśli dana sekcja nie jest dostępna w treści — zwróć null lub pustą tablicę [].`;
 
-const MAX_AGGREGATE_LENGTH = 50_000;
+const MAX_AGGREGATE_LENGTH = 90_000;
 
 export function buildExtractionMessages(
   pages: ExtractedPage[],
@@ -54,7 +54,7 @@ export function buildExtractionMessages(
   // Aggregate pages text with URL labels
   let aggregate = '';
   for (const page of pages) {
-    const section = `=== ${page.url} ===\n${page.title ? `Tytuł: ${page.title}\n` : ''}${page.headings.length > 0 ? `Nagłówki: ${page.headings.slice(0, 5).join(' | ')}\n` : ''}${page.phones.length > 0 ? `Telefony znalezione na stronie: ${page.phones.join(', ')}\n` : ''}${page.emails.length > 0 ? `Emaile znalezione na stronie: ${page.emails.join(', ')}\n` : ''}Treść: ${page.text.slice(0, 8_000)}\n===\n\n`;
+    const section = `=== ${page.url} ===\n${page.title ? `Tytuł: ${page.title}\n` : ''}${page.headings.length > 0 ? `Nagłówki: ${page.headings.slice(0, 5).join(' | ')}\n` : ''}${page.phones.length > 0 ? `Telefony znalezione na stronie: ${page.phones.join(', ')}\n` : ''}${page.emails.length > 0 ? `Emaile znalezione na stronie: ${page.emails.join(', ')}\n` : ''}Treść: ${page.text.slice(0, 14_000)}\n===\n\n`;
 
     if (aggregate.length + section.length > MAX_AGGREGATE_LENGTH) break;
     aggregate += section;
