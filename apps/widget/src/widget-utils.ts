@@ -7,6 +7,22 @@ export interface SessionData {
   leadSubmitted: boolean;
 }
 
+/**
+ * Picks a readable foreground (near-black or white) for text/icons sitting on
+ * top of the given hex background. YIQ luminance — cheap, no deps. Falls back
+ * to white for malformed input (keeps prior behaviour on odd values).
+ */
+export function onPrimary(hex: string): string {
+  const c = hex.replace('#', '');
+  if (c.length < 6) return '#fff';
+  const r = parseInt(c.slice(0, 2), 16);
+  const g = parseInt(c.slice(2, 4), 16);
+  const b = parseInt(c.slice(4, 6), 16);
+  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return '#fff';
+  // YIQ ≥ 140 → light background → use dark text; else white.
+  return (r * 299 + g * 587 + b * 114) / 1000 >= 140 ? '#0f172a' : '#fff';
+}
+
 /** Returns true when the current pathname is a CMS admin panel that should suppress the widget. */
 export function isAdminPath(pathname: string): boolean {
   return ['/wp-admin', '/wp-login.php', '/administrator'].some((p) =>

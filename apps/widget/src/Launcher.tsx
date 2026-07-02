@@ -178,7 +178,7 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
               <path
                 d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                stroke="white"
+                stroke="var(--botiko-on-primary, #fff)"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -199,7 +199,7 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path
                 d="M15 5L5 15M5 5l10 10"
-                stroke="white"
+                stroke="var(--botiko-on-primary, #fff)"
                 strokeWidth="2"
                 strokeLinecap="round"
               />
