@@ -25,6 +25,24 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-02 (czwartek)
 
+### Auto-otwarcie formularza leada przy intencji kontaktu — Claude — PR #91 — branch feat/bot-auto-lead-form
+- Co zrobione: bot sam otwiera istniejące okienko leada (imię i nazwisko + telefon, bez zmian pól) gdy wykryje, że user zostawia/prosi o kontakt. Hybryda: tanie wzorce (regex e-mail/telefon + frazy) → dla niejasnych jedno tanie zapytanie gpt-4o-mini (TAK/NIE). Sygnał w done-event streamu, liczony równolegle (twardy 1s guard). Przy pewnej intencji podpowiedź w system prompcie, by bot słownie zaprosił do kontaktu. Widget: flag `autoOpened` (raz na sesję, ręczne zamknięcie respektowane).
+- Pliki/obszar: `apps/api/src/modules/chat/{message-sanitizer,chat.service}.ts` (+ spec), `apps/widget/src/ChatWindow.tsx`
+- Review: security-reviewer (ReDoS/DoS/XSS — czysto, wejście ≤1000 zn.), botiko-business (w zakresie MVP); 156 testów zielonych, tsc+eslint OK, widget 13.2KB gzip
+- Status: ✅ done (PR do review CI)
+
+### Chronione pobieranie wtyczki WordPress z panelu — Claude — PR #90 — branch feat/wp-plugin-download
+- Co zrobione: sekcja „Pobierz wtyczkę Botiko" + baner w panelu (embed), plik ZIP (v1.0.6) commitowany poza `/public`, serwowany przez chroniony route Next.js z auth Supabase (`getUser()` → 401 dla niezalogowanych). `next.config` `outputFileTracingIncludes` wciąga ZIP do funkcji serverless. Poprawiona kopia `PluginPairing` (nie zakłada katalogu wp.org). Udokumentowany krok odświeżania w `PUBLISHING.md`.
+- Pliki/obszar: `apps/web/app/dashboard/embed/plugin-download/{route.ts,botiko-plugin.zip}`, `apps/web/app/dashboard/embed/EmbedCode.tsx`, `apps/web/next.config.mjs`, `wordpress-plugin/PUBLISHING.md`
+- Review: tsc+eslint OK; ZIP 15 plików, slug `botiko-ai-customer-service-bot/`
+- Status: ✅ done (PR do review CI)
+
+### Higiena treści web — stopka, karta kontaktu, maile kontakt@, FAQ płatności — Claude — PR #89 — branch fix/site-copy-emails
+- Co zrobione: stopka bez „Projekt z Białegostoku"; karta „Odpowiadam osobiście" na Mateusza Woronowicza (twórca Botiko); nagłówek o-nas w rzędzie flex (lewo/prawo); usunięcie Messengera z landingu; ujednolicenie maili user-facing do `kontakt@botiko.pl` (rodo@/pomoc@); sekcja FAQ o płatnościach w billing; „Cancel"→„Anuluj", usunięty claim „jedyny bot".
+- Pliki/obszar: `apps/web/components/marketing/{Footer,Problem,Hero}.tsx`, `apps/web/app/(marketing)/{kontakt,o-nas}/…`, `apps/web/app/{prywatnosc,regulamin,dashboard/help,dashboard/billing}/…`, `docs/content/bot-knowledge-base.md`, `BOTIKO_CONTEXT.md`
+- Review: botiko-content (poprawiony błąd gramatyczny + dwuznaczność rezerwacji); next lint + tsc czysto
+- Status: ✅ done (PR do review CI)
+
 ### Poprawki wtyczki WordPress po review wp.org (v1.0.6) — Claude — branch fix/wp-plugin-review-enqueue
 - Co zrobione (2 uwagi z review `P0TDX334837HGN`):
   - **Enqueue widgetu**: `Botiko_Embed` przepisane z surowego `printf('<script data-bot-id async>')` na `wp_footer` → `wp_enqueue_script()` na `wp_enqueue_scripts` (footer, strategia `async` przez `wp_script_add_data`, back-compat od WP 5.8). `data-bot-id` doklejane przez filtr `script_loader_tag`. Usunięte `phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript` — sniff przechodzi naturalnie.

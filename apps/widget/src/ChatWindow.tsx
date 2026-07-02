@@ -23,6 +23,9 @@ interface LeadFormState {
   submitted: boolean;
   loading: boolean;
   error: string | null;
+  /** True once the bot auto-opened the form — prevents re-opening after the
+   * user manually dismisses it. The manual "📞" button ignores this flag. */
+  autoOpened: boolean;
 }
 
 interface ChatWindowProps {
@@ -84,6 +87,7 @@ export function ChatWindow({
     submitted: initial.leadSubmitted,
     loading: false,
     error: null,
+    autoOpened: false,
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -275,8 +279,15 @@ export function ChatWindow({
               startReveal();
             } else if (ev.type === 'done') {
               revealRef.current.done = true;
-              if (ev.showLeadForm && !lead.submitted) {
-                setLead((s) => ({ ...s, visible: true }));
+              // Bot-driven auto-open: once per session. Skip if already submitted
+              // or already auto-opened (respects a manual dismiss). Read latest
+              // state in the updater to avoid a stale-closure race.
+              if (ev.showLeadForm) {
+                setLead((s) =>
+                  s.submitted || s.autoOpened
+                    ? s
+                    : { ...s, visible: true, autoOpened: true },
+                );
               }
             }
           }

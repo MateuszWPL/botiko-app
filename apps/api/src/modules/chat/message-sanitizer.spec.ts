@@ -1,4 +1,4 @@
-import { preprocessMessage } from './message-sanitizer';
+import { preprocessMessage, detectLeadIntent } from './message-sanitizer';
 
 describe('preprocessMessage', () => {
   describe('script / HTML injection', () => {
@@ -276,6 +276,46 @@ describe('preprocessMessage', () => {
       const result = preprocessMessage(input);
       expect(result.action).toBe('proceed');
       expect((result as { text: string }).text).toBe(input);
+    });
+  });
+});
+
+describe('detectLeadIntent', () => {
+  describe('hard — otwiera formularz od razu', () => {
+    it.each([
+      'Mój numer to 600 700 800, oddzwońcie proszę',
+      'proszę o kontakt',
+      'Chcę się umówić na wizytę',
+      'zostawiam kontakt: 601234567',
+      'napiszcie na jan.kowalski@gmail.com',
+      'Mój telefon 500-600-700',
+    ])('hard=true dla: %s', (input) => {
+      expect(detectLeadIntent(input).hard).toBe(true);
+    });
+  });
+
+  describe('soft — niejasne, dopiero pytamy model', () => {
+    it.each([
+      'Czy mogę umówić się na później?',
+      'Interesuje mnie wycena',
+      'Jaki jest kontakt do Was?',
+    ])('soft=true, hard=false dla: %s', (input) => {
+      const r = detectLeadIntent(input);
+      expect(r.hard).toBe(false);
+      expect(r.soft).toBe(true);
+    });
+  });
+
+  describe('brak intencji — nic nie otwiera', () => {
+    it.each([
+      'cześć',
+      'Ile kosztuje manicure?',
+      'Dzięki, super',
+      'Jakie są godziny otwarcia?',
+    ])('hard=false, soft=false dla: %s', (input) => {
+      const r = detectLeadIntent(input);
+      expect(r.hard).toBe(false);
+      expect(r.soft).toBe(false);
     });
   });
 });
