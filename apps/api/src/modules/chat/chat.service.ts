@@ -14,7 +14,7 @@ import {
   type ChatMessage,
 } from '../ai/ai.service.interface';
 import { getBrandTemplate } from '../../brand-templates';
-import { preprocessMessage } from './message-sanitizer';
+import { preprocessMessage, detectLeadIntent } from './message-sanitizer';
 import { isTenantOnline } from '../../common/tenant-status';
 
 export type ChatStreamEvent =
@@ -69,6 +69,16 @@ const ESCALATION_KEYWORDS = [
 function removeDiacritics(str: string): string {
   return str.normalize('NFD').replace(/\p{Diacritic}/gu, '');
 }
+
+/**
+ * Prompt for the cheap lead-intent classifier (used only for ambiguous "soft"
+ * signals from detectLeadIntent — see sendMessageStream).
+ */
+const LEAD_INTENT_CLASSIFIER_PROMPT =
+  'Jesteś klasyfikatorem intencji w czacie firmowym. Oceń, czy ostatnia ' +
+  'wiadomość użytkownika oznacza, że chce zostawić swój kontakt, prosi o ' +
+  'kontakt lub oddzwonienie, podaje swój numer telefonu albo e-mail, lub chce ' +
+  'umówić spotkanie/wizytę. Odpowiedz WYŁĄCZNIE jednym słowem: TAK albo NIE.';
 
 function isEscalationRequest(message: string): boolean {
   const normalized = removeDiacritics(message.toLowerCase());
@@ -451,12 +461,24 @@ export class ChatService {
       return;
     }
 
+    // ── Auto lead-form: hybrid intent detection ───────────────────────────
+    // Cheap regex/keyword pass first; escalate only ambiguous cases to a tiny
+    // model call (fired below, before streaming, so it resolves concurrently
+    // and adds ~0ms of user-visible latency).
+    const intent = detectLeadIntent(cleanMessage);
+
     // ── Normal RAG path — stream OpenAI with context ──────────────────────
-    const systemPrompt = buildSystemPrompt(
-      bot.name,
-      template.systemPrompt,
-      context,
-    );
+    // For confident (hard) intent, nudge the model to verbally invite the
+    // contact so the auto-opened form isn't a surprise (no reservations —
+    // the bot only collects the contact, per MVP scope).
+    const leadHint = intent.hard
+      ? '\n\nWAŻNE: Użytkownik chce zostawić kontakt lub prosi o kontakt. ' +
+        'Zakończ odpowiedź jednym krótkim, naturalnym zdaniem zachęcającym do ' +
+        'zostawienia imienia i numeru telefonu w formularzu kontaktowym obok — ' +
+        'oddzwonimy. Nie umawiaj wizyty ani terminu samodzielnie.'
+      : '';
+    const systemPrompt =
+      buildSystemPrompt(bot.name, template.systemPrompt, context) + leadHint;
 
     let conversation = await this.prisma.conversation.findFirst({
       where: { botId: req.botId, sessionId: req.sessionId },
@@ -488,6 +510,12 @@ export class ChatService {
       { role: 'user', content: `<user_message>${cleanMessage}</user_message>` },
     ];
 
+    const leadFormPromise: Promise<boolean> = intent.hard
+      ? Promise.resolve(true)
+      : intent.soft
+        ? this.classifyLeadIntent(cleanMessage)
+        : Promise.resolve(false);
+
     yield* this.streamAndPersist(
       bot.tenant.id,
       conversation.id,
@@ -495,7 +523,29 @@ export class ChatService {
       messages,
       { maxTokens: 600 },
       false,
+      leadFormPromise,
     );
+  }
+
+  /**
+   * Cheap yes/no classification for ambiguous lead intent. Single-word answer,
+   * gpt-4o-mini, invoked rarely (only when detectLeadIntent returns `soft`).
+   * Never throws — resolves to false on any error so the stream is unaffected.
+   */
+  private async classifyLeadIntent(message: string): Promise<boolean> {
+    try {
+      const result = await this.aiService.chat(
+        [
+          { role: 'system', content: LEAD_INTENT_CLASSIFIER_PROMPT },
+          { role: 'user', content: message.slice(0, 500) },
+        ],
+        { model: 'gpt-4o-mini', maxTokens: 5, temperature: 0 },
+      );
+      return result.content.trim().toUpperCase().startsWith('TAK');
+    } catch (e) {
+      this.logger.warn('Lead-intent classification failed', e as Error);
+      return false;
+    }
   }
 
   /**
@@ -511,6 +561,7 @@ export class ChatService {
     messages: ChatMessage[],
     options: { maxTokens: number },
     wasFallback: boolean,
+    leadForm?: Promise<boolean>,
   ): AsyncGenerator<ChatStreamEvent> {
     let accumulated = '';
     let tokenUsage = 0;
@@ -525,7 +576,25 @@ export class ChatService {
         }
       }
       completed = true;
-      yield { type: 'done' };
+      // Fold in the (concurrently-computed) lead-form signal. The classifier is
+      // usually already resolved by now; the 1s race is a hard guard so `done`
+      // never stalls on a slow model call. The timer is cleared either way so
+      // it never dangles past this response.
+      let showLeadForm = false;
+      if (leadForm) {
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const timeout = new Promise<boolean>((resolve) => {
+          timer = setTimeout(() => resolve(false), 1000);
+        });
+        try {
+          showLeadForm = await Promise.race([leadForm, timeout]);
+        } finally {
+          if (timer) clearTimeout(timer);
+        }
+      }
+      yield showLeadForm
+        ? { type: 'done', showLeadForm: true }
+        : { type: 'done' };
     } finally {
       // Persist whatever we have (even on early abort) so the conversation
       // history is intact. Empty assistant content can happen if OpenAI

@@ -225,3 +225,92 @@ export function preprocessMessage(raw: string): PreprocessResult {
 
   return { action: 'proceed', text: clean };
 }
+
+// ── Lead intent detection (auto-open lead form) ──────────────────────────────
+
+export interface LeadIntentSignal {
+  /** Confident the user is offering/asking for contact → open the form now. */
+  hard: boolean;
+  /** Ambiguous — worth a cheap model check before deciding. */
+  soft: boolean;
+}
+
+/** An email address anywhere in the message. */
+const EMAIL_RE = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i;
+/** A run of digits/separators long enough to be a phone number. */
+const PHONE_RE = /(?:\+?\d[\s\-().]?){9,}/;
+
+/** Explicit "contact me / here's my number" phrases (diacritic-insensitive). */
+const LEAD_INTENT_PHRASES = [
+  'prosze o kontakt',
+  'prosze o telefon',
+  'prosze o oddzwonienie',
+  'prosze o wycene',
+  'prosze sie skontaktowac',
+  'moj numer',
+  'moj telefon',
+  'moj mail',
+  'moj e-mail',
+  'moj adres',
+  'zadzwoncie',
+  'mozecie zadzwonic',
+  'skontaktujcie sie',
+  'chce sie umowic',
+  'umowcie mnie',
+  'chce sie zapisac',
+  'zapiszcie mnie',
+  'chce zostawic kontakt',
+  'zostawiam kontakt',
+  'moge zostawic',
+];
+
+/** Soft keywords: alone they don't open the form, only trigger the model check. */
+const LEAD_SOFT_KEYWORDS = [
+  'kontakt',
+  'telefon',
+  'mail',
+  'e-mail',
+  'umowic',
+  'spotkanie',
+  'wizyta',
+  'wycena',
+  'oferta',
+  'zapisac',
+  'rezerwacja',
+  'termin',
+  'zadzwonic',
+  'oddzwonic',
+];
+
+function normalizeForIntent(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
+}
+
+/**
+ * Heuristic first pass for "user wants to leave / is asking for contact".
+ * `hard` opens the lead form immediately; `soft` signals an ambiguous case
+ * worth escalating to a cheap model classification. Both false → do nothing.
+ *
+ * Note: some phrases overlap with ChatService's ESCALATION_KEYWORDS
+ * (e.g. "oddzwoń"). That's harmless — escalation is checked earlier and
+ * returns before this runs.
+ */
+export function detectLeadIntent(message: string): LeadIntentSignal {
+  const norm = normalizeForIntent(message);
+  const digitCount = (message.match(/\d/g) ?? []).length;
+
+  const hard =
+    EMAIL_RE.test(message) ||
+    (digitCount >= 9 && PHONE_RE.test(message)) ||
+    LEAD_INTENT_PHRASES.some((p) => norm.includes(p));
+
+  const soft =
+    !hard &&
+    (LEAD_SOFT_KEYWORDS.some((k) => norm.includes(k)) ||
+      (digitCount >= 6 && digitCount < 9));
+
+  return { hard, soft };
+}
