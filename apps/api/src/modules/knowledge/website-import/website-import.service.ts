@@ -266,6 +266,30 @@ export class WebsiteImportService {
         return;
       }
 
+      // Thin content: pages loaded but almost no extractable text (partial JS
+      // shell, page-builder splash, or a mostly-image site). Extracting would
+      // yield a near-empty knowledge base — tell the user instead of failing
+      // silently with "3 sentences".
+      const totalTextLength = scraperResult.pages.reduce(
+        (sum, p) => sum + p.text.length,
+        0,
+      );
+      if (totalTextLength < 600) {
+        await this.prisma.knowledgeImportJob.update({
+          where: { id: jobId },
+          data: {
+            status: 'FAILED',
+            errorCode: 'NO_CONTENT',
+            errorMessage:
+              'Twoja strona zwróciła bardzo mało tekstu — prawdopodobnie ładuje treść przez JavaScript. Wklej najważniejsze informacje ręcznie lub prześlij PDF.',
+            scrapedPages: scraperResult.scrapedUrls,
+            failedPages: scraperResult.failedUrls,
+            completedAt: new Date(),
+          },
+        });
+        return;
+      }
+
       // Update to EXTRACTING
       await this.prisma.knowledgeImportJob.update({
         where: { id: jobId },
@@ -320,7 +344,7 @@ export class WebsiteImportService {
     const messages = buildExtractionMessages(pages, industry);
     const result = await this.aiService.chat(messages, {
       model: 'gpt-4o',
-      maxTokens: 4000,
+      maxTokens: 8000,
       temperature: 0.1,
       responseFormat: { type: 'json_object' },
     });
@@ -333,7 +357,7 @@ export class WebsiteImportService {
       const retryMessages = buildRetryMessages(messages, result.content);
       const retryResult = await this.aiService.chat(retryMessages, {
         model: 'gpt-4o',
-        maxTokens: 4000,
+        maxTokens: 8000,
         temperature: 0.1,
         responseFormat: { type: 'json_object' },
       });
