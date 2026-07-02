@@ -17,6 +17,21 @@ CI (`.github/workflows/ci.yml`, job „WordPress plugin") buduje identyczny arte
 
 Paczka zawiera **tylko** pliki runtime z `wordpress-plugin/botiko/` (bez `composer.json`, `phpcs.xml.dist`, `.wordpress-org/`).
 
+### Aktualizacja pliku do pobrania z panelu
+
+Dashboard udostępnia wtyczkę zalogowanym użytkownikom przez chroniony route
+`apps/web/app/dashboard/embed/plugin-download/route.ts` (serwuje `botiko-plugin.zip`
+leżący obok route'a, poza `/public`). Po każdym wydaniu wtyczki odśwież ten plik:
+
+```bash
+./wordpress-plugin/build.sh
+cp wordpress-plugin/dist/botiko.zip apps/web/app/dashboard/embed/plugin-download/botiko-plugin.zip
+```
+
+Następnie zbumpuj `PLUGIN_VERSION` w `route.ts` do wersji z `botiko.php`
+(napędza nazwę pobieranego pliku `botiko-ai-customer-service-bot-<wersja>.zip`)
+oraz numer wersji w kopii „Pobierz wtyczkę" w `EmbedCode.tsx`.
+
 ---
 
 ## B. Zgłoszenie do WordPress.org (jednorazowo)
