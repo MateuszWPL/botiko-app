@@ -11,8 +11,7 @@
 
 - **Nazwa:** Botiko.pl
 - **Strona:** https://botiko.pl
-- **E-mail (ogólny / sprzedaż):** kontakt@botiko.pl
-- **E-mail (wsparcie techniczne):** pomoc@botiko.pl
+- **E-mail (kontakt / sprzedaż / wsparcie):** kontakt@botiko.pl
 - **Telefon:** 695 683 971
 - **Adres:** Białystok, woj. podlaskie, Polska
 - **Bot na stronie:** dostępny 24/7
@@ -166,7 +165,7 @@ Obecnie widget instalujemy na stronie WWW. Integracja z Facebook Messengerem i I
 ## 9. Wsparcie
 
 ### Jak uzyskać pomoc
-Napisz na **pomoc@botiko.pl** — odpowiadamy w ciągu 24 godzin w dni robocze (pon.–pt. 9:00–17:00). Im więcej kontekstu podasz, tym szybciej pomożemy — zrzuty ekranu bardzo przyspieszają sprawę. W sprawach sprzedażowych i ogólnych pisz na kontakt@botiko.pl lub dzwoń: 695 683 971.
+Napisz na **kontakt@botiko.pl** — odpowiadamy w ciągu 24 godzin w dni robocze (pon.–pt. 9:00–17:00). Im więcej kontekstu podasz, tym szybciej pomożemy — zrzuty ekranu bardzo przyspieszają sprawę. W sprawach sprzedażowych i ogólnych również pisz na kontakt@botiko.pl lub dzwoń: 695 683 971.
 
 ### Kiedy zobaczę pierwsze leady
 Zazwyczaj w ciągu 2–3 dni od instalacji widgetu, jeśli strona ma ruch. Bot zaczyna działać od razu, ale leady pojawiają się wtedy, gdy klienci zostawiają kontakt. Warto dobrze uzupełnić Bazę wiedzy — im więcej bot wie, tym lepiej odpowiada i tym częściej klient zostawia numer.

@@ -30,7 +30,7 @@ const PAINS = [
     Icon: BellMissed,
     title: 'Tracisz klientów o 22:00',
     description:
-      'Wiadomość na Messengerze o 22:14 — bez odpowiedzi do rana. Klient zapisuje się do konkurencji, która odpowiedziała w 30 sekund.',
+      'Klient pisze przez Twoją stronę o 22:14 — bez odpowiedzi do rana. Wybiera konkurencję, która odpowiedziała w 30 sekund.',
     stat: 'Minuty',
     statLabel: 'tyle wystarczy, żeby klient poszedł do konkurencji',
     color: '#EC4899',

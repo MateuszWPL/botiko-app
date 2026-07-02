@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-const SUPPORT_EMAIL = 'pomoc@botiko.pl';
+const SUPPORT_EMAIL = 'kontakt@botiko.pl';
 const SUPPORT_SUBJECT = 'Botiko — potrzebuję pomocy';
 
 // ── FAQ content ──

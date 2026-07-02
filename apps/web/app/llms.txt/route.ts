@@ -15,7 +15,7 @@ export function GET(): Response {
 
   const body = `# Botiko.pl
 
-> Botiko to bot obsługi klienta (AI) dla polskich mikro i małych firm usługowych — salonów beauty, gabinetów i SPA, restauracji oraz warsztatów samochodowych. Bot odpowiada na pytania klientów 24/7 na podstawie wiedzy firmy (cennik, godziny, usługi), zbiera leady i odsyła do rezerwacji w Booksy lub Calendly. Jeden plan: 99 zł miesięcznie, 14 dni za darmo, bez umowy. Projekt z Białegostoku, działa w całej Polsce.
+> Botiko to bot obsługi klienta (AI) dla polskich mikro i małych firm usługowych — salonów beauty, gabinetów i SPA, restauracji oraz warsztatów samochodowych. Bot odpowiada na pytania klientów 24/7 na podstawie wiedzy firmy (cennik, godziny, usługi), zbiera leady i odsyła do rezerwacji w Booksy lub Calendly. Jeden plan: 99 zł miesięcznie, 14 dni za darmo, bez umowy. Działa w całej Polsce.
 
 ## Kluczowe fakty
 - Produkt: bot obsługi klienta na stronę WWW (widget), natywnie zoptymalizowany pod WordPress.

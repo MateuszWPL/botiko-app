@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState, useTransition } from 'react';
-import { Loader2, Zap, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Loader2, Zap, AlertCircle, CheckCircle2, ChevronDown } from 'lucide-react';
 import { createCheckoutAction, createPortalAction } from './actions';
 
 interface BillingStatus {
@@ -246,6 +246,75 @@ export default function BillingClient({ status, fetchError }: Props) {
         />
         <span className="basis-full sm:basis-auto">— Botiko nie przechowuje danych karty.</span>
       </div>
+
+      <BillingFaq />
+    </div>
+  );
+}
+
+const BILLING_FAQ: { q: string; a: string }[] = [
+  {
+    q: 'Ile kosztuje Botiko i kiedy pobierana jest opłata?',
+    a: 'Jeden plan — 99 zł miesięcznie. Pierwsza opłata pobierana jest z Twojej karty dopiero po zakończeniu 14-dniowego okresu próbnego, a potem automatycznie co miesiąc. Żadnych ukrytych kosztów ani rocznych umów.',
+  },
+  {
+    q: 'Jak działa 14-dniowy okres próbny?',
+    a: 'Przez 14 dni masz pełny dostęp do Botiko za darmo. Karta jest wymagana dopiero przy rozpoczęciu subskrypcji. Jeśli nie wykupisz planu, po zakończeniu trialu bot po prostu przestaje odpowiadać — nic nie zostaje pobrane.',
+  },
+  {
+    q: 'Jak anulować subskrypcję?',
+    a: 'W dowolnym momencie kliknij „Zarządzaj subskrypcją" — przejdziesz do bezpiecznego panelu Stripe, gdzie jednym kliknięciem anulujesz plan. Bot działa do końca opłaconego okresu, bez żadnych zobowiązań na przyszłość.',
+  },
+  {
+    q: 'Czy dostanę fakturę?',
+    a: 'Tak. Faktury generowane są automatycznie przez Stripe i dostępne w panelu „Zarządzaj subskrypcją". Tam też ustawisz dane do faktury (nazwa firmy, NIP, adres).',
+  },
+  {
+    q: 'Jak zmienić kartę płatniczą?',
+    a: 'Wejdź w „Zarządzaj subskrypcją" → sekcja metod płatności w panelu Stripe. Możesz tam dodać nową kartę lub zmienić domyślną.',
+  },
+  {
+    q: 'Czy płatność jest bezpieczna?',
+    a: 'Tak. Wszystkie płatności obsługuje Stripe — światowy standard płatności online (certyfikat PCI DSS). Botiko nigdy nie widzi ani nie przechowuje danych Twojej karty.',
+  },
+  {
+    q: 'Co się stanie, gdy subskrypcja wygaśnie?',
+    a: 'Bot przestaje odpowiadać na wiadomości, ale Twoje konto, konfiguracja i baza wiedzy zostają nienaruszone. Po opłaceniu subskrypcji bot wraca do działania od razu.',
+  },
+];
+
+function BillingFaq() {
+  const [open, setOpen] = useState<number | null>(null);
+  return (
+    <div className="rounded-2xl border border-slate-200/60 bg-white/80 backdrop-blur-sm p-5">
+      <h2 className="text-sm font-semibold text-slate-900 mb-2">Najczęstsze pytania o płatności</h2>
+      <div className="divide-y divide-slate-100">
+        {BILLING_FAQ.map((item, i) => (
+          <div key={i}>
+            <button
+              type="button"
+              onClick={() => setOpen(open === i ? null : i)}
+              aria-expanded={open === i}
+              className="flex w-full items-center justify-between gap-3 py-3 text-left text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors cursor-pointer"
+            >
+              {item.q}
+              <ChevronDown
+                className={`w-4 h-4 flex-shrink-0 text-slate-400 transition-transform ${open === i ? 'rotate-180' : ''}`}
+              />
+            </button>
+            {open === i && (
+              <p className="pb-3 text-sm leading-relaxed text-slate-500">{item.a}</p>
+            )}
+          </div>
+        ))}
+      </div>
+      <p className="mt-4 text-xs text-slate-400">
+        Masz inne pytanie o płatności? Napisz na{' '}
+        <a href="mailto:kontakt@botiko.pl" className="text-indigo-600 hover:underline">
+          kontakt@botiko.pl
+        </a>
+        .
+      </p>
     </div>
   );
 }

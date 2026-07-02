@@ -561,7 +561,7 @@ export default function Hero() {
             </div>
 
             <p className="animate-hero-rise text-sm text-indigo-300" style={{ animationDelay: '0.35s' }}>
-              Karta kredytowa niewymagana · Konfiguracja w 15 minut · Cancel kiedy chcesz
+              Karta kredytowa niewymagana · Konfiguracja w 15 minut · Anuluj kiedy chcesz
             </p>
           </div>
 
