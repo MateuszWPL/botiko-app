@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { isAdminPath } from './widget-utils';
+import { isAdminPath, onPrimary } from './widget-utils';
 import { useState, useEffect } from 'preact/hooks';
 import { Launcher } from './Launcher';
 import { ChatWindow } from './ChatWindow';
@@ -149,7 +149,10 @@ async function init() {
   const styleEl = document.createElement('style');
   // Sanitize to hex color only — prevents CSS injection through the primaryColor value
   const safeColor = config.primaryColor.replace(/[^#0-9a-fA-F]/g, '');
-  styleEl.textContent = `:host { --botiko-primary: ${safeColor}; }`;
+  // Contrast-aware foreground for text/icons on the primary background — keeps
+  // the widget readable even when the tenant picks a light accent colour.
+  const onPrimaryColor = onPrimary(safeColor);
+  styleEl.textContent = `:host { --botiko-primary: ${safeColor}; --botiko-on-primary: ${onPrimaryColor}; }`;
   shadow.appendChild(styleEl);
 
   const mountPoint = document.createElement('div');
