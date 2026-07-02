@@ -1,10 +1,10 @@
 === Botiko — AI Customer Service Bot ===
-Contributors: botiko
+Contributors: mateuszworonowicz
 Tags: chatbot, customer service, live chat, lead generation, ai
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,9 @@ This plugin connects to the Botiko service so the customer-service bot can work:
 Use of the Botiko service is subject to its terms (https://botiko.pl/regulamin) and privacy policy (https://botiko.pl/prywatnosc).
 
 == Changelog ==
+
+= 1.0.6 =
+* The widget loader is now registered with `wp_enqueue_script()` (async loading strategy); the bot identifier is attached through the `script_loader_tag` filter.
 
 = 1.0.5 =
 * Text domain aligned with the plugin slug (WordPress.org requirement).
