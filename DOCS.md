@@ -22,6 +22,7 @@ Dodajesz / zmieniasz / usuwasz dokument? Zaktualizuj tę tabelę w tym samym com
 | **Architektura techniczna (3 apki, RAG, schema, integracje)** | [`docs/CODEMAPS/`](docs/CODEMAPS/INDEX.md) | ENG | zmiana architektury / modułów / schematu DB |
 | **Produkcyjne env + deploy (Railway/Vercel)** | [`docs/PRODUCTION_ENV.md`](docs/PRODUCTION_ENV.md) | PL | zmiana zmiennych środowiskowych / hostingu |
 | **Komendy AI / agenci / MCP — quick ref** | [`docs/AI-COMMANDS.md`](docs/AI-COMMANDS.md) | PL | zmiana zestawu agentów / komend |
+| **Plan działania (audyt strategiczny + sprinty naprawcze + bramka decyzyjna)** | [`docs/PLAN-DZIALANIA.md`](docs/PLAN-DZIALANIA.md) | PL | po bramce decyzyjnej / zmianie strategii |
 | **SEO/GEO — playbook (co zrobione, co off-page, backlog)** | [`docs/seo/PLAYBOOK.md`](docs/seo/PLAYBOOK.md) | PL | po każdym kroku SEO (on-page i off-page) |
 | **SEO — raporty / audyty (punkt w czasie)** | [`docs/seo/`](docs/seo/) | PL | nowy audyt → nowy plik `audyt-RRRR-MM-DD.md` |
 | **Treść: baza wiedzy bota (do wgrania)** | [`docs/content/bot-knowledge-base.md`](docs/content/bot-knowledge-base.md) | PL | zmiana oferty / FAQ / danych firmy |
@@ -48,6 +49,7 @@ Root (minimalny):
 docs/
   AGENT-WORKFLOW.md    — proces pracy z subagentami
   AI-COMMANDS.md       — quick ref komend AI
+  PLAN-DZIALANIA.md    — plan działania (audyt + sprinty naprawcze + bramka decyzyjna)
   PRODUCTION_ENV.md    — env + deploy
   CODEMAPS/            — architektura (INDEX + backend/frontend/widget/database/integrations)
   seo/                 — PLAYBOOK + raporty/audyty SEO
