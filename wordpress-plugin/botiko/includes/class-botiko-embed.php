@@ -114,7 +114,7 @@ class Botiko_Embed {
 			self::SCRIPT_HANDLE,
 			trailingslashit( BOTIKO_WIDGET_URL ) . 'embed.js',
 			array(),
-			null,
+			BOTIKO_VERSION,
 			true
 		);
 
