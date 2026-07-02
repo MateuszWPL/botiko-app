@@ -23,6 +23,17 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ---
 
+## 2026-07-02 (czwartek)
+
+### Audyt strategiczny + plan działania — Claude — branch docs/plan-dzialania
+- Co zrobione:
+  - **Pełny audyt strategiczny**: web research konkurencji (Tidio/Lyro, Smartsupp Mira, polska nisza: BeautyBoost AI, Smart-Asystenci, AutomatyzujSalon), benchmarki churnu SMB SaaS, dane GUS o stronach WWW mikrofirm; walkthrough na żywo botiko.pl + dashboard + widget (Chrome).
+  - **Zweryfikowane w kodzie defekty produktu**: hardkod `#fff` w `ChatWindow.tsx` (biały tekst na jasnym akcencie), skaner WWW bez renderu JS (`safe-fetch.ts`) + agresywne limity ekstrakcji, skaczący ekran mobile przy klawiaturze, ucinane odpowiedzi bota (demo live).
+  - **Nowy dokument** `docs/PLAN-DZIALANIA.md`: werdykt (cena 99 zł zostaje — najtańsza w segmencie; problem = dystrybucja + polish), sprinty naprawcze P0–P2 w dniach, higiena copy („Cancel kiedy chcesz" ×3 na landingu), plan sprzedaży (piloty done-for-you, „Start za Ciebie" 199 zł, partnerstwa z twórcami stron), bramka decyzyjna po 10 rozmowach, lista „czego NIE robić".
+- Pliki/obszar: `docs/PLAN-DZIALANIA.md` (nowy), `DOCS.md` (indeks)
+- Review: audyt oparty o dane (GSC/Senuto z audytu SEO 2026-06-30, research 2026-07); kod nie zmieniany
+- Status: ✅ raport gotowy · 🔄 sprinty naprawcze i sprzedaż wg planu
+
 ## 2026-07-01 (środa)
 
 ### Nowy wpis blogowy „Urlop bez utraty klientów" + fix lokalnego dev — Claude — branch feat/blog-urlop
