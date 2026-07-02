@@ -90,16 +90,22 @@ export class OpenAIProvider implements AIService {
     });
 
     let totalTokens = 0;
+    let finishReason: string | undefined;
     for await (const chunk of stream) {
       // Final usage chunk has empty choices; surface it via 'done'
       if (chunk.usage) {
         totalTokens = chunk.usage.total_tokens;
       }
-      const delta = chunk.choices[0]?.delta?.content;
+      const choice = chunk.choices[0];
+      // finish_reason arrives on the last content-bearing chunk ('stop' | 'length' | …)
+      if (choice?.finish_reason) {
+        finishReason = choice.finish_reason;
+      }
+      const delta = choice?.delta?.content;
       if (delta) {
         yield { type: 'delta', text: delta };
       }
     }
-    yield { type: 'done', tokenUsage: totalTokens };
+    yield { type: 'done', tokenUsage: totalTokens, finishReason };
   }
 }

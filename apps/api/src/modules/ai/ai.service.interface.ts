@@ -22,7 +22,7 @@ export interface ChatOptions {
 
 export type ChatStreamChunk =
   | { type: 'delta'; text: string }
-  | { type: 'done'; tokenUsage: number };
+  | { type: 'done'; tokenUsage: number; finishReason?: string };
 
 export interface AIService {
   generateEmbedding(text: string): Promise<EmbeddingResult>;

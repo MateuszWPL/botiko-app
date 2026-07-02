@@ -224,7 +224,7 @@ export class ChatService {
             content: `<user_message>${cleanMessage}</user_message>`,
           },
         ],
-        { maxTokens: 150 },
+        { maxTokens: 200 },
       );
       await this.persistMessages(
         conversationId,
@@ -307,7 +307,7 @@ export class ChatService {
       },
     ];
 
-    const result = await this.aiService.chat(messages, { maxTokens: 600 });
+    const result = await this.aiService.chat(messages, { maxTokens: 1000 });
 
     await this.persistMessages(conversation.id, cleanMessage, result.content);
 
@@ -427,7 +427,7 @@ export class ChatService {
             content: `<user_message>${cleanMessage}</user_message>`,
           },
         ],
-        { maxTokens: 150 },
+        { maxTokens: 200 },
         false,
       );
       return;
@@ -521,7 +521,7 @@ export class ChatService {
       conversation.id,
       cleanMessage,
       messages,
-      { maxTokens: 600 },
+      { maxTokens: 1000 },
       false,
       leadFormPromise,
     );
@@ -573,6 +573,13 @@ export class ChatService {
           yield { type: 'delta', text: chunk.text };
         } else {
           tokenUsage = chunk.tokenUsage;
+          // Observability: the model hit the token ceiling and the answer was
+          // cut mid-sentence. Log so we can tune maxTokens with real data.
+          if (chunk.finishReason === 'length') {
+            this.logger.warn(
+              `Answer truncated (finish_reason=length), conversation ${conversationId}`,
+            );
+          }
         }
       }
       completed = true;
