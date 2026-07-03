@@ -200,6 +200,7 @@ export function ChatWindow({
   });
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   // Reveal buffer for streaming: incoming tokens land in `pending` and a timer
   // drips them into the visible assistant message at a steady cadence. Decouples
@@ -255,13 +256,19 @@ export function ChatWindow({
     });
   }, [botId, sessionId, messages, userMessageCount, lead.submitted]);
 
+  // Auto-scroll to the latest message by scrolling ONLY the messages container.
+  // scrollIntoView() would scroll every scrollable ancestor incl. the document —
+  // on mobile with the keyboard open that made the whole screen jump on each
+  // streamed token. Setting the container's scrollTop never touches the window.
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const c = messagesContainerRef.current;
+    if (c) c.scrollTop = c.scrollHeight;
   }, [messages, isLoading]);
 
   // Klawiatura zmienia rozmiar viewportu — utrzymaj ostatnią wiadomość w polu widzenia
   useEffect(() => {
-    if (viewport) messagesEndRef.current?.scrollIntoView({ block: 'end' });
+    const c = messagesContainerRef.current;
+    if (viewport && c) c.scrollTop = c.scrollHeight;
   }, [viewport]);
 
   // Focus input when chat opens on desktop
@@ -561,7 +568,11 @@ export function ChatWindow({
           <button
             onClick={() => {
               setShowSuggestions((s) => {
-                if (!s) setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 30);
+                if (!s)
+                  setTimeout(() => {
+                    const c = messagesContainerRef.current;
+                    if (c) c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' });
+                  }, 30);
                 return !s;
               });
             }}
@@ -645,7 +656,7 @@ export function ChatWindow({
       )}
 
       {/* ── Messages (tylko gdy online) ── */}
-      {online && <div style={{
+      {online && <div ref={messagesContainerRef} style={{
         flex: 1,
         overflowY: 'auto',
         padding: '14px 12px 8px',
