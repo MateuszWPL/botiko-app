@@ -139,103 +139,7 @@ function parseFaq(content: string): { question: string; answer: string } | null 
 const inputClass =
   'w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 bg-white/70 transition-shadow';
 
-type Tab = 'contact' | 'faq' | 'text' | 'pdf' | 'web';
-
-// ── Tab: Contact info ──────────────────────────────────────────────────────────
-
-function ContactTab({
-  botId,
-  onAdd,
-}: {
-  botId: string;
-  onAdd: (chunk: Chunk) => void;
-}) {
-  const [form, setForm] = useState({
-    phone: '',
-    email: '',
-    address: '',
-    hours: '',
-    website: '',
-  });
-  const [saving, setSaving] = useState(false);
-  const getToken = useGetToken();
-
-  const save = async () => {
-    const lines = [
-      form.phone && `Telefon: ${form.phone}`,
-      form.email && `Email: ${form.email}`,
-      form.website && `Strona WWW: ${form.website}`,
-      form.address && `Adres: ${form.address}`,
-      form.hours && `Godziny otwarcia: ${form.hours}`,
-    ].filter(Boolean);
-
-    if (lines.length === 0) {
-      toast.error('Uzupełnij przynajmniej jedno pole');
-      return;
-    }
-
-    setSaving(true);
-    try {
-      const token = await getToken();
-      const content = lines.join('\n');
-      const res = await fetch(`${API_URL}/api/v1/knowledge/${botId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ content, category: 'kontakt' }),
-      });
-      if (!res.ok) throw new Error();
-      const { id } = (await res.json()) as { id: string };
-      onAdd({ id, content, category: 'kontakt', source: null, createdAt: new Date().toISOString() });
-      setForm({ phone: '', email: '', address: '', hours: '', website: '' });
-      toast.success('Dane kontaktowe dodane do bazy wiedzy');
-    } catch {
-      toast.error('Nie udało się zapisać danych');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <div className="space-y-4">
-      <p className="text-sm text-slate-500">
-        Te dane bot będzie podawał klientom gdy zapytają o kontakt, adres lub godziny.
-      </p>
-
-      <div>
-        <label className="block text-xs font-semibold text-slate-600 mb-1.5">Telefon</label>
-        <input type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} placeholder="Wpisz numer telefonu firmy" className={inputClass} />
-      </div>
-      <div>
-        <label className="block text-xs font-semibold text-slate-600 mb-1.5">Email</label>
-        <input type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} placeholder="kontakt@firma.pl" className={inputClass} />
-      </div>
-
-      <div>
-        <label className="block text-xs font-semibold text-slate-600 mb-1.5">Strona WWW</label>
-        <input type="url" value={form.website} onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))} placeholder="https://twoja-strona.pl" className={inputClass} />
-      </div>
-
-      <div>
-        <label className="block text-xs font-semibold text-slate-600 mb-1.5">Adres</label>
-        <input type="text" value={form.address} onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))} placeholder="ul. Przykładowa 1, Twoje Miasto" className={inputClass} />
-      </div>
-
-      <div>
-        <label className="block text-xs font-semibold text-slate-600 mb-1.5">Godziny otwarcia</label>
-        <input type="text" value={form.hours} onChange={(e) => setForm((f) => ({ ...f, hours: e.target.value }))} placeholder="Pon–Pt: 9:00–18:00, Sob: 10:00–15:00" className={inputClass} />
-      </div>
-
-      <button
-        onClick={() => void save()}
-        disabled={saving}
-        className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:opacity-90 disabled:opacity-40 text-white text-sm font-semibold rounded-xl transition-all hover:-translate-y-0.5 shadow-sm shadow-indigo-200 disabled:hover:translate-y-0"
-      >
-        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-        {saving ? 'Zapisuję...' : 'Dodaj dane kontaktowe'}
-      </button>
-    </div>
-  );
-}
+type Tab = 'faq' | 'text' | 'pdf' | 'web';
 
 // ── Tab: FAQ ───────────────────────────────────────────────────────────────────
 
@@ -747,7 +651,6 @@ function useGetToken() {
 // ── Tab config ─────────────────────────────────────────────────────────────────
 
 const TABS: { id: Tab; label: string; icon: React.ElementType; description: string }[] = [
-  { id: 'contact', label: 'Kontakt', icon: Phone, description: 'Telefon, email, adres, godziny' },
   { id: 'faq', label: 'FAQ', icon: HelpCircle, description: 'Pytania i odpowiedzi' },
   { id: 'text', label: 'Tekst', icon: FileText, description: 'Dowolna informacja o firmie' },
   { id: 'pdf', label: 'PDF', icon: FileUp, description: 'Wgraj dokument' },
@@ -767,7 +670,7 @@ export function KnowledgeManager({
 }) {
   const router = useRouter();
   const [chunks, setChunks] = useState(initialChunks);
-  const [activeTab, setActiveTab] = useState<Tab>('contact');
+  const [activeTab, setActiveTab] = useState<Tab>('faq');
   const [search, setSearch] = useState('');
   const [kindFilter, setKindFilter] = useState<CategoryKind | 'all'>('all');
 
@@ -861,7 +764,6 @@ export function KnowledgeManager({
             className="p-6"
             style={{ animation: 'botiko-tab-in 0.22s ease both' }}
           >
-            {activeTab === 'contact' && <ContactTab botId={botId} onAdd={addOne} />}
             {activeTab === 'faq' && <FaqTab botId={botId} onAdd={addOne} />}
             {activeTab === 'text' && <TextTab botId={botId} onAdd={addOne} />}
             {activeTab === 'pdf' && <PdfTab botId={botId} onAdd={addMany} />}

@@ -28,6 +28,12 @@ export interface BotData {
   companyName: string | null;
   companyPhone: string | null;
   companyAddress: string | null;
+  companyEmail: string | null;
+  nip: string | null;
+  owner: string | null;
+  websiteUrl: string | null;
+  googleMapsUrl: string | null;
+  reservationUrl: string | null;
   suggestedQuestions: string[];
   leadFormAfterMessages: number;
   avatarEmoji: string;

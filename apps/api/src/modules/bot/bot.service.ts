@@ -59,6 +59,12 @@ export interface BotDetail {
   companyName: string | null;
   companyPhone: string | null;
   companyAddress: string | null;
+  companyEmail: string | null;
+  nip: string | null;
+  owner: string | null;
+  websiteUrl: string | null;
+  googleMapsUrl: string | null;
+  reservationUrl: string | null;
   suggestedQuestions: string[];
   leadFormAfterMessages: number;
   avatarEmoji: string;
@@ -82,6 +88,12 @@ const BOT_SELECT = {
   companyName: true,
   companyPhone: true,
   companyAddress: true,
+  companyEmail: true,
+  nip: true,
+  owner: true,
+  websiteUrl: true,
+  googleMapsUrl: true,
+  reservationUrl: true,
   suggestedQuestions: true,
   leadFormAfterMessages: true,
   avatarEmoji: true,
@@ -301,6 +313,21 @@ export class BotService {
         ...(dto.companyAddress !== undefined && {
           companyAddress: dto.companyAddress,
         }),
+        // Links/email: store '' (cleared field) as null.
+        ...(dto.companyEmail !== undefined && {
+          companyEmail: dto.companyEmail || null,
+        }),
+        ...(dto.nip !== undefined && { nip: dto.nip || null }),
+        ...(dto.owner !== undefined && { owner: dto.owner || null }),
+        ...(dto.websiteUrl !== undefined && {
+          websiteUrl: dto.websiteUrl || null,
+        }),
+        ...(dto.googleMapsUrl !== undefined && {
+          googleMapsUrl: dto.googleMapsUrl || null,
+        }),
+        ...(dto.reservationUrl !== undefined && {
+          reservationUrl: dto.reservationUrl || null,
+        }),
         ...(dto.suggestedQuestions !== undefined && {
           suggestedQuestions: dto.suggestedQuestions,
         }),
@@ -438,6 +465,12 @@ export class BotService {
     companyName: string | null;
     companyPhone: string | null;
     companyAddress: string | null;
+    companyEmail: string | null;
+    nip: string | null;
+    owner: string | null;
+    websiteUrl: string | null;
+    googleMapsUrl: string | null;
+    reservationUrl: string | null;
     suggestedQuestions: string[];
     leadFormAfterMessages: number;
     avatarEmoji: string;

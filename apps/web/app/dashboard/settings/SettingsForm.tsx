@@ -671,6 +671,12 @@ interface FormState {
   companyName: string;
   companyPhone: string;
   companyAddress: string;
+  companyEmail: string;
+  nip: string;
+  owner: string;
+  websiteUrl: string;
+  googleMapsUrl: string;
+  reservationUrl: string;
   suggestedQuestions: string[];
   leadFormAfterMessages: number;
   avatarEmoji: string;
@@ -731,7 +737,7 @@ function TabKonto({
         </div>
       </SectionCard>
 
-      <SectionCard title="Dane firmy" subtitle='Bot używa tych danych aby odpowiadać na pytania "gdzie?", "kiedy?", "jak dojadę?".'>
+      <SectionCard title="Informacje o firmie" subtitle='Pewne dane firmy, których bot używa w odpowiedziach ("gdzie?", "jak dojadę?", "gdzie się umówić?"). Linki do map i rezerwacji bot podaje klientom na froncie.'>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-600 mb-1.5">Nazwa firmy</label>
@@ -776,6 +782,66 @@ function TabKonto({
               className={inputClass}
             />
           </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">E-mail</label>
+            <input
+              type="email"
+              value={form.companyEmail ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, companyEmail: e.target.value }))}
+              placeholder="kontakt@twojafirma.pl"
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Właściciel</label>
+            <input
+              type="text"
+              value={form.owner ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, owner: e.target.value }))}
+              placeholder="Imię i nazwisko"
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">NIP</label>
+            <input
+              type="text"
+              value={form.nip ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, nip: e.target.value }))}
+              placeholder="1234567890"
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Strona WWW</label>
+            <input
+              type="url"
+              value={form.websiteUrl ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, websiteUrl: e.target.value }))}
+              placeholder="https://twojafirma.pl"
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Link do Google Maps</label>
+            <input
+              type="url"
+              value={form.googleMapsUrl ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, googleMapsUrl: e.target.value }))}
+              placeholder="https://maps.app.goo.gl/..."
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Link do rezerwacji (Booksy / Calendly)</label>
+            <input
+              type="url"
+              value={form.reservationUrl ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, reservationUrl: e.target.value }))}
+              placeholder="https://booksy.com/..."
+              className={inputClass}
+            />
+          </div>
         </div>
         <p className="flex items-center gap-1.5 text-xs text-amber-600">
           <Lightbulb className="w-3.5 h-3.5 flex-shrink-0" />
@@ -809,6 +875,12 @@ export function SettingsForm({ bot }: { bot: BotData }) {
       companyName: bot.companyName ?? '',
       companyPhone: bot.companyPhone ?? '',
       companyAddress: bot.companyAddress ?? '',
+      companyEmail: bot.companyEmail ?? '',
+      nip: bot.nip ?? '',
+      owner: bot.owner ?? '',
+      websiteUrl: bot.websiteUrl ?? '',
+      googleMapsUrl: bot.googleMapsUrl ?? '',
+      reservationUrl: bot.reservationUrl ?? '',
       suggestedQuestions: bot.suggestedQuestions ?? [],
       leadFormAfterMessages: bot.leadFormAfterMessages ?? 3,
       avatarEmoji: bot.avatarEmoji ?? '',
@@ -878,6 +950,12 @@ export function SettingsForm({ bot }: { bot: BotData }) {
           companyName: form.companyName.trim() || null,
           companyPhone: form.companyPhone.trim() || null,
           companyAddress: form.companyAddress.trim() || null,
+          companyEmail: form.companyEmail.trim() || null,
+          nip: form.nip.trim() || null,
+          owner: form.owner.trim() || null,
+          websiteUrl: form.websiteUrl.trim() || null,
+          googleMapsUrl: form.googleMapsUrl.trim() || null,
+          reservationUrl: form.reservationUrl.trim() || null,
           suggestedQuestions: form.suggestedQuestions,
           leadFormAfterMessages: form.leadFormAfterMessages,
           avatarEmoji: form.avatarEmoji,
