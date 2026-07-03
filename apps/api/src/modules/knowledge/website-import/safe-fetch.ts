@@ -19,6 +19,10 @@ export interface SafeFetchOptions {
   maxBytes?: number;
   timeoutMs?: number;
   tenantWebsiteUrl?: string;
+  // Skip the HTML content-type gate. Used for sitemap discovery, where the
+  // body is XML — the SSRF guarantee (DNS pinning + redirect re-validation)
+  // still holds; only the content-type feature-check is relaxed.
+  allowAnyContentType?: boolean;
 }
 
 class FetchTimeoutError extends Error {
@@ -152,7 +156,12 @@ export async function safeFetch(
   url: URL,
   opts: SafeFetchOptions = {},
 ): Promise<SafeFetchResult> {
-  const { maxBytes = 512_000, timeoutMs = 10_000, tenantWebsiteUrl } = opts;
+  const {
+    maxBytes = 512_000,
+    timeoutMs = 10_000,
+    tenantWebsiteUrl,
+    allowAnyContentType = false,
+  } = opts;
 
   let currentUrl = url;
   let redirectCount = 0;
@@ -220,9 +229,9 @@ export async function safeFetch(
     }
 
     const contentType = response.contentType;
-    const isHtml = ACCEPTED_CONTENT_TYPES.some((t) =>
-      contentType.toLowerCase().includes(t),
-    );
+    const isHtml =
+      allowAnyContentType ||
+      ACCEPTED_CONTENT_TYPES.some((t) => contentType.toLowerCase().includes(t));
     if (!isHtml) {
       response.body.destroy();
       throw new BadRequestException({
