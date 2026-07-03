@@ -38,6 +38,7 @@ interface ChatWindowProps {
   onClose: () => void;
   online: boolean;
   companyPhone: string | null;
+  companyAddress: string | null;
   offlineMessage: string | null;
   businessHoursStart: number | null;
   businessHoursEnd: number | null;
@@ -97,6 +98,7 @@ export function ChatWindow({
   onClose,
   online,
   companyPhone,
+  companyAddress,
   offlineMessage,
   businessHoursStart,
   businessHoursEnd,
@@ -575,6 +577,46 @@ export function ChatWindow({
         flexDirection: 'column',
         gap: '8px',
       }}>
+        {/* Location card — shown when the business address is configured */}
+        {companyAddress && (
+          <div style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '8px',
+            padding: '10px 12px',
+            borderRadius: '12px',
+            background: '#f1f5f9',
+            border: '1px solid #e2e8f0',
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ flexShrink: 0, marginTop: '1px' }}>
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ fontSize: '13px', color: '#0f172a', lineHeight: 1.4, wordBreak: 'break-word' }}>
+                {companyAddress}
+              </div>
+              <a
+                href={'https://maps.google.com/?q=' + encodeURIComponent(companyAddress)}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-block',
+                  marginTop: '6px',
+                  padding: '3px 10px',
+                  borderRadius: '8px',
+                  backgroundColor: 'var(--botiko-primary, #6366F1)',
+                  color: 'var(--botiko-on-primary, #fff)',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                }}
+              >
+                Otwórz w Google Maps
+              </a>
+            </div>
+          </div>
+        )}
         {messages.map((msg, i) => (
           <div key={i} style={{
             display: 'flex',

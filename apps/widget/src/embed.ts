@@ -11,6 +11,7 @@ interface BotConfig {
   primaryColor: string;
   online: boolean;
   companyPhone: string | null;
+  companyAddress: string | null;
   offlineMessage: string | null;
   businessHoursStart: number | null;
   businessHoursEnd: number | null;
@@ -56,6 +57,7 @@ function Widget({
       onClose: () => setIsOpen(false),
       online: config.online,
       companyPhone: config.companyPhone,
+      companyAddress: config.companyAddress,
       offlineMessage: config.offlineMessage,
       businessHoursStart: config.businessHoursStart,
       businessHoursEnd: config.businessHoursEnd,
@@ -111,6 +113,7 @@ async function init() {
     primaryColor: '#6366F1',
     online: true,
     companyPhone: null,
+    companyAddress: null,
     offlineMessage: null,
     businessHoursStart: null,
     businessHoursEnd: null,
