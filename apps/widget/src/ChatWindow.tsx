@@ -243,6 +243,10 @@ export function ChatWindow({
     setMessages((prev) => [...prev, { role: 'user', content }]);
     setIsLoading(true);
     setUserMessageCount((n) => n + 1);
+    // Re-arm auto-open for this fresh message: if the user dismissed the form
+    // earlier and now explicitly asks again ("zapisz leada"), it should reopen.
+    // Once the lead is submitted we never reopen.
+    setLead((s) => (s.submitted ? s : { ...s, autoOpened: false }));
     revealRef.current = { pending: '', done: false, timer: null };
 
     try {

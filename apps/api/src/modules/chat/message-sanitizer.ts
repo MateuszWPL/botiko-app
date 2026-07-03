@@ -262,6 +262,15 @@ const LEAD_INTENT_PHRASES = [
   'chce zostawic kontakt',
   'zostawiam kontakt',
   'moge zostawic',
+  'zostaw moje dane',
+  'zapisz moje dane',
+  // Explicit "lead" vocabulary — users literally type these to request capture.
+  'zapisz mojego leada',
+  'zapisz leada',
+  'dodaj leada',
+  'nowy lead',
+  'chce zostawic leada',
+  'zapisz mnie jako lead',
 ];
 
 /** Soft keywords: alone they don't open the form, only trigger the model check. */
@@ -276,6 +285,8 @@ const LEAD_SOFT_KEYWORDS = [
   'wycena',
   'oferta',
   'zapisac',
+  'zapisz',
+  'lead',
   'rezerwacja',
   'termin',
   'zadzwonic',

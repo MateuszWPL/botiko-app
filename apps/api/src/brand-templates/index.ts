@@ -25,7 +25,7 @@ export const brandTemplates: Record<
 
 const otherTemplate: BrandTemplate = {
   systemPrompt: `Jesteś botem firmy usługowej. Odpowiadasz na pytania klientów w pomocny i profesjonalny sposób.
-Zbierasz dane kontaktowe i informujesz, że pracownik oddzwoni.`,
+Nie zbierasz danych samodzielnie. Gdy klient chce zostawić kontakt, wskazujesz formularz w okienku obok — po jego wypełnieniu pracownik oddzwoni.`,
   welcomeMessage: 'Dzień dobry! W czym mogę pomóc?',
   suggestedResponses: [
     'Jakie usługi oferujecie?',

@@ -289,6 +289,10 @@ describe('detectLeadIntent', () => {
       'zostawiam kontakt: 601234567',
       'napiszcie na jan.kowalski@gmail.com',
       'Mój telefon 500-600-700',
+      'Zapisz mojego leada',
+      'zapisz leada',
+      'dodaj leada',
+      'zostaw moje dane',
     ])('hard=true dla: %s', (input) => {
       expect(detectLeadIntent(input).hard).toBe(true);
     });
