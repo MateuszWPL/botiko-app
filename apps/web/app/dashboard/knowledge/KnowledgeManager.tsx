@@ -1059,7 +1059,7 @@ function WebTab({
           Automatyczny import danych
         </label>
         <p className="text-xs text-slate-500 mb-4">
-          Bot automatycznie pobierze informacje ze Twojej strony: usługi, FAQ, kontakt i cennik.
+          Bot automatycznie pobierze informacje z Twojej strony: usługi, FAQ, kontakt i cennik.
         </p>
         {showForm ? (
           <div className="mb-4">
