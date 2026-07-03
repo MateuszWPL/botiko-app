@@ -10,12 +10,21 @@ import {
 import { Plan, Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { AI_SERVICE, type AIService } from '../../ai/ai.service.interface';
+import {
+  AI_SERVICE,
+  type AIService,
+  type ChatMessage,
+} from '../../ai/ai.service.interface';
 import { EmbeddingService } from '../embedding.service';
+import {
+  sanitizeContent,
+  detectKnowledgeInjection,
+} from '../knowledge.service';
 import { validateAndNormalizeImportUrl } from './url-validator';
 import { WebsiteScraperService } from './website-scraper.service';
 import {
   buildExtractionMessages,
+  buildClassifyMessages,
   buildRetryMessages,
 } from './extraction-prompt';
 import {
@@ -24,6 +33,7 @@ import {
   type ExtractedPayload,
 } from './extracted-payload.schema';
 import type { ConfirmImportDto } from './dto/confirm-import.dto';
+import type { ClassifySaveDto } from './dto/classify-save.dto';
 import type { Industry } from '@prisma/client';
 
 export const PLAN_IMPORT_LIMITS: Record<
@@ -150,10 +160,11 @@ export class WebsiteImportService {
     });
 
     try {
-      const chunksCreated = await this.applyConfirmedChunks(
+      const chunksCreated = await this.saveConfirmedChunks(
         job.botId,
-        job.sourceUrl,
         dto,
+        `web:${job.sourceUrl}`,
+        { deletePriorSourceLike: 'web:%' },
       );
 
       await this.prisma.knowledgeImportJob.update({
@@ -337,11 +348,72 @@ export class WebsiteImportService {
     }
   }
 
+  /**
+   * Classify a single pasted text blob into structured knowledge (contact /
+   * services / faq / hours / about). Synchronous — no job row, no crawl. The
+   * per-route throttle guards LLM cost.
+   */
+  async classifyText(
+    tenantId: string,
+    botId: string,
+    text: string,
+  ): Promise<{ payload: ExtractedPayload; tokenUsage: number }> {
+    const bot = await this.prisma.bot.findFirst({
+      where: { id: botId, tenantId },
+      select: { id: true, tenant: { select: { industry: true } } },
+    });
+    if (!bot) throw new NotFoundException('Bot not found');
+
+    return this.runExtractionFromMessages(
+      buildClassifyMessages(text, bot.tenant.industry),
+    );
+  }
+
+  /**
+   * Persist the reviewed classify payload as knowledge chunks. Unlike the web
+   * import, it does NOT blanket-delete prior chunks (that semantics belongs to
+   * re-scraping a site) — pasted content is additive, tagged with a `paste:`
+   * source.
+   */
+  async saveClassifiedChunks(
+    tenantId: string,
+    botId: string,
+    dto: ClassifySaveDto,
+  ): Promise<{ chunksCreated: number }> {
+    const bot = await this.prisma.bot.findFirst({
+      where: { id: botId, tenantId },
+      select: { id: true },
+    });
+    if (!bot) throw new NotFoundException('Bot not found');
+
+    const chunksCreated = await this.saveConfirmedChunks(
+      botId,
+      dto,
+      `paste:${Date.now()}`,
+    );
+    this.logger.log(
+      `Classify-save: ${chunksCreated} chunks created for bot ${botId}`,
+    );
+    return { chunksCreated };
+  }
+
   private async extractWithRetry(
     pages: import('./content-extractor').ExtractedPage[],
     industry: Industry,
   ): Promise<{ payload: ExtractedPayload; tokenUsage: number }> {
-    const messages = buildExtractionMessages(pages, industry);
+    return this.runExtractionFromMessages(
+      buildExtractionMessages(pages, industry),
+    );
+  }
+
+  /**
+   * Shared LLM-extraction runner: gpt-4o json_object call with one retry on
+   * invalid JSON, then schema-validate + sanitize. Used by both the website
+   * import and the paste classifier.
+   */
+  private async runExtractionFromMessages(
+    messages: ChatMessage[],
+  ): Promise<{ payload: ExtractedPayload; tokenUsage: number }> {
     const result = await this.aiService.chat(messages, {
       model: 'gpt-4o',
       maxTokens: 8000,
@@ -385,19 +457,35 @@ export class WebsiteImportService {
     return { payload, tokenUsage: result.tokenUsage };
   }
 
-  private async applyConfirmedChunks(
+  /**
+   * Build + persist reviewed chunks. Shared by web-import confirm and paste
+   * classify-save. `source` is the full source string (e.g. `web:<url>` or
+   * `paste:<ts>`). `opts.deletePriorSourceLike` triggers a blanket delete
+   * before insert — only the web-import re-import flow uses it.
+   */
+  private async saveConfirmedChunks(
     botId: string,
-    sourceUrl: string,
     dto: ConfirmImportDto,
+    source: string,
+    opts?: { deletePriorSourceLike?: string },
   ): Promise<number> {
-    // Delete all previously imported web chunks for this bot (re-import replaces them)
-    await this.prisma.$executeRaw`
-      DELETE FROM "KnowledgeChunk"
-      WHERE "botId" = ${botId}
-      AND source LIKE 'web:%'
-    `;
+    if (opts?.deletePriorSourceLike) {
+      await this.prisma.$executeRaw`
+        DELETE FROM "KnowledgeChunk"
+        WHERE "botId" = ${botId}
+        AND source LIKE ${opts.deletePriorSourceLike}
+      `;
+    }
 
-    const chunksToCreate = buildChunksFromConfirm(dto, sourceUrl);
+    // Sanitize + drop injection-y chunks before persisting. The client edits the
+    // reviewed payload freely on /classify/save (and /confirm), so we must apply
+    // the same defence as addChunk/updateChunk — the /classify preview sanitizer
+    // only touched the copy returned for review, not what gets saved.
+    const chunksToCreate = buildChunksFromConfirm(dto, source)
+      .map((c) => ({ ...c, content: sanitizeContent(c.content) }))
+      .filter(
+        (c) => c.content.length >= 10 && !detectKnowledgeInjection(c.content),
+      );
     let created = 0;
 
     for (const { content, category, source } of chunksToCreate) {
@@ -441,10 +529,9 @@ interface ChunkSpec {
 
 function buildChunksFromConfirm(
   dto: ConfirmImportDto,
-  sourceUrl: string,
+  source: string,
 ): ChunkSpec[] {
   const chunks: ChunkSpec[] = [];
-  const source = `web:${sourceUrl}`;
 
   if (dto.contact?.selected) {
     const parts: string[] = ['Kontakt:'];

@@ -4,12 +4,14 @@ import { useState, useRef, useMemo, useEffect } from 'react';
 import {
   Plus, Trash2, Loader2, BookOpen, Phone, HelpCircle, FileText, FileUp,
   Check, X, Pencil, AlertCircle, Search, Mail, MapPin, Clock, Globe,
-  Sparkles, Filter, ChevronDown,
+  Sparkles, Filter, ChevronDown, Tag,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 import { createClient } from '../../../lib/supabase';
 import { EmptyStateClient } from '../../../components/ui/EmptyStateClient';
 import { WebsiteImportButton } from '../../../components/knowledge/WebsiteImportButton';
+import { PasteAnythingPanel } from '../../../components/knowledge/PasteAnythingPanel';
 
 interface Chunk {
   id: string;
@@ -23,7 +25,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 // ── Category visuals ───────────────────────────────────────────────────────────
 
-type CategoryKind = 'contact' | 'faq' | 'pdf' | 'text';
+type CategoryKind = 'contact' | 'faq' | 'pdf' | 'text' | 'services';
 
 interface CategoryVisual {
   kind: CategoryKind;
@@ -63,6 +65,15 @@ const CATEGORY_VISUALS: Record<CategoryKind, CategoryVisual> = {
     iconBgClass: 'bg-rose-100',
     iconColorClass: 'text-rose-600',
   },
+  services: {
+    kind: 'services',
+    label: 'Usługi',
+    icon: Tag,
+    chipClass: 'bg-violet-50 text-violet-700 border-violet-200',
+    borderClass: 'border-l-violet-400',
+    iconBgClass: 'bg-violet-100',
+    iconColorClass: 'text-violet-600',
+  },
   text: {
     kind: 'text',
     label: 'Tekst',
@@ -77,8 +88,9 @@ const CATEGORY_VISUALS: Record<CategoryKind, CategoryVisual> = {
 function kindFromCategory(category: string | null): CategoryKind {
   if (!category) return 'text';
   const c = category.toLowerCase();
-  if (c === 'kontakt' || c === 'contact') return 'contact';
+  if (c === 'kontakt' || c === 'contact' || c === 'godziny') return 'contact';
   if (c === 'faq') return 'faq';
+  if (c === 'usługi' || c === 'uslugi') return 'services';
   if (c.startsWith('pdf')) return 'pdf';
   return 'text';
 }
@@ -753,10 +765,18 @@ export function KnowledgeManager({
   initialChunks: Chunk[];
   tenantWebsiteUrl?: string | null;
 }) {
+  const router = useRouter();
   const [chunks, setChunks] = useState(initialChunks);
   const [activeTab, setActiveTab] = useState<Tab>('contact');
   const [search, setSearch] = useState('');
   const [kindFilter, setKindFilter] = useState<CategoryKind | 'all'>('all');
+
+  // Keep the list in sync when the server re-provides chunks (e.g. after a
+  // paste-classify save triggers router.refresh()). Manual tab adds update
+  // state optimistically and don't refresh, so this won't clobber them.
+  useEffect(() => {
+    setChunks(initialChunks);
+  }, [initialChunks]);
 
   const addOne = (chunk: Chunk) => setChunks((prev) => [chunk, ...prev]);
   const addMany = (newChunks: Chunk[]) => setChunks((prev) => [...newChunks, ...prev]);
@@ -765,7 +785,7 @@ export function KnowledgeManager({
     setChunks((prev) => prev.map((c) => (c.id === id ? { ...c, content } : c)));
 
   const counts = useMemo(() => {
-    const c: Record<CategoryKind, number> = { contact: 0, faq: 0, pdf: 0, text: 0 };
+    const c: Record<CategoryKind, number> = { contact: 0, faq: 0, pdf: 0, text: 0, services: 0 };
     for (const chunk of chunks) c[kindFromCategory(chunk.category)]++;
     return c;
   }, [chunks]);
@@ -794,42 +814,62 @@ export function KnowledgeManager({
 
       {/* ── LEFT COLUMN: Add section (sticky on desktop) ── */}
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden lg:sticky lg:top-6">
-        {/* Tabs */}
-        <div className="flex border-b border-slate-100">
-          {TABS.map((tab) => {
-            const Icon = tab.icon;
-            const active = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex flex-col items-center gap-1 py-3.5 px-2 text-xs font-semibold transition-all border-b-2 ${
-                  active
-                    ? 'border-indigo-500 text-indigo-600 bg-indigo-50/50'
-                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <Icon className={`w-4 h-4 ${active ? 'text-indigo-500' : 'text-slate-400'}`} />
-                <span className="hidden sm:block">{tab.label}</span>
-              </button>
-            );
-          })}
+        {/* Primary: paste anything → AI classifies */}
+        <div className="p-6">
+          <div className="flex items-center gap-2 mb-1">
+            <Sparkles className="w-4 h-4 text-indigo-500" />
+            <h3 className="text-sm font-bold text-slate-800">Dodaj wiedzę — wklej cokolwiek</h3>
+          </div>
+          <p className="text-xs text-slate-500 mb-3">
+            Wklej cennik, ofertę czy pytania klientów. AI poukłada to na wpisy, a Ty zatwierdzisz.
+          </p>
+          <PasteAnythingPanel botId={botId} onComplete={() => router.refresh()} />
         </div>
 
-        {/* Tab content */}
-        <div
-          key={activeTab}
-          className="p-6"
-          style={{ animation: 'botiko-tab-in 0.22s ease both' }}
-        >
-          {activeTab === 'contact' && <ContactTab botId={botId} onAdd={addOne} />}
-          {activeTab === 'faq' && <FaqTab botId={botId} onAdd={addOne} />}
-          {activeTab === 'text' && <TextTab botId={botId} onAdd={addOne} />}
-          {activeTab === 'pdf' && <PdfTab botId={botId} onAdd={addMany} />}
-          {activeTab === 'web' && (
-            <WebTab botId={botId} tenantWebsiteUrl={tenantWebsiteUrl} />
-          )}
-        </div>
+        {/* Secondary: manual entry (collapsed by default) */}
+        <details className="group border-t border-slate-100">
+          <summary className="flex items-center justify-between gap-2 px-6 py-3.5 cursor-pointer text-sm font-semibold text-slate-600 hover:bg-slate-50 select-none">
+            <span>Dodaj ręcznie</span>
+            <ChevronDown className="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" />
+          </summary>
+
+          {/* Tabs */}
+          <div className="flex border-t border-slate-100">
+            {TABS.map((tab) => {
+              const Icon = tab.icon;
+              const active = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 flex flex-col items-center gap-1 py-3.5 px-2 text-xs font-semibold transition-all border-b-2 ${
+                    active
+                      ? 'border-indigo-500 text-indigo-600 bg-indigo-50/50'
+                      : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 ${active ? 'text-indigo-500' : 'text-slate-400'}`} />
+                  <span className="hidden sm:block">{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Tab content */}
+          <div
+            key={activeTab}
+            className="p-6"
+            style={{ animation: 'botiko-tab-in 0.22s ease both' }}
+          >
+            {activeTab === 'contact' && <ContactTab botId={botId} onAdd={addOne} />}
+            {activeTab === 'faq' && <FaqTab botId={botId} onAdd={addOne} />}
+            {activeTab === 'text' && <TextTab botId={botId} onAdd={addOne} />}
+            {activeTab === 'pdf' && <PdfTab botId={botId} onAdd={addMany} />}
+            {activeTab === 'web' && (
+              <WebTab botId={botId} tenantWebsiteUrl={tenantWebsiteUrl} />
+            )}
+          </div>
+        </details>
       </div>
 
       {/* ── RIGHT COLUMN: Search, filters, chunks list ── */}
