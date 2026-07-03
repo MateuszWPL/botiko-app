@@ -16,6 +16,10 @@ import {
   type ChatMessage,
 } from '../../ai/ai.service.interface';
 import { EmbeddingService } from '../embedding.service';
+import {
+  sanitizeContent,
+  detectKnowledgeInjection,
+} from '../knowledge.service';
 import { validateAndNormalizeImportUrl } from './url-validator';
 import { WebsiteScraperService } from './website-scraper.service';
 import {
@@ -473,7 +477,15 @@ export class WebsiteImportService {
       `;
     }
 
-    const chunksToCreate = buildChunksFromConfirm(dto, source);
+    // Sanitize + drop injection-y chunks before persisting. The client edits the
+    // reviewed payload freely on /classify/save (and /confirm), so we must apply
+    // the same defence as addChunk/updateChunk — the /classify preview sanitizer
+    // only touched the copy returned for review, not what gets saved.
+    const chunksToCreate = buildChunksFromConfirm(dto, source)
+      .map((c) => ({ ...c, content: sanitizeContent(c.content) }))
+      .filter(
+        (c) => c.content.length >= 10 && !detectKnowledgeInjection(c.content),
+      );
     let created = 0;
 
     for (const { content, category, source } of chunksToCreate) {

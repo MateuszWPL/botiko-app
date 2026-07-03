@@ -16,6 +16,15 @@ const ERROR_MESSAGES: Record<string, string> = {
   INVALID_SCHEMA: 'Nie udało się poukładać danych — spróbuj ponownie lub dodaj ręcznie.',
 };
 
+/** Polish plural for "wpis" (entry): 1 wpis / 2-4 wpisy / 5+ wpisów. */
+function pluralWpisy(n: number): string {
+  if (n === 1) return 'wpis';
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) return 'wpisy';
+  return 'wpisów';
+}
+
 /** True when the classifier found nothing worth saving. */
 function isEmptyPayload(p: ExtractedPayload): boolean {
   const hasContact =
@@ -61,7 +70,7 @@ export function PasteAnythingPanel({ botId, onComplete }: Props) {
     setState('saving');
     try {
       const { chunksCreated } = await api.saveClassified(botId, confirmed);
-      toast.success(`Dodano ${chunksCreated} elementów wiedzy`);
+      toast.success(`Dodano ${chunksCreated} ${pluralWpisy(chunksCreated)} do bazy wiedzy`);
       setState('done');
       onComplete?.(chunksCreated);
     } catch (err) {
