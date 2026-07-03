@@ -36,12 +36,16 @@ ZASADY EKSTRAKCJI USŁUG I CEN:
 - Każda pozycja w "services" MUSI mieć sensowną nazwę usługi w polu "name". NIGDY nie zwracaj pozycji z pustą nazwą ani z samą ceną bez nazwy.
 - Cenę przypisuj WYŁĄCZNIE wtedy, gdy w treści jest jednoznacznie powiązana z konkretną usługą (np. w cenniku, na liście oferty). Jeśli nie masz pewności którą usługę dotyczy cena — zostaw "price": null.
 - Wyciągaj TYLKO ceny usług oferowanych przez tę firmę. IGNORUJ liczby z artykułów blogowych, materiałów marketingowych, przykładów, kalkulatorów ROI, statystyk, opinii klientów czy treści promocyjnych — to NIE są ceny usług.
-- Jeśli strona nie zawiera realnego cennika usług — zwróć pustą tablicę "services": []. Lepiej zwrócić mniej niż zmyślić.
+- Jeśli firma ma nazwane usługi, oferty, pakiety lub plany, ale bez podanej ceny — DODAJ je do "services" z "price": null (przepisanie nazwy oferty to nie zmyślanie). Pustą tablicę "services": [] zwróć tylko gdy naprawdę nie ma żadnych nazwanych usług/ofert.
 - Nie zgaduj cen. Nie uśredniaj. Przepisuj dokładnie tak, jak są na stronie.
+
+ZASADY FAQ I OPISU:
+- Dla stron informacyjnych/marketingowych buduj pary "faq" na podstawie nagłówków (H2/H3) i akapitów pod nimi — pytanie z nagłówka lub przeformułowane, odpowiedź PRZEPISANA dosłownie z treści (nie zmyślaj).
+- "about" może mieć 3-6 zdań opisujących czym firma się zajmuje.
 
 LIMITY: max 40 usług w "services", max 30 par w "faq".
 Ceny podawaj w formacie tekstowym dokładnie jak na stronie (np. "od 80 zł", "80-150 zł", "80 zł").
-Telefon preferuj w formacie +48 XXX XXX XXX.
+TELEFON: podawaj numer TYLKO jeśli jawnie występuje w treści lub w linku tel:. Jeśli nie ma pewnego numeru kontaktowego firmy — ustaw "phone": null. NIGDY nie zgaduj ani nie formatuj przypadkowych liczb jako numeru telefonu. Format: +48 XXX XXX XXX.
 Zachowaj polskie znaki diakrytyczne.
 Jeśli dana sekcja nie jest dostępna w treści — zwróć null lub pustą tablicę [].`;
 
@@ -54,7 +58,7 @@ export function buildExtractionMessages(
   // Aggregate pages text with URL labels
   let aggregate = '';
   for (const page of pages) {
-    const section = `=== ${page.url} ===\n${page.title ? `Tytuł: ${page.title}\n` : ''}${page.headings.length > 0 ? `Nagłówki: ${page.headings.slice(0, 5).join(' | ')}\n` : ''}${page.phones.length > 0 ? `Telefony znalezione na stronie: ${page.phones.join(', ')}\n` : ''}${page.emails.length > 0 ? `Emaile znalezione na stronie: ${page.emails.join(', ')}\n` : ''}Treść: ${page.text.slice(0, 14_000)}\n===\n\n`;
+    const section = `=== ${page.url} ===\n${page.title ? `Tytuł: ${page.title}\n` : ''}${page.headings.length > 0 ? `Nagłówki: ${page.headings.slice(0, 5).join(' | ')}\n` : ''}${page.phones.length > 0 ? `Możliwe numery telefonu (użyj TYLKO jeśli to pewny numer kontaktowy firmy, inaczej phone=null): ${page.phones.join(', ')}\n` : ''}${page.emails.length > 0 ? `Emaile znalezione na stronie: ${page.emails.join(', ')}\n` : ''}Treść: ${page.text.slice(0, 14_000)}\n===\n\n`;
 
     if (aggregate.length + section.length > MAX_AGGREGATE_LENGTH) break;
     aggregate += section;

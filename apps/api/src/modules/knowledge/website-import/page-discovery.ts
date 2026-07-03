@@ -14,6 +14,7 @@ const PRIORITY_PATH_PATTERNS = [
   /\/(godziny|hours|otwarcie)/i,
   /\/(menu|jedzenie|dania)/i,
   /\/(galeria|gallery)/i,
+  /\/(dla|branz|rozwiazania|produkt|funkcje|features|jak-to-dziala)/i,
 ];
 
 const PRIORITY_LINK_TEXTS = [
@@ -171,7 +172,9 @@ async function crawlHomepageLinks(
 
       const linkText = $(el).text().trim().toLowerCase();
       const score = scoreUrl(parsed.pathname, linkText);
-      if (score > 0) {
+      // Keep 0-scored internal pages too (industry/feature pages that match no
+      // priority pattern) — ranking still puts priority pages first.
+      if (score >= 0) {
         discovered.push({ url: normalized, score });
       }
     });

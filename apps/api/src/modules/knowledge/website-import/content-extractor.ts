@@ -9,8 +9,11 @@ export interface ExtractedPage {
   emails: string[];
 }
 
+// Phone regex with digit boundaries — must NOT be part of a longer digit run
+// (guards against NIP/REGON/timestamps). Used only as a fallback over VISIBLE
+// text; the primary source is tel: links (below).
 const POLISH_PHONE_RE =
-  /(?:\+?48[\s.-]?)?(?:\d{3}[\s.-]?\d{3}[\s.-]?\d{3}|\d{2}[\s.-]?\d{3}[\s.-]?\d{2}[\s.-]?\d{2})/g;
+  /(?<![\d/+])(?:\+?48[\s.-]?)?(?:\d{3}[\s.-]?\d{3}[\s.-]?\d{3}|\d{2}[\s.-]?\d{3}[\s.-]?\d{2}[\s.-]?\d{2})(?![\d])/g;
 
 const EMAIL_RE = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 
@@ -21,6 +24,23 @@ export function extractMainContent(
   url: string,
 ): ExtractedPage | null {
   const $ = cheerio.load(html);
+
+  // Contact from the ORIGINAL DOM (before noise removal) — the real phone/email
+  // almost always live in the footer / a tel:/mailto: link, exactly what gets
+  // stripped below. Prefer these authoritative sources over regex guessing.
+  const telPhones = new Set<string>();
+  const mailtoEmails = new Set<string>();
+  $('a[href^="tel:"]').each((_, el) => {
+    const num = ($(el).attr('href') ?? '').replace(/^tel:/i, '').trim();
+    if (num) telPhones.add(num);
+  });
+  $('a[href^="mailto:"]').each((_, el) => {
+    const addr = ($(el).attr('href') ?? '')
+      .replace(/^mailto:/i, '')
+      .split('?')[0]
+      .trim();
+    if (addr) mailtoEmails.add(addr);
+  });
 
   // Remove noise elements
   $(
@@ -74,13 +94,17 @@ export function extractMainContent(
     return null;
   }
 
-  // Extract contact info from raw HTML (before stripping)
-  const rawHtmlText = $.html();
-  const phones = [...new Set(rawHtmlText.match(POLISH_PHONE_RE) ?? [])].slice(
-    0,
-    5,
-  );
-  const emails = [...new Set(rawHtmlText.match(EMAIL_RE) ?? [])]
+  // Phones: prefer tel: links; only fall back to a boundary-guarded regex over
+  // VISIBLE text (never serialized HTML) so attribute/URL digit runs can't
+  // masquerade as a phone.
+  const phones =
+    telPhones.size > 0
+      ? [...telPhones].slice(0, 5)
+      : [...new Set(text.match(POLISH_PHONE_RE) ?? [])].slice(0, 5);
+
+  const emails = [
+    ...new Set([...mailtoEmails, ...(text.match(EMAIL_RE) ?? [])]),
+  ]
     .filter((e) => !e.includes('example') && !e.includes('domain'))
     .slice(0, 5);
 
