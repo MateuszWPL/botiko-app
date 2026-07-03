@@ -31,6 +31,15 @@ import {
   confirmImportSchema,
   type ConfirmImportDto,
 } from './website-import/dto/confirm-import.dto';
+import {
+  classifyTextSchema,
+  type ClassifyTextDto,
+} from './website-import/dto/classify-text.dto';
+import {
+  classifySaveSchema,
+  type ClassifySaveDto,
+} from './website-import/dto/classify-save.dto';
+import type { ExtractedPayload } from './website-import/extracted-payload.schema';
 
 // Write operations trigger OpenAI embedding calls — throttle to prevent
 // accidental or intentional API cost spikes (30 req/min per IP).
@@ -85,6 +94,32 @@ export class KnowledgeController {
     @CurrentTenant() tenantId: string,
   ): Promise<void> {
     return this.knowledgeService.deleteChunk(tenantId, chunkId);
+  }
+
+  // ─── Paste-anything classify endpoints ──────────────────────────────────
+
+  @Post(':botId/classify')
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @UsePipes(new ZodValidationPipe(classifyTextSchema))
+  classifyText(
+    @Param('botId') botId: string,
+    @Body() dto: ClassifyTextDto,
+    @CurrentTenant() tenantId: string,
+  ): Promise<{ payload: ExtractedPayload; tokenUsage: number }> {
+    return this.websiteImportService.classifyText(tenantId, botId, dto.text);
+  }
+
+  @Post(':botId/classify/save')
+  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @UsePipes(new ZodValidationPipe(classifySaveSchema))
+  saveClassified(
+    @Param('botId') botId: string,
+    @Body() dto: ClassifySaveDto,
+    @CurrentTenant() tenantId: string,
+  ): Promise<{ chunksCreated: number }> {
+    return this.websiteImportService.saveClassifiedChunks(tenantId, botId, dto);
   }
 
   // ─── Website Import endpoints ───────────────────────────────────────────

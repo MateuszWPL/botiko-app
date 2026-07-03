@@ -135,3 +135,27 @@ export function cancelImport(botId: string, jobId: string): Promise<void> {
     method: 'DELETE',
   });
 }
+
+// ── Paste-anything classify (synchronous, no job) ────────────────────────────
+
+/** Classify a pasted text blob into a structured (editable) payload. */
+export function classifyText(
+  botId: string,
+  text: string,
+): Promise<{ payload: ExtractedPayload; tokenUsage?: number }> {
+  return authFetch(`/api/v1/knowledge/${botId}/classify`, {
+    method: 'POST',
+    body: JSON.stringify({ text }),
+  });
+}
+
+/** Persist the reviewed classify payload as knowledge chunks. */
+export function saveClassified(
+  botId: string,
+  payload: ConfirmPayload,
+): Promise<{ chunksCreated: number }> {
+  return authFetch(`/api/v1/knowledge/${botId}/classify/save`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}

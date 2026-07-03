@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-const selectedContactSchema = z.object({
+export const selectedContactSchema = z.object({
   phone: z.string().max(60).nullable().optional(),
   email: z.string().max(200).nullable().optional(),
   address: z.string().max(400).nullable().optional(),
   selected: z.boolean(),
 });
 
-const selectedServiceSchema = z.object({
+export const selectedServiceSchema = z.object({
   name: z
     .string()
     .min(2, 'Nazwa usługi musi mieć minimum 2 znaki')
@@ -21,7 +21,7 @@ const selectedServiceSchema = z.object({
   selected: z.boolean(),
 });
 
-const selectedFaqSchema = z.object({
+export const selectedFaqSchema = z.object({
   question: z
     .string()
     .min(5, 'Pytanie musi mieć minimum 5 znaków')
@@ -33,21 +33,25 @@ const selectedFaqSchema = z.object({
   selected: z.boolean(),
 });
 
+export const selectedHoursSchema = z
+  .object({
+    raw: z.string().max(600).nullable().optional(),
+    selected: z.boolean(),
+  })
+  .nullable()
+  .optional();
+
+export const selectedAboutSchema = z
+  .object({ text: z.string().max(2000), selected: z.boolean() })
+  .nullable()
+  .optional();
+
 export const confirmImportSchema = z.object({
   contact: selectedContactSchema.nullable().optional(),
   services: z.array(selectedServiceSchema).max(20).default([]),
   faq: z.array(selectedFaqSchema).max(15).default([]),
-  hours: z
-    .object({
-      raw: z.string().max(600).nullable().optional(),
-      selected: z.boolean(),
-    })
-    .nullable()
-    .optional(),
-  about: z
-    .object({ text: z.string().max(2000), selected: z.boolean() })
-    .nullable()
-    .optional(),
+  hours: selectedHoursSchema,
+  about: selectedAboutSchema,
 });
 
 export type ConfirmImportDto = z.infer<typeof confirmImportSchema>;
