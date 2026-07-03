@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio';
 import type { RobotsRules } from './robots-parser';
-import { assertSafePublicHost } from './ssrf-guard';
+import { safeFetch } from './safe-fetch';
 
 const MAX_PAGES = 20;
 const MAX_SITEMAP_ENTRIES = 50;
@@ -80,20 +80,13 @@ async function trySitemaps(
 
   for (const sitemapUrl of candidates) {
     try {
-      // Validate each sitemap URL before fetching — robots.txt entries are attacker-controlled
-      const sitemapHost = new URL(sitemapUrl).hostname;
-      await assertSafePublicHost(sitemapHost);
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5_000);
-      const res = await fetch(sitemapUrl, {
-        headers: { 'User-Agent': 'BotikoBot/1.0 (+https://botiko.pl)' },
-        signal: controller.signal,
+      // robots.txt sitemap entries are attacker-controlled — safeFetch pins DNS
+      // and re-validates every redirect hop against the SSRF guard, closing the
+      // DNS-rebinding / redirect-SSRF gap a raw fetch() would leave open.
+      const { html: xml } = await safeFetch(new URL(sitemapUrl), {
+        timeoutMs: 5_000,
+        allowAnyContentType: true, // sitemaps are XML, not HTML
       });
-      clearTimeout(timeout);
-
-      if (!res.ok) continue;
-
-      const xml = await res.text();
       const matches = [
         ...xml.matchAll(/<loc>\s*(https?:\/\/[^<]+?)\s*<\/loc>/g),
       ];
@@ -130,17 +123,8 @@ async function crawlHomepageLinks(
   seen: Set<string>,
 ): Promise<Array<{ url: URL; score: number }>> {
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8_000);
-    const res = await fetch(origin.toString(), {
-      headers: { 'User-Agent': 'BotikoBot/1.0 (+https://botiko.pl)' },
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
-
-    if (!res.ok) return [];
-
-    const html = await res.text();
+    // safeFetch pins DNS and re-validates redirects (SSRF-safe), unlike fetch().
+    const { html } = await safeFetch(origin, { timeoutMs: 8_000 });
     const $ = cheerio.load(html);
     const discovered: Array<{ url: URL; score: number }> = [];
 

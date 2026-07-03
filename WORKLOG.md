@@ -25,6 +25,14 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-03 (piątek)
 
+### Testy DTO + audyt bezpieczeństwa świeżych zmian (SSRF fix) — Claude + security-reviewer — branch `test/dto-coverage-security`
+- Kontekst: prośba o dopisanie brakujących testów + audyt bezpieczeństwa. Ustalono, że 3 „brakujące" specy z backlogu (`chat-message.dto`, `create-contact.dto`, `auth.guard`) **już istnieją i są kompletne** — wpis w CLAUDE.md był nieaktualny (usunięty).
+- **Testy**: nowy `update-bot.dto.spec.ts` (45 przypadków) — pokrywa fix bezpieczeństwa `httpUrl` (blokada `javascript:`/`data:`/`ftp:` w linkach map/rezerwacji/WWW), walidację `companyEmail`/`nip`/`owner`, `allowedDomains` max 5, hex koloru, refine godzin. Suite API: 348 → 393 testy.
+- **Security audit** (7 plików z 6 ostatnich PR-ów): 6/7 bezpieczne — `getPublicConfig` nie wystawia `nip`/`owner`/`companyEmail` (allow-list), `nip`/`owner` nie trafiają do promptu, `linkify` tylko `https?:` (brak XSS), plugin-download chroniony 401.
+- **Znalezisko HIGH (naprawione)**: `page-discovery.ts` (`trySitemaps`, `crawlHomepageLinks`) używał surowego `fetch()` bez DNS pinningu — luka na DNS rebinding + redirect-SSRF (sitemap z robots.txt = attacker-controlled). Fix: podmiana na `safeFetch` (secureLookup + re-walidacja przekierowań); dodana flaga `allowAnyContentType` dla sitemap XML.
+- Review: security-reviewer (werdykt: 1 HIGH → wdrożony, reszta czysta).
+- Status: ✅ done
+
 ### Skaner WWW (zmyślony telefon + chuda ekstrakcja) + mobile scroll — Claude — PR #104, #105
 - Kontekst: feedback z testów. Analiza agentem + weryfikacja WebFetch (numer `+48 259 442 090` NIE ma go na botiko.pl).
 - **#105 skaner**: zmyślony telefon = NIE halucynacja, tylko regex (opcjonalny +48, brak granic cyfr) po pełnym HTML PO usunięciu stopki z prawdziwym `tel:`. Fix: `tel:`/`mailto:` z DOM przed strippingiem; regex fallback na widocznym tekście z granicami cyfr. Bogatsza ekstrakcja: oferty bez ceny → `price:null`, FAQ z nagłówków, `about` 3-6 zdań, wzorce stron branżowych w discovery. Nowe `content-extractor.spec`.

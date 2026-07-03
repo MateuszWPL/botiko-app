@@ -327,7 +327,6 @@ NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z bran
 - Komponenty MDX (FAQ, ROICalculator, ComparisonTable, CTABlock, Callout, InfoBox, ImageGallery, VideoEmbed, CallToAction) w `apps/web/components/blog/mdx/`
 
 **Backlog (drobne poprawki — nie blokują):**
-- Uzupełnić brakujące testy jednostkowe (chat-message.dto, create-contact.dto, auth.guard) — szczegóły w `TASK.md §1A.7`
 - Monitoring produkcyjny: Sentry + UptimeRobot (`TASK.md §2.4`)
 - Weryfikacja crona `trial-notifications` na produkcji (`TASK.md §1A.8`)
 
