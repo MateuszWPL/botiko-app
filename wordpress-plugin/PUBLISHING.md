@@ -20,12 +20,16 @@ Paczka zawiera **tylko** pliki runtime z `wordpress-plugin/botiko/` (bez `compos
 ### Aktualizacja pliku do pobrania z panelu
 
 Dashboard udostępnia wtyczkę zalogowanym użytkownikom przez chroniony route
-`apps/web/app/dashboard/embed/plugin-download/route.ts` (serwuje `botiko-plugin.zip`
-leżący obok route'a, poza `/public`). Po każdym wydaniu wtyczki odśwież ten plik:
+`apps/web/app/dashboard/embed/plugin-download/route.ts`. ZIP jest **osadzony jako
+base64** w module `botiko-plugin-base64.ts` (nie zależy od file-tracingu Vercela,
+który zawodził — download zwracał błąd `plugin-download.txt`). Po każdym wydaniu
+wtyczki odśwież ZIP, base64 i wersję:
 
 ```bash
 ./wordpress-plugin/build.sh
 cp wordpress-plugin/dist/botiko.zip apps/web/app/dashboard/embed/plugin-download/botiko-plugin.zip
+cd apps/web/app/dashboard/embed/plugin-download
+printf "/* eslint-disable */\nexport const PLUGIN_ZIP_BASE64 =\n  '%s';\n" "$(base64 -w0 botiko-plugin.zip)" > botiko-plugin-base64.ts
 ```
 
 Następnie zbumpuj `PLUGIN_VERSION` w `route.ts` do wersji z `botiko.php`

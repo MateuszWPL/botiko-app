@@ -818,10 +818,10 @@ export function KnowledgeManager({
         <div className="p-6">
           <div className="flex items-center gap-2 mb-1">
             <Sparkles className="w-4 h-4 text-indigo-500" />
-            <h3 className="text-sm font-bold text-slate-800">Dodaj wiedzę — wklej cokolwiek</h3>
+            <h3 className="text-sm font-bold text-slate-800">Dodaj wiedzę z tekstu</h3>
           </div>
           <p className="text-xs text-slate-500 mb-3">
-            Wklej cennik, ofertę czy pytania klientów. AI poukłada to na wpisy, a Ty zatwierdzisz.
+            Wklej cennik, ofertę lub pytania klientów — uporządkujemy tekst na gotowe wpisy, a Ty je zatwierdzisz.
           </p>
           <PasteAnythingPanel botId={botId} onComplete={() => router.refresh()} />
         </div>

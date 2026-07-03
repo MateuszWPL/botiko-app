@@ -79,6 +79,19 @@ export function PasteAnythingPanel({ botId, onComplete }: Props) {
     }
   };
 
+  const saveAsNote = async () => {
+    setState('saving');
+    try {
+      await api.saveTextNote(botId, text.trim());
+      toast.success('Zapisano jako wpis w bazie wiedzy');
+      setState('done');
+      onComplete?.(1);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : String(err));
+      setState('preview');
+    }
+  };
+
   const reset = () => {
     setState('idle');
     setText('');
@@ -100,17 +113,26 @@ export function PasteAnythingPanel({ botId, onComplete }: Props) {
       return (
         <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
           <p className="text-sm font-semibold text-amber-800 mb-1">
-            Nie znaleźliśmy danych do dodania
+            Nie rozpoznaliśmy struktury (cennik, FAQ, kontakt)
           </p>
           <p className="text-xs text-amber-700 mb-3">
-            Spróbuj wkleić więcej szczegółów (cennik, godziny, opis usług) albo dodaj wpisy ręcznie poniżej.
+            Możesz zapisać wklejony tekst jako zwykły wpis — bot i tak z niego skorzysta — albo wkleić inną treść.
           </p>
-          <button
-            onClick={reset}
-            className="text-xs font-semibold text-amber-700 hover:text-amber-800 underline"
-          >
-            Wklej ponownie
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={saveAsNote}
+              disabled={state === 'saving'}
+              className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-all disabled:opacity-50"
+            >
+              Zapisz jako notatkę
+            </button>
+            <button
+              onClick={reset}
+              className="px-3 py-2 text-xs font-semibold text-amber-700 hover:text-amber-800 underline"
+            >
+              Wklej ponownie
+            </button>
+          </div>
         </div>
       );
     }
@@ -172,7 +194,7 @@ export function PasteAnythingPanel({ botId, onComplete }: Props) {
       <textarea
         value={text}
         onChange={(e) => setText(e.currentTarget.value)}
-        placeholder="Wklej cokolwiek o swojej firmie — cennik, ofertę, najczęstsze pytania, godziny, adres. AI samo poukłada to na wpisy, a Ty tylko zatwierdzisz."
+        placeholder="Wklej tekst o firmie — cennik, ofertę, opis usług lub najczęstsze pytania. Uporządkujemy go automatycznie na gotowe wpisy, a Ty zatwierdzisz."
         rows={6}
         maxLength={90_000}
         className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/30 resize-y"
@@ -183,7 +205,7 @@ export function PasteAnythingPanel({ botId, onComplete }: Props) {
         className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Sparkles className="w-4 h-4" />
-        Przeanalizuj i dodaj
+        Przeanalizuj tekst
       </button>
     </div>
   );

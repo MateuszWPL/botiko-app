@@ -57,7 +57,6 @@ function Widget({
       onClose: () => setIsOpen(false),
       online: config.online,
       companyPhone: config.companyPhone,
-      companyAddress: config.companyAddress,
       offlineMessage: config.offlineMessage,
       businessHoursStart: config.businessHoursStart,
       businessHoursEnd: config.businessHoursEnd,

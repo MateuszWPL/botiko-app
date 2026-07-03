@@ -159,3 +159,16 @@ export function saveClassified(
     body: JSON.stringify(payload),
   });
 }
+
+/** Fallback: save raw pasted text as a single plain knowledge entry when the
+ * classifier found nothing structured. Capped at the knowledge endpoint's
+ * 4000-char limit. */
+export function saveTextNote(
+  botId: string,
+  content: string,
+): Promise<{ id: string }> {
+  return authFetch(`/api/v1/knowledge/${botId}`, {
+    method: 'POST',
+    body: JSON.stringify({ content: content.slice(0, 4000) }),
+  });
+}

@@ -49,7 +49,7 @@ const VALUES = [
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
       </svg>
     ),
-    title: 'Szybko ma działać, nie „za pół roku"',
+    title: 'Ma działać szybko, nie „za pół roku"',
     desc: 'Konfiguracja ~15 min. Wklejasz fragment kodu i bot startuje na Twojej stronie. Bez programisty, bez agencji.',
   },
   {
