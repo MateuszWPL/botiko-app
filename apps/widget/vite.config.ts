@@ -6,9 +6,9 @@ import { gzipSync } from 'zlib';
 import { readFileSync } from 'fs';
 import type { Plugin } from 'vite';
 
-// Bumped from 13 → 14KB to fit SSE streaming + reveal-buffer typewriter
-// (real-time typing UX). Trade-off accepted: substantial UX win for ~0.5KB.
-const MAX_GZIP_KB = 14;
+// Bumped 12 → 13 → 14 → 15KB. 15KB adds Markdown-aware links + rich map/booking
+// cards in bot answers (Google Maps / Booksy). Trade-off accepted: clear UX win.
+const MAX_GZIP_KB = 15;
 
 function bundleSizeCheck(): Plugin {
   return {

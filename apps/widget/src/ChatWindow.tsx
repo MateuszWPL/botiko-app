@@ -1,3 +1,4 @@
+import type { VNode } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import {
   errorMessageForStatus,
@@ -38,7 +39,6 @@ interface ChatWindowProps {
   onClose: () => void;
   online: boolean;
   companyPhone: string | null;
-  companyAddress: string | null;
   offlineMessage: string | null;
   businessHoursStart: number | null;
   businessHoursEnd: number | null;
@@ -49,39 +49,112 @@ interface ChatWindowProps {
 
 const CHAT_TIMEOUT_MS = 30_000;
 
-// Turn bare URLs in assistant text into styled, clickable chips. XSS-safe —
-// JSX text/attr nodes only (never innerHTML) and only http(s) is matched, so
-// javascript:/data: can't be injected. Colors use the shadow-DOM CSS vars so
-// the chip stays readable regardless of the tenant's primary colour.
-const URL_RE = /(https?:\/\/[^\s]+)/g;
-function linkify(text: string) {
-  return text.split(URL_RE).map((part, i) =>
-    /^https?:\/\//.test(part) ? (
-      <a
-        key={i}
-        href={part}
-        target="_blank"
-        rel="noopener noreferrer"
+// Render links inside assistant text. Handles Markdown links [text](url) AND
+// bare http(s) URLs (trailing punctuation trimmed). Map / booking links become
+// rich cards; everything else a styled chip. XSS-safe — JSX nodes only (never
+// innerHTML) and only http(s) is matched, so javascript:/data: can't slip in.
+const LINK_RE =
+  /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>()]+[^\s<>().,;!?])/g;
+const MAPS_RE = /maps\.google\.|google\.[a-z.]+\/maps|goo\.gl\/maps|maps\.app\.goo\.gl/i;
+const BOOKING_RE = /booksy\.|calendly\.|moment\.pl|versum\./i;
+
+const chipStyle = {
+  display: 'inline-block',
+  maxWidth: '100%',
+  padding: '2px 8px',
+  margin: '1px 0',
+  borderRadius: '6px',
+  backgroundColor: 'var(--botiko-primary, #6366F1)',
+  color: 'var(--botiko-on-primary, #fff)',
+  fontSize: '13px',
+  fontWeight: 600,
+  textDecoration: 'none',
+  wordBreak: 'break-all' as const,
+};
+
+function actionCard(url: string, label: string, icon: VNode, btn: string, key: number): VNode {
+  return (
+    <a
+      key={key}
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        margin: '6px 0',
+        padding: '10px 12px',
+        borderRadius: '12px',
+        background: '#f1f5f9',
+        border: '1px solid #e2e8f0',
+        textDecoration: 'none',
+        color: '#0f172a',
+      }}
+    >
+      {icon}
+      <span style={{ flex: 1, minWidth: 0, fontSize: '13px', fontWeight: 600, wordBreak: 'break-word' }}>
+        {label}
+      </span>
+      <span
         style={{
-          display: 'inline-block',
-          maxWidth: '100%',
-          padding: '2px 8px',
-          margin: '1px 0',
-          borderRadius: '6px',
+          padding: '4px 10px',
+          borderRadius: '8px',
+          flexShrink: 0,
           backgroundColor: 'var(--botiko-primary, #6366F1)',
           color: 'var(--botiko-on-primary, #fff)',
-          fontSize: '13px',
+          fontSize: '12px',
           fontWeight: 600,
-          textDecoration: 'none',
-          wordBreak: 'break-all',
+          whiteSpace: 'nowrap',
         }}
       >
-        {part}
-      </a>
-    ) : (
-      part
-    ),
+        {btn}
+      </span>
+    </a>
   );
+}
+
+const pinIcon = (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ flexShrink: 0 }}>
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+    <circle cx="12" cy="10" r="3" />
+  </svg>
+);
+const calIcon = (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ flexShrink: 0 }}>
+    <rect x="3" y="4" width="18" height="18" rx="2" />
+    <path d="M16 2v4M8 2v4M3 10h18" />
+  </svg>
+);
+
+function renderLink(url: string, label: string, key: number): VNode {
+  const isUrlLabel = /^https?:\/\//.test(label);
+  if (MAPS_RE.test(url)) {
+    return actionCard(url, isUrlLabel ? 'Zobacz lokalizację na mapie' : label, pinIcon, 'Otwórz w Google Maps', key);
+  }
+  if (BOOKING_RE.test(url)) {
+    return actionCard(url, isUrlLabel ? 'Rezerwacja online' : label, calIcon, 'Umów wizytę', key);
+  }
+  return (
+    <a key={key} href={url} target="_blank" rel="noopener noreferrer" style={chipStyle}>
+      {label}
+    </a>
+  );
+}
+
+function linkify(text: string): (string | VNode)[] {
+  const out: (string | VNode)[] = [];
+  let last = 0;
+  let key = 0;
+  for (const m of text.matchAll(LINK_RE)) {
+    const idx = m.index ?? 0;
+    if (idx > last) out.push(text.slice(last, idx));
+    const url = m[2] ?? m[3] ?? '';
+    out.push(renderLink(url, m[1] ?? url, key++));
+    last = idx + m[0].length;
+  }
+  if (last < text.length) out.push(text.slice(last));
+  return out;
 }
 // Reveal-buffer pacing — uniform typewriter feel regardless of whether tokens
 // arrive from OpenAI in small chunks or from a canned response as one blob.
@@ -98,7 +171,6 @@ export function ChatWindow({
   onClose,
   online,
   companyPhone,
-  companyAddress,
   offlineMessage,
   businessHoursStart,
   businessHoursEnd,
@@ -581,46 +653,6 @@ export function ChatWindow({
         flexDirection: 'column',
         gap: '8px',
       }}>
-        {/* Location card — shown when the business address is configured */}
-        {companyAddress && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '8px',
-            padding: '10px 12px',
-            borderRadius: '12px',
-            background: '#f1f5f9',
-            border: '1px solid #e2e8f0',
-          }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="2" style={{ flexShrink: 0, marginTop: '1px' }}>
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <div style={{ fontSize: '13px', color: '#0f172a', lineHeight: 1.4, wordBreak: 'break-word' }}>
-                {companyAddress}
-              </div>
-              <a
-                href={'https://maps.google.com/?q=' + encodeURIComponent(companyAddress)}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'inline-block',
-                  marginTop: '6px',
-                  padding: '3px 10px',
-                  borderRadius: '8px',
-                  backgroundColor: 'var(--botiko-primary, #6366F1)',
-                  color: 'var(--botiko-on-primary, #fff)',
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  textDecoration: 'none',
-                }}
-              >
-                Otwórz w Google Maps
-              </a>
-            </div>
-          </div>
-        )}
         {messages.map((msg, i) => (
           <div key={i} style={{
             display: 'flex',

@@ -1,8 +1,11 @@
-import { readFile } from 'node:fs/promises';
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase-server';
+import { PLUGIN_ZIP_BASE64 } from './botiko-plugin-base64';
 
-// Read cookies + filesystem at request time (never statically optimized).
+// Reads cookies at request time (never statically optimized). The ZIP is
+// embedded as base64 in a bundled module, so serving it does NOT depend on
+// Vercel file-tracing (which unreliably placed the raw .zip in the lambda,
+// causing the download to fail).
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -23,23 +26,14 @@ export async function GET() {
     return new NextResponse('Unauthorized', { status: 401 });
   }
 
-  // The ZIP lives next to this route (outside /public → never served statically).
-  // `new URL(..., import.meta.url)` is the pattern Vercel file-tracing detects.
-  const zipUrl = new URL('./botiko-plugin.zip', import.meta.url);
+  const bytes = new Uint8Array(Buffer.from(PLUGIN_ZIP_BASE64, 'base64'));
 
-  let buf: Buffer;
-  try {
-    buf = await readFile(zipUrl);
-  } catch {
-    return new NextResponse('Plik wtyczki jest chwilowo niedostępny.', { status: 500 });
-  }
-
-  return new NextResponse(new Uint8Array(buf), {
+  return new NextResponse(bytes, {
     status: 200,
     headers: {
       'Content-Type': 'application/zip',
       'Content-Disposition': `attachment; filename="${DOWNLOAD_FILENAME}"`,
-      'Content-Length': String(buf.byteLength),
+      'Content-Length': String(bytes.byteLength),
       'Cache-Control': 'private, no-store',
     },
   });
