@@ -26,6 +26,7 @@ export interface BotPublicConfig {
   primaryColor: string;
   online: boolean;
   companyPhone: string | null;
+  companyAddress: string | null;
   offlineMessage: string | null;
   businessHoursStart: number | null;
   businessHoursEnd: number | null;
@@ -177,6 +178,7 @@ export class BotService {
       primaryColor: rest.primaryColor,
       online,
       companyPhone: rest.companyPhone,
+      companyAddress: rest.companyAddress,
       offlineMessage: rest.offlineMessage,
       businessHoursStart: rest.businessHoursStart,
       businessHoursEnd: rest.businessHoursEnd,
