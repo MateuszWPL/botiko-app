@@ -25,6 +25,13 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-03 (piątek)
 
+### Skaner WWW (zmyślony telefon + chuda ekstrakcja) + mobile scroll — Claude — PR #104, #105
+- Kontekst: feedback z testów. Analiza agentem + weryfikacja WebFetch (numer `+48 259 442 090` NIE ma go na botiko.pl).
+- **#105 skaner**: zmyślony telefon = NIE halucynacja, tylko regex (opcjonalny +48, brak granic cyfr) po pełnym HTML PO usunięciu stopki z prawdziwym `tel:`. Fix: `tel:`/`mailto:` z DOM przed strippingiem; regex fallback na widocznym tekście z granicami cyfr. Bogatsza ekstrakcja: oferty bez ceny → `price:null`, FAQ z nagłówków, `about` 3-6 zdań, wzorce stron branżowych w discovery. Nowe `content-extractor.spec`.
+- **#104 mobile**: ekran skakał na mobile przy pisaniu bota (klawiatura otwarta) — `scrollIntoView` przewijał dokument przy każdym tokenie. Fix: przewijamy tylko kontener wiadomości.
+- Odłożone (do decyzji): pełny „informacyjny" kubełek w schemacie importu (retencja sekcji marketingowych) — większa zmiana, jeśli po tym nadal za chudo.
+- Status: ✅ done
+
 ### Naprawa leadów (krytyczne) + fixy UX + „Informacje o firmie" — Claude — PR #100, #101, #102
 - Kontekst: testy na żywo ujawniły błędy (część w głównym produkcie). Analiza 3 agentami (lead capture, pobieranie wtyczki/linki, dane firmy).
 - **#100 (KRYTYCZNE) lead capture**: bot kłamał „Twój lead został zapisany" (chat nigdy nie zapisuje — tylko formularz) i nie otwierał okienka na „zapisz mojego leada". Fix: reguła 11 w prompcie (nie udawaj zapisu, kieruj do formularza), przeredagowane szablony branżowe, słownik intencji (`zapisz leada`/`zostaw moje dane`…), reset `autoOpened` w widgecie.
