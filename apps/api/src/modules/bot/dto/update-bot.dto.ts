@@ -8,6 +8,23 @@ const dayScheduleSchema = z.object({
   end: z.number().int().min(0).max(24), // 24 = "open all day" flag
 });
 
+// http(s)-only URL (or empty string to clear). Rejects javascript:/data: schemes
+// that Zod's .url() would otherwise accept — defence-in-depth for anywhere these
+// links get rendered as an <a href> (widget map/reservation cards).
+const httpUrl = (max: number, msg: string) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .url(msg)
+    .refine(
+      (v) => /^https?:\/\//i.test(v),
+      'Link musi zaczynać się od http:// lub https://',
+    )
+    .or(z.literal(''))
+    .nullable()
+    .optional();
+
 export const updateBotSchema = z
   .object({
     name: z
@@ -56,30 +73,9 @@ export const updateBotSchema = z
       .optional(),
     nip: z.string().max(20).trim().optional().nullable(),
     owner: z.string().max(200).trim().optional().nullable(),
-    websiteUrl: z
-      .string()
-      .trim()
-      .max(500)
-      .url('Podaj poprawny link (z https://)')
-      .or(z.literal(''))
-      .nullable()
-      .optional(),
-    googleMapsUrl: z
-      .string()
-      .trim()
-      .max(1000)
-      .url('Podaj poprawny link do Google Maps')
-      .or(z.literal(''))
-      .nullable()
-      .optional(),
-    reservationUrl: z
-      .string()
-      .trim()
-      .max(500)
-      .url('Podaj poprawny link do rezerwacji')
-      .or(z.literal(''))
-      .nullable()
-      .optional(),
+    websiteUrl: httpUrl(500, 'Podaj poprawny link (z https://)'),
+    googleMapsUrl: httpUrl(1000, 'Podaj poprawny link do Google Maps'),
+    reservationUrl: httpUrl(500, 'Podaj poprawny link do rezerwacji'),
     suggestedQuestions: z
       .array(z.string().min(1).max(100).trim())
       .max(5, 'Maksymalnie 5 sugerowanych pytań')
