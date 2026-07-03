@@ -23,6 +23,16 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ---
 
+## 2026-07-03 (piątek)
+
+### Naprawa leadów (krytyczne) + fixy UX + „Informacje o firmie" — Claude — PR #100, #101, #102
+- Kontekst: testy na żywo ujawniły błędy (część w głównym produkcie). Analiza 3 agentami (lead capture, pobieranie wtyczki/linki, dane firmy).
+- **#100 (KRYTYCZNE) lead capture**: bot kłamał „Twój lead został zapisany" (chat nigdy nie zapisuje — tylko formularz) i nie otwierał okienka na „zapisz mojego leada". Fix: reguła 11 w prompcie (nie udawaj zapisu, kieruj do formularza), przeredagowane szablony branżowe, słownik intencji (`zapisz leada`/`zostaw moje dane`…), reset `autoOpened` w widgecie.
+- **#101 fixy UX**: pobieranie wtyczki (ZIP base64 w module — koniec `plugin-download.txt`, `import.meta.url` zawodził na Vercelu); `linkify` parsuje markdown `[url](url)` (koniec dublowania) + karty **Google Maps**/**Booksy** na żądanie, usunięta stała karta adresu; copy „Wklej cokolwiek"→„Dodaj wiedzę z tekstu"; fallback „Zapisz jako notatkę"; o-nas copy; limit widgetu 14→15KB.
+- **#102 „Informacje o firmie"**: migracja Bot (nip, owner, companyEmail, websiteUrl, googleMapsUrl, reservationUrl); sekcja w Ustawieniach; usunięta zdublowana zakładka Kontakt; **blok `=== DANE FIRMY ===` zawsze w prompcie** (nie RAG) — bot pewnie zna adres/mapę/rezerwację i podaje link (widget → karta). URL-e tylko http(s) (po review).
+- Review: security-reviewer (1 rekom. http(s) — wdrożona), botiko-content (blokery health/food + literówki — naprawione). CI zielone, wszystkie zmergowane.
+- Status: ✅ done
+
 ## 2026-07-02 (czwartek)
 
 ### P2.7 „Wklej cokolwiek" + P1.6 karta lokalizacji — Claude — PR #97, #98
