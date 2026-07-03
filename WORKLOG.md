@@ -25,6 +25,14 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-02 (czwartek)
 
+### P2.7 „Wklej cokolwiek" + P1.6 karta lokalizacji — Claude — PR #97, #98
+- Kontekst: dwie największe odłożone pozycje z `docs/PLAN-DZIALANIA.md`. Analiza 3 agentami (frontend/backend wiedzy + źródło adresu). Ustalenia: podgląd `WebsiteImportPreview` re-użyty 1:1; `Bot.companyAddress` już istniał end-to-end (bez migracji).
+- **#98 (P2.7)** — jedno pole „Wklej cokolwiek" → AI klasyfikuje wklejony tekst na wpisy (reuse pipeline'u website-import: `buildClassifyMessages`, `runExtractionFromMessages`, `saveConfirmedChunks` bez blanket-delete/prefix `paste:`). Nowe route `POST :botId/classify` + `/classify/save` (throttle 5/min), DTO 30–90k / services 40 / faq 30. Frontend: `PasteAnythingPanel` (reuse podglądu), panel wklej jako główny + zwijane „Dodaj ręcznie", kubełek „Usługi", `router.refresh`. **Security fix (HIGH)**: `saveConfirmedChunks` sanityzuje treść (`sanitizeContent`+`detectKnowledgeInjection`) — naprawia też istniejącą lukę w `confirmJob`. 340 testów zielonych.
+- **#97 (P1.6)** — karta lokalizacji w widgecie: `getPublicConfig` wystawia `companyAddress`, widget renderuje kartę (pin + adres + „Otwórz w Google Maps"). Build 13.7KB gzip. Bez migracji.
+- Review: security-reviewer (1 HIGH naprawiony) + botiko-content (odmiana liczebnika); CI zielone, oba PR zmergowane.
+- Odłożone dalej: **P0.2 headless render** (po pilotach), dedupe chunków po hashu (follow-up).
+- Status: ✅ done
+
 ### PR4 quick-winy: bugi produktowe P0/P1/P2 (po dokładnej analizie) — Claude — PR #92–95
 - Kontekst: analiza całego PR4 z `docs/PLAN-DZIALANIA.md` (3 równoległe agenty). Ustalenia zmieniające plan: P0.3 mobilny viewport **już zrobiony** (commit `0a7abec`); P0.2 podgląd z edycją **już istnieje**; „3 zdania" to dosłownie `about: "max 3 zdania"` w prompcie.
 - **#92 (P0.4)** ucinane odpowiedzi: RAG `maxTokens` 600→1000, powitania 150→200; `chatStream` łapie `finish_reason`, log przy `length`.
