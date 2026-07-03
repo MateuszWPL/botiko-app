@@ -95,6 +95,12 @@ model Bot {
   companyName           String?
   companyPhone          String?
   companyAddress        String?
+  companyEmail          String?
+  nip                   String?
+  owner                 String?
+  websiteUrl            String?
+  googleMapsUrl         String?
+  reservationUrl        String?
   suggestedQuestions    String[]       @default([])
   leadFormAfterMessages Int            @default(3)
   avatarEmoji           String         @default("")

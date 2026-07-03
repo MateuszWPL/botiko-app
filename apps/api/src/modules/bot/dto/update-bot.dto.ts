@@ -46,6 +46,40 @@ export const updateBotSchema = z
     companyName: z.string().max(200).trim().optional().nullable(),
     companyPhone: z.string().max(50).trim().optional().nullable(),
     companyAddress: z.string().max(500).trim().optional().nullable(),
+    companyEmail: z
+      .string()
+      .trim()
+      .max(200)
+      .email('Podaj poprawny adres e-mail')
+      .or(z.literal(''))
+      .nullable()
+      .optional(),
+    nip: z.string().max(20).trim().optional().nullable(),
+    owner: z.string().max(200).trim().optional().nullable(),
+    websiteUrl: z
+      .string()
+      .trim()
+      .max(500)
+      .url('Podaj poprawny link (z https://)')
+      .or(z.literal(''))
+      .nullable()
+      .optional(),
+    googleMapsUrl: z
+      .string()
+      .trim()
+      .max(1000)
+      .url('Podaj poprawny link do Google Maps')
+      .or(z.literal(''))
+      .nullable()
+      .optional(),
+    reservationUrl: z
+      .string()
+      .trim()
+      .max(500)
+      .url('Podaj poprawny link do rezerwacji')
+      .or(z.literal(''))
+      .nullable()
+      .optional(),
     suggestedQuestions: z
       .array(z.string().min(1).max(100).trim())
       .max(5, 'Maksymalnie 5 sugerowanych pytań')
