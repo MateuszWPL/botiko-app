@@ -181,8 +181,8 @@ const STEPS = [
   {
     num: '03',
     title: 'Bot pracuje za Ciebie',
-    desc: 'Natywna instalacja na WordPress (5 minut przez wtyczkę WPCode) lub fragment kodu HTML na każdej innej stronie. Bot odpowiada i zbiera leady 24/7.',
-    badge: 'Leady w panelu od razu',
+    desc: 'Zainstaluj oficjalną wtyczkę Botiko z katalogu WordPress.org albo wklej fragment kodu HTML na dowolnej innej stronie. Bot odpowiada i zbiera leady 24/7.',
+    badge: 'Wtyczka w katalogu WordPress.org',
     Mockup: MockupChat,
   },
 ];

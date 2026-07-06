@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '@/lib/supabase';
+import { WORDPRESS_PLUGIN_URL } from '@/lib/seo';
 import { EmptyStateClient } from '../../../components/ui/EmptyStateClient';
 
 export interface Bot {
@@ -395,26 +396,39 @@ function PluginDownload() {
     <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50/60 p-5">
       <div className="flex items-center gap-2 mb-1.5">
         <span className="inline-flex items-center rounded-full bg-emerald-600 px-2 py-0.5 text-[11px] font-semibold text-white">
-          Gotowe do pobrania
+          W katalogu WordPress.org
         </span>
-        <h3 className="text-sm font-bold text-slate-800">Pobierz wtyczkę Botiko</h3>
+        <h3 className="text-sm font-bold text-slate-800">Zainstaluj wtyczkę Botiko</h3>
       </div>
       <p className="text-sm text-slate-600 leading-relaxed mb-3">
-        Wtyczka jest gotowa i działa już teraz. Pobierz plik ZIP, a w panelu WordPress wejdź w&nbsp;
-        <span className="whitespace-nowrap">Wtyczki → Dodaj nową → Wyślij wtyczkę</span>, wgraj plik i&nbsp;aktywuj.
-        Następnie połącz stronę kodem poniżej. Publikacja w katalogu WordPress.org jest w&nbsp;trakcie weryfikacji.
+        Botiko ma oficjalną wtyczkę w katalogu WordPress.org. W panelu WordPress wejdź w&nbsp;
+        <span className="whitespace-nowrap">Wtyczki → Dodaj nową</span>, wyszukaj „Botiko”, zainstaluj
+        i&nbsp;aktywuj. Następnie połącz stronę kodem połączenia poniżej.
       </p>
-      <a
-        href="/dashboard/embed/plugin-download"
-        download
-        className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
-      >
-        <Download className="w-4 h-4" />
-        Pobierz wtyczkę (.zip)
-      </a>
+      <div className="flex flex-wrap gap-2">
+        <a
+          href={WORDPRESS_PLUGIN_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+        >
+          Zobacz w katalogu WordPress.org
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M7 17L17 7M17 7H8M17 7v9" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
+        <a
+          href="/dashboard/embed/plugin-download"
+          download
+          className="inline-flex items-center gap-2 rounded-lg border border-emerald-300 bg-white px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 transition-colors"
+        >
+          <Download className="w-4 h-4" />
+          Pobierz ZIP
+        </a>
+      </div>
       <p className="mt-2 flex items-start gap-1.5 text-xs text-slate-500">
         <Info className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-        Wersja 1.0.6 · plik dostępny tylko dla zalogowanych użytkowników.
+        Alternatywnie wgraj ZIP ręcznie: Wtyczki → Dodaj nową → Wyślij wtyczkę (plik tylko dla zalogowanych).
       </p>
     </div>
   );
@@ -484,7 +498,7 @@ function PluginPairing({ botId }: { botId: string }) {
         </h3>
       </div>
       <p className="text-sm text-slate-600 leading-relaxed mb-3">
-        Po zainstalowaniu wtyczki (pobierz ją wyżej) wygeneruj poniżej kod i
+        Po zainstalowaniu wtyczki z katalogu (lub z ZIP-a powyżej) wygeneruj poniżej kod i
         wklej go w&nbsp;<span className="whitespace-nowrap">Ustawienia → Botiko</span>.
         Kod pobierze Twojego bota i automatycznie autoryzuje domenę tej strony.
       </p>
@@ -711,6 +725,18 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
                 />
               </svg>
               <p className="text-sm text-amber-800">{currentPlatform.warning}</p>
+            </div>
+          )}
+
+          {activePlatform === 'wordpress' && (
+            <div className="mb-4 border-t border-slate-100 pt-5">
+              <p className="text-sm font-bold text-slate-800">
+                Wolisz bez wtyczki? Alternatywna metoda (WPCode)
+              </p>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Jeśli nie chcesz instalować oficjalnej wtyczki, ten sam kod wkleisz przez
+                darmową wtyczkę WPCode.
+              </p>
             </div>
           )}
 

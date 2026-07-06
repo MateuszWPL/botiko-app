@@ -15,6 +15,10 @@ export const MONTHLY_PRICE_PLN = '99';
 /** @id of the founder Person entity (defined in full by lib/author.ts on /o-nas). */
 export const FOUNDER_PERSON_ID = `${SITE_URL}/#person`;
 
+/** Official WordPress plugin — slug + canonical listing in the wp.org directory. */
+export const WORDPRESS_PLUGIN_SLUG = 'botiko-ai-customer-service-bot';
+export const WORDPRESS_PLUGIN_URL = `https://wordpress.org/plugins/${WORDPRESS_PLUGIN_SLUG}/`;
+
 /** Absolute URL helper — accepts a leading-slash path or a full URL. */
 export function absoluteUrl(path: string): string {
   if (path.startsWith('http')) return path;
@@ -81,6 +85,38 @@ export function breadcrumbListSchema(items: BreadcrumbEntry[]) {
       name: item.label,
       ...(item.href ? { item: absoluteUrl(item.href) } : {}),
     })),
+  };
+}
+
+/**
+ * SoftwareApplication entity for the official WordPress plugin. `sameAs` +
+ * `downloadUrl` point at the wordpress.org listing so classic search and
+ * generative engines resolve the plugin to our single "Botiko" entity and can
+ * surface the official install source. No `aggregateRating`/`softwareVersion`:
+ * the plugin has no reviews yet (fabricated ratings risk penalties) and a
+ * hardcoded version would drift out of sync with each release.
+ */
+export function softwareApplicationSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Botiko — wtyczka WordPress',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'WordPress',
+    url: `${SITE_URL}/integracje/wordpress`,
+    downloadUrl: WORDPRESS_PLUGIN_URL,
+    installUrl: WORDPRESS_PLUGIN_URL,
+    sameAs: [WORDPRESS_PLUGIN_URL],
+    inLanguage: 'pl-PL',
+    publisher: { '@id': `${SITE_URL}/#organization` },
+    offers: {
+      '@type': 'Offer',
+      price: MONTHLY_PRICE_PLN,
+      priceCurrency: 'PLN',
+      description: '14 dni za darmo, bez karty kredytowej',
+    },
+    description:
+      'Oficjalna wtyczka Botiko do WordPress — osadza bota obsługi klienta bez edycji motywu i łączy stronę jednym kodem. Bot odpowiada na pytania 24/7 i zbiera leady.',
   };
 }
 

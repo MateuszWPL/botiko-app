@@ -21,7 +21,7 @@ export const HOME_FAQS: FaqEntry[] = [
   },
   {
     q: 'Czy Botiko działa na WordPress?',
-    a: 'Tak — Botiko jest natywnie zoptymalizowane pod WordPress (~93% polskiego rynku CMS). Instalacja przez darmową wtyczkę WPCode zajmuje 5 minut, bez edycji motywu ani pomocy programisty. Pracujemy też nad dedykowaną wtyczką Botiko do katalogu WordPress.org — zapisz się na listę oczekujących: kontakt@botiko.pl. Skrypt działa również na każdej innej stronie WWW.',
+    a: 'Tak — Botiko ma oficjalną wtyczkę w katalogu WordPress.org. Instalujesz ją z panelu WordPress (Wtyczki → Dodaj nową → wyszukaj „Botiko”), aktywujesz i łączysz stronę jednym kodem — bez edycji motywu ani pomocy programisty. Skrypt działa również na każdej innej stronie WWW.',
   },
   {
     q: 'Jak długo trwa wdrożenie?',
@@ -97,10 +97,10 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: 'Jak zainstalować bota na stronie WordPress?',
-        a: 'Skopiuj fragment kodu z panelu Botiko, zainstaluj darmową wtyczkę WPCode w WordPress i wklej kod w sekcji „Header”. Bot pojawia się na stronie od razu — cała instalacja zajmuje około 5 minut, bez edycji motywu.',
+        a: 'Zainstaluj oficjalną wtyczkę Botiko z katalogu WordPress.org (Wtyczki → Dodaj nową → wyszukaj „Botiko”), aktywuj ją i połącz stronę jednym kodem z panelu Botiko — bez edycji motywu. Nie chcesz wtyczki? Ten sam kod wkleisz też przez darmową wtyczkę WPCode w sekcji „Header”.',
       },
       {
-        q: 'Czy bot AI zastąpi recepcjonistkę?',
+        q: 'Czy bot zastąpi recepcjonistkę?',
         a: 'Nie zastąpi, ale przejmuje powtarzalną część jej pracy. Bot odpowiada na pytania o cennik, godziny i dostępność oraz zbiera kontakt po godzinach i podczas obsługi innych klientów. Człowiek zajmuje się rozmowami, które wymagają empatii i decyzji.',
       },
       {
