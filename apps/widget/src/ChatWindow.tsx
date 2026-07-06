@@ -533,6 +533,7 @@ export function ChatWindow({
           height: '38px',
           borderRadius: '50%',
           backgroundColor: 'var(--botiko-avatar-bg, rgba(255,255,255,0.2))',
+          color: 'var(--botiko-avatar-fg, var(--botiko-on-primary, #fff))',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

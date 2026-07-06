@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { isAdminPath, onPrimary } from './widget-utils';
+import { isAdminPath, onPrimary, sanitizeHex } from './widget-utils';
 import { useState, useEffect } from 'preact/hooks';
 import { Launcher } from './Launcher';
 import { ChatWindow } from './ChatWindow';
@@ -9,6 +9,10 @@ interface BotConfig {
   name: string;
   welcomeMsg: string;
   primaryColor: string;
+  /** Manual override for text/icons on the accent — null = auto-contrast. */
+  textColor: string | null;
+  /** Manual override for the avatar/logo circle background — null = auto. */
+  logoBgColor: string | null;
   online: boolean;
   companyPhone: string | null;
   companyAddress: string | null;
@@ -110,6 +114,8 @@ async function init() {
     name: 'Botiko',
     welcomeMsg: 'Dzień dobry! W czym mogę pomóc?',
     primaryColor: '#6366F1',
+    textColor: null,
+    logoBgColor: null,
     online: true,
     companyPhone: null,
     companyAddress: null,
@@ -153,14 +159,32 @@ async function init() {
   const safeColor = config.primaryColor.replace(/[^#0-9a-fA-F]/g, '');
   // Contrast-aware foreground for text/icons on the primary background — keeps
   // the widget readable even when the tenant picks a light accent colour.
-  const onPrimaryColor = onPrimary(safeColor);
-  // Avatar/logo circle backdrop: frosted white on a dark accent, subtle dark
-  // tint on a light accent — so the logo never vanishes into a same-colour
-  // header when the tenant picks e.g. a white accent.
-  const lightAccent = onPrimaryColor !== '#fff';
-  const avatarBg = lightAccent ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.2)';
-  const avatarBorder = lightAccent ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.3)';
-  styleEl.textContent = `:host { --botiko-primary: ${safeColor}; --botiko-on-primary: ${onPrimaryColor}; --botiko-avatar-bg: ${avatarBg}; --botiko-avatar-border: ${avatarBorder}; }`;
+  const accentOn = onPrimary(safeColor);
+
+  // Text/icons on the accent: manual override if set, else auto-contrast.
+  const textOverride = sanitizeHex(config.textColor);
+  const onPrimaryColor = textOverride ?? accentOn;
+
+  // Avatar/logo circle: manual background if set (with contrast-matched border
+  // + foreground), else an auto backdrop — frosted white on a dark accent,
+  // subtle dark tint on a light accent — so the logo/initial never vanishes
+  // into a same-colour header.
+  const logoOverride = sanitizeHex(config.logoBgColor);
+  let avatarBg: string;
+  let avatarBorder: string;
+  let avatarFg: string;
+  if (logoOverride) {
+    avatarBg = logoOverride;
+    avatarFg = onPrimary(logoOverride);
+    avatarBorder =
+      avatarFg === '#fff' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)';
+  } else {
+    const lightAccent = accentOn !== '#fff';
+    avatarBg = lightAccent ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.2)';
+    avatarBorder = lightAccent ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.3)';
+    avatarFg = accentOn;
+  }
+  styleEl.textContent = `:host { --botiko-primary: ${safeColor}; --botiko-on-primary: ${onPrimaryColor}; --botiko-avatar-bg: ${avatarBg}; --botiko-avatar-border: ${avatarBorder}; --botiko-avatar-fg: ${avatarFg}; }`;
   shadow.appendChild(styleEl);
 
   const mountPoint = document.createElement('div');
