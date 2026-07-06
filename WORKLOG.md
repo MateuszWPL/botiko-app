@@ -23,6 +23,15 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ---
 
+## 2026-07-06 (poniedziałek)
+
+### Hardening puli DB — koniec szumu 57P01 w Sentry — Claude — branch `fix/db-pool-hardening`
+- Kontekst: Sentry (produkcja, free tier) złapało `DriverAdapterError: terminating connection due to administrator command` (Postgres 57P01) na endpointcie `GET /api/v1/conversations` — pooler Supabase (Supavisor) recyklinguje bezczynne połączenia, a pula `pg` oddawała do requestu zerwane połączenie → 500 dla usera.
+- Co zrobione (`apps/api/src/prisma/prisma.service.ts`): dodano `pool.on('error')` (loguje transient jako warn zamiast wypuszczać do Sentry), `keepAlive: true`, `maxUses: 7500` (rotacja połączeń), `connectionTimeoutMillis: 10s`. Handler po `super()` (ograniczenie `this` w konstruktorze klasy pochodnej).
+- Pliki/obszar: warstwa połączenia Prisma ↔ Supabase.
+- Review: self (tsc + eslint czyste); zmiana konfiguracyjna puli, bez wpływu na logikę.
+- Status: ✅ done — do obserwacji na Sentry; jeśli mimo to trafia do userów, kolejny krok = retry transient errors.
+
 ## 2026-07-03 (piątek)
 
 ### Testy DTO + audyt bezpieczeństwa świeżych zmian (SSRF fix) — Claude + security-reviewer — branch `test/dto-coverage-security`
