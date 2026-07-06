@@ -25,6 +25,14 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-06 (poniedziałek)
 
+### Blog WordPress — aktualizacja 2 postów + SEO check + audyt GSC — Claude + botiko-content — branch `fix/blog-wordpress-plugin-live`
+- Kontekst: po publikacji wtyczki w katalogu blog wciąż mówił „WPCode-first / wtyczka w przygotowaniu". Uruchomiono `blog-seo-check` (pillar) → wykryto realny bug + nieaktualną treść.
+- Pillar `botiko-dla-wordpress-przewodnik-2026.mdx`: usunięty **podwójny H1** (MDX `#` dublował `<h1>` z szablonu — jedyny post z tym problemem), `updatedAt: 2026-07-06`, instalacja przepisana (oficjalna wtyczka z katalogu = główny tor, WPCode = alternatywa), sekcja „roadmapa" → „wtyczka w katalogu", statystyka „93% (agencja WiWi)" → dane W3Techs z linkiem zewnętrznym, FAQ/case study zaktualizowane, excerpt skrócony.
+- Sibling `jak-ustawic-bota-na-wordpress-krok-po-kroku.mdx`: reorder „3 sposoby" (Sposób 1 = wtyczka z katalogu, 2 = WPCode, 3 = motyw), tabela/CTA/podsumowanie/FAQ/troubleshooting spójne z nowym torem, tag „chatbot AI" → „bot wordpress".
+- Review `botiko-content`: 0 blokerów marki, 4 uwagi (niespójności FAQ/troubleshooting) + 3 sugestie — wszystko naniesione.
+- **Audyt GSC** (przez claude-seo `gsc_inspect`/`gsc_query`, service account): sitemap czysty (0 błędów); **kluczowe strony /cennik, /integracje/wordpress i pillar są „unknown to Google"** (nie zaindeksowane) mimo bycia w sitemap i braku noindex → dyskretność/crawl budget przy zero-backlink. GSC Performance: kliknięcia tylko na „botiko" (brand, poz. 2,2); frazy niebrandowe poz. 43–98, 0 kliknięć. Potwierdza „sufit bez backlinków" z PLAYBOOK — wtyczka w katalogu (backlink DA~100) to pierwszy realny ruch w tej sprawie.
+- Status: 🔄 blog fixy gotowe (PR); GSC — czekam na treść maila od usera, by potwierdzić dokładny typ powiadomienia.
+
 ### Wtyczka WordPress LIVE — publikacja SVN + aktualizacja strony/panelu + baner + SEO — Claude + botiko-content + security-reviewer — branch `feat/wp-plugin-live-site`
 - Kontekst: wtyczka `botiko-ai-customer-service-bot` (v1.0.6) **zatwierdzona i opublikowana w katalogu WordPress.org** (pierwszy deploy SVN przez tag `1.0.6` → workflow `wp-deploy.yml`; API wp.org potwierdza download_link). Plugin URI = `botiko.pl/integracje/wordpress` → darmowy backlink DA~100 na tę stronę.
 - Korekty faktów: usunięto 4 nieaktualne „w przygotowaniu / lista oczekujących / w trakcie weryfikacji" (`EmbedCode.tsx`, `Pricing.tsx`, `lib/faq.ts`, strona integracji).
