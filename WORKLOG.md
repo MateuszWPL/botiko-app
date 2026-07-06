@@ -25,6 +25,15 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-06 (poniedziałek)
 
+### Fixy dashboard/widget — kontrast na jasnym akcencie, scroll ustawień, refresh sesji — Claude — [PR #112 | branch `fix/widget-contrast-settings-scroll-auth`]
+- Kontekst: 3 zgłoszenia usera — 401 przy nadpisywaniu wpisu w bazie wiedzy, zbędny pionowy scroll paska zakładek w Ustawieniach, znikające napisy/logo przy jasnym (białym) akcencie widgetu.
+- **401 „Missing authorization token"**: `getSession()` nie odświeżał wygasłego tokenu po bezczynności → pusty Bearer. Nowy `lib/auth-token.ts::getAccessToken()` (proaktywny refresh gdy brak tokenu lub <60 s do exp), podpięty pod bazę wiedzy i zapis ustawień + czytelny komunikat „Sesja wygasła…".
+- **Scroll zakładek**: `overflow-x-auto` wymusza `overflow-y:auto`, a `-mb-px` przycisków dawał 1px nadmiaru → dodane `overflow-y-hidden`.
+- **Kontrast jasnego akcentu**: realny widget już auto-kontrastuje tekst (`onPrimary`), ale podgląd w ustawieniach miał `text-white` na sztywno (naprawione — mirror `onPrimary` w `lib/contrast.ts`), a tło koła awatara/logo było białą półprzezroczystością w podglądzie i widgecie (nowe zmienne `--botiko-avatar-bg/-border` liczone z onPrimary). Rozwiązanie automatyczne — bez pola w DB/migracji; ręczny picker koloru = ewentualny follow-up.
+- Pliki: `apps/web/lib/{contrast,auth-token}.ts`, `settings/SettingsForm.tsx`, `knowledge/KnowledgeManager.tsx`, `apps/widget/src/{embed.ts,ChatWindow.tsx}`.
+- Weryfikacja: web `tsc`+`eslint` ✓; widget `tsc`+`vite build` (14,1 KB gzip) ✓ + `vitest` 49/49 ✓.
+- Status: ✅ done (PR #112, czeka na CI/merge)
+
 ### Blog WordPress — aktualizacja 2 postów + SEO check + audyt GSC — Claude + botiko-content — branch `fix/blog-wordpress-plugin-live`
 - Kontekst: po publikacji wtyczki w katalogu blog wciąż mówił „WPCode-first / wtyczka w przygotowaniu". Uruchomiono `blog-seo-check` (pillar) → wykryto realny bug + nieaktualną treść.
 - Pillar `botiko-dla-wordpress-przewodnik-2026.mdx`: usunięty **podwójny H1** (MDX `#` dublował `<h1>` z szablonu — jedyny post z tym problemem), `updatedAt: 2026-07-06`, instalacja przepisana (oficjalna wtyczka z katalogu = główny tor, WPCode = alternatywa), sekcja „roadmapa" → „wtyczka w katalogu", statystyka „93% (agencja WiWi)" → dane W3Techs z linkiem zewnętrznym, FAQ/case study zaktualizowane, excerpt skrócony.
