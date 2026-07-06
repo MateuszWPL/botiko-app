@@ -28,9 +28,28 @@ export class PrismaService
       ssl: {
         rejectUnauthorized: false,
       },
+      // Hardening pod pooler Supabase (Supavisor), który recyklinguje bezczynne
+      // połączenia po stronie serwera → Postgres 57P01 "terminating connection
+      // due to administrator command". Bez tego stare/zerwane połączenie potrafi
+      // trafić z puli do requestu i wysypać zapytanie (np. GET /conversations).
+      keepAlive: true, // TCP keep-alive — szybciej wykrywa zerwane połączenia
+      maxUses: 7_500, // rotuj połączenie po N zapytań, żeby nie zwietrzało
+      connectionTimeoutMillis: 10_000,
     });
+
     const adapter = new PrismaPg(pool);
     super({ adapter });
+
+    // pg emituje 'error' na puli, gdy serwer ubije BEZCZYNNE połączenie. Bez tego
+    // handlera taki błąd staje się nieobsłużony i leci do Sentry jako szum — a to
+    // transient, który sam się goi (pula otwiera świeże połączenie przy kolejnym
+    // zapytaniu). Logujemy jako warn i nie propagujemy. (Handler po super(), bo
+    // przed nim nie wolno użyć this w konstruktorze klasy pochodnej.)
+    pool.on('error', (err) => {
+      this.logger.warn(
+        `Bezczynne połączenie z bazą zerwane przez serwer (transient): ${err.message}`,
+      );
+    });
   }
 
   async onModuleInit(): Promise<void> {
