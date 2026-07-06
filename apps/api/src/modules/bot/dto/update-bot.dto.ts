@@ -45,6 +45,17 @@ export const updateBotSchema = z
       .string()
       .regex(hexColorRegex, 'Kolor musi być poprawnym kodem hex')
       .optional(),
+    // Manual widget colours — null clears the override (back to auto-contrast).
+    textColor: z
+      .string()
+      .regex(hexColorRegex, 'Kolor musi być poprawnym kodem hex')
+      .nullable()
+      .optional(),
+    logoBgColor: z
+      .string()
+      .regex(hexColorRegex, 'Kolor musi być poprawnym kodem hex')
+      .nullable()
+      .optional(),
     allowedDomains: z
       .array(z.string().url('Każda domena musi być poprawnym adresem URL'))
       .max(5, 'Bot może mieć maksymalnie 5 dozwolonych domen')

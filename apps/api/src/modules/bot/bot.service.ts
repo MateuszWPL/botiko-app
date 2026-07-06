@@ -24,6 +24,8 @@ export interface BotPublicConfig {
   name: string;
   welcomeMsg: string;
   primaryColor: string;
+  textColor: string | null;
+  logoBgColor: string | null;
   online: boolean;
   companyPhone: string | null;
   companyAddress: string | null;
@@ -48,6 +50,8 @@ export interface BotDetail {
   name: string;
   welcomeMsg: string;
   primaryColor: string;
+  textColor: string | null;
+  logoBgColor: string | null;
   allowedDomains: string[];
   isActive: boolean;
   offlineMessage: string | null;
@@ -77,6 +81,8 @@ const BOT_SELECT = {
   name: true,
   welcomeMsg: true,
   primaryColor: true,
+  textColor: true,
+  logoBgColor: true,
   allowedDomains: true,
   isActive: true,
   offlineMessage: true,
@@ -188,6 +194,8 @@ export class BotService {
       name: rest.name,
       welcomeMsg: rest.welcomeMsg,
       primaryColor: rest.primaryColor,
+      textColor: rest.textColor,
+      logoBgColor: rest.logoBgColor,
       online,
       companyPhone: rest.companyPhone,
       companyAddress: rest.companyAddress,
@@ -282,6 +290,8 @@ export class BotService {
         ...(dto.primaryColor !== undefined && {
           primaryColor: dto.primaryColor,
         }),
+        ...(dto.textColor !== undefined && { textColor: dto.textColor }),
+        ...(dto.logoBgColor !== undefined && { logoBgColor: dto.logoBgColor }),
         ...(dto.allowedDomains !== undefined && {
           allowedDomains: dto.allowedDomains,
         }),
@@ -454,6 +464,8 @@ export class BotService {
     name: string;
     welcomeMsg: string;
     primaryColor: string;
+    textColor: string | null;
+    logoBgColor: string | null;
     allowedDomains: string[];
     isActive: boolean;
     offlineMessage: string | null;

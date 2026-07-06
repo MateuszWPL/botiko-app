@@ -83,6 +83,12 @@ model Bot {
   name                  String
   welcomeMsg            String
   primaryColor          String         @default("#6366F1")
+  /// Optional manual override for text/icons on the accent (header, buttons).
+  /// null = auto-contrast from primaryColor (YIQ luminance) in the widget.
+  textColor             String?
+  /// Optional manual override for the avatar/logo circle background in the
+  /// widget header. null = auto contrast-aware backdrop.
+  logoBgColor           String?
   allowedDomains        String[]
   isActive              Boolean        @default(true)
   offlineMessage        String?

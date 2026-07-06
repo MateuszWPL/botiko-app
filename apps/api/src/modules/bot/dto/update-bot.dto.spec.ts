@@ -194,6 +194,29 @@ describe('updateBotSchema — primaryColor (hex)', () => {
   );
 });
 
+describe('updateBotSchema — textColor / logoBgColor (ręczne kolory, nullable)', () => {
+  it('akceptuje poprawny hex oraz null (czyszczenie override)', () => {
+    expect(updateBotSchema.safeParse({ textColor: '#FFFFFF' }).success).toBe(
+      true,
+    );
+    expect(updateBotSchema.safeParse({ textColor: null }).success).toBe(true);
+    expect(updateBotSchema.safeParse({ logoBgColor: '#0F172A' }).success).toBe(
+      true,
+    );
+    expect(updateBotSchema.safeParse({ logoBgColor: null }).success).toBe(true);
+  });
+
+  it.each(['#FFF', 'white', '6366F1', '#GGGGGG'])(
+    'odrzuca niepoprawny kolor "%s"',
+    (bad) => {
+      expect(updateBotSchema.safeParse({ textColor: bad }).success).toBe(false);
+      expect(updateBotSchema.safeParse({ logoBgColor: bad }).success).toBe(
+        false,
+      );
+    },
+  );
+});
+
 describe('updateBotSchema — godziny otwarcia (refine start < end)', () => {
   it('akceptuje start < end', () => {
     expect(
