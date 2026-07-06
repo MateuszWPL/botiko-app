@@ -45,7 +45,7 @@ const FEATURES = [
   },
 ];
 
-function LogoReveal() {
+function MockupReveal() {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 
@@ -54,7 +54,7 @@ function LogoReveal() {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setInView(true); },
-      { threshold: 0.4 }
+      { threshold: 0.3 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -68,47 +68,44 @@ function LogoReveal() {
           50% { transform: translateY(-10px); }
         }
         @keyframes botiko-glow-pulse {
-          0%, 100% { opacity: 0.22; transform: scale(1.7); }
-          50% { opacity: 0.38; transform: scale(1.85); }
+          0%, 100% { opacity: 0.16; }
+          50% { opacity: 0.30; }
         }
         @media (prefers-reduced-motion: reduce) {
-          .botiko-logo-float { animation: none !important; }
-          .botiko-logo-glow { animation: none !important; }
+          .botiko-mockup-float { animation: none !important; }
+          .botiko-mockup-glow { animation: none !important; }
         }
       `}</style>
       <div
+        className="w-full max-w-2xl"
         style={{
           opacity: inView ? 1 : 0,
-          transform: inView ? 'translateX(0)' : 'translateX(-45%)',
+          transform: inView ? 'translateX(0)' : 'translateX(-6%)',
           transition: 'opacity 0.7s ease-out, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
         }}
       >
         <div
-          className="botiko-logo-float relative inline-block cursor-default"
-          style={{ animation: inView ? 'botiko-float 4s ease-in-out infinite' : 'none' }}
+          className="botiko-mockup-float relative"
+          style={{ animation: inView ? 'botiko-float 5s ease-in-out infinite' : 'none' }}
         >
-          {/* Outer glow — pulses in sync with float */}
+          {/* Soft brand glow behind the devices */}
           <div
-            className="botiko-logo-glow absolute inset-0 rounded-[2.5rem] blur-3xl"
+            className="botiko-mockup-glow absolute inset-x-6 inset-y-10 rounded-[3rem] blur-3xl -z-10"
             style={{
               background: '#6366F1',
-              opacity: 0.22,
-              transform: 'scale(1.7)',
-              animation: inView ? 'botiko-glow-pulse 4s ease-in-out infinite' : 'none',
+              opacity: 0.16,
+              animation: inView ? 'botiko-glow-pulse 5s ease-in-out infinite' : 'none',
             }}
           />
-          {/* Card — hover scale */}
-          <div
-            className="relative rounded-[2rem] p-8 transition-transform duration-300 hover:scale-[1.04]"
-            style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.18)' }}
-          >
-            <Image
-              src="/botiko-mark.svg"
-              alt="Botiko"
-              width={120}
-              height={120}
-            />
-          </div>
+          {/* Product mockup — Botiko dashboard on desktop, tablet & phone */}
+          <Image
+            src="/botiko-mockup.webp"
+            alt="Panel Botiko na komputerze, tablecie i telefonie — przegląd konwersacji, leadów i zdrowia bazy wiedzy"
+            width={1545}
+            height={862}
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="relative w-full h-auto transition-transform duration-300 hover:scale-[1.02]"
+          />
         </div>
       </div>
     </div>
@@ -158,8 +155,8 @@ export default function Demo() {
             )}
           </ScrollReveal>
 
-          {/* Right — logo slides in from center */}
-          <LogoReveal />
+          {/* Right — product mockup slides in */}
+          <MockupReveal />
         </div>
 
         {/* Features grid */}
