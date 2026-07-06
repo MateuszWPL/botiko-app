@@ -17,6 +17,8 @@ export interface BotData {
   name: string;
   welcomeMsg: string;
   primaryColor: string;
+  textColor: string | null;
+  logoBgColor: string | null;
   allowedDomains: string[];
   isActive: boolean;
   offlineMessage: string | null;

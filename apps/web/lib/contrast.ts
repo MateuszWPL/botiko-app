@@ -20,13 +20,27 @@ export function onPrimary(hex: string): string {
 }
 
 /**
- * Translucent backdrop + border for the avatar/logo circle sitting on the
- * accent header. On a dark accent it stays a frosted white; on a light accent
- * it flips to a subtle dark tint so an uploaded logo (or the letter fallback)
- * never disappears into a same-colour background.
+ * Backdrop + border + foreground for the avatar/logo circle on the accent
+ * header. When `override` is a hex the tenant picked a background manually —
+ * we use it with a contrast-matched border and foreground. Otherwise it's an
+ * auto backdrop: frosted white on a dark accent, subtle dark tint on a light
+ * accent — so an uploaded logo (or the letter fallback) never disappears into a
+ * same-colour background.
  */
-export function avatarBackdrop(hex: string): { bg: string; border: string } {
-  return onPrimary(hex) === '#fff'
-    ? { bg: 'rgba(255,255,255,0.2)', border: 'rgba(255,255,255,0.3)' }
-    : { bg: 'rgba(0,0,0,0.08)', border: 'rgba(0,0,0,0.15)' };
+export function avatarBackdrop(
+  accent: string,
+  override?: string | null,
+): { bg: string; border: string; fg: string } {
+  if (override) {
+    const fg = onPrimary(override);
+    return {
+      bg: override,
+      fg,
+      border: fg === '#fff' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.15)',
+    };
+  }
+  const accentOn = onPrimary(accent);
+  return accentOn === '#fff'
+    ? { bg: 'rgba(255,255,255,0.2)', border: 'rgba(255,255,255,0.3)', fg: '#fff' }
+    : { bg: 'rgba(0,0,0,0.08)', border: 'rgba(0,0,0,0.15)', fg: '#0f172a' };
 }

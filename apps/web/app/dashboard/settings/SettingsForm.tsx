@@ -158,24 +158,28 @@ function WidgetPreview({
   welcomeMsg,
   suggestedQuestions,
   avatarEmoji,
+  textColor,
+  logoBgColor,
 }: {
   name: string;
   color: string;
   welcomeMsg: string;
   suggestedQuestions: string[];
   avatarEmoji: string;
+  textColor: string | null;
+  logoBgColor: string | null;
 }) {
-  // Match the embedded widget: readable foreground + contrast-aware avatar
-  // backdrop so a light accent (e.g. white) doesn't hide the text or logo.
-  const fg = onPrimary(color);
-  const avatar = avatarBackdrop(color);
+  // Match the embedded widget: manual override colours if set, else auto-contrast
+  // so a light accent (e.g. white) doesn't hide the text or logo.
+  const fg = textColor ?? onPrimary(color);
+  const avatar = avatarBackdrop(color, logoBgColor);
   return (
     <div className="w-72 rounded-2xl border border-slate-200 overflow-hidden shadow-lg text-sm font-sans">
       {/* Header */}
       <div className="px-4 py-3 flex items-center gap-3" style={{ backgroundColor: color, color: fg }}>
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 border"
-          style={{ backgroundColor: avatar.bg, borderColor: avatar.border }}
+          style={{ backgroundColor: avatar.bg, borderColor: avatar.border, color: avatar.fg }}
         >
           <AvatarIcon value={avatarEmoji || 'bot'} className="w-5 h-5" />
         </div>
@@ -350,6 +354,61 @@ async function uploadToCloudinary(file: File): Promise<string> {
   return data.secure_url;
 }
 
+// Reusable colour control with an "Auto" (null) state + presets + custom picker.
+function ColorField({
+  title,
+  subtitle,
+  value,
+  onChange,
+  presets,
+}: {
+  title: string;
+  subtitle?: string;
+  value: string | null;
+  onChange: (v: string | null) => void;
+  presets: string[];
+}) {
+  return (
+    <SectionCard title={title} subtitle={subtitle}>
+      <div className="flex items-center gap-2 flex-wrap">
+        <button
+          onClick={() => onChange(null)}
+          className={`px-3 h-9 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+            value === null
+              ? 'bg-indigo-50 border-indigo-300 text-indigo-600 ring-2 ring-offset-1 ring-indigo-400'
+              : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+          }`}
+        >
+          Auto
+        </button>
+        {presets.map((c) => (
+          <button
+            key={c}
+            onClick={() => onChange(c)}
+            className={`w-9 h-9 rounded-lg cursor-pointer transition-all border border-slate-200 ${
+              value?.toLowerCase() === c.toLowerCase()
+                ? 'ring-2 ring-offset-2 ring-indigo-500 scale-110'
+                : 'hover:scale-105'
+            }`}
+            style={{ backgroundColor: c }}
+          />
+        ))}
+        <div className="flex items-center gap-2 ml-1">
+          <input
+            type="color"
+            value={value ?? '#ffffff'}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-9 h-9 rounded-lg cursor-pointer border border-slate-200 p-0.5 bg-white"
+          />
+          <span className="text-xs font-mono text-slate-500">
+            {value ?? 'Auto (dobierany do akcentu)'}
+          </span>
+        </div>
+      </div>
+    </SectionCard>
+  );
+}
+
 function TabWyglad({
   form,
   setForm,
@@ -418,6 +477,22 @@ function TabWyglad({
             </div>
           </div>
         </SectionCard>
+
+        <ColorField
+          title="Kolor tekstu na akcencie"
+          subtitle="Napisy i ikony na kolorze akcentu (nagłówek, przyciski, dymki klienta). Auto dobiera czytelny kolor."
+          value={form.textColor}
+          onChange={(v) => setForm((f) => ({ ...f, textColor: v }))}
+          presets={['#FFFFFF', '#0F172A']}
+        />
+
+        <ColorField
+          title="Tło logo / awatara"
+          subtitle="Tło koła z logo w nagłówku czatu. Auto dobiera kontrastowe tło do koloru akcentu."
+          value={form.logoBgColor}
+          onChange={(v) => setForm((f) => ({ ...f, logoBgColor: v }))}
+          presets={['#FFFFFF', '#0F172A', '#EEF2FF']}
+        />
 
         <SectionCard title="Awatar bota" subtitle="Wybierz gotowy lub wgraj własny.">
           <div className="flex items-center gap-2 flex-wrap">
@@ -565,6 +640,8 @@ function TabWyglad({
           welcomeMsg={form.welcomeMsg}
           suggestedQuestions={form.suggestedQuestions}
           avatarEmoji={form.avatarEmoji}
+          textColor={form.textColor}
+          logoBgColor={form.logoBgColor}
         />
       </div>
     </div>
@@ -672,6 +749,8 @@ interface FormState {
   name: string;
   welcomeMsg: string;
   primaryColor: string;
+  textColor: string | null;
+  logoBgColor: string | null;
   allowedDomains: string[];
   isActive: boolean;
   offlineMessage: string;
@@ -876,6 +955,8 @@ export function SettingsForm({ bot }: { bot: BotData }) {
       name: bot.name,
       welcomeMsg: bot.welcomeMsg,
       primaryColor: bot.primaryColor,
+      textColor: bot.textColor,
+      logoBgColor: bot.logoBgColor,
       allowedDomains: bot.allowedDomains,
       isActive: bot.isActive,
       offlineMessage: bot.offlineMessage ?? '',
@@ -953,6 +1034,8 @@ export function SettingsForm({ bot }: { bot: BotData }) {
           name: form.name,
           welcomeMsg: form.welcomeMsg,
           primaryColor: form.primaryColor,
+          textColor: form.textColor,
+          logoBgColor: form.logoBgColor,
           allowedDomains: form.allowedDomains,
           isActive: form.isActive,
           offlineMessage: form.offlineMessage.trim() || null,
