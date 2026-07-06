@@ -23,6 +23,16 @@ export function onPrimary(hex: string): string {
   return (r * 299 + g * 587 + b * 114) / 1000 >= 140 ? '#0f172a' : '#fff';
 }
 
+/**
+ * Validates a manual colour override from the bot config. Returns the hex string
+ * when it is a well-formed `#rrggbb`, else null so the caller falls back to the
+ * auto-contrast default. Guards against CSS injection through the config value.
+ */
+export function sanitizeHex(value: string | null | undefined): string | null {
+  if (!value) return null;
+  return /^#[0-9a-fA-F]{6}$/.test(value) ? value : null;
+}
+
 /** Returns true when the current pathname is a CMS admin panel that should suppress the widget. */
 export function isAdminPath(pathname: string): boolean {
   return ['/wp-admin', '/wp-login.php', '/administrator'].some((p) =>

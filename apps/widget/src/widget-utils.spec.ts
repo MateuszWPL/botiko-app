@@ -9,6 +9,7 @@ import {
   loadSession,
   saveSession,
   onPrimary,
+  sanitizeHex,
   ABORT_ERROR_MSG,
 } from './widget-utils';
 
@@ -34,6 +35,26 @@ describe('onPrimary — czytelny kolor na tle primary', () => {
   it('zwraca biały dla niepoprawnego wejścia (fallback)', () => {
     expect(onPrimary('#xyz')).toBe('#fff');
     expect(onPrimary('')).toBe('#fff');
+  });
+});
+
+// ── sanitizeHex — walidacja ręcznych kolorów z configu ───────────────────────
+
+describe('sanitizeHex — akceptuje tylko poprawny #rrggbb', () => {
+  it.each(['#FFFFFF', '#0f172a', '#6366F1'])('przepuszcza %s', (v) => {
+    expect(sanitizeHex(v)).toBe(v);
+  });
+
+  it.each([
+    ['#fff', null], // skrót 3-znakowy odrzucony
+    ['fff000', null], // brak #
+    ['#12345g', null], // nie-hex
+    ['red', null], // nazwa koloru
+    ['', null],
+    [null, null],
+    [undefined, null],
+  ])('odrzuca %s → fallback (null)', (v, expected) => {
+    expect(sanitizeHex(v as string | null | undefined)).toBe(expected);
   });
 });
 

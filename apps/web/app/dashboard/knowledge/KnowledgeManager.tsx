@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { createClient } from '../../../lib/supabase';
+import { getAccessToken } from '../../../lib/auth-token';
 import { EmptyStateClient } from '../../../components/ui/EmptyStateClient';
 import { WebsiteImportButton } from '../../../components/knowledge/WebsiteImportButton';
 import { PasteAnythingPanel } from '../../../components/knowledge/PasteAnythingPanel';
@@ -467,6 +467,10 @@ function ChunkItem({
     setSaving(true);
     try {
       const token = await getToken();
+      if (!token) {
+        toast.error('Sesja wygasła — odśwież stronę i zaloguj się ponownie');
+        return;
+      }
       const res = await fetch(`${API_URL}/api/v1/knowledge/${chunk.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -641,11 +645,9 @@ function ChunkItem({
 // ── Shared hook ────────────────────────────────────────────────────────────────
 
 function useGetToken() {
-  return async () => {
-    const supabase = createClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    return session?.access_token ?? '';
-  };
+  // Refreshes a stale/expired session so mutations don't 401 after the
+  // dashboard sits idle. See lib/auth-token.ts.
+  return getAccessToken;
 }
 
 // ── Tab config ─────────────────────────────────────────────────────────────────
@@ -931,9 +933,7 @@ function WebTab({
     setSaving(true);
     setSaveError('');
     try {
-      const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token ?? '';
+      const token = await getAccessToken();
       const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
       const res = await fetch(`${apiUrl}/api/v1/tenant/me`, {
         method: 'PATCH',
