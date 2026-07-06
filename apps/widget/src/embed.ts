@@ -154,7 +154,13 @@ async function init() {
   // Contrast-aware foreground for text/icons on the primary background — keeps
   // the widget readable even when the tenant picks a light accent colour.
   const onPrimaryColor = onPrimary(safeColor);
-  styleEl.textContent = `:host { --botiko-primary: ${safeColor}; --botiko-on-primary: ${onPrimaryColor}; }`;
+  // Avatar/logo circle backdrop: frosted white on a dark accent, subtle dark
+  // tint on a light accent — so the logo never vanishes into a same-colour
+  // header when the tenant picks e.g. a white accent.
+  const lightAccent = onPrimaryColor !== '#fff';
+  const avatarBg = lightAccent ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.2)';
+  const avatarBorder = lightAccent ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.3)';
+  styleEl.textContent = `:host { --botiko-primary: ${safeColor}; --botiko-on-primary: ${onPrimaryColor}; --botiko-avatar-bg: ${avatarBg}; --botiko-avatar-border: ${avatarBorder}; }`;
   shadow.appendChild(styleEl);
 
   const mountPoint = document.createElement('div');

@@ -532,14 +532,14 @@ export function ChatWindow({
           width: '38px',
           height: '38px',
           borderRadius: '50%',
-          backgroundColor: 'rgba(255,255,255,0.2)',
+          backgroundColor: 'var(--botiko-avatar-bg, rgba(255,255,255,0.2))',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           fontSize: '16px',
           fontWeight: 700,
           flexShrink: 0,
-          border: '2px solid rgba(255,255,255,0.3)',
+          border: '2px solid var(--botiko-avatar-border, rgba(255,255,255,0.3))',
           overflow: 'hidden',
         }}>
           <AvatarContent />
