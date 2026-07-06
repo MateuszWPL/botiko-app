@@ -57,7 +57,7 @@ oraz numer wersji w kopii „Pobierz wtyczkę" w `EmbedCode.tsx`.
 
 ## Wydania — automatyzacja (po uzyskaniu dostępu SVN)
 
-`.github/workflows/wp-deploy.yml` wgrywa kod + assety do SVN przy pushu taga `v*` (akcja `10up/action-wordpress-plugin-deploy`). Wymaga sekretów w repo:
+`.github/workflows/wp-deploy.yml` wgrywa kod + assety do SVN przy pushu taga będącego **czystym numerem wersji** (`[0-9]+.[0-9]+.[0-9]+`, np. `1.0.6` — **bez** prefiksu `v`; tag `v1.0.6` NIE odpali workflow), akcja `10up/action-wordpress-plugin-deploy`. Wymaga sekretów w repo:
 
 - `SVN_USERNAME`, `SVN_PASSWORD` — Twoje dane wordpress.org.
 
