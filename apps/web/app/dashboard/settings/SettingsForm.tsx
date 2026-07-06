@@ -24,6 +24,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '../../../lib/supabase';
+import { getAccessToken } from '../../../lib/auth-token';
+import { onPrimary, avatarBackdrop } from '../../../lib/contrast';
 import type { BotData, DaySchedule } from './page';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
@@ -163,16 +165,23 @@ function WidgetPreview({
   suggestedQuestions: string[];
   avatarEmoji: string;
 }) {
+  // Match the embedded widget: readable foreground + contrast-aware avatar
+  // backdrop so a light accent (e.g. white) doesn't hide the text or logo.
+  const fg = onPrimary(color);
+  const avatar = avatarBackdrop(color);
   return (
     <div className="w-72 rounded-2xl border border-slate-200 overflow-hidden shadow-lg text-sm font-sans">
       {/* Header */}
-      <div className="px-4 py-3 flex items-center gap-3" style={{ backgroundColor: color }}>
-        <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center overflow-hidden flex-shrink-0">
-          <AvatarIcon value={avatarEmoji || 'bot'} className="w-5 h-5 text-white" />
+      <div className="px-4 py-3 flex items-center gap-3" style={{ backgroundColor: color, color: fg }}>
+        <div
+          className="w-9 h-9 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0 border"
+          style={{ backgroundColor: avatar.bg, borderColor: avatar.border }}
+        >
+          <AvatarIcon value={avatarEmoji || 'bot'} className="w-5 h-5" />
         </div>
         <div className="min-w-0">
-          <p className="text-white font-semibold truncate">{name || 'Bot'}</p>
-          <p className="text-white/70 text-xs flex items-center gap-1">
+          <p className="font-semibold truncate">{name || 'Bot'}</p>
+          <p className="text-xs flex items-center gap-1" style={{ opacity: 0.75 }}>
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
             Online · odpowiada 24/7
           </p>
@@ -185,7 +194,7 @@ function WidgetPreview({
         <div className="flex gap-2 mb-3">
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0"
-            style={{ backgroundColor: color + '20', color }}
+            style={{ backgroundColor: color, color: fg }}
           >
             <AvatarIcon value={avatarEmoji || 'bot'} className="w-4 h-4" />
           </div>
@@ -217,7 +226,7 @@ function WidgetPreview({
           className="w-7 h-7 rounded-full flex items-center justify-center"
           style={{ backgroundColor: color }}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill={fg}>
             <path d="M2 21l21-9L2 3v7l15 2-15 2z" />
           </svg>
         </div>
@@ -926,10 +935,12 @@ export function SettingsForm({ bot }: { bot: BotData }) {
     }
     setSaving(true);
     const supabase = createClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    const token = session?.access_token;
+    const token = await getAccessToken();
+    if (!token) {
+      toast.error('Sesja wygasła — odśwież stronę i zaloguj się ponownie');
+      setSaving(false);
+      return;
+    }
 
     try {
       const res = await fetch(`${API_URL}/api/v1/bot/${bot.id}`, {
@@ -1002,7 +1013,7 @@ export function SettingsForm({ bot }: { bot: BotData }) {
   return (
     <div className="max-w-7xl 2xl:max-w-[1400px]">
       {/* Tabs */}
-      <div className="flex overflow-x-auto border-b border-slate-200 mb-6 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-thin">
+      <div className="flex overflow-x-auto overflow-y-hidden border-b border-slate-200 mb-6 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-thin">
         {TABS.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
