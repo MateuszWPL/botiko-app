@@ -29,9 +29,10 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 - Kontekst: 3 zgłoszenia usera — 401 przy nadpisywaniu wpisu w bazie wiedzy, zbędny pionowy scroll paska zakładek w Ustawieniach, znikające napisy/logo przy jasnym (białym) akcencie widgetu.
 - **401 „Missing authorization token"**: `getSession()` nie odświeżał wygasłego tokenu po bezczynności → pusty Bearer. Nowy `lib/auth-token.ts::getAccessToken()` (proaktywny refresh gdy brak tokenu lub <60 s do exp), podpięty pod bazę wiedzy i zapis ustawień + czytelny komunikat „Sesja wygasła…".
 - **Scroll zakładek**: `overflow-x-auto` wymusza `overflow-y:auto`, a `-mb-px` przycisków dawał 1px nadmiaru → dodane `overflow-y-hidden`.
-- **Kontrast jasnego akcentu**: realny widget już auto-kontrastuje tekst (`onPrimary`), ale podgląd w ustawieniach miał `text-white` na sztywno (naprawione — mirror `onPrimary` w `lib/contrast.ts`), a tło koła awatara/logo było białą półprzezroczystością w podglądzie i widgecie (nowe zmienne `--botiko-avatar-bg/-border` liczone z onPrimary). Rozwiązanie automatyczne — bez pola w DB/migracji; ręczny picker koloru = ewentualny follow-up.
-- Pliki: `apps/web/lib/{contrast,auth-token}.ts`, `settings/SettingsForm.tsx`, `knowledge/KnowledgeManager.tsx`, `apps/widget/src/{embed.ts,ChatWindow.tsx}`.
-- Weryfikacja: web `tsc`+`eslint` ✓; widget `tsc`+`vite build` (14,1 KB gzip) ✓ + `vitest` 49/49 ✓.
+- **Kontrast jasnego akcentu**: realny widget już auto-kontrastuje tekst (`onPrimary`), ale podgląd w ustawieniach miał `text-white` na sztywno (naprawione — mirror `onPrimary` w `lib/contrast.ts`), a tło koła awatara/logo było białą półprzezroczystością w podglądzie i widgecie (nowe zmienne `--botiko-avatar-bg/-border/-fg`).
+- **Ręczne pickery (na życzenie usera)**: dodane pola `Bot.textColor` + `Bot.logoBgColor` (nullable, migracja `20260706000001`), walidacja hex w DTO, zwracane w publicznym config widgetu. UI: dwie kontrolki `ColorField` (Auto + presety + własny kolor) w zakładce „Wygląd widgetu". `null` = auto-kontrast (fallback), więc istniejące boty bez zmian. Widget czyta override'y przez `sanitizeHex` (ochrona przed CSS injection).
+- Pliki: `apps/web/lib/{contrast,auth-token}.ts`, `settings/{SettingsForm.tsx,page.tsx}`, `knowledge/KnowledgeManager.tsx`, `apps/api/{prisma,modules/bot}`, `apps/widget/src/{embed.ts,ChatWindow.tsx,widget-utils.ts}`.
+- Weryfikacja: web `tsc`+`eslint` ✓; api `tsc`+`jest` (393 + nowe DTO) ✓; widget `tsc`+`vite build` (14,3 KB gzip) ✓ + `vitest` ✓.
 - Status: ✅ done (PR #112, czeka na CI/merge)
 
 ### Blog WordPress — aktualizacja 2 postów + SEO check + audyt GSC — Claude + botiko-content — branch `fix/blog-wordpress-plugin-live`
