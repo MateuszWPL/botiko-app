@@ -2,59 +2,75 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import JsonLd from '@/components/seo/JsonLd';
 import Breadcrumbs from '@/components/blog/Breadcrumbs';
-import { SITE_URL, breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
+import {
+  SITE_URL,
+  WORDPRESS_PLUGIN_URL,
+  breadcrumbListSchema,
+  faqPageSchema,
+  softwareApplicationSchema,
+} from '@/lib/seo';
 
 const URL = `${SITE_URL}/integracje/wordpress`;
 
 export const metadata: Metadata = {
-  title: 'Bot na WordPress — instalacja w 5 minut',
+  title: 'Bot na WordPress — oficjalna wtyczka Botiko',
   description:
-    'Jak zainstalować bota obsługi klienta na stronie WordPress: krok po kroku przez darmową wtyczkę WPCode, bez edycji motywu i bez programisty. Działa na ~93% polskich stron.',
+    'Zainstaluj bota obsługi klienta na WordPress oficjalną wtyczką Botiko z katalogu WordPress.org — bez edycji motywu i bez programisty. Łączysz stronę jednym kodem. WordPress to najpopularniejszy system stron firmowych w Polsce.',
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Bot na WordPress — instalacja Botiko w 5 minut',
+    title: 'Bot na WordPress — oficjalna wtyczka Botiko',
     description:
-      'Dodaj bota do WordPress przez wtyczkę WPCode. Krok po kroku, bez programisty.',
+      'Dodaj bota do WordPress oficjalną wtyczką z katalogu WordPress.org. Instalacja i połączenie jednym kodem, bez programisty.',
     url: URL,
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Bot na WordPress — oficjalna wtyczka Botiko',
+    description:
+      'Oficjalna wtyczka Botiko w katalogu WordPress.org. Zainstaluj i połącz stronę jednym kodem.',
   },
 };
 
 const STEPS = [
   {
-    name: 'Skopiuj kod bota z panelu Botiko',
-    text: 'W panelu Botiko wejdź w zakładkę „Instalacja” i skopiuj swój fragment kodu (jedna linijka <script> z Twoim identyfikatorem bota).',
+    name: 'Zainstaluj wtyczkę Botiko z katalogu',
+    text: 'W panelu WordPress wejdź w Wtyczki → Dodaj nową, wyszukaj „Botiko”, zainstaluj i aktywuj oficjalną wtyczkę. Bez edycji motywu.',
   },
   {
-    name: 'Zainstaluj darmową wtyczkę WPCode',
-    text: 'W panelu WordPress wejdź w Wtyczki → Dodaj nową, wyszukaj „WPCode”, zainstaluj i aktywuj. To darmowa, popularna wtyczka do wstawiania fragmentów kodu.',
+    name: 'Wygeneruj kod połączenia w panelu Botiko',
+    text: 'W panelu Botiko wejdź w zakładkę „Instalacja” i kliknij „Generuj kod połączenia”. Kod jest jednorazowy i ważny kilka minut.',
   },
   {
-    name: 'Wklej kod w sekcji Header',
-    text: 'W WPCode otwórz Header & Footer i wklej kod Botiko w polu „Header”. Zapisz zmiany.',
+    name: 'Wklej kod w ustawieniach wtyczki',
+    text: 'W WordPress otwórz Ustawienia → Botiko i wklej kod połączenia. Wtyczka pobierze Twojego bota i automatycznie autoryzuje domenę tej strony.',
   },
   {
     name: 'Sprawdź bota na stronie',
-    text: 'Otwórz swoją stronę — w prawym dolnym rogu pojawi się okienko bota. Gotowe; cała instalacja zajmuje około 5 minut.',
+    text: 'Otwórz swoją stronę — w prawym dolnym rogu pojawi się okienko bota. Gotowe; cała instalacja zajmuje kilka minut.',
   },
 ];
 
 const FAQS = [
   {
+    q: 'Czy jest oficjalna wtyczka Botiko w katalogu WordPress.org?',
+    a: 'Tak. Botiko ma oficjalną wtyczkę w katalogu WordPress.org (slug botiko-ai-customer-service-bot). Instalujesz ją prosto z panelu WordPress: Wtyczki → Dodaj nową → wyszukaj „Botiko”, a WordPress zadba o aktualizacje.',
+  },
+  {
     q: 'Czy muszę edytować motyw WordPress, żeby dodać bota?',
-    a: 'Nie. Dzięki wtyczce WPCode wklejasz kod w panelu, bez dotykania plików motywu. Aktualizacja motywu nie usunie bota.',
+    a: 'Nie. Oficjalna wtyczka osadza bota bez dotykania plików motywu — łączysz stronę jednym kodem w ustawieniach wtyczki. Aktualizacja motywu nie usunie bota.',
   },
   {
     q: 'Czy Botiko działa na każdym motywie WordPress?',
-    a: 'Tak. Bot ładuje się jako niezależny skrypt w sekcji Header, więc działa niezależnie od motywu (Astra, Divi, Elementor, OceanWP i inne) oraz buildera strony.',
+    a: 'Tak. Wtyczka ładuje widget niezależnie od motywu, więc działa z Astra, Divi, Elementor, OceanWP i innymi motywami oraz builderami strony.',
   },
   {
     q: 'Czy bot spowolni moją stronę WordPress?',
-    a: 'Wpływ jest minimalny — skrypt ładuje się asynchronicznie, a sam widget jest lekki. Bot nie blokuje renderowania strony.',
+    a: 'Wpływ jest minimalny — skrypt widgetu ładuje się asynchronicznie, a sam widget jest lekki. Bot nie blokuje renderowania strony.',
   },
   {
-    q: 'Czy jest dedykowana wtyczka Botiko w katalogu WordPress.org?',
-    a: 'Pracujemy nad dedykowaną wtyczką Botiko do katalogu WordPress.org. Do tego czasu rekomendujemy instalację przez WPCode. Chcesz dołączyć do listy oczekujących? Napisz na kontakt@botiko.pl.',
+    q: 'Nie chcę instalować wtyczki — czy da się inaczej?',
+    a: 'Tak. Ten sam kod bota możesz wkleić przez darmową wtyczkę do fragmentów kodu (np. WPCode) w sekcji Header, albo osadzić uniwersalny skrypt na dowolnej innej stronie WWW (HTML). Wtyczka Botiko jest jednak najprostszą i zalecaną drogą.',
   },
 ];
 
@@ -63,7 +79,7 @@ const HOWTO_SCHEMA = {
   '@type': 'HowTo',
   name: 'Jak dodać bota Botiko na stronę WordPress',
   description:
-    'Instalacja bota obsługi klienta Botiko na WordPress przez wtyczkę WPCode, krok po kroku.',
+    'Instalacja bota obsługi klienta Botiko na WordPress przez oficjalną wtyczkę z katalogu WordPress.org, krok po kroku.',
   totalTime: 'PT5M',
   inLanguage: 'pl-PL',
   step: STEPS.map((s, i) => ({
@@ -80,6 +96,7 @@ export default function WordPressIntegrationPage() {
       <JsonLd
         data={[
           HOWTO_SCHEMA,
+          softwareApplicationSchema(),
           faqPageSchema(FAQS),
           breadcrumbListSchema([
             { label: 'Botiko.pl', href: '/' },
@@ -104,14 +121,33 @@ export default function WordPressIntegrationPage() {
               variant="dark"
             />
           </div>
+          <span
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5"
+            style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#a5b4fc' }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+            Oficjalna wtyczka w katalogu WordPress.org
+          </span>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-[1.1] tracking-tight mb-5">
-            Bot obsługi klienta na WordPress — w 5 minut
+            Bot obsługi klienta na WordPress — oficjalna wtyczka
           </h1>
           <p className="text-slate-300 text-lg leading-relaxed max-w-2xl">
-            WordPress napędza około 93% polskich stron firmowych, dlatego Botiko jest pod
-            niego zoptymalizowane. Instalacja zajmuje ~5 minut przez darmową wtyczkę
-            WPCode — bez edycji motywu i bez programisty.
+            WordPress to najpopularniejszy system stron firmowych w Polsce, dlatego Botiko
+            jest zoptymalizowane właśnie pod niego. Zainstaluj bota oficjalną wtyczką z
+            katalogu WordPress.org i połącz stronę jednym kodem — bez edycji motywu i bez
+            programisty.
           </p>
+          <a
+            href={WORDPRESS_PLUGIN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-7 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-slate-900 font-bold text-sm shadow-xl hover:shadow-2xl transition-all"
+          >
+            Zobacz wtyczkę w katalogu WordPress.org
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M7 17L17 7M17 7H8M17 7v9" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
         </div>
       </section>
 
@@ -137,15 +173,15 @@ export default function WordPressIntegrationPage() {
 
           <div className="mt-8 rounded-2xl bg-brand-soft border border-brand/20 p-5">
             <p className="text-sm text-slate-700 leading-relaxed">
-              <strong>Wskazówka:</strong> kod wystarczy wkleić raz. Bot pojawi się na całej
-              stronie, a treści (cennik, FAQ, godziny) edytujesz później w panelu Botiko —
+              <strong>Wskazówka:</strong> łączysz stronę tylko raz. Bot pojawi się na całej
+              witrynie, a treści (cennik, FAQ, godziny) edytujesz później w panelu Botiko —
               bez ponownego dotykania WordPress.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Why WordPress-first */}
+      {/* Why WordPress-first + fallback */}
       <section className="py-16 bg-bg">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-text mb-5">
@@ -154,15 +190,28 @@ export default function WordPressIntegrationPage() {
           <div className="space-y-3 text-slate-600 leading-relaxed">
             <p>
               Większość polskich mikro i małych firm usługowych ma stronę na WordPress.
-              Zamiast budować dziesiątki integracji per platforma, skupiliśmy się na tym,
-              by instalacja na WordPress była naprawdę bezproblemowa.
+              Zamiast budować dziesiątki integracji per platforma, zrobiliśmy oficjalną
+              wtyczkę, żeby instalacja na WordPress była naprawdę bezproblemowa.
             </p>
             <p>
-              Skrypt Botiko działa też na każdej innej stronie WWW (HTML, Wix, Squarespace
-              i inne), ale dedykowane instrukcje i wsparcie kierujemy przede wszystkim do
-              użytkowników WordPress.
+              Nie chcesz instalować wtyczki? Ten sam kod bota wkleisz przez darmową wtyczkę
+              do fragmentów kodu (np. WPCode) w sekcji Header. Skrypt Botiko działa też na
+              każdej innej stronie WWW (HTML) — dedykowane wsparcie kierujemy jednak przede
+              wszystkim do użytkowników WordPress.
             </p>
           </div>
+
+          <p className="mt-6 text-sm text-slate-500">
+            Więcej: przeczytaj{' '}
+            <Link href="/blog/botiko-dla-wordpress-przewodnik-2026" className="text-brand font-semibold hover:underline">
+              przewodnik Botiko dla WordPress
+            </Link>{' '}
+            albo{' '}
+            <Link href="/blog/jak-ustawic-bota-na-wordpress-krok-po-kroku" className="text-brand font-semibold hover:underline">
+              instrukcję krok po kroku
+            </Link>
+            .
+          </p>
         </div>
       </section>
 
@@ -194,7 +243,7 @@ export default function WordPressIntegrationPage() {
           <div className="mt-10 rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-600 p-8 text-center text-white">
             <h2 className="text-2xl font-extrabold mb-3">Dodaj bota do swojej strony WordPress</h2>
             <p className="text-indigo-100 mb-6 max-w-lg mx-auto">
-              14 dni za darmo, bez karty. Instalacja w 5 minut przez WPCode.
+              14 dni za darmo, bez karty. Zainstaluj oficjalną wtyczkę z katalogu WordPress.org.
             </p>
             <Link
               href="/rejestracja"

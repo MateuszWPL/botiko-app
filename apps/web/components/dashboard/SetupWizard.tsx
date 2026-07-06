@@ -564,13 +564,16 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
       </div>
 
       <div className="bg-slate-50 rounded-xl p-4">
-        <p className="text-xs font-semibold text-slate-700 mb-2">Instalacja WordPress</p>
+        <p className="text-xs font-semibold text-slate-700 mb-2">Instalacja na WordPress</p>
         <ol className="text-xs text-slate-500 space-y-1 list-decimal list-inside">
-          <li>Zaloguj się do panelu WordPress</li>
-          <li>Wygląd → Edytor motywu → <code className="bg-slate-200 px-1 rounded">footer.php</code></li>
-          <li>Wklej kod przed <code className="bg-slate-200 px-1 rounded">&lt;/body&gt;</code></li>
-          <li>Zapisz i odśwież stronę</li>
+          <li>W panelu WordPress: Wtyczki → Dodaj nową → wyszukaj „Botiko”</li>
+          <li>Zainstaluj i aktywuj oficjalną wtyczkę Botiko</li>
+          <li>Połącz stronę kodem z zakładki „Instalacja” w panelu Botiko</li>
         </ol>
+        <p className="text-xs text-slate-400 mt-2">
+          Wolisz bez wtyczki? Wklej powyższy kod przed{' '}
+          <code className="bg-slate-200 px-1 rounded">&lt;/body&gt;</code> (np. przez wtyczkę WPCode).
+        </p>
       </div>
 
       {data.websiteUrl && botId && (

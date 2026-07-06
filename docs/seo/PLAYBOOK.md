@@ -35,6 +35,7 @@ Bez tego nie wyjdziemy poza ruch brandowy. Zero backlinków = sufit.
 - [x] **Bing Webmaster Tools** — załóż konto, zweryfikuj `botiko.pl`, zgłoś `botiko.pl/sitemap.xml`. ChatGPT Search korzysta z indeksu Bing — to warunek widoczności w ChatGPT.
 - [x] **Google Search Console** — po deployu zgłoś ponownie sitemap; monitoruj indeksację nowych URL-i (`/dla/*/*`, `/cennik`, `/faq`, `/porownanie/*`).
 - [x] **Google Business Profile** (Białystok) — wizytówka = encja lokalna, sygnał dla Map i AI.
+- [x] **Wtyczka w katalogu WordPress.org** (opublikowana 2026-07-06) — Plugin URI wskazuje na `/integracje/wordpress`, więc katalog daje dofollow backlink z DA~100 do tej strony. Monitorować w GSC → Links (katalog aktualizuje wyszukiwarkę do 72h). Strona-cel wzmocniona schematem `SoftwareApplication` (`sameAs` → wp.org).
 - [ ] **Katalogi PL** — firmowe + SaaS/oprogramowanie (np. katalogi narzędzi, opinie o software). Spójny NAP (nazwa, adres, kontakt).
 - [ ] **Reddit / grupy FB branżowe** — Perplexity mocno cytuje Reddit. Wartościowa obecność w wątkach „bot/chatbot dla salonu/firmy", grupach właścicieli salonów/gastro. Bez spamu.
 - [ ] **2–3 wpisy gościnne** na blogach beauty/gastro/automotive z linkiem do pillara branżowego.

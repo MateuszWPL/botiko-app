@@ -25,6 +25,17 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-06 (poniedziałek)
 
+### Wtyczka WordPress LIVE — publikacja SVN + aktualizacja strony/panelu + baner + SEO — Claude + botiko-content + security-reviewer — branch `feat/wp-plugin-live-site`
+- Kontekst: wtyczka `botiko-ai-customer-service-bot` (v1.0.6) **zatwierdzona i opublikowana w katalogu WordPress.org** (pierwszy deploy SVN przez tag `1.0.6` → workflow `wp-deploy.yml`; API wp.org potwierdza download_link). Plugin URI = `botiko.pl/integracje/wordpress` → darmowy backlink DA~100 na tę stronę.
+- Korekty faktów: usunięto 4 nieaktualne „w przygotowaniu / lista oczekujących / w trakcie weryfikacji" (`EmbedCode.tsx`, `Pricing.tsx`, `lib/faq.ts`, strona integracji).
+- „Instalacja z katalogu" jako główny tor: przepisana `integracje/wordpress/page.tsx` (kroki katalog-first, WPCode → fallback, metadata+OG+Twitter, HowTo schema), `PluginDownload` w panelu (katalog + ZIP jako alternatywa), `SetupWizard` (koniec z edycją `footer.php`). Bloker z review: stary 4-krokowy WPCode w panelu przeniesiony pod nagłówek „Wolisz bez wtyczki? Alternatywna metoda (WPCode)".
+- Subtelny baner marki: nowy `public/wordpress.svg`, pigułka w Hero, „W katalogu WordPress.org" w trust-stripie Pricing + badge kroku 03 HowItWorks.
+- SEO: nowy builder `softwareApplicationSchema()` (`sameAs`/`downloadUrl` → wp.org, bez aggregateRating), dwustronne linki integracja↔blog, wpis do `PLAYBOOK.md` (backlink). Poprawki z content-review: usunięto niepotwierdzone „93%", usunięto nazwy Wix/Squarespace (platformy nieobsługiwane oficjalnie).
+- Pliki/obszar: apps/web (strona integracji, panel embed, kreator, Hero/Pricing/HowItWorks, lib/seo, lib/faq), public asset, docs/seo/PLAYBOOK.
+- Review: `botiko-content` (1 bloker naprawiony + 5 uwag naniesionych) · `security-reviewer` (SECURE — JSON-LD statyczny, linki z `rel=noopener`, SVG bez skryptów). tsc + eslint czyste.
+- Zakres świadomie ograniczony: blog (pillar + sibling), `dla/*`, `llms.txt`, `local-seo`, screenshoty wp.org → follow-up.
+- Status: ✅ done.
+
 ### Hardening puli DB — koniec szumu 57P01 w Sentry — Claude — branch `fix/db-pool-hardening`
 - Kontekst: Sentry (produkcja, free tier) złapało `DriverAdapterError: terminating connection due to administrator command` (Postgres 57P01) na endpointcie `GET /api/v1/conversations` — pooler Supabase (Supavisor) recyklinguje bezczynne połączenia, a pula `pg` oddawała do requestu zerwane połączenie → 500 dla usera.
 - Co zrobione (`apps/api/src/prisma/prisma.service.ts`): dodano `pool.on('error')` (loguje transient jako warn zamiast wypuszczać do Sentry), `keepAlive: true`, `maxUses: 7500` (rotacja połączeń), `connectionTimeoutMillis: 10s`. Handler po `super()` (ograniczenie `this` w konstruktorze klasy pochodnej).
