@@ -134,6 +134,25 @@ describe('preprocessMessage', () => {
       const result = preprocessMessage('Jakie są ceny zabiegów?');
       expect(result.action).toBe('proceed');
     });
+
+    it('NIE odrzuca samego numeru telefonu jako gibberish', () => {
+      // Bare phone number = 0% liter, ale to lead zostawiający kontakt.
+      for (const phone of ['692 022 228', '+48 692 022 228', '500-600-700']) {
+        const result = preprocessMessage(phone);
+        expect(result.action).toBe('proceed');
+      }
+    });
+
+    it('NIE odrzuca samego e-maila jako gibberish', () => {
+      const result = preprocessMessage('jan.kowalski1990@gmail.com');
+      expect(result.action).toBe('proceed');
+    });
+
+    it('nadal odrzuca cyfry sklejone z losowymi literami', () => {
+      // "1234567890qwe" — po usunięciu cyfr zostają realne znaki → gibberish.
+      const result = preprocessMessage('1234567890qwe');
+      expect(result.action).toBe('respond');
+    });
   });
 
   describe('farewells', () => {

@@ -15,6 +15,21 @@ const envSchema = z.object({
 
   // OpenAI (required for AI features — set before using chat)
   OPENAI_API_KEY: z.string().min(1).optional(),
+  // Chat completion model — one place to bump the whole app off gpt-4o-mini.
+  OPENAI_CHAT_MODEL: z.string().min(1).default('gpt-4o-mini'),
+
+  // RAG tuning — defaults verified a-priori for text-embedding-3-small; expose
+  // so they can be tuned on real pilot data (fallback rate is measurable via
+  // Message.wasFallback) without a code change.
+  RAG_SIMILARITY_THRESHOLD: z.coerce.number().min(0).max(1).default(0.3),
+  RAG_TOP_K: z.coerce.number().int().min(1).max(20).default(5),
+  // Rewrite a follow-up into a standalone query (using recent history) before
+  // embedding, so context-dependent questions ("a ile to kosztuje?") retrieve
+  // correctly. Adds one cheap gpt-4o-mini call per multi-turn message.
+  RAG_QUERY_CONDENSATION: z
+    .enum(['true', 'false'])
+    .default('true')
+    .transform((v) => v === 'true'),
 
   // Security
   JWT_SECRET: z.string().min(32),
