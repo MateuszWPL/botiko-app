@@ -25,6 +25,14 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-07 (wtorek)
 
+### Naprawa błędów uporządkowanych danych z GSC — Claude — PR #123
+- Kontekst: 2 maile z Google Search Console o problemach ze structured data. Weryfikacja bezpośrednio w GSC (przez przeglądarkę) ujawniła 3 problemy, nie 2.
+- **Menu nawigacyjne (krytyczny)** — `/integracje/wordpress`: breadcrumb miał pośredni crumb „Integracje" bez `href` → `ListItem` bez pola `item`, które Google odrzuca (pominięcie `item` jest legalne tylko dla ostatniego elementu). Nie ma strony `/integracje` → usunięto ten crumb (`Botiko.pl › WordPress`). Pozostałe strony (5) były prawidłowe.
+- **Informacje o sprzedawcy (krytyczny) + Opisy produktów (niekrytyczny)** — `/cennik`: `@type: 'Product'` + `Offer` klasyfikował stronę jako listing sklepowy → wymagane pola sklepowe (`image`, `review`, `aggregateRating`). `image` było w kodzie, ale strona i tak nigdy nie spełni wymagań sklepu. Zmiana na `@type: 'Service'` + `Offer` (spójnie z `/dla/*`, które nie były flagowane) — cena zachowana, bez fałszowania recenzji.
+- Pliki: `apps/web/app/(marketing)/cennik/page.tsx`, `apps/web/app/(marketing)/integracje/wordpress/page.tsx`, `apps/web/lib/seo.ts` (wzmocniony komentarz: każdy crumb poza ostatnim musi mieć `href`).
+- Weryfikacja: CI zielone (Web tsc, E2E, Widget, API, WP); live prod potwierdzony (`@type:Service` na /cennik, 2-elementowy breadcrumb na /integracje/wordpress); w GSC uruchomiono „Sprawdź poprawkę" dla obu krytycznych raportów (Weryfikacja rozpoczęto 7.07).
+- Status: ✅ zmergowane i zdeployowane; walidacja GSC w toku (Google przecrawluje w ciągu kilku dni).
+
 ### Blog — setup claude-blog (BRAND/VOICE) + pilotażowy post korepetytor — Claude + claude-blog + botiko-content — branch `chore/blog-brand-context`, `feat/blog-korepetytor`
 - Kontekst: user chce pisać posty pluginem `claude-blog` (runway bloga kończył się 28.07). Weryfikacja pluginu: działa, MDX-capable, ale brak brand-kontekstu + domyślne komponenty (`<FAQSchema>`) ≠ nasze.
 - **Setup (PR #121):** `BRAND.md` + `VOICE.md` w roocie — plugin auto-ładuje przy każdym pisaniu. Kodują reguły Botiko (bot nie chatbot AI, brak rezerwacji, 99 zł, tabu-frazy, persony, konkurenci) + **pinują nasz format MDX** (frontmatter `excerpt/category/categorySlug/image/imageAlt`, komponenty `<FAQ items>`/`<CTABlock>`/`<Callout>`). Review botiko-content: 0 blokerów.
