@@ -25,7 +25,7 @@ import { createClient } from '../../lib/supabase';
 
 const NAV_ITEMS = [
   { href: '/dashboard/overview', label: 'Przegląd', icon: LayoutDashboard },
-  { href: '/dashboard/leads', label: 'Leady', icon: Users },
+  { href: '/dashboard/leads', label: 'Kontakty', icon: Users },
   { href: '/dashboard/conversations', label: 'Rozmowy', icon: MessageSquare },
   { href: '/dashboard/knowledge', label: 'Baza wiedzy', icon: BookOpen },
   { href: '/dashboard/settings', label: 'Ustawienia', icon: Settings },

@@ -336,7 +336,7 @@ export default async function OverviewPage() {
         {/* Leady */}
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
           <div className="flex items-center justify-between mb-3">
-            <p className="text-xs text-slate-500 font-medium">Leady zebrane</p>
+            <p className="text-xs text-slate-500 font-medium">Kontakty zebrane</p>
             <StatBadge value={leadsChange} />
           </div>
           <p className="text-3xl font-bold text-slate-900">{leads.length}</p>
@@ -476,10 +476,10 @@ export default async function OverviewPage() {
             )}
           </div>
 
-          {/* Ostatnie leady */}
+          {/* Ostatnie kontakty */}
           <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-slate-800">Ostatnie leady</h3>
+              <h3 className="text-sm font-semibold text-slate-800">Ostatnie kontakty</h3>
               <Link
                 href="/dashboard/leads"
                 className="text-xs font-medium text-indigo-500 hover:text-indigo-700 transition-colors"
@@ -488,7 +488,7 @@ export default async function OverviewPage() {
               </Link>
             </div>
             {recentLeads.length === 0 ? (
-              <p className="text-sm text-slate-400 py-4 text-center">Brak leadów</p>
+              <p className="text-sm text-slate-400 py-4 text-center">Brak kontaktów</p>
             ) : (
               <div className="space-y-1">
                 {recentLeads.map((lead) => {

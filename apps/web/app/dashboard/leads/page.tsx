@@ -26,8 +26,8 @@ export default async function LeadsPage() {
   return (
     <div>
       <PageHeader
-        title="Leady"
-        description="Kontakty zebrane przez bota"
+        title="Kontakty"
+        description="Numery telefonu, które klienci zostawili w czacie — oddzwoń, żeby domknąć."
         badge={{ label: `${leads.length} kontaktów` }}
       />
       <LeadsTable leads={leads} />

@@ -25,6 +25,16 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-07 (wtorek)
 
+### UX onboardingu dla nietechnicznego usera (fryzjerka) — Claude — branch `feat/onboarding-ux-nietechniczny`
+- Kontekst: przegląd całego flow oczami właścicielki salonu (rejestracja → kreator → wiedza → instalacja) na prośbę usera. Werdykt: do „wklej kod na stronę" radzi sobie dobrze; ściany są 2 (instalacja poza WordPress + ręczne wpisywanie usług). User zlecił wdrożenie 5 poprawek.
+- **Krok „Oferta" w kreatorze — wklejanie cennika jako ścieżka główna:** duże pole „Wklej swój cennik i opis usług" (feed do `additionalInfo` → istniejący chunk builder + split na akapity), ręczna lista usług zdegradowana do „albo dodaj pojedynczo". Koniec zniechęcającego wpisywania 40 pozycji ręcznie.
+- **Przycisk „Wyślij kod webmasterowi" (mailto):** na ekranie „gotowe" kreatora i na stronie Instalacja — gotowy mail z kodem + prostą instrukcją dla osoby robiącej stronę. Rozwiązuje główną ścianę: właścicielka nie dotyka własnej strony.
+- **„Leady" → „Kontakty" w dashboardzie** (sidebar, strona, overview) — żargon marketerów niezrozumiały dla targetu; marketing zostaje przy „leady".
+- **Domena w rejestracji opcjonalna:** backend `register.dto` (pusty string → undefined, `websiteUrl` optional) + `auth.service` (fallback `tenant.name` z e-maila, `websiteUrl null`); frontend bez `required` + hint „nie masz strony? zostaw puste". **Uwaga bezpieczeństwa:** `DomainWhitelistGuard` twardo blokuje pustą listę domen na produkcji — więc kreator pokazuje teraz **jawne ostrzeżenie**, gdy brak domeny (inaczej cichy „Bot nie jest skonfigurowany").
+- **Neutralne formy językowe** w kreatorze („podałeś"/„Gotowy" → „podanych danych"/„Wszystko gotowe") — główny target to kobiety.
+- Weryfikacja: web `tsc` ✓ + `next build` ✓, api `tsc` ✓ + **398 testów ✓** (`register.dto.spec` zaktualizowany: pusty URL teraz akceptowany), lint web+api ✓.
+- Status: ✅ done (branch/PR). Punkty 1–2 zobaczymy na żywo przy pierwszych pilotach (obserwacja onboardingu klientki).
+
 ### Blog — poszerzenie `pytania-nocne` poza beauty + naprawa fabrykacji — Claude + botiko-content — branch `feat/blog-pytania-nocne-broaden`
 - Kontekst: backlog (Priorytet B kalendarza) — poszerzyć „ogólny" post o nocnych pytaniach poza beauty. Przy okazji wykryte i naprawione **fabrykacje w żywym poście** (ryzyko fałszywej reklamy): niezweryfikowane „Wiemy to z danych. 68%…" → ujęcie jakościowe; **„Nasze klientki, które wdrożyły bota, raportują 40–60 dodatkowych rezerwacji"** (nie mamy płacących klientów) → mechanizm + jawne „przykładowe wyliczenie, nie obietnica".
 - Dodana sekcja „Te same 5 pytań wraca w restauracji, warsztacie i gabinecie" (cross-branżowe przykłady + link do pillara automatyzacji) — realnie różnicuje od lokalnego `7-pytan-…-bialystok`. `updatedAt: 2026-07-07`.
