@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import JsonLd from '@/components/seo/JsonLd';
 import Breadcrumbs from '@/components/blog/Breadcrumbs';
 import Pricing from '@/components/marketing/Pricing';
-import { CalendarCheck, ShieldCheck, PhoneCall } from 'lucide-react';
+import { CalendarCheck, ShieldCheck, PhoneCall, Rocket } from 'lucide-react';
 import { SITE_URL, breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 
 // Reframe braku rezerwacji jako zaleta (obiekcja „a Booksy sam umawia" z SXO).
@@ -22,6 +22,16 @@ const BOOKING_REFRAME = [
     title: 'Ty domykasz rezerwację',
     text: 'Bot odpowiada 24/7 i zbiera numer, a Ty oddzwaniasz i proponujesz termin na swoich warunkach. Kontakt trafia od razu do panelu Botiko, gotowy do oddzwonienia.',
   },
+] as const;
+
+// Opcjonalna usługa done-for-you (jednorazowa), poza planem 99 zł. Rozwiązuje
+// główny killer konwersji: właściciel nie skonfiguruje bota sam. Nie zmienia
+// planu — plan zostaje jeden (99 zł/mies.).
+const SETUP_INCLUDES = [
+  'Import wiedzy z Twojej strony i cennika',
+  'Ustawienie bota pod Twoją branżę i markę',
+  'Instalacja na stronie (WordPress lub skrypt)',
+  'Test na realnych pytaniach klientów przed startem',
 ] as const;
 
 const URL = `${SITE_URL}/cennik`;
@@ -56,7 +66,11 @@ const FAQS = [
   },
   {
     q: 'Czy są dodatkowe opłaty za wdrożenie?',
-    a: 'Nie ma opłaty wdrożeniowej. Konfigurujesz bota samodzielnie w ~15 minut, a fakturę za subskrypcję znajdziesz w panelu.',
+    a: 'Nie ma obowiązkowej opłaty wdrożeniowej — bota konfigurujesz samodzielnie w ~15 minut. Jeśli wolisz, możemy skonfigurować go za Ciebie w ramach opcjonalnej usługi „Start za Ciebie" (199 zł jednorazowo). Sam plan dalej kosztuje 99 zł miesięcznie.',
+  },
+  {
+    q: 'Na czym polega usługa „Start za Ciebie" za 199 zł?',
+    a: 'To jednorazowa, opcjonalna usługa done-for-you: importujemy wiedzę z Twojej strony i cennika, ustawiamy bota pod Twoją branżę, instalujemy go na stronie i testujemy na realnych pytaniach. Dostajesz gotowego bota do zaakceptowania. Nie zmienia ceny abonamentu (99 zł/mies.) — napisz na kontakt@botiko.pl, jeśli chcesz z niej skorzystać.',
   },
   {
     q: 'Co się stanie, jeśli przekroczę 1000 rozmów miesięcznie?',
@@ -124,6 +138,55 @@ export default function CennikPage() {
 
       {/* Plan + ROI calculator (reused component) */}
       <Pricing />
+
+      {/* Opcjonalny setup done-for-you — 199 zł jednorazowo (poza planem) */}
+      <section className="py-16 bg-white border-t border-slate-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="rounded-3xl border border-slate-200 bg-bg p-8 sm:p-10 flex flex-col md:flex-row md:items-center gap-8">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="shrink-0 w-10 h-10 rounded-xl bg-brand-soft text-brand flex items-center justify-center" aria-hidden>
+                  <Rocket className="w-5 h-5" strokeWidth={2} />
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-text">
+                  Nie chcesz konfigurować sam?
+                </h2>
+              </div>
+              <p className="text-slate-500 leading-relaxed mb-5 max-w-xl">
+                Skonfigurujemy bota za Ciebie — od importu wiedzy po instalację na stronie.
+                Dostajesz gotowego bota do zaakceptowania. Opcjonalnie, poza planem — sam
+                plan dalej kosztuje 99 zł miesięcznie.
+              </p>
+              <ul className="flex flex-col gap-2.5">
+                {SETUP_INCLUDES.map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-sm text-text">
+                    <span className="mt-0.5 shrink-0 w-4 h-4 flex items-center justify-center text-brand" aria-hidden>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="md:w-56 shrink-0 text-center md:text-left md:border-l md:border-slate-200 md:pl-8">
+              <p className="text-4xl font-extrabold text-text">199 zł</p>
+              <p className="text-slate-500 text-sm mt-1 mb-5">jednorazowo · bez abonamentu</p>
+              <a
+                href="mailto:kontakt@botiko.pl?subject=Start%20za%20Ciebie%20%E2%80%94%20konfiguracja%20bota"
+                className="block text-center py-3 px-5 rounded-full bg-brand text-white font-bold text-sm shadow-lg shadow-brand/20 hover:bg-brand-dark transition-colors"
+              >
+                Napisz do nas
+              </a>
+              <p className="text-xs text-slate-400 mt-3">
+                Odpowiadamy w 24h na kontakt@botiko.pl
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Co Botiko robi, a czego nie — reframe braku rezerwacji jako zaleta */}
       <section className="py-16 bg-bg border-t border-slate-100">
