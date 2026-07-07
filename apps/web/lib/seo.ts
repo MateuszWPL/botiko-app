@@ -25,22 +25,44 @@ export function absoluteUrl(path: string): string {
   return `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`;
 }
 
-/** The canonical Organization entity, referenced by other schemas via @id. */
+/**
+ * The canonical brand entity, referenced by other schemas via @id.
+ *
+ * Emitted site-wide from the root layout. Typed as both Organization AND
+ * LocalBusiness so there is exactly ONE "Botiko.pl" node (`#organization`) for
+ * Google/LLMs to resolve — the homepage no longer emits a separate
+ * `#business` LocalBusiness (that caused two competing entities). LocalBusiness
+ * facts (address, priceRange, image) live here so every page carries the local
+ * signal and stays consistent.
+ */
 export function organizationSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'Organization',
+    '@type': ['Organization', 'LocalBusiness'],
     '@id': `${SITE_URL}/#organization`,
     name: SITE_NAME,
     url: SITE_URL,
     logo: `${SITE_URL}/botiko-logo-full.svg`,
+    image: `${SITE_URL}/opengraph-image.png`,
     email: CONTACT_EMAIL,
+    description:
+      'Bot obsługi klienta 24/7 dla firm usługowych — salony, gabinety, restauracje, warsztaty.',
+    priceRange: `${MONTHLY_PRICE_PLN} PLN`,
     founder: { '@id': FOUNDER_PERSON_ID },
     foundingLocation: {
       '@type': 'Place',
       address: { '@type': 'PostalAddress', addressLocality: 'Białystok', addressCountry: 'PL' },
     },
-    areaServed: { '@type': 'Country', name: 'Polska' },
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Białystok',
+      addressRegion: 'Podlaskie',
+      addressCountry: 'PL',
+    },
+    areaServed: [
+      { '@type': 'Country', name: 'Polska' },
+      { '@type': 'City', name: 'Białystok' },
+    ],
     contactPoint: {
       '@type': 'ContactPoint',
       email: CONTACT_EMAIL,
@@ -48,6 +70,9 @@ export function organizationSchema() {
       areaServed: 'PL',
       availableLanguage: ['Polish'],
     },
+    // Brand-owned external listing — the official plugin in the wordpress.org
+    // directory. Add social profiles here as they come online.
+    sameAs: [WORDPRESS_PLUGIN_URL],
   };
 }
 

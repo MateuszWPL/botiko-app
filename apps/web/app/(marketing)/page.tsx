@@ -54,31 +54,9 @@ export const metadata: Metadata = {
   },
 };
 
-// Organization + WebSite entities are emitted site-wide from app/layout.tsx.
-// The homepage keeps the LocalBusiness + SoftwareApplication specifics.
-const JSON_LD_LOCAL_BUSINESS = {
-  '@context': 'https://schema.org',
-  '@type': 'LocalBusiness',
-  '@id': 'https://botiko.pl/#business',
-  name: 'Botiko.pl',
-  description:
-    'Bot obsługi klienta 24/7 dla firm usługowych — salony, gabinety, restauracje, warsztaty.',
-  url: 'https://botiko.pl',
-  email: 'kontakt@botiko.pl',
-  image: 'https://botiko.pl/opengraph-image.png',
-  priceRange: '99 PLN',
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Białystok',
-    addressRegion: 'Podlaskie',
-    addressCountry: 'PL',
-  },
-  areaServed: [
-    { '@type': 'Country', name: 'Polska' },
-    { '@type': 'City', name: 'Białystok' },
-  ],
-};
-
+// Organization (typed also as LocalBusiness), WebSite and Person entities are
+// emitted site-wide from app/layout.tsx via lib/seo.ts. The homepage keeps only
+// the SoftwareApplication specifics.
 const JSON_LD_SOFTWARE = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -99,11 +77,7 @@ const JSON_LD_SOFTWARE = {
 export default function HomePage() {
   return (
     <>
-      {/* JSON-LD Schema (Organization + WebSite come from the root layout) */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_LOCAL_BUSINESS) }}
-      />
+      {/* JSON-LD (Organization+LocalBusiness + WebSite + Person come from the root layout) */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD_SOFTWARE) }}

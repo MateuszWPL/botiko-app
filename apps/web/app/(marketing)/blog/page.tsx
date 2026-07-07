@@ -12,6 +12,26 @@ import PostCard from '@/components/blog/PostCard';
 import BlogFilters from '@/components/blog/BlogFilters';
 import Pagination from '@/components/blog/Pagination';
 import TagCloud from '@/components/blog/TagCloud';
+import { breadcrumbListSchema } from '@/lib/seo';
+
+// CollectionPage + BreadcrumbList for the blog index. Ties the listing to the
+// site-wide WebSite/Organization entities so the blog is a first-class,
+// crawlable collection (previously the index emitted no structured data).
+const BLOG_JSON_LD = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': 'https://botiko.pl/blog#collection',
+    url: 'https://botiko.pl/blog',
+    name: 'Blog — AI dla polskich firm usługowych',
+    description:
+      'Artykuły o automatyzacji obsługi klienta, chatbotach AI i rozwoju małych firm usługowych w Polsce.',
+    inLanguage: 'pl-PL',
+    isPartOf: { '@id': 'https://botiko.pl/#website' },
+    publisher: { '@id': 'https://botiko.pl/#organization' },
+  },
+  breadcrumbListSchema([{ label: 'Strona główna', href: '/' }, { label: 'Blog' }]),
+];
 
 type SearchParams = {
   strona?: string;
@@ -81,6 +101,10 @@ export default async function BlogPage({
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(BLOG_JSON_LD) }}
+      />
       {/* Hero header */}
       <div
         className="relative overflow-hidden text-white pt-32 pb-24 px-4"

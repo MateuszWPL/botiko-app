@@ -50,6 +50,7 @@ const OFFER_SCHEMA = {
   name: 'Botiko — bot obsługi klienta',
   description:
     'Bot obsługi klienta 24/7 dla polskich firm usługowych: odpowiada na pytania, zbiera leady, odsyła do rezerwacji.',
+  image: 'https://botiko.pl/opengraph-image.png',
   brand: { '@type': 'Brand', name: 'Botiko.pl' },
   offers: {
     '@type': 'Offer',

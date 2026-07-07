@@ -67,11 +67,7 @@ export default function LocalLandingPage({ params }: { params: Params }) {
     '@context': 'https://schema.org',
     '@type': 'Service',
     name: `Bot obsługi klienta dla ${industry.labelGenitive} ${city.name}`,
-    provider: {
-      '@type': 'Organization',
-      name: 'Botiko.pl',
-      url: SITE_URL,
-    },
+    provider: { '@id': `${SITE_URL}/#organization` },
     areaServed: { '@type': 'City', name: city.name },
     serviceType: industry.serviceType,
     url,
