@@ -25,6 +25,17 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-07 (wtorek)
 
+### SEO — plan „zaistnieć w internecie": sprint zakończony i zmergowany — Claude — [PR #114–#118]
+- **Zmergowane do `main`** (wszystkie z review agentów + `tsc`/`next build` zielone, CI zielone, auto-deploy Vercel):
+  - #114 Faza 0 — hygiena schema/robots (jedna encja marki, `@id` publisher/provider, `/blog` CollectionPage, `/cennik` Product image, AI-crawlery w robots).
+  - #115 Faza 1A — kanibalizacja bloga (2 pary → 301, reszta zachowana jako komplementarna).
+  - #116 Faza 1B — `/porownanie/botiko-vs-recepcjonistka-ai` (segmentacja vs voiceboty).
+  - #117 Faza 2 — materiały off-page (`docs/seo/offpage/*`).
+  - #118 Faza 3 — reframe „bot nie rezerwuje = zaleta" (`/dla/salon-beauty`, `/cennik`).
+- **Status planu (done/todo):** `docs/seo/PLAYBOOK.md` → sekcja „Sprint widoczności 2026-07-07".
+- **Pozostało:** mobilne LCP 5 s (osobny mierzony etap), `Review`/`AggregateRating` (na realnych opiniach pilotów), poszerzenie `pytania-nocne`; **wykonanie off-page po stronie foundera** (gotowce w `docs/seo/offpage/`).
+- Status: ✅ część kodowa/treściowa/materiałowa planu ukończona i na produkcji; off-page = akcja foundera. (Wpisy szczegółowe Faza 0–3 poniżej — statusy „🔄 w toku" były punktem w czasie przed merge.)
+
 ### Audyt SEO + Faza 0 (hygiena schema/robots) — Claude + claude-seo (content/geo/schema/sxo) — branch `feat/seo-visibility-faza0`
 - Kontekst: pełny audyt SEO (`/claude-seo:seo-audit botiko.pl`) → Health Score **84/100**. Strona technicznie/on-page znakomita, ale niewidoczna w SERP (0 backlinków, widoczność 0). Wniosek: wąskie gardło = off-page + treść pod intencję, nie technika. Plan naprawy „zaistnieć w internecie" (pełny 360°) zatwierdzony — patrz plik planu.
 - **Faza 0 — poprawki w kodzie (ten commit):**
