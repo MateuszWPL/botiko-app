@@ -25,6 +25,13 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-07 (wtorek)
 
+### Blog — kalendarz redakcyjny (runway sierpień–wrzesień) — Claude + botiko-content — branch `docs/blog-kalendarz-redakcyjny`
+- Kontekst: audyt stanu bloga — 34 posty, tylko 4 zaplanowane, runway kończy się 28.07 → potem cisza. Kadencja historyczna ~1/tydz.
+- Nowy `docs/content/blog-kalendarz.md`: 9 tematów (sie–wrz, tygodniowo) z datami/slugami/intencją/mapą linków + kolumna „Różni się od" (anty-kanibalizacja po Fazie 1A). Priorytet: biała plama **vertical OTHER** (korepetytor/trener/fotograf), wsparcie `/porownanie/botiko-vs-recepcjonistka-ai`, satelita WP (troubleshooting), cost-intent gastronomia, klaster FAQ. + tania poprawka: poszerzyć `pytania-nocne` poza beauty.
+- Review `botiko-content`: 7/9 czyste, 0 blokerów; 2 tematy (#8 błędy wdrożenia, #9 bot vs formularz) — zaostrzony kąt w kolumnie „Różni się od" (linkować do istniejących, nie duplikować); dodane 2 rezerwowe tematy. Zaznaczone: **każdy post wymaga 3 grafik + akceptacji** (wąskie gardło).
+- Zaktualizowany `DOCS.md` (indeks). Pisanie postów — osobno, przez botiko-content, z bramką akceptacji.
+- Status: ✅ kalendarz gotowy; drafty na życzenie.
+
 ### SEO — plan „zaistnieć w internecie": sprint zakończony i zmergowany — Claude — [PR #114–#118]
 - **Zmergowane do `main`** (wszystkie z review agentów + `tsc`/`next build` zielone, CI zielone, auto-deploy Vercel):
   - #114 Faza 0 — hygiena schema/robots (jedna encja marki, `@id` publisher/provider, `/blog` CollectionPage, `/cennik` Product image, AI-crawlery w robots).
