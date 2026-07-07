@@ -11,6 +11,8 @@
 - Mocne klastry: beauty, zdrowie, food, auto, automatyzacja, RODO, baza wiedzy/RAG.
 - **Biała plama: vertical OTHER** (korepetytor, trener, fotograf, usługi lokalne) — zgodnie z CLAUDE.md generyczny szablon obsługuje wiele branż, a blog ich nie dotyka. Najniższa konkurencja, dobra długa fraza.
 
+> **Status 2026-07-07:** wszystkie 9 postów Priorytetu A **napisane i zmergowane** (PR #122 korepetytor + #125 pozostałe 8), przyszłodatowane 04.08–29.09. **Czekają na 3 grafiki każdy** (`{slug}-hero/-1/-2.jpg`) przed datą publikacji. Priorytet B (`pytania-nocne`) — zrobiony.
+
 ## Priorytet A — wydłużenie runway (9 postów, tygodniowo)
 
 | Data | Slug (roboczy) | Tytuł roboczy | Intencja / zapytanie | Klaster → linki wewn. | Różni się od (anty-kanibalizacja) |
@@ -32,7 +34,7 @@
 **Uwaga do #2 (`voicebot-czy-bot-na-stronie`):** strona docelowa `/porownanie/botiko-vs-recepcjonistka-ai` **już jest live** (PR #116) — link wewnętrzny jest ważny.
 
 ## Priorytet B — tanie poprawki treści (bez nowych grafik)
-- **Poszerzyć `pytania-nocne` poza beauty** (backlog z `PLAYBOOK.md`): tytuł/excerpt obiecują szerzej niż beauty, a treść jest w 100% beauty. Dodać realne przykłady z restauracji/warsztatu → realnie różnicuje intencję od lokalnego `7-pytan-...-bialystok`.
+- [x] **Poszerzyć `pytania-nocne` poza beauty** — ZROBIONE (2026-07-07): dodana sekcja „Te same 5 pytań w restauracji, warsztacie i gabinecie" + przy okazji naprawione fabrykacje w żywym poście (usunięte niezweryfikowane „68% z danych" i fałszywe „nasze klientki raportują 40–60 rezerwacji"). `updatedAt: 2026-07-07`.
 
 ## Priorytet C — seria „build in public" (luźno, zależne od kamieni milowych)
 - Kontynuacja po `90-dni-po-launchu...` — kolejny wpis dopiero **gdy będą realne dane** (pierwsi płacący klienci, wnioski z pilotów). Świetne pod brand + Reddit + backlinki, ale nie fabrykujemy postępów. Nie planujemy sztywnej daty.

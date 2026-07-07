@@ -25,6 +25,12 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-07 (wtorek)
 
+### Blog — poszerzenie `pytania-nocne` poza beauty + naprawa fabrykacji — Claude + botiko-content — branch `feat/blog-pytania-nocne-broaden`
+- Kontekst: backlog (Priorytet B kalendarza) — poszerzyć „ogólny" post o nocnych pytaniach poza beauty. Przy okazji wykryte i naprawione **fabrykacje w żywym poście** (ryzyko fałszywej reklamy): niezweryfikowane „Wiemy to z danych. 68%…" → ujęcie jakościowe; **„Nasze klientki, które wdrożyły bota, raportują 40–60 dodatkowych rezerwacji"** (nie mamy płacących klientów) → mechanizm + jawne „przykładowe wyliczenie, nie obietnica".
+- Dodana sekcja „Te same 5 pytań wraca w restauracji, warsztacie i gabinecie" (cross-branżowe przykłady + link do pillara automatyzacji) — realnie różnicuje od lokalnego `7-pytan-…-bialystok`. `updatedAt: 2026-07-07`.
+- Weryfikacja: `botiko-content` + `next build`. Kalendarz: Priorytet B odhaczony.
+- Status: ✅ done.
+
 ### Blog — partia 8 postów sie–wrz (cały kalendarz) przez claude-blog — Claude + claude-blog + botiko-content — branch `feat/blog-batch-sie-wrz`
 - Kontekst: user zlecił napisanie wszystkich pozostałych tematów z `docs/content/blog-kalendarz.md` (runway kończył się 28.07). 8 postów napisanych RÓWNOLEGLE przez 8× `claude-blog:blog-writer` z wiązaniami BRAND/VOICE, każdy ~2000–2200 słów, przyszłodatowane 11.08–29.09 (auto-publikacja).
 - Posty: `voicebot-czy-bot-na-stronie` (porównania, wspiera `/porownanie/botiko-vs-recepcjonistka-ai`), `bot-dla-trenera-personalnego` + `bot-dla-fotografa` (vertical OTHER), `wtyczka-chatbot-wordpress-problemy` (satelita WP, troubleshooting), `ile-kosztuje-bot-dla-restauracji-2026` (cost-intent gastro), `jak-napisac-faq-dla-bota-przyklady` (20 par Q&A per branża), `bledy-przy-wdrazaniu-bota-obslugi-klienta` (antywzorce), `bot-vs-formularz-kontaktowy` (head-to-head).
