@@ -49,7 +49,7 @@ export class OpenAIProvider implements AIService {
       maxTokens = 600,
       temperature = 0.3,
       responseFormat,
-      model = 'gpt-4o-mini',
+      model = env.OPENAI_CHAT_MODEL,
     } = options;
     const response = await this.client.chat.completions.create({
       model,
@@ -77,7 +77,7 @@ export class OpenAIProvider implements AIService {
     const {
       maxTokens = 600,
       temperature = 0.3,
-      model = 'gpt-4o-mini',
+      model = env.OPENAI_CHAT_MODEL,
     } = options;
 
     const stream = await this.client.chat.completions.create({
