@@ -23,11 +23,7 @@ const JSON_LD_SERVICE = {
   '@context': 'https://schema.org',
   '@type': 'Service',
   name: 'Bot obsługi klienta dla gabinetów SPA i wellness',
-  provider: {
-    '@type': 'Organization',
-    name: 'Botiko.pl',
-    url: 'https://botiko.pl',
-  },
+  provider: { '@id': 'https://botiko.pl/#organization' },
   areaServed: { '@type': 'Country', name: 'Polska' },
   serviceType: 'Customer service automation',
   offers: {

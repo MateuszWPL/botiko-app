@@ -109,14 +109,9 @@ export default async function BlogPostPage({
       jobTitle: AUTHOR.role,
       sameAs: [...AUTHOR.sameAs],
     },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Botiko.pl',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://botiko.pl/botiko-logo-full.svg',
-      },
-    },
+    // Reference the single site-wide Organization entity (@id) instead of an
+    // inline duplicate — keeps one canonical "Botiko.pl" brand node.
+    publisher: { '@id': 'https://botiko.pl/#organization' },
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': `https://botiko.pl/blog/${post.slug}`,

@@ -23,6 +23,22 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ---
 
+## 2026-07-07 (wtorek)
+
+### Audyt SEO + Faza 0 (hygiena schema/robots) — Claude + claude-seo (content/geo/schema/sxo) — branch `feat/seo-visibility-faza0`
+- Kontekst: pełny audyt SEO (`/claude-seo:seo-audit botiko.pl`) → Health Score **84/100**. Strona technicznie/on-page znakomita, ale niewidoczna w SERP (0 backlinków, widoczność 0). Wniosek: wąskie gardło = off-page + treść pod intencję, nie technika. Plan naprawy „zaistnieć w internecie" (pełny 360°) zatwierdzony — patrz plik planu.
+- **Faza 0 — poprawki w kodzie (ten commit):**
+  - Scalona podwójna encja marki: homepage nie emituje już osobnego `LocalBusiness #business`; `organizationSchema()` w `lib/seo.ts` ma teraz `@type: ["Organization","LocalBusiness"]` z address/areaServed/priceRange/image + `sameAs` (wp.org). Jedna encja `#organization` w całym serwisie.
+  - `Article.publisher` (blog) i `Service.provider` (5× `/dla/*` + programatyczne `/dla/[branza]/[miasto]`) → referencja `{ '@id': '.../#organization' }` zamiast inline duplikatów.
+  - `/blog` (index): dodane `CollectionPage` + `BreadcrumbList` (wcześniej brak JSON-LD).
+  - `/cennik`: `image` w schemacie `Product` (wymóg Google do product snippet).
+  - `robots.ts`: jawne reguły `allow` dla crawlerów AI (GPTBot/OAI-SearchBot/ChatGPT-User/ClaudeBot/PerplexityBot/Google-Extended).
+  - `lastmod` bloga z frontmatter — już było w `sitemap.ts` (`post.updatedAt ?? post.date`), bez zmian.
+- Pliki: `apps/web/lib/seo.ts`, `app/(marketing)/{page,blog/page,blog/[slug]/page,cennik/page,dla/*/page,dla/[branza]/[miasto]/page}.tsx`, `app/robots.ts`.
+- Weryfikacja: web `tsc --noEmit` ✓ (0 błędów); `next lint` ✓ (tylko wcześniejsze warny w nietkniętych plikach). Schema live do walidacji w Rich Results Test po deployu.
+- Do zrobienia dalej (wg planu): Faza 1 kanibalizacja bloga + `/porownanie` (realni konkurenci), Faza 2 materiały off-page (`docs/seo/offpage/*`), Faza 3 trust on-page. Mobilne LCP 5,0 s — osobny, mierzony etap (przyczyna „opacity animation" już rozwiązana przez `heroRise`).
+- Status: 🔄 Faza 0 gotowa (branch, czeka na CI/PR); dalsze fazy w toku.
+
 ## 2026-07-06 (poniedziałek)
 
 ### Fixy dashboard/widget — kontrast na jasnym akcencie, scroll ustawień, refresh sesji — Claude — [PR #112 | branch `fix/widget-contrast-settings-scroll-auth`]
