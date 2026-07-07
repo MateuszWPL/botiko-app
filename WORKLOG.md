@@ -58,6 +58,17 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 - Weryfikacja: `tsc` ✓, `next build` — w toku.
 - Status: 🔄 gotowe do PR (branch), po zielonym buildzie.
 
+### SEO Faza 2 — materiały off-page (główna dźwignia) — Claude + botiko-content — branch `docs/seo-offpage-materialy`
+- Kontekst: audyt + GSC potwierdzają, że wąskim gardłem jest off-page (0 backlinków, widoczność 0). Founder wykonuje off-page ręcznie (backlinków nie da się zrobić z kodu) — przygotowane gotowce do działania.
+- Nowe pliki `docs/seo/offpage/`:
+  - `katalogi-nap.md` — spójny blok NAP (źródło prawdy zgodne ze schematem: Botiko.pl, Białystok/Podlaskie, kontakt@botiko.pl, Mateusz Woronowicz) + 3 długości opisu firmy + kuratorowana lista katalogów PL (Aleo, Panorama Firm, PKT, GoWork, Bing Places) i SaaS (Capterra, GetApp, G2, SaaSHub, AlternativeTo, Product Hunt) z kolejnością działania. **Decyzja dla foundera: telefon/adres** (schema ich nie ma — nie fabrykowane).
+  - `outreach-guest-posty.md` — 8 tematów guest postów zmapowanych na pillary/landingi + 3 szablony maili (propozycja, follow-up, „unlinked mention") + higiena outreachu.
+  - `youtube-demo.md` — scenariusz demo (2:30–3:00, 7 scen, bez obietnicy rezerwacji), metadane SEO (tytuł/opis/tagi/rozdziały), wariant Shorts, miejsca osadzenia (VideoEmbed na `/` i `/integracje/wordpress`) + domknięcie `sameAs`/`VideoObject`.
+  - `reddit-fb.md` — subreddity + kategorie grup FB, twarde zasady (value-first, disclosure, regulaminy), wzorce odpowiedzi/postów, rytm działania.
+- Zaktualizowany `DOCS.md` (indeks — nowy wiersz `docs/seo/offpage/`). Zasada „bez black-hat / farm linków" wprost w materiałach.
+- Review: `botiko-content` (język marki, brak obietnic spoza MVP) — w toku.
+- Status: 🔄 gotowe do PR (branch), po review.
+
 ## 2026-07-06 (poniedziałek)
 
 ### Fixy dashboard/widget — kontrast na jasnym akcencie, scroll ustawień, refresh sesji — Claude — [PR #112 | branch `fix/widget-contrast-settings-scroll-auth`]
