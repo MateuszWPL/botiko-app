@@ -24,6 +24,7 @@ Dodajesz / zmieniasz / usuwasz dokument? Zaktualizuj tę tabelę w tym samym com
 | **Produkcyjne env + deploy (Railway/Vercel)** | [`docs/PRODUCTION_ENV.md`](docs/PRODUCTION_ENV.md) | PL | zmiana zmiennych środowiskowych / hostingu |
 | **Komendy AI / agenci / MCP — quick ref** | [`docs/AI-COMMANDS.md`](docs/AI-COMMANDS.md) | PL | zmiana zestawu agentów / komend |
 | **Plan działania (audyt strategiczny + sprinty naprawcze + bramka decyzyjna)** | [`docs/PLAN-DZIALANIA.md`](docs/PLAN-DZIALANIA.md) | PL | po bramce decyzyjnej / zmianie strategii |
+| **Sprzedaż/piloty — skrypty outreach, onboarding pilota, lista firm** | [`docs/sprzedaz/`](docs/sprzedaz/) | PL | zmiana taktyki sprzedaży / nowe firmy / feedback z pilotów |
 | **SEO/GEO — playbook (co zrobione, co off-page, backlog)** | [`docs/seo/PLAYBOOK.md`](docs/seo/PLAYBOOK.md) | PL | po każdym kroku SEO (on-page i off-page) |
 | **SEO — raporty / audyty (punkt w czasie)** | [`docs/seo/`](docs/seo/) | PL | nowy audyt → nowy plik `audyt-RRRR-MM-DD.md` |
 | **SEO — materiały off-page do wykonania (katalogi+NAP, outreach, YouTube, Reddit/FB)** | [`docs/seo/offpage/`](docs/seo/offpage/) | PL | gdy zmienia się taktyka off-page / dane NAP |
@@ -57,6 +58,7 @@ docs/
   CODEMAPS/            — architektura (INDEX + backend/frontend/widget/database/integrations)
   seo/                 — PLAYBOOK + raporty/audyty SEO
   content/             — baza wiedzy bota + maile
+  sprzedaz/            — skrypty outreach, onboarding pilota, lista firm
 ```
 
 ---
