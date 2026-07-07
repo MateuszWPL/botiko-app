@@ -4,6 +4,24 @@ Stan po wdrożeniu silnika organicznego (branch `seo/gsc-fixes`). Ten dokument
 zbiera: co zostało zrobione w kodzie, co trzeba zrobić ręcznie (off-page) oraz
 backlog treści. Zaktualizuj po każdym kroku.
 
+## Sprint widoczności 2026-07-07 (audyt SEO → Faza 0–3)
+
+Pełny audyt SEO dał **84/100** (technika/on-page mocne, wąskie gardło = off-page + treść pod intencję). Zmergowane do `main`:
+
+- **Faza 0 — hygiena schema/robots** (#114): jedna encja marki `#organization` (`@type: ["Organization","LocalBusiness"]`, koniec zdublowanego `#business`); `@id` w `Article.publisher` i `Service.provider`; `CollectionPage`+`BreadcrumbList` na `/blog`; `image` w `Product` na `/cennik`; jawne reguły AI-crawlerów w `robots.ts` (GPTBot/OAI-SearchBot/ClaudeBot/PerplexityBot/Google-Extended); `sameAs` (wp.org) w Organization.
+- **Faza 1A — kanibalizacja bloga** (#115): 2 realne pary → 301 (`rodo-chatbot`→`chatbot-a-rodo-dane-klientow`, `chatbot-recepcja`→`czy-bot-ai-zastapi-recepcjonistke`) z przeniesieniem unikatowej treści; reszta „par" oceniona przez `botiko-content` jako komplementarna i zachowana.
+- **Faza 1B — porównanie** (#116): `/porownanie/botiko-vs-recepcjonistka-ai` — segmentuje kategorię vs voiceboty (Smart Asystenci/Assistron/Sekretarka AI), bez twardych cen konkurenta.
+- **Faza 3 — trust/reframe** (#118): sekcje „bot nie rezerwuje = zaleta" na `/dla/salon-beauty` i `/cennik` (własny kalendarz / brak double-booking / Ty domykasz).
+- **Faza 2 — materiały off-page** (#117): gotowce w `docs/seo/offpage/` (patrz sekcja OFF-PAGE).
+
+**Pozostało (świadomie odłożone):**
+- Mobilne **LCP 5,0 s** — osobny, **mierzony** etap (przyczyna „opacity animation" wykluczona — `heroRise` OK; wymaga before/after na preview).
+- **`Review`/`AggregateRating` + referencje pilotów** — czekają na pierwsze realne opinie (nie fabrykujemy).
+- Poszerzenie `pytania-nocne` poza beauty (drobny content).
+- **Wykonanie off-page po stronie foundera** — patrz sekcja niżej + `docs/seo/offpage/`.
+
+---
+
 ## Co jest już w kodzie (zrobione)
 
 **Technical SEO / GEO foundation**
@@ -32,6 +50,8 @@ backlog treści. Zaktualizuj po każdym kroku.
 
 Bez tego nie wyjdziemy poza ruch brandowy. Zero backlinków = sufit.
 
+> **Gotowe materiały do wykonania (Faza 2, #117):** `docs/seo/offpage/` — `katalogi-nap.md` (spójny blok NAP + lista katalogów PL/SaaS + kolejność), `outreach-guest-posty.md` (8 tematów + szablony maili), `youtube-demo.md` (scenariusz + opis + osadzenie), `reddit-fb.md` (subreddity/grupy FB + zasady value-first).
+
 - [x] **Bing Webmaster Tools** — załóż konto, zweryfikuj `botiko.pl`, zgłoś `botiko.pl/sitemap.xml`. ChatGPT Search korzysta z indeksu Bing — to warunek widoczności w ChatGPT.
 - [x] **Google Search Console** — po deployu zgłoś ponownie sitemap; monitoruj indeksację nowych URL-i (`/dla/*/*`, `/cennik`, `/faq`, `/porownanie/*`).
 - [x] **Google Business Profile** (Białystok) — wizytówka = encja lokalna, sygnał dla Map i AI.
@@ -58,7 +78,7 @@ Bez tego nie wyjdziemy poza ruch brandowy. Zero backlinków = sufit.
 
 **Rozbudowa programmatic (gdy treść gotowa)**
 - [ ] Dodać kolejne miasta w `lib/local-seo.ts` — TYLKO z prawdziwymi dzielnicami i własnym FAQ (quality gate odrzuca niekompletne).
-- [ ] Rozważyć więcej porównań w `lib/comparisons.ts` (uczciwych, bez nazywania konkurentów).
+- [x] Rozważyć więcej porównań w `lib/comparisons.ts` — dodane `botiko-vs-recepcjonistka-ai` (kategoria voicebot, nominative fair use, bez cen konkurenta). Kolejne w miarę potrzeb.
 
 ---
 
