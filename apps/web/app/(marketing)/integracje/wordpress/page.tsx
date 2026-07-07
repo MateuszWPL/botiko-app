@@ -98,9 +98,11 @@ export default function WordPressIntegrationPage() {
           HOWTO_SCHEMA,
           softwareApplicationSchema(),
           faqPageSchema(FAQS),
+          // Bez pośredniego crumba „Integracje" — nie ma strony /integracje, więc
+          // element byłby bez href, a wtedy Google odrzuca ListItem bez pola `item`
+          // (błąd krytyczny w GSC dla itemListElement).
           breadcrumbListSchema([
             { label: 'Botiko.pl', href: '/' },
-            { label: 'Integracje' },
             { label: 'WordPress' },
           ]),
         ]}
@@ -115,7 +117,6 @@ export default function WordPressIntegrationPage() {
             <Breadcrumbs
               items={[
                 { label: 'Botiko.pl', href: '/' },
-                { label: 'Integracje' },
                 { label: 'WordPress' },
               ]}
               variant="dark"

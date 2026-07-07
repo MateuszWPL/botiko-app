@@ -64,14 +64,21 @@ const FAQS = [
   },
 ];
 
+// Botiko to usługa (SaaS), nie produkt sklepowy — dlatego @type: 'Service', nie
+// 'Product'. Product + Offer sprawia, że Google klasyfikuje stronę jako merchant
+// listing / product snippet i wymaga pól sklepowych (image, review,
+// aggregateRating, dane wysyłki), których usługa subskrypcyjna nie ma — to
+// generowało błędy w GSC. Service + Offer niesie cenę bez tych wymagań i jest
+// spójne ze stronami /dla/*.
 const OFFER_SCHEMA = {
   '@context': 'https://schema.org',
-  '@type': 'Product',
+  '@type': 'Service',
   name: 'Botiko — bot obsługi klienta',
   description:
     'Bot obsługi klienta 24/7 dla polskich firm usługowych: odpowiada na pytania, zbiera leady, odsyła do rezerwacji.',
-  image: 'https://botiko.pl/opengraph-image.png',
-  brand: { '@type': 'Brand', name: 'Botiko.pl' },
+  provider: { '@id': `${SITE_URL}/#organization` },
+  areaServed: { '@type': 'Country', name: 'Polska' },
+  serviceType: 'Customer service automation',
   offers: {
     '@type': 'Offer',
     price: '99',
