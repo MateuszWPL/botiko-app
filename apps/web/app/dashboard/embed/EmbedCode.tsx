@@ -12,6 +12,7 @@ import {
   Loader2,
   Download,
   Info,
+  Mail,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createClient } from '@/lib/supabase';
@@ -557,6 +558,17 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
 
   const embedCode = `<script src="${WIDGET_URL}/embed.js" data-bot-id="${selectedBot}" async></script>`;
 
+  // Ready-to-send email for whoever manages the user's website.
+  const webmasterMailto = `mailto:?subject=${encodeURIComponent(
+    'Prośba: dodanie bota Botiko na naszej stronie',
+  )}&body=${encodeURIComponent(
+    `Cześć,\n\nchcę dodać na naszej stronie WWW okienko czatu (Botiko). ` +
+      `Czy możesz wkleić poniższy kod tuż przed zamykającym znacznikiem </body> ` +
+      `(na każdej podstronie)?\n\n${embedCode}\n\n` +
+      `Na WordPressie najprościej przez darmową wtyczkę „Botiko" z katalogu wtyczek. ` +
+      `Po zapisaniu na stronie pojawi się okienko czatu. Dziękuję!`,
+  )}`;
+
   const copyMain = async () => {
     await navigator.clipboard.writeText(embedCode);
     setMainCopied(true);
@@ -641,6 +653,13 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
             )}
           </button>
         </div>
+        <a
+          href={webmasterMailto}
+          className="flex items-center justify-center gap-2 px-5 py-3 border-t border-slate-100 text-sm font-medium text-slate-600 hover:text-indigo-700 hover:bg-indigo-50/40 transition-all"
+        >
+          <Mail className="w-4 h-4" />
+          Nie zajmujesz się stroną samodzielnie? Wyślij kod webmasterowi
+        </a>
       </div>
 
       {/* ── SEKCJA 2: Instrukcja według platformy ── */}

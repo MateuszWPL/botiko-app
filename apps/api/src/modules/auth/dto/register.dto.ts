@@ -44,7 +44,15 @@ export const registerSchema = z.object({
       /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]/,
       'Hasło musi zawierać co najmniej jeden znak specjalny',
     ),
-  websiteUrl: websiteUrlSchema,
+  // Optional — a business that lives on Booksy/Facebook (very common in beauty)
+  // can register without a website and add it later in Ustawienia. Empty string
+  // is treated as "no website yet". Note: the bot only works once a domain is
+  // configured (DomainWhitelistGuard blocks empty allowedDomains in production),
+  // which the onboarding makes explicit.
+  websiteUrl: z.preprocess(
+    (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
+    websiteUrlSchema.optional(),
+  ),
   industry: z.enum(['BEAUTY', 'HEALTH', 'FOOD', 'AUTO', 'OTHER']),
 });
 

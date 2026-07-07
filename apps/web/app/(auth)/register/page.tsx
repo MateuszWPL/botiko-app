@@ -140,7 +140,9 @@ export default function RegisterPage() {
 
           <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Adres strony WWW</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                Adres strony WWW <span className="font-normal text-slate-400">(opcjonalnie)</span>
+              </label>
               <input
                 type="text"
                 inputMode="url"
@@ -148,11 +150,12 @@ export default function RegisterPage() {
                 autoCorrect="off"
                 value={form.websiteUrl}
                 onChange={(e) => setForm((f) => ({ ...f, websiteUrl: e.target.value }))}
-                required
                 placeholder="salonbeauty.pl"
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
               />
-              <p className="text-xs text-slate-400 mt-1.5">Domena, na której bot będzie działał — automatycznie dodamy ją do listy dozwolonych</p>
+              <p className="text-xs text-slate-400 mt-1.5">
+                Strona, na której pojawi się bot. Nie masz jej pod ręką? Zostaw puste — dodasz później w Ustawieniach.
+              </p>
             </div>
 
             <div>

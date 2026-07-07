@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { X, ChevronRight, ChevronLeft, Check, Bot, Copy, Loader2, Plus, Trash2 } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Check, Bot, Copy, Loader2, Plus, Trash2, Mail, TriangleAlert } from 'lucide-react';
 import { createClient } from '../../lib/supabase';
 import { WELCOME_STORAGE_KEY } from './WelcomeTrialModal';
 import { WebsiteImportButton } from '../knowledge/WebsiteImportButton';
@@ -208,21 +208,40 @@ function StepServices({ data, onChange }: { data: WizardData; onChange: (d: Part
     onChange({ serviceItems: items.map((item, i) => (i === idx ? { ...item, ...patch } : item)) });
 
   return (
-    <div className="space-y-5">
-      {/* Lista usług */}
+    <div className="space-y-6">
+      {/* Ścieżka główna: wklej wszystko naraz */}
       <div>
-        <div className="flex items-center justify-between mb-2">
-          <label className="text-xs font-semibold text-slate-600">Usługi i ceny</label>
-          <span className="text-xs text-slate-400">Każda usługa = osobny wpis w bazie bota</span>
+        <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+          Wklej swój cennik i opis usług
+        </label>
+        <textarea
+          value={data.additionalInfo}
+          onChange={(e) => onChange({ additionalInfo: e.target.value })}
+          rows={7}
+          placeholder={
+            'Najprościej: wklej tutaj cały cennik i opis ze swojej strony. Np.:\n\n' +
+            'Manicure hybrydowy — 90 zł, ok. 60 min\n' +
+            'Pedicure — 120 zł\n' +
+            'Przy pierwszej wizycie 10% rabatu. Rezerwacje przez Booksy lub telefon.'
+          }
+          className={`${inputClass} resize-none leading-relaxed`}
+          autoFocus
+        />
+        <p className="text-xs text-slate-400 mt-1.5">
+          Nie musisz nic formatować — wklej tekst jak leci, a my rozbijemy go na osobne wpisy bota.
+          Masz stronę WWW? Po utworzeniu bota pobierzemy z niej treść automatycznie.
+        </p>
+      </div>
+
+      {/* Ścieżka wtórna: dodaj pojedynczo */}
+      <div>
+        <div className="flex items-center gap-3 mb-3">
+          <div className="flex-1 h-px bg-slate-100" />
+          <span className="text-xs text-slate-400">albo dodaj usługi pojedynczo</span>
+          <div className="flex-1 h-px bg-slate-100" />
         </div>
 
         <div className="space-y-2">
-          {items.length === 0 && (
-            <p className="text-xs text-slate-400 py-2 text-center border border-dashed border-slate-200 rounded-xl">
-              Nie dodano jeszcze żadnych usług — kliknij &quot;Dodaj usługę&quot; poniżej
-            </p>
-          )}
-
           {items.map((item, idx) => (
             <div
               key={idx}
@@ -267,26 +286,11 @@ function StepServices({ data, onChange }: { data: WizardData; onChange: (d: Part
 
         <button
           onClick={addItem}
-          className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-indigo-200 hover:border-indigo-400 text-indigo-500 hover:text-indigo-700 text-sm font-medium rounded-xl transition-all hover:bg-indigo-50/40 cursor-pointer"
+          className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-slate-200 hover:border-indigo-400 text-slate-500 hover:text-indigo-700 text-sm font-medium rounded-xl transition-all hover:bg-indigo-50/40 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          Dodaj usługę
+          Dodaj usługę osobno
         </button>
-      </div>
-
-      {/* Dodatkowe informacje */}
-      <div>
-        <label className="block text-xs font-semibold text-slate-600 mb-1.5">
-          Dodatkowe informacje
-          <span className="ml-1 font-normal text-slate-400">(promocje, regulamin, inne — opcjonalne)</span>
-        </label>
-        <textarea
-          value={data.additionalInfo}
-          onChange={(e) => onChange({ additionalInfo: e.target.value })}
-          rows={3}
-          placeholder="np. Przy pierwszej wizycie 10% rabatu. Rezerwacje przez Booksy lub telefon."
-          className={`${inputClass} resize-none`}
-        />
       </div>
     </div>
   );
@@ -443,6 +447,20 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
     ? `<script src="${WIDGET_URL}/embed.js" data-bot-id="${botId}" async></script>`
     : '';
 
+  // Ready-to-send email for whoever manages the user's website — the #1 wall for
+  // non-technical owners who don't touch their own site.
+  const mailtoHref = embedCode
+    ? `mailto:?subject=${encodeURIComponent(
+        'Prośba: dodanie bota Botiko na naszej stronie',
+      )}&body=${encodeURIComponent(
+        `Cześć,\n\nchcę dodać na naszej stronie WWW okienko czatu (Botiko). ` +
+          `Czy możesz wkleić poniższy kod tuż przed zamykającym znacznikiem </body> ` +
+          `(na każdej podstronie)?\n\n${embedCode}\n\n` +
+          `Na WordPressie najprościej przez darmową wtyczkę „Botiko" z katalogu wtyczek. ` +
+          `Po zapisaniu na stronie pojawi się okienko czatu. Dziękuję!`,
+      )}`
+    : '';
+
   const copy = async () => {
     if (!embedCode) return;
     await navigator.clipboard.writeText(embedCode);
@@ -457,9 +475,9 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
             <Bot className="w-8 h-8 text-white" />
           </div>
-          <p className="text-slate-700 font-semibold mb-1">Gotowy do uruchomienia!</p>
+          <p className="text-slate-700 font-semibold mb-1">Wszystko gotowe!</p>
           <p className="text-sm text-slate-500 max-w-xs mx-auto">
-            Bot zostanie stworzony z danymi które podałeś. Kod instalacyjny wyświetli się od razu.
+            Bot powstanie z podanych danych. Kod instalacyjny pojawi się od razu.
           </p>
         </div>
 
@@ -561,6 +579,16 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
             {copied ? 'Skopiowano!' : 'Kopiuj'}
           </button>
         </div>
+
+        {mailtoHref && (
+          <a
+            href={mailtoHref}
+            className="mt-2.5 w-full flex items-center justify-center gap-2 py-2.5 border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/40 text-slate-600 hover:text-indigo-700 text-sm font-medium rounded-xl transition-all cursor-pointer"
+          >
+            <Mail className="w-4 h-4" />
+            Nie robisz strony samodzielnie? Wyślij kod webmasterowi
+          </a>
+        )}
       </div>
 
       <div className="bg-slate-50 rounded-xl p-4">
@@ -593,9 +621,20 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
         </div>
       )}
 
-      <p className="text-xs text-slate-400 text-center">
-        Dodaj domenę w <strong>Ustawienia → Domena strony</strong>, aby zabezpieczyć bota.
-      </p>
+      {data.websiteUrl ? (
+        <p className="text-xs text-slate-400 text-center">
+          Adres Twojej strony jest już dodany. Zmienisz go w <strong>Ustawienia → Domena strony</strong>.
+        </p>
+      ) : (
+        <div className="flex items-start gap-2.5 bg-amber-50 border border-amber-200 rounded-xl p-3">
+          <TriangleAlert className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-amber-700 leading-relaxed">
+            Zanim bot zacznie odpowiadać, dodaj adres swojej strony w{' '}
+            <strong>Ustawienia → Domena strony</strong>. Bez tego czat będzie zablokowany
+            ze względów bezpieczeństwa.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

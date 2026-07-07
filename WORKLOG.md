@@ -25,6 +25,15 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-07 (wtorek)
 
+### UX onboardingu dla nietechnicznego usera (fryzjerka) — Claude — branch `feat/onboarding-ux-nietechniczny`
+- Kontekst: przegląd całego flow oczami właścicielki salonu (rejestracja → kreator → wiedza → instalacja) na prośbę usera. Werdykt: do „wklej kod na stronę" radzi sobie dobrze; ściany są 2 (instalacja poza WordPress + ręczne wpisywanie usług). User zlecił wdrożenie 5 poprawek.
+- **Krok „Oferta" w kreatorze — wklejanie cennika jako ścieżka główna:** duże pole „Wklej swój cennik i opis usług" (feed do `additionalInfo` → istniejący chunk builder + split na akapity), ręczna lista usług zdegradowana do „albo dodaj pojedynczo". Koniec zniechęcającego wpisywania 40 pozycji ręcznie.
+- **Przycisk „Wyślij kod webmasterowi" (mailto):** na ekranie „gotowe" kreatora i na stronie Instalacja — gotowy mail z kodem + prostą instrukcją dla osoby robiącej stronę. Rozwiązuje główną ścianę: właścicielka nie dotyka własnej strony.
+- **„Leady" → „Kontakty" w dashboardzie** (sidebar, strona, overview) — żargon marketerów niezrozumiały dla targetu; marketing zostaje przy „leady".
+- **Domena w rejestracji opcjonalna:** backend `register.dto` (pusty string → undefined, `websiteUrl` optional) + `auth.service` (fallback `tenant.name` z e-maila, `websiteUrl null`); frontend bez `required` + hint „nie masz strony? zostaw puste". **Uwaga bezpieczeństwa:** `DomainWhitelistGuard` twardo blokuje pustą listę domen na produkcji — więc kreator pokazuje teraz **jawne ostrzeżenie**, gdy brak domeny (inaczej cichy „Bot nie jest skonfigurowany").
+- **Neutralne formy językowe** w kreatorze („podałeś"/„Gotowy" → „podanych danych"/„Wszystko gotowe") — główny target to kobiety.
+- Weryfikacja: web `tsc` ✓ + `next build` ✓, api `tsc` ✓ + **398 testów ✓** (`register.dto.spec` zaktualizowany: pusty URL teraz akceptowany), lint web+api ✓.
+- Status: ✅ done (branch/PR). Punkty 1–2 zobaczymy na żywo przy pierwszych pilotach (obserwacja onboardingu klientki).
 ### Ulepszenia RAG/chat po przeglądzie pipeline'u — Claude — branch `feat/rag-chat-improvements`
 - Kontekst: przegląd konfiguracji bota (RAG + prompt OpenAI) na prośbę usera → werdykt „mądrze zrobione", ale 1 bug UX + kilka słabości widocznych u pilotów. User zlecił naprawę wszystkich.
 - **Bug (najważniejszy): sam numer telefonu odbijany jako „nie zrozumiałem"** — detekcja bełkotu (`<25% liter`) łapała bare telefon/e-mail przed detekcją leada. `message-sanitizer`: guard `isMostlyContactInfo` (telefon/e-mail nie jest bełkotem), przy zerowym kontekście hard-intent → nowa odpowiedź `LEAD_CAPTURE_RESPONSE` zamiast generycznego fallbacku. „1234567890qwe" nadal bełkot (testy).

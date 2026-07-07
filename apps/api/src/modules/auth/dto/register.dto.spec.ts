@@ -106,8 +106,12 @@ describe('registerSchema — walidacja websiteUrl', () => {
     expect(parse('to nie jest url!!!').success).toBe(false);
   });
 
-  it('odrzuca pusty string', () => {
-    expect(parse('').success).toBe(false);
+  it('akceptuje pusty string jako brak strony (opcjonalne)', () => {
+    const result = parse('');
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.websiteUrl).toBeUndefined();
+    }
   });
 });
 

@@ -67,16 +67,19 @@ export class AuthService {
     const supabaseUserId = authData.user.id;
 
     try {
-      // websiteUrl arrives normalized as `https://<host>` from the DTO.
-      // Use the bare hostname as the initial tenant.name; user can rename
-      // anytime in Ustawienia.
-      const hostname = new URL(dto.websiteUrl).hostname.replace(/^www\./, '');
+      // websiteUrl arrives normalized as `https://<host>` from the DTO (or
+      // undefined when the user registers without a site). Use the bare
+      // hostname as the initial tenant.name, falling back to the email's local
+      // part; the user can rename anytime in Ustawienia.
+      const initialName = dto.websiteUrl
+        ? new URL(dto.websiteUrl).hostname.replace(/^www\./, '')
+        : dto.email.split('@')[0];
 
       const tenant = await this.prisma.$transaction(async (tx) => {
         const newTenant = await tx.tenant.create({
           data: {
-            name: hostname,
-            websiteUrl: dto.websiteUrl,
+            name: initialName,
+            websiteUrl: dto.websiteUrl ?? null,
             industry: dto.industry,
             plan: 'STARTER',
             isActive: true,
