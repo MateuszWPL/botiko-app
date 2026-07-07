@@ -39,6 +39,16 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 - Do zrobienia dalej (wg planu): Faza 1 kanibalizacja bloga + `/porownanie` (realni konkurenci), Faza 2 materiały off-page (`docs/seo/offpage/*`), Faza 3 trust on-page. Mobilne LCP 5,0 s — osobny, mierzony etap (przyczyna „opacity animation" już rozwiązana przez `heroRise`).
 - Status: 🔄 Faza 0 gotowa (branch, czeka na CI/PR); dalsze fazy w toku.
 
+### SEO Faza 1A — konsolidacja kanibalizacji bloga — Claude + botiko-content — branch `feat/seo-blog-cannibalization`
+- Kontekst: audyt SEO wskazał kanibalizację słów kluczowych w blogu. Wstępnie 8 „par", ale weryfikacja `botiko-content` (ocena domenowa + świadomość lokalnego SEO Białystok) zawęziła do **2 realnych par** — reszta okazała się komplementarna (celowe warianty lokalne / pillar+satelita / różne intencje) i została nietknięta.
+- **2× 301 + fold treści:**
+  - `/blog/rodo-chatbot` → `/blog/chatbot-a-rodo-dane-klientow`. Do survivora przeniesiony 5-krokowy plan wdrożenia RODO (polityka → zgoda → szyfrowanie → DPA → prawo do usunięcia), w czystej formie bez łamania zasady „bot nie rezerwuje" (usuwany post to łamał — dodatkowy powód usunięcia). `updatedAt: 2026-07-07`.
+  - `/blog/chatbot-recepcja` → `/blog/czy-bot-ai-zastapi-recepcjonistke`. Do survivora przeniesiona rozpiska czasowa recepcji (480 min/dzień, Messenger 37%) + realokacja uwolnionego czasu + 3-krokowy plan wdrożenia w zespole. `updatedAt: 2026-07-07`.
+- Komplementarne (bez zmian merytorycznych, dodane wzajemne linki): para Booksy (`booksy-vs-bot` ↔ `booksy-vs-chatbot-salon-bialystok`). Baza wiedzy i pytania nocne — zostają (różne intencje); poszerzenie `pytania-nocne` poza beauty → osobny etap.
+- Mechanika: redirecty `permanent: true` w `next.config.mjs`; usunięte 2 pliki MDX (`git rm`); zaktualizowany 1 link wewnętrzny w `bot-dla-warsztatu-samochodowego-bialystok.mdx`. Kategoria „prawo" (miała tylko usuwany post) była już noindex/poza sitemap (próg `MIN_INDEXABLE_CATEGORY_POSTS = 3`), pusty slug → czysty `notFound()`.
+- Review: `botiko-content` (werdykt kanibalizacji + co zachować). Weryfikacja: `tsc` ✓, `next lint` ✓, `next build` (walidacja MDX/redirectów) — w toku.
+- Status: 🔄 gotowe do PR (branch), po zielonym buildzie.
+
 ## 2026-07-06 (poniedziałek)
 
 ### Fixy dashboard/widget — kontrast na jasnym akcencie, scroll ustawień, refresh sesji — Claude — [PR #112 | branch `fix/widget-contrast-settings-scroll-auth`]

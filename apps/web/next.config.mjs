@@ -68,6 +68,18 @@ const nextConfig = {
         destination: '/blog/kategoria/narzedzia',
         permanent: true,
       },
+      // Konsolidacja kanibalizacji bloga (audyt SEO Faza 1A) — unikalna treść
+      // przeniesiona do survivorów, stare URL-e 301 na docelowe.
+      {
+        source: '/blog/rodo-chatbot',
+        destination: '/blog/chatbot-a-rodo-dane-klientow',
+        permanent: true,
+      },
+      {
+        source: '/blog/chatbot-recepcja',
+        destination: '/blog/czy-bot-ai-zastapi-recepcjonistke',
+        permanent: true,
+      },
     ];
   },
   async headers() {

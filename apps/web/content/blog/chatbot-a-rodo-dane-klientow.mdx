@@ -2,6 +2,7 @@
 title: "Chatbot a RODO — czy bot na stronie jest zgodny z przepisami?"
 excerpt: "Bot zbiera imię i telefon klienta, więc przetwarza dane osobowe. Sprawdź, co RODO wymaga od chatbota, kto jest administratorem danych i jak robi to Botiko."
 date: "2026-06-05"
+updatedAt: "2026-07-07"
 category: "RODO i bezpieczeństwo"
 categorySlug: "rodo-i-bezpieczenstwo"
 tags: ["RODO", "bezpieczeństwo", "dane osobowe", "chatbot AI", "obsługa klienta"]
@@ -45,6 +46,16 @@ RODO daje klientowi konkretne uprawnienia, a Ty (jako administrator) musisz umie
 - **Prawo sprzeciwu** — klient może nie zgodzić się na dalsze przetwarzanie.
 
 W praktyce dla małej firmy oznacza to tyle, że musisz mieć dostęp do zebranych leadów i móc je usunąć — w Botiko robisz to z poziomu dashboardu.
+
+## Jak wdrożyć RODO krok po kroku
+
+W praktyce dla małej firmy usługowej cała zgodność sprowadza się do pięciu kroków:
+
+1. **Polityka prywatności** — na stronie (np. w stopce) opisz, jakie dane zbierasz (imię, telefon), po co (kontakt w sprawie zapytania), jak długo je przechowujesz i jakie prawa ma klient. To wymóg prawny w momencie, gdy zbierasz jakiekolwiek dane kontaktowe.
+2. **Zgoda i jasna informacja** — bot nie powinien zbierać danych „po cichu". Przy prośbie o numer podaj powód i link do polityki: „Zostaw imię i numer — odezwiemy się w sprawie Twojego pytania. Dane przetwarzamy tylko do kontaktu".
+3. **Bezpieczne przechowywanie** — dane w systemie z szyfrowaniem, nie w arkuszu bez hasła. W Botiko imię i telefon są szyfrowane (AES-256) na serwerach w UE.
+4. **Umowa powierzenia (DPA)** — jeśli korzystasz z narzędzia SaaS (bot, Booksy), podpisz z dostawcą umowę powierzenia przetwarzania danych. Botiko udostępnia DPA na żądanie.
+5. **Prawo do usunięcia** — musisz umieć skasować dane klienta na żądanie (w Botiko z poziomu dashboardu). Wyjątek: dokumenty, które przechowujesz z innych obowiązków, np. faktury do celów podatkowych.
 
 ## Checklist: chatbot zgodny z RODO
 
