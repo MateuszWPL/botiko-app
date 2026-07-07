@@ -19,6 +19,7 @@ Dodajesz / zmieniasz / usuwasz dokument? Zaktualizuj tę tabelę w tym samym com
 | **Dziennik prac (co ZROBIONE, data + agent)** | [`WORKLOG.md`](WORKLOG.md) | PL | po każdym logicznym etapie pracy |
 | **Workflow agentów (kiedy którego agenta, definition of done)** | [`docs/AGENT-WORKFLOW.md`](docs/AGENT-WORKFLOW.md) | PL | zmiana procesu pracy / zestawu agentów |
 | **Pełny kontekst produktu (marka, marketing, oferta)** — do Claude.ai Projects | [`BOTIKO_CONTEXT.md`](BOTIKO_CONTEXT.md) | PL | zmiana pozycjonowania, oferty, marki |
+| **Brand/Voice dla pluginu blogowego (`claude-blog` auto-ładuje)** | [`BRAND.md`](BRAND.md) · [`VOICE.md`](VOICE.md) | PL | zmiana języka marki, person, tabu-fraz, formatu MDX bloga |
 | **Architektura techniczna (3 apki, RAG, schema, integracje)** | [`docs/CODEMAPS/`](docs/CODEMAPS/INDEX.md) | ENG | zmiana architektury / modułów / schematu DB |
 | **Produkcyjne env + deploy (Railway/Vercel)** | [`docs/PRODUCTION_ENV.md`](docs/PRODUCTION_ENV.md) | PL | zmiana zmiennych środowiskowych / hostingu |
 | **Komendy AI / agenci / MCP — quick ref** | [`docs/AI-COMMANDS.md`](docs/AI-COMMANDS.md) | PL | zmiana zestawu agentów / komend |
