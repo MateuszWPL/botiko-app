@@ -26,6 +26,7 @@ Dodajesz / zmieniasz / usuwasz dokument? Zaktualizuj tę tabelę w tym samym com
 | **SEO/GEO — playbook (co zrobione, co off-page, backlog)** | [`docs/seo/PLAYBOOK.md`](docs/seo/PLAYBOOK.md) | PL | po każdym kroku SEO (on-page i off-page) |
 | **SEO — raporty / audyty (punkt w czasie)** | [`docs/seo/`](docs/seo/) | PL | nowy audyt → nowy plik `audyt-RRRR-MM-DD.md` |
 | **SEO — materiały off-page do wykonania (katalogi+NAP, outreach, YouTube, Reddit/FB)** | [`docs/seo/offpage/`](docs/seo/offpage/) | PL | gdy zmienia się taktyka off-page / dane NAP |
+| **Treść: kalendarz redakcyjny bloga (runway + anty-kanibalizacja)** | [`docs/content/blog-kalendarz.md`](docs/content/blog-kalendarz.md) | PL | zaplanowanie / publikacja nowych postów |
 | **Treść: baza wiedzy bota (do wgrania)** | [`docs/content/bot-knowledge-base.md`](docs/content/bot-knowledge-base.md) | PL | zmiana oferty / FAQ / danych firmy |
 | **Treść: zestaw maili (Resend)** | [`docs/content/emails.md`](docs/content/emails.md) | PL | zmiana szablonów / dripów mailowych |
 | **Migracje DB — zasady (RLS vs Prisma)** | [`supabase/migrations/README.md`](supabase/migrations/README.md) | PL/ENG | zmiana procesu migracji |
