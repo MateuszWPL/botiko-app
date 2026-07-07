@@ -99,7 +99,13 @@ export function websiteSchema() {
 
 export type BreadcrumbEntry = { label: string; href?: string };
 
-/** BreadcrumbList for any page. `href` omitted on the current (last) item. */
+/**
+ * BreadcrumbList for any page. Every ListItem gets `item` (an absolute URL)
+ * EXCEPT the last one — Google allows omitting `item` only on the final crumb
+ * (the current page). Therefore every NON-last entry MUST pass `href`; a middle
+ * crumb without `href` produces a ListItem missing `item`, which Google rejects
+ * as a critical error ("Missing field 'item' in itemListElement").
+ */
 export function breadcrumbListSchema(items: BreadcrumbEntry[]) {
   return {
     '@context': 'https://schema.org',
