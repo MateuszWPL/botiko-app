@@ -25,6 +25,17 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-07 (wtorek)
 
+### Ulepszenia RAG/chat po przeglądzie pipeline'u — Claude — branch `feat/rag-chat-improvements`
+- Kontekst: przegląd konfiguracji bota (RAG + prompt OpenAI) na prośbę usera → werdykt „mądrze zrobione", ale 1 bug UX + kilka słabości widocznych u pilotów. User zlecił naprawę wszystkich.
+- **Bug (najważniejszy): sam numer telefonu odbijany jako „nie zrozumiałem"** — detekcja bełkotu (`<25% liter`) łapała bare telefon/e-mail przed detekcją leada. `message-sanitizer`: guard `isMostlyContactInfo` (telefon/e-mail nie jest bełkotem), przy zerowym kontekście hard-intent → nowa odpowiedź `LEAD_CAPTURE_RESPONSE` zamiast generycznego fallbacku. „1234567890qwe" nadal bełkot (testy).
+- **RAG multi-turn (query condensation):** przy istniejącej historii follow-up („a ile to kosztuje?") jest przepisywany na samodzielne pytanie (gpt-4o-mini, temp 0) PRZED embeddingiem → retrieval trafia w cennik zamiast w fallback. Toggle `RAG_QUERY_CONDENSATION` (domyślnie on), gated na niepustą historię, never-throw (fallback do surowego pytania).
+- **Dedup `sendMessage`/`sendMessageStream`:** ~150 zdublowanych linii → jeden `prepareResponse` (+ helpery `loadBotOrThrow`, `runGuards`, `loadRecentHistory`, `retrieveContext`, `resolveLeadForm`). Efekt uboczny: lead-intent + leadHint działają teraz spójnie na obu ścieżkach (wcześniej tylko stream).
+- **Chunking:** `knowledge.service` dzieli wieloakapitową wklejkę na osobne chunki (embedding per chunk, rollback wszystkich przy błędzie) — koniec „rozmytego" wektora z 4000-znakowego bloba. Single-paragraph bez zmian (kontrakt `{id}` zachowany).
+- **Drobne:** prefiks `[kategoria]` przy chunkach w prompt; łagodniejszy blok przy pustym kontekście (powitanie nie mówi już „nie mam informacji"); `OPENAI_CHAT_MODEL` + `RAG_SIMILARITY_THRESHOLD`/`RAG_TOP_K` do env (koniec hardkodów, tunowalne na danych pilotów).
+- **Świadomie NIE ruszone:** słowa-klucze eskalacji zostają na `includes()` — granice słów zepsułyby polską odmianę („człowiekiem" ≠ „człowiek"); zmiana byłaby regresją.
+- Weryfikacja: `tsc` ✓, `eslint` ✓, **408 testów jednostkowych ✓** (było 393 + 15 nowych: guard kontaktu, condensation, splitter, lead-capture). Pliki: `chat.service.ts`, `message-sanitizer.ts`, `knowledge.service.ts`, `openai.provider.ts`, `config/env.ts` (+ specy), `.env.example`.
+- Status: ✅ done (branch/PR); progi RAG do weryfikacji na danych pilotów (`Message.wasFallback` mierzalny).
+
 ### Enablement sprzedażowy pilotów + „Start za Ciebie" na cenniku — Claude — branch `feat/sprzedaz-piloty-enablement`
 - Kontekst: przegląd stanu projektu (0 płacących) → wniosek, że produkt/treść są gotowe, a od 3–7.07 nietknięty został plan sprzedaży z `PLAN-DZIALANIA.md` („Dzień 1 = lista firm, nie kod"). User zlecił wykonanie punktów wspierających sprzedaż.
 - **Nowy katalog `docs/sprzedaz/`** (3 pliki, zarejestrowane w `DOCS.md`):

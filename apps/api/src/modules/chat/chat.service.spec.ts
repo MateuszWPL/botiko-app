@@ -1,4 +1,15 @@
 // Factory mocks prevent module body from running (avoids env.ts process.exit)
+jest.mock('../../config/env', () => ({
+  env: {
+    OPENAI_CHAT_MODEL: 'gpt-4o-mini',
+    RAG_SIMILARITY_THRESHOLD: 0.3,
+    RAG_TOP_K: 5,
+    // Off in tests: keeps retrieval deterministic (no extra aiService.chat call
+    // for condensation) and matches assertions on chat call counts.
+    RAG_QUERY_CONDENSATION: false,
+  },
+}));
+
 jest.mock('../../prisma/prisma.service', () => ({
   PrismaService: jest.fn(),
 }));
@@ -17,6 +28,8 @@ import { ChatService } from './chat.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EmbeddingService } from '../knowledge/embedding.service';
 import { AI_SERVICE } from '../ai/ai.service.interface';
+// Mocked env (see jest.mock above) — mutable, so a test can flip a flag.
+import { env } from '../../config/env';
 
 const mockBot = {
   id: 'bot-1',
@@ -147,6 +160,74 @@ describe('ChatService', () => {
       });
 
       expect(prisma.$transaction).toHaveBeenCalled();
+    });
+  });
+
+  describe('sendMessage — bare contact info (lead)', () => {
+    it('bare phone number with no context → lead-capture reply + form', async () => {
+      mockEmbeddingService.findRelevantChunks.mockResolvedValue([]);
+      const { service } = await buildService();
+
+      const result = await service.sendMessage({
+        botId: 'bot-1',
+        sessionId: 'session-1',
+        message: '692 022 228',
+      });
+
+      // Not the generic fallback — the lead-capture line, and the form opens.
+      expect(result.message).toContain('Zostaw');
+      expect(result.showLeadForm).toBe(true);
+      expect(mockAiService.chat).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('sendMessage — query condensation', () => {
+    afterEach(() => {
+      (env as { RAG_QUERY_CONDENSATION: boolean }).RAG_QUERY_CONDENSATION =
+        false;
+    });
+
+    it('rewrites a follow-up using history before embedding', async () => {
+      (env as { RAG_QUERY_CONDENSATION: boolean }).RAG_QUERY_CONDENSATION =
+        true;
+      // Existing conversation with history → condensation should fire.
+      const prisma = buildPrismaMock({
+        conversation: {
+          findFirst: jest.fn().mockResolvedValue({
+            id: 'conv-1',
+            messages: [
+              { role: 'USER', content: 'Robicie manicure hybrydowy?' },
+              { role: 'ASSISTANT', content: 'Tak, robimy.' },
+            ],
+          }),
+          create: jest.fn().mockResolvedValue(mockConversation),
+          count: jest.fn().mockResolvedValue(0),
+        },
+      });
+      mockEmbeddingService.findRelevantChunks.mockResolvedValue([
+        { content: 'Manicure hybrydowy kosztuje 90 zł', similarity: 0.9 },
+      ]);
+      // First chat() call = condensation → returns the standalone query.
+      mockAiService.chat
+        .mockResolvedValueOnce({
+          content: 'Ile kosztuje manicure hybrydowy?',
+          tokenUsage: 5,
+        })
+        .mockResolvedValueOnce({ content: 'AI answer', tokenUsage: 50 });
+      const { service } = await buildService(prisma);
+
+      await service.sendMessage({
+        botId: 'bot-1',
+        sessionId: 'session-1',
+        message: 'a ile to kosztuje?',
+      });
+
+      // Retrieval used the condensed query, not the raw "a ile to kosztuje?".
+      expect(mockEmbeddingService.findRelevantChunks).toHaveBeenCalledWith(
+        'bot-1',
+        'Ile kosztuje manicure hybrydowy?',
+        5,
+      );
     });
   });
 

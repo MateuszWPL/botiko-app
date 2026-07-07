@@ -132,6 +132,24 @@ function isGibberish(text: string): boolean {
   return letters / text.length < 0.25;
 }
 
+/**
+ * True when the message is essentially just contact info — a phone number or
+ * an email, possibly with separators. Such a message must NOT be rejected as
+ * gibberish: a bare phone number is 0% letters yet is the single most valuable
+ * thing a user can send (they're leaving their contact). We let it proceed so
+ * downstream lead-intent detection opens the form instead of replying
+ * "nie zrozumiałem". Keeps "1234567890qwe" (10 digits glued to letters) as
+ * gibberish, because after stripping phone characters a real remainder is left.
+ */
+const CONTACT_EMAIL_RE = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i;
+function isMostlyContactInfo(text: string): boolean {
+  if (CONTACT_EMAIL_RE.test(text)) return true;
+  const digits = (text.match(/\d/g) ?? []).length;
+  if (digits < 7) return false;
+  const leftover = text.replace(/[\d\s+()\-.]/g, '');
+  return leftover.length < 3;
+}
+
 /** Strip URLs — bot doesn't browse the internet; links add no value to RAG */
 function stripUrls(text: string): string {
   return text
@@ -197,8 +215,9 @@ export function preprocessMessage(raw: string): PreprocessResult {
     return { action: 'respond', response: RESPONSE_PROFANITY };
   }
 
-  // 5. Gibberish / keyboard spam
-  if (isGibberish(trimmed)) {
+  // 5. Gibberish / keyboard spam — but never reject a bare phone/email; that's
+  //    a lead leaving contact, handled downstream (opens the form).
+  if (isGibberish(trimmed) && !isMostlyContactInfo(trimmed)) {
     return { action: 'respond', response: RESPONSE_GIBBERISH };
   }
 
