@@ -2,7 +2,27 @@ import type { Metadata } from 'next';
 import JsonLd from '@/components/seo/JsonLd';
 import Breadcrumbs from '@/components/blog/Breadcrumbs';
 import Pricing from '@/components/marketing/Pricing';
+import { CalendarCheck, ShieldCheck, PhoneCall } from 'lucide-react';
 import { SITE_URL, breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
+
+// Reframe braku rezerwacji jako zaleta (obiekcja „a Booksy sam umawia" z SXO).
+const BOOKING_REFRAME = [
+  {
+    Icon: CalendarCheck,
+    title: 'Zostajesz przy swoim kalendarzu',
+    text: 'Dalej używasz Booksy, Calendly albo Google Kalendarza. Bez migracji i bez uzależnienia od jednego dostawcy — bot tylko kieruje do tego, co już masz.',
+  },
+  {
+    Icon: ShieldCheck,
+    title: 'Bez ryzyka podwójnej rezerwacji',
+    text: 'Bot nie ma dostępu do Twojego grafiku, więc nie zapisze dwóch klientów na tę samą godzinę. Terminami sterujesz Ty — tam, gdzie zawsze.',
+  },
+  {
+    Icon: PhoneCall,
+    title: 'Ty domykasz rezerwację',
+    text: 'Bot odpowiada 24/7 i zbiera numer, a Ty oddzwaniasz i proponujesz termin na swoich warunkach. Kontakt trafia od razu do panelu Botiko, gotowy do oddzwonienia.',
+  },
+] as const;
 
 const URL = `${SITE_URL}/cennik`;
 
@@ -97,6 +117,39 @@ export default function CennikPage() {
 
       {/* Plan + ROI calculator (reused component) */}
       <Pricing />
+
+      {/* Co Botiko robi, a czego nie — reframe braku rezerwacji jako zaleta */}
+      <section className="py-16 bg-bg border-t border-slate-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-text">
+              Co Botiko robi, a czego świadomie nie robi
+            </h2>
+            <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
+              Bot odpowiada na pytania i zbiera kontakt, a rezerwację zostawia Tobie i Twojemu systemowi
+              (Booksy, Calendly). To celowe — i korzystne:
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            {BOOKING_REFRAME.map((p) => {
+              const { Icon } = p;
+              return (
+                <div
+                  key={p.title}
+                  className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100"
+                >
+                  <div className="mb-3 text-brand" aria-hidden>
+                    <Icon className="w-5 h-5" strokeWidth={2} />
+                  </div>
+                  <h3 className="font-bold text-text mb-2">{p.title}</h3>
+                  <p className="text-slate-500 text-sm leading-relaxed">{p.text}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
       {/* FAQ */}
       <section className="py-16 bg-white">

@@ -69,6 +69,14 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 - Review: `botiko-content` (język marki, brak obietnic spoza MVP) — w toku.
 - Status: 🔄 gotowe do PR (branch), po review.
 
+### SEO Faza 3 (część) — reframe „bot nie rezerwuje = zaleta" — Claude + botiko-content — branch `feat/seo-trust-rezerwacja-reframe`
+- Kontekst: SXO z audytu wskazał najsłabszą personę („szukający rezerwacji") — konkurenci-voiceboty umawiają wizyty, a Botiko odsyła do Booksy, co dziś brzmiało jak brak funkcji (schowany w FAQ). Reframe zamienia to w zaletę, przy cenie/CTA.
+- `/dla/salon-beauty`: nowa sekcja „Bot nie umawia wizyt za Ciebie — i to zaleta" (3 karty: własny kalendarz / brak podwójnych rezerwacji / Ty domykasz), między Features a ROI. Ikony Lucide (CalendarCheck/ShieldCheck/PhoneCall). Tło ROI przełożone na `bg-bg` (uniknięcie dwóch białych sekcji obok siebie).
+- `/cennik`: analogiczna, cross-branżowa sekcja „Co Botiko robi, a czego świadomie nie robi" między planem a FAQ.
+- Zakres świadomie ograniczony: `Review`/`AggregateRating` schema + realne referencje pilotów **czekają na pierwsze opinie** (nie fabrykujemy). Poszerzenie `pytania-nocne` poza beauty — osobno.
+- Review: `botiko-content` (język marki, szczerość przekazu, brak sugestii że bot rezerwuje) — w toku. Weryfikacja: `tsc` ✓, `next build` — w toku.
+- Status: 🔄 gotowe do PR (branch), po review + buildzie.
+
 ## 2026-07-06 (poniedziałek)
 
 ### Fixy dashboard/widget — kontrast na jasnym akcencie, scroll ustawień, refresh sesji — Claude — [PR #112 | branch `fix/widget-contrast-settings-scroll-auth`]
