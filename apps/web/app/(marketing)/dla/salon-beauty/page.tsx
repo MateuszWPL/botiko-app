@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Moon, PhoneOff, RefreshCw } from 'lucide-react';
+import { Moon, PhoneOff, RefreshCw, CalendarCheck, ShieldCheck, PhoneCall } from 'lucide-react';
 import JsonLd from '@/components/seo/JsonLd';
 import CityLinks from '@/components/marketing/CityLinks';
 import IndustryFaqSection from '@/components/marketing/IndustryFaqSection';
@@ -79,6 +79,24 @@ const PAIN_POINTS = [
     Icon: RefreshCw,
     title: 'Te same pytania co dzień',
     text: '„Ile kosztuje hybryda?", „Macie wolne w sobotę?", „Jak trafić?" — codziennie odpowiadasz 20× na te same rzeczy.',
+  },
+] as const;
+
+const BOOKING_REFRAME = [
+  {
+    Icon: CalendarCheck,
+    title: 'Zostajesz przy swoim kalendarzu',
+    text: 'Dalej używasz Booksy albo Google Kalendarza. Zero migracji, zero uczenia się nowego systemu i zero uzależnienia od jednego dostawcy — bot tylko kieruje do tego, co już masz.',
+  },
+  {
+    Icon: ShieldCheck,
+    title: 'Zero podwójnych rezerwacji',
+    text: 'Bot nie ma dostępu do Twojego grafiku, więc nie zapisze dwóch klientek na tę samą godzinę. Terminami zarządzasz Ty — tam, gdzie zawsze.',
+  },
+  {
+    Icon: PhoneCall,
+    title: 'Ty domykasz na swoich warunkach',
+    text: 'Bot podgrzewa klientkę — odpowiada o 22:00 i zbiera numer. Ty oddzwaniasz rano i proponujesz termin, który pasuje Tobie i grafikowi salonu.',
   },
 ] as const;
 
@@ -376,8 +394,44 @@ export default function BeautyLandingPage() {
         </div>
       </section>
 
+      {/* Booking reframe — zamienia „nie rezerwuje" w zaletę (obiekcja z SXO) */}
+      <section className="py-20 bg-white border-t border-slate-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: '#EC4899' }}>
+              Ważne
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-text">
+              Bot nie umawia wizyt za Ciebie — i to zaleta
+            </h2>
+            <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
+              Botiko odpowiada na pytania i zbiera numer, a rezerwację zostawia Tobie i Twojemu systemowi
+              (Booksy, Calendly). Dlaczego tak jest lepiej:
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-5">
+            {BOOKING_REFRAME.map((p) => {
+              const { Icon } = p;
+              return (
+                <div
+                  key={p.title}
+                  className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow"
+                >
+                  <div className="mb-3" aria-hidden>
+                    <Icon className={PAIN_ICON_CLASS} strokeWidth={2} />
+                  </div>
+                  <h3 className="font-bold text-text mb-2">{p.title}</h3>
+                  <p className="text-slate-500 text-sm leading-relaxed">{p.text}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* ROI table */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-bg">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
             <p className="text-sm font-semibold uppercase tracking-widest mb-3" style={{ color: '#EC4899' }}>
