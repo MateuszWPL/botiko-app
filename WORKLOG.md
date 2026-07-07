@@ -25,6 +25,14 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-07 (wtorek)
 
+### Blog — setup claude-blog (BRAND/VOICE) + pilotażowy post korepetytor — Claude + claude-blog + botiko-content — branch `chore/blog-brand-context`, `feat/blog-korepetytor`
+- Kontekst: user chce pisać posty pluginem `claude-blog` (runway bloga kończył się 28.07). Weryfikacja pluginu: działa, MDX-capable, ale brak brand-kontekstu + domyślne komponenty (`<FAQSchema>`) ≠ nasze.
+- **Setup (PR #121):** `BRAND.md` + `VOICE.md` w roocie — plugin auto-ładuje przy każdym pisaniu. Kodują reguły Botiko (bot nie chatbot AI, brak rezerwacji, 99 zł, tabu-frazy, persony, konkurenci) + **pinują nasz format MDX** (frontmatter `excerpt/category/categorySlug/image/imageAlt`, komponenty `<FAQ items>`/`<CTABlock>`/`<Callout>`). Review botiko-content: 0 blokerów.
+- **Pilotażowy post `bot-dla-korepetytora`** (vertical OTHER, biała plama; data 2026-08-04): napisany przez `claude-blog:blog-writer` z wiązaniami BRAND/VOICE. Answer-first + „W skrócie" + przykład rozmowy + `<ComparisonTable>` + `<FAQ>` (6) + `<CTABlock>`; linki do `/dla/inna`, `pillar-automatyzacja`, `jak-zbierac-leady`, `/cennik`. 1 realna stat (HBR 2011, z atrybucją), zero zmyślonych.
+- Weryfikacja: `botiko-content` 0 blokerów; `claude-blog:blog-reviewer` **86/100 „Strong"** (burstiness 0.55, 0 fraz AI-slop); `next build` ✓. Poprawki po review: tytuł 68→58 zn., excerpt 230→~150 zn.
+- **Do zrobienia (founder):** 3 grafiki `bot-dla-korepetytora-hero/-1/-2.jpg` przed 04.08. Pipeline zwalidowany — kolejne posty wg `docs/content/blog-kalendarz.md`.
+- Status: ✅ setup + pilot zaakceptowane i mergowane.
+
 ### Blog — kalendarz redakcyjny (runway sierpień–wrzesień) — Claude + botiko-content — branch `docs/blog-kalendarz-redakcyjny`
 - Kontekst: audyt stanu bloga — 34 posty, tylko 4 zaplanowane, runway kończy się 28.07 → potem cisza. Kadencja historyczna ~1/tydz.
 - Nowy `docs/content/blog-kalendarz.md`: 9 tematów (sie–wrz, tygodniowo) z datami/slugami/intencją/mapą linków + kolumna „Różni się od" (anty-kanibalizacja po Fazie 1A). Priorytet: biała plama **vertical OTHER** (korepetytor/trener/fotograf), wsparcie `/porownanie/botiko-vs-recepcjonistka-ai`, satelita WP (troubleshooting), cost-intent gastronomia, klaster FAQ. + tania poprawka: poszerzyć `pytania-nocne` poza beauty.
