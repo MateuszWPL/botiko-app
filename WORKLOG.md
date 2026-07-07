@@ -25,6 +25,14 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ## 2026-07-07 (wtorek)
 
+### Blog — partia 8 postów sie–wrz (cały kalendarz) przez claude-blog — Claude + claude-blog + botiko-content — branch `feat/blog-batch-sie-wrz`
+- Kontekst: user zlecił napisanie wszystkich pozostałych tematów z `docs/content/blog-kalendarz.md` (runway kończył się 28.07). 8 postów napisanych RÓWNOLEGLE przez 8× `claude-blog:blog-writer` z wiązaniami BRAND/VOICE, każdy ~2000–2200 słów, przyszłodatowane 11.08–29.09 (auto-publikacja).
+- Posty: `voicebot-czy-bot-na-stronie` (porównania, wspiera `/porownanie/botiko-vs-recepcjonistka-ai`), `bot-dla-trenera-personalnego` + `bot-dla-fotografa` (vertical OTHER), `wtyczka-chatbot-wordpress-problemy` (satelita WP, troubleshooting), `ile-kosztuje-bot-dla-restauracji-2026` (cost-intent gastro), `jak-napisac-faq-dla-bota-przyklady` (20 par Q&A per branża), `bledy-przy-wdrazaniu-bota-obslugi-klienta` (antywzorce), `bot-vs-formularz-kontaktowy` (head-to-head).
+- QA (ręczne, przed placementem): usunięte artefakty pluginu (markery `[PERSONAL EXPERIENCE]/[UNIQUE INSIGHT]/[ORIGINAL DATA]`, placeholdery `[IMAGE]/[CHART]`, etykiety „Do zacytowania"). **Naprawione 2 ryzyka:** (1) fabrykacja „w pilotażowych wdrożeniach widzimy" w poście o restauracji → przepisane na mechanizm (nie mamy pilotów); (2) niezweryfikowana statystyka „Toast 44%" (WebSearch nie potwierdził liczby) → usunięta/jakościowo. Usunięty `<ROICalculator/>` (bierze propsy, beauty-flavored). Emoji ✅/❌ w tabeli → tekst.
+- Weryfikacja: `next build` ✓ (wszystkie renderują); zbiorczy `botiko-content` **0 blokerów** (język marki, brak rezerwacji, 99 zł/MVP, jedyne źródło zewn. = HBR 2011).
+- **Do zrobienia (founder):** po 3 grafiki na post (`{slug}-hero/-1/-2.jpg`) przed datą publikacji. Kalendarz Priorytet A wyczerpany; zostają rezerwowe tematy + poszerzenie `pytania-nocne`.
+- Status: ✅ 8 postów zaakceptowane (user delegował) i mergowane.
+
 ### Naprawa błędów uporządkowanych danych z GSC — Claude — PR #123
 - Kontekst: 2 maile z Google Search Console o problemach ze structured data. Weryfikacja bezpośrednio w GSC (przez przeglądarkę) ujawniła 3 problemy, nie 2.
 - **Menu nawigacyjne (krytyczny)** — `/integracje/wordpress`: breadcrumb miał pośredni crumb „Integracje" bez `href` → `ListItem` bez pola `item`, które Google odrzuca (pominięcie `item` jest legalne tylko dla ostatniego elementu). Nie ma strony `/integracje` → usunięto ten crumb (`Botiko.pl › WordPress`). Pozostałe strony (5) były prawidłowe.

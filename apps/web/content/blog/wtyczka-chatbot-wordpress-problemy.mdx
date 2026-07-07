@@ -1,0 +1,231 @@
+---
+title: "Bot na WordPress nie działa? Najczęstsze problemy i fixy"
+excerpt: "Bot nie pokazuje się po wklejeniu kodu na WordPress? Cache, złe miejsce, podwójny widget, CSP. Przechodzimy przez 8 realnych problemów: objaw, przyczyna, fix."
+date: "2026-08-25"
+category: "Poradniki"
+categorySlug: "poradniki"
+tags: ["bot wordpress", "wtyczka chatbota", "troubleshooting", "wordpress", "instalacja bota"]
+author: "Mateusz Woronowicz"
+authorTitle: "Twórca Botiko"
+image: "/blog/wtyczka-chatbot-wordpress-problemy-hero.jpg"
+imageAlt: "Właściciel firmy przy laptopie z otwartym panelem WordPress, w rogu ekranu okienko bota, które się nie ładuje"
+featured: false
+---
+
+**Jeśli bot nie pokazuje się po wklejeniu kodu na WordPress, w 9 na 10 przypadków winny jest cache, złe miejsce wklejenia kodu albo błędny identyfikator bota.** To nie awaria. To drobne potknięcie przy montażu, które naprawisz w kilka minut, bez programisty. Poniżej przechodzimy przez osiem najczęstszych problemów: objaw, przyczyna i konkretny fix.
+
+Ten wpis to troubleshooting, nie instrukcja instalacji. Jeśli dopiero zaczynasz, zacznij od poradnika [jak ustawić bota na WordPress krok po kroku](/blog/jak-ustawic-bota-na-wordpress-krok-po-kroku). Tu zakładamy, że kod już wkleiłeś, a coś nie zadziałało.
+
+<Callout type="info" title="W skrócie">
+
+- Najczęstsza przyczyna „niewidocznego" bota to **cache** — wyczyść go po dodaniu kodu i sprawdź stronę w trybie incognito.
+- **Podwójny widget** oznacza kod wklejony dwa razy: usuń jedną kopię, zwykle w motywie albo w drugiej wtyczce.
+- Sprawdzasz **stronę, nie panel** `/wp-admin` — bot celowo nie ładuje się w kokpicie.
+- Większość tych problemów znika, gdy użyjesz **oficjalnej wtyczki Botiko** z katalogu WordPress.org zamiast ręcznego wklejania kodu.
+
+</Callout>
+
+## Dlaczego bot na WordPress czasem nie działa od razu
+
+WordPress to warstwowy system: motyw, wtyczki, cache i hosting działają jednocześnie. Bot Botiko to lekki skrypt, który dokłada się do tej układanki. Zwykle wchodzi bez problemu. Czasem jedna z warstw, najczęściej cache, przez chwilę „przykrywa" nowy kod. Dlatego bot potrafi pojawić się dopiero po odświeżeniu albo wyczyszczeniu pamięci podręcznej.
+
+Dobra wiadomość: to nie są usterki bota. To typowe zachowania WordPressa, które dotyczą każdego wklejanego skryptu. Znasz przyczynę, znasz fix. Przejdźmy przez konkretne przypadki po kolei, od najczęstszego do najrzadszego.
+
+
+## Bot się nie pokazuje po wklejeniu kodu — od czego zacząć
+
+**Najczęstsza przyczyna to cache lub sprawdzanie złego ekranu.** Zanim uznasz, że coś jest zepsute, przejdź szybką listę: wyczyść cache, otwórz stronę w incognito i upewnij się, że patrzysz na stronę, a nie na panel `/wp-admin`. To rozwiązuje większość zgłoszeń.
+
+Bot Botiko celowo nie ładuje się w kokpicie WordPress. Widget jest dla odwiedzających Twoją stronę, nie dla Ciebie w panelu administracyjnym. Otwórz publiczny adres strony, na przykład `twojafirma.pl`, najlepiej w oknie incognito. Incognito omija cache przeglądarki, więc od razu widzisz aktualny stan.
+
+Jeśli w incognito bot jest, a w normalnym oknie go nie ma, problem to wyłącznie pamięć podręczna przeglądarki. Wyczyść ją skrótem lub twardym odświeżeniem. Jeśli bota nie ma nigdzie, czytaj dalej.
+
+<InfoBox type="tip">
+
+Twarde odświeżenie strony pomija cache przeglądarki. Na Windows to `Ctrl + F5`, na Macu `Cmd + Shift + R`. To pierwsza rzecz, którą warto zrobić po każdej zmianie na stronie.
+
+</InfoBox>
+
+## Konflikt z wtyczką cache — kod jest, ale bot nie ładuje się od razu
+
+**Wtyczki cache to najczęstszy powód, dla którego bot nie pojawia się zaraz po dodaniu.** WP Rocket, W3 Total Cache, LiteSpeed Cache czy cache hostingu serwują zapisaną, starszą wersję strony. Ta wersja jeszcze nie zawiera Twojego nowego kodu. Bot pojawi się dopiero po wyczyszczeniu pamięci podręcznej.
+
+Objaw jest charakterystyczny: kod wklejony poprawnie, zapisany, a strona wygląda jak przed zmianą. Czasem bot pokazuje się Tobie, ale nie klientom, bo to Ty odświeżyłeś, a oni dostają wersję z cache.
+
+Fix ma dwa kroki. Najpierw wyczyść cache we wtyczce cache i, jeśli hosting ma własny (np. SiteGround, Cloudflare), także tam. Potem, jeśli bot dalej migocze lub znika, dodaj wyjątek. Wtyczki optymalizujące JavaScript potrafią odraczać, łączyć albo opóźniać skrypty. To rozwala asynchroniczne ładowanie widgetu.
+
+W ustawieniach optymalizacji JS dodaj `widget.botiko.pl` do listy wykluczeń. Szukaj opcji typu „Exclude from optimization", „Delay JavaScript execution" albo „Load JS deferred". Wpisany tam adres widgetu Botiko ominie agresywną optymalizację i wróci do normalnego ładowania.
+
+<Callout type="warning">
+
+Nie łącz (nie „combine") ani nie odraczaj skryptu bota razem z resztą JavaScript strony. Agresywna optymalizacja JS to najczęstszy powód znikającego widgetu. Zawsze dodawaj `widget.botiko.pl` do wyjątków.
+
+</Callout>
+
+> Wtyczki cache i optymalizacji JavaScript na WordPress (WP Rocket, W3 Total Cache, LiteSpeed) serwują starszą, zapisaną wersję strony i potrafią odraczać skrypty zewnętrzne. To najczęstszy powód, dla którego bot nie pojawia się zaraz po wklejeniu kodu. Fix: wyczyść cache i dodaj adres widgetu do wykluczeń optymalizacji.
+
+## Kod wklejony w złe miejsce — dlaczego to nie działa
+
+**Kod bota musi trafić w sekcję Header albo Footer całej witryny, nie w treść pojedynczej strony.** To druga najczęstsza pomyłka. Właściciele wklejają skrypt w edytor jednej podstrony albo w blok akapitu Gutenberga. Wtedy bot ładuje się tylko tam, a często wcale, bo WordPress filtruje `<script>` w treści.
+
+Objaw: bot działa na jednej podstronie, ale nie na stronie głównej ani w innych miejscach. Albo nie działa nigdzie, choć kod „gdzieś jest".
+
+Fix zależy od metody instalacji.
+
+### Wtyczka WPCode
+
+Otwórz **WPCode → Header & Footer** i wklej kod w polu **Header**. To ładuje bota na każdej podstronie automatycznie. Nie wklejaj skryptu w edytor pojedynczej strony ani w widget tekstowy.
+
+### Kod w motywie
+
+Skrypt wstawia się przed zamykającym znacznikiem `</head>`, wyłącznie w **motywie potomnym** (child theme). Wklejenie w losowy plik szablonu albo w motyw nadrzędny to proszenie się o kłopoty. Aktualizacja motywu usunie zmianę, a błąd w `functions.php` potrafi wyłączyć całą stronę.
+
+Jeśli te miejsca brzmią zbyt technicznie, to sygnał. Zamiast walczyć z plikami motywu, użyj oficjalnej wtyczki Botiko. Wtyczka sama wstawia skrypt w odpowiednie miejsce, na każdej podstronie, bez dotykania kodu.
+
+
+## Podwójny widget — dwa okienka bota na stronie
+
+**Podwójny widget prawie zawsze oznacza kod wklejony dwa razy.** Objaw jest wyraźny: dwa okienka bota, dwie ikony w rogu, albo widget, który dziwnie „skacze". To nie usterka Botiko. To dwie kopie tego samego skryptu na jednej stronie.
+
+Najczęstszy scenariusz: raz wkleiłeś kod przez WPCode, a potem drugi raz przez wtyczkę Botiko albo w motyw. Zdarza się też, gdy zmieniasz metodę instalacji i zapominasz usunąć starą. Bywa, że kod znalazł się w motywie nadrzędnym i potomnym jednocześnie.
+
+Fix: zostaw jedną metodę, usuń resztę. Wybierz oficjalną wtyczkę Botiko albo WPCode, nie oba naraz. Sprawdź po kolei: WPCode (czy nie ma dwóch aktywnych snippetów z tym samym `data-bot-id`), ustawienia wtyczki Botiko oraz pliki motywu potomnego. Po usunięciu duplikatu wyczyść cache i odśwież.
+
+<InfoBox type="tip">
+
+Widget Botiko ma wbudowany bezpiecznik przeciw podwójnej inicjalizacji. Chroni przed przypadkiem, gdy WordPress ładuje ten sam skrypt dwa razy w jednym cyklu (np. tryb React Strict Mode). Nie zabezpiecza jednak przed dwoma osobnymi kopiami kodu w różnych miejscach witryny — te trzeba usunąć ręcznie.
+
+</InfoBox>
+
+## Motyw albo CSP blokuje skrypt — bot nie ładuje się mimo poprawnego kodu
+
+**Jeśli kod jest poprawny, w dobrym miejscu, cache wyczyszczony, a bota dalej nie ma, sprawdź konsolę przeglądarki.** Naciśnij `F12` i otwórz zakładkę **Console**. Czerwony komunikat z frazą „Content Security Policy" oznacza, że polityka bezpieczeństwa strony blokuje ładowanie skryptu z zewnętrznej domeny.
+
+CSP (Content Security Policy) to nagłówek bezpieczeństwa. Mówi przeglądarce, z jakich domen wolno ładować skrypty. Niektóre wtyczki bezpieczeństwa (np. Wordfence, iThemes Security) albo restrykcyjne motywy ustawiają CSP tak, że blokują wszystko spoza własnej domeny. Wtedy skrypt bota nie ma prawa się załadować.
+
+Fix polega na dodaniu domeny Botiko do dozwolonych źródeł. W dyrektywie `script-src` (i, jeśli jest, `connect-src`) trzeba dopisać `widget.botiko.pl`. Ustawienie znajdziesz w konfiguracji wtyczki bezpieczeństwa albo w nagłówkach serwera. To edycja techniczna, więc jeśli masz osobę od strony, przekaż jej te dwie nazwy dyrektyw.
+
+Objaw pokrewny: konsola pokazuje błąd „mixed content" albo „blocked: mixed-content". To znaczy, że strona chodzi na starym `http://` zamiast `https://`. Widget ładuje się szyfrowanym połączeniem, więc na niezabezpieczonej stronie może zostać zablokowany. Rozwiązanie to włączenie certyfikatu SSL, co dziś oferuje praktycznie każdy hosting za darmo.
+
+<Callout type="warning">
+
+Nie wyłączaj CSP ani wtyczki bezpieczeństwa, żeby „na szybko" pokazać bota. To osłabia ochronę całej strony. Właściwy fix to dopisanie `widget.botiko.pl` do dozwolonych źródeł skryptów, nic więcej.
+
+</Callout>
+
+> Restrykcyjna polityka Content Security Policy (CSP) na WordPress, ustawiana przez wtyczki bezpieczeństwa lub motyw, blokuje ładowanie skryptów z domen zewnętrznych. Jeśli bot nie ładuje się mimo poprawnego kodu, w dyrektywie script-src należy dopisać domenę widgetu. To bezpieczniejsze niż wyłączanie całej polityki.
+
+## Widget nie działa na telefonie — objaw i przyczyny
+
+**Bot Botiko jest responsywny i działa na telefonie tak samo jak na komputerze.** Jeśli na mobile go nie widać, przyczyna jest zwykle jedna z trzech: osobny cache mobilny, oddzielny motyw mobilny albo inny element strony zasłaniający ikonę bota.
+
+Pierwsza przyczyna: cache mobilny. Część wtyczek cache trzyma osobną wersję strony dla telefonów. Wyczyściłeś cache desktopowy, ale mobilny został stary. Wyczyść cały cache i sprawdź stronę na telefonie w trybie prywatnym przeglądarki.
+
+Druga przyczyna: osobny motyw lub wtyczka „mobile". Starsze konfiguracje serwują telefonom zupełnie inny szablon, do którego kod bota nie trafił. Wtedy trzeba dodać skrypt również do tej wersji, albo, prościej, użyć oficjalnej wtyczki Botiko, która ładuje się globalnie.
+
+Trzecia przyczyna: coś zasłania ikonę. Przyciski „wróć na górę", baner cookies albo widget innej wtyczki potrafią na małym ekranie nachodzić na okienko bota. Bot tam jest, tylko przykryty. Sprawdź, czy inny element nie siedzi w tym samym rogu ekranu.
+
+
+## Wolne ładowanie strony — czy to przez bota
+
+**Skrypt bota ładuje się asynchronicznie i nie blokuje wyświetlania Twojej strony.** Widget jest lekki, celowo trzymany poniżej kilkunastu kilobajtów. Jeśli strona zwolniła po dodaniu bota, w większości przypadków źródłem jest coś innego: ciężki motyw, dużo wtyczek, nieskompresowane zdjęcia albo słaby hosting.
+
+Skąd wiadomo, że to nie bot? Zrób prosty test. Zmierz szybkość strony narzędziem Google PageSpeed Insights przed i po dodaniu bota. Jeśli wynik spadł nieznacznie albo wcale, bot nie jest problemem. Jeśli spadł mocno, sprawdź, czy wtyczka optymalizacji nie „walczy" ze skryptem, odraczając go w kółko.
+
+Typowa pułapka: agresywne ustawienie „opóźnij wykonanie JavaScript" opóźnia też skrypt bota, przez co widget wskakuje z sekundowym poślizgiem. To nie spowolnienie strony, tylko opóźnione pojawienie się ikony. Jeśli chcesz, żeby bot ładował się szybciej, dodaj go do wyjątków tej optymalizacji, jak opisałem wyżej.
+
+Chcesz wejść głębiej w wydajność, WooCommerce, Elementor i cache? Zebrałem to w [przewodniku Botiko dla WordPress](/blog/botiko-dla-wordpress-przewodnik-2026), który omawia te tematy szerzej niż ten troubleshooting.
+
+## Konflikt z inną wtyczką czatu — dwa czaty walczą o róg ekranu
+
+**Dwa narzędzia czatu na jednej stronie zwykle nie „psują się" nawzajem, ale nachodzą na siebie w tym samym rogu.** Jeśli masz jednocześnie Botiko i inny czat (Tidio, Messenger, Tawk.to), oba domyślnie siadają w prawym dolnym rogu. Wynik: jedna ikona zasłania drugą albo klikasz nie ten czat, co chcesz.
+
+To rzadko realny konflikt kodu, częściej wizualne nakładanie. Przyczyna: dwa niezależne skrypty, każdy z własną pozycją na ekranie. Żaden nie „wie" o drugim.
+
+Fix zaczyna się od decyzji: naprawdę potrzebujesz dwóch czatów? Zwykle nie. Botiko odpowiada na pytania klientów z Twojej bazy wiedzy 24/7, zbiera kontakt do leada i odsyła do rezerwacji w Booksy czy Calendly. Jeśli to pokrywa Twoje potrzeby, wyłącz drugi czat, żeby nie mylić klientów.
+
+Jeśli świadomie chcesz zostawić oba, na przykład Messenger dla stałych klientów i Botiko dla nowych, przesuń jeden z widgetów. Większość narzędzi pozwala zmienić róg ekranu w ustawieniach pozycji. Ustaw je po przeciwnych stronach, żeby się nie zasłaniały.
+
+<ComparisonTable
+  title="Szybka diagnoza — objaw, przyczyna, fix"
+  headers={["Objaw", "Najczęstsza przyczyna", "Fix"]}
+  highlightColumn={2}
+  rows={[
+    ["Bota nie ma po wklejeniu kodu", "Cache / patrzysz na /wp-admin", "Wyczyść cache, otwórz stronę w incognito"],
+    ["Bot znika i wraca", "Optymalizacja JS łączy/odracza skrypt", "Dodaj widget.botiko.pl do wyjątków"],
+    ["Bot tylko na jednej podstronie", "Kod w treści strony, nie w Header", "Przenieś kod do Header (WPCode)"],
+    ["Dwa okienka bota", "Kod wklejony 2×", "Usuń jedną kopię, wyczyść cache"],
+    ["Bot nie ładuje się mimo kodu", "CSP blokuje skrypt", "Dopisz widget.botiko.pl do script-src"],
+    ["Brak bota na telefonie", "Cache mobilny / inny motyw mobilny", "Wyczyść cały cache, sprawdź w incognito"],
+    ["Dwa czaty nachodzą na siebie", "Dwa widgety w tym samym rogu", "Wyłącz jeden lub zmień pozycję"],
+  ]}
+/>
+
+## Dlaczego oficjalna wtyczka Botiko upraszcza większość tych problemów
+
+**Większość powyższych potknięć bierze się z ręcznego wklejania kodu w niepewne miejsca.** Oficjalna wtyczka Botiko z katalogu WordPress.org eliminuje ten krok. Instalujesz ją z panelu WordPress, aktywujesz i łączysz stronę jednym kodem z panelu Botiko. Wtyczka sama wstawia skrypt tam, gdzie trzeba, na każdej podstronie.
+
+Co to zmienia w praktyce? Nie wklejasz kodu w edytor strony, więc problem „złego miejsca" znika. Wtyczka ładuje skrypt globalnie, więc bot działa na całej witrynie i na telefonie. WordPress sam pilnuje aktualizacji. Zostaje najwyżej cache, który i tak trzeba wyczyścić po każdej zmianie na stronie.
+
+Jak połączyć stronę wtyczką, opisałem w [poradniku instalacji krok po kroku](/blog/jak-ustawic-bota-na-wordpress-krok-po-kroku). Szczegóły techniczne integracji znajdziesz na stronie [bot na WordPress](/integracje/wordpress). Sama instalacja wtyczki jest darmowa — płacisz tylko abonament Botiko za działającego bota, nie za montaż.
+
+<CTABlock
+  title="Uruchom bota na WordPress bez kombinowania z kodem"
+  description="14 dni za darmo, bez karty. Oficjalna wtyczka z katalogu WordPress.org wstawia bota w kilka minut."
+  cta="Zacznij za darmo"
+  href="/rejestracja"
+/>
+
+## Najczęstsze pytania o problemy z botem na WordPress
+
+<FAQ
+  items={[
+    {
+      q: "Wkleiłem kod, a bota nie widać. Co sprawdzić najpierw?",
+      a: "Najpierw trzy rzeczy. Sprawdź, czy patrzysz na stronę, a nie na panel /wp-admin — bot celowo nie ładuje się w kokpicie. Potem wyczyść cache (wtyczka cache plus cache hostingu). Na końcu otwórz stronę w trybie incognito, żeby ominąć cache przeglądarki. To rozwiązuje większość zgłoszeń."
+    },
+    {
+      q: "Dlaczego bot pojawił się dopiero po godzinie, a nie od razu?",
+      a: "Prawie zawsze przez cache. Wtyczki jak WP Rocket czy LiteSpeed serwują zapisaną, starszą wersję strony bez Twojego nowego kodu. Bot pojawi się po wyczyszczeniu pamięci podręcznej. Wyczyść cache we wtyczce i na hostingu zaraz po dodaniu kodu, a nie będziesz czekać."
+    },
+    {
+      q: "Mam dwa okienka bota. Skąd się wzięło drugie?",
+      a: "Podwójny widget to kod wklejony dwa razy — zwykle raz przez WPCode i drugi raz przez wtyczkę Botiko albo w motyw. Zostaw jedną metodę instalacji, usuń resztę. Sprawdź WPCode, ustawienia wtyczki Botiko i pliki motywu potomnego, potem wyczyść cache."
+    },
+    {
+      q: "Bot działa na komputerze, ale nie na telefonie. Dlaczego?",
+      a: "Najczęściej przez osobny cache mobilny albo oddzielny motyw dla telefonów, do którego kod nie trafił. Wyczyść cały cache i sprawdź stronę na telefonie w trybie prywatnym. Sprawdź też, czy baner cookies lub inny przycisk nie zasłania ikony bota w rogu ekranu."
+    },
+    {
+      q: "W konsoli widzę błąd Content Security Policy. Co to znaczy?",
+      a: "To polityka bezpieczeństwa strony blokuje ładowanie skryptu z zewnętrznej domeny. Ustawia ją wtyczka bezpieczeństwa lub motyw. Fix: dopisz widget.botiko.pl do dozwolonych źródeł w dyrektywie script-src. Nie wyłączaj całej polityki bezpieczeństwa, bo osłabisz ochronę strony."
+    },
+    {
+      q: "Czy bot spowolni moją stronę WordPress?",
+      a: "Nie w odczuwalny sposób. Skrypt ładuje się asynchronicznie i nie blokuje wyświetlania strony, a widget jest lekki. Jeśli strona zwolniła, sprawdź motyw, liczbę wtyczek i zdjęcia — to zwykle one, nie bot. Zmierz wynik w Google PageSpeed Insights przed i po."
+    },
+    {
+      q: "Mam już inny czat na stronie. Czy Botiko będzie z nim gryźć się?",
+      a: "Kod zwykle nie koliduje, ale oba czaty siadają w tym samym rogu i się zasłaniają. Zdecyduj, czy potrzebujesz dwóch. Jeśli nie, wyłącz drugi. Jeśli tak, przesuń jeden widget na przeciwną stronę ekranu w jego ustawieniach pozycji."
+    },
+    {
+      q: "Jak uniknąć tych problemów przy kolejnej instalacji?",
+      a: "Użyj oficjalnej wtyczki Botiko z katalogu WordPress.org zamiast ręcznego wklejania kodu. Wtyczka sama wstawia skrypt w odpowiednie miejsce, na każdej podstronie i na telefonie. Zostaje tylko czyszczenie cache po zmianach. Instalacja wtyczki jest darmowa — płacisz za bota, nie za montaż."
+    }
+  ]}
+/>
+
+## Podsumowanie — bot na WordPress zwykle „działa", tylko coś go przykrywa
+
+Gdy bot na WordPress nie działa, rzadko chodzi o realną awarię. W praktyce winne są cache, złe miejsce wklejenia kodu, podwójna kopia skryptu albo restrykcyjna polityka bezpieczeństwa. Każdy z tych problemów ma prosty, powtarzalny fix, który wykonasz sam, bez programisty.
+
+Zapamiętaj kolejność diagnozy: wyczyść cache, sprawdź stronę w incognito, upewnij się, że kod jest w Header i tylko raz, a dopiero potem zaglądaj w konsolę po błędy CSP. Jeśli nie chcesz w ogóle wchodzić w te szczegóły, oficjalna wtyczka Botiko z katalogu WordPress.org rozbraja większość tych pułapek za Ciebie.
+
+Chcesz sprawdzić, jak to działa na Twojej stronie? Bot odpowiada klientom 24/7 z Twojego cennika i FAQ, zbiera kontakt do leada i odsyła do rezerwacji. Zobacz [cennik](/cennik) albo od razu przetestuj za darmo.
+
+<CTABlock
+  title="Przetestuj bota na swojej stronie WordPress"
+  description="99 zł/mies., 14 dni za darmo, bez karty. Oficjalna wtyczka z katalogu WordPress.org."
+  cta="Zacznij za darmo"
+  href="/rejestracja"
+/>
