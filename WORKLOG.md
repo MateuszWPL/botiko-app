@@ -49,6 +49,15 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 - Review: `botiko-content` (werdykt kanibalizacji + co zachować). Weryfikacja: `tsc` ✓, `next lint` ✓, `next build` (walidacja MDX/redirectów) — w toku.
 - Status: 🔄 gotowe do PR (branch), po zielonym buildzie.
 
+### SEO Faza 1B — /porownanie z realnym konkurentem (recepcjonistka AI) — Claude + botiko-content + botiko-business — branch `feat/seo-porownanie-konkurenci`
+- Kontekst: SXO z audytu wskazał, że dla zapytań komercyjnych („chatbot dla salonu cena", „recepcjonistka AI") SERP zdominowany przez konkurentów z bezpośrednią rezerwacją (Smart Asystenci, Assistron, Sekretarka AI — voiceboty telefoniczne). Botiko nie było w porównaniach z realną konkurencją.
+- Zamiast 4 nakładających się stron (ryzyko samo-kanibalizacji jak w 1A) — **jedna mocna strona kategorii**: `/porownanie/botiko-vs-recepcjonistka-ai`. Pokrywa cały klaster „recepcjonistka AI / wirtualna recepcjonistka / asystent umawiający wizyty" i wprost segmentuje kategorie: Botiko (tekstowy bot na WWW, odsyła do rezerwacji, 99 zł) vs voicebot telefoniczny (odbiera telefon, umawia wizyty, wyższy próg).
+- Research (WebSearch) potwierdził realność i kategorię konkurentów; **BeautyBoost AI odrzucone** (niepotwierdzone); Tidio (istniejący wpis) — fakty aktualne, bez zmian. Zgodnie z konwencją pliku: **bez twardych cen konkurenta** (nominative fair use, „sprawdź u dostawcy").
+- Nowy wpis: 8-wierszowa tabela (kanał, zadanie, umawianie, po godzinach, cennik/FAQ, leady, instalacja, model cenowy) + werdykt („nie albo-albo") + 5 FAQ (zasila FAQPage schema → GEO). Dodany do `lib/comparisons.ts`; indeks `/porownanie` i sitemap auto-listują (getAllComparisonSlugs).
+- Review: `botiko-content` (0 blokerów — język marki, fair play, PL) + `botiko-business` (0 blokerów — wszystkie roszczenia o Botiko zgodne z realnym produktem/MVP, brak scope creep). 1 drobna poprawka stylistyczna naniesiona.
+- Weryfikacja: `tsc` ✓, `next build` — w toku.
+- Status: 🔄 gotowe do PR (branch), po zielonym buildzie.
+
 ## 2026-07-06 (poniedziałek)
 
 ### Fixy dashboard/widget — kontrast na jasnym akcencie, scroll ustawień, refresh sesji — Claude — [PR #112 | branch `fix/widget-contrast-settings-scroll-auth`]

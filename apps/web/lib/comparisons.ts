@@ -132,6 +132,52 @@ export const COMPARISONS: Comparison[] = [
       },
     ],
   },
+  {
+    slug: 'botiko-vs-recepcjonistka-ai',
+    title: 'Botiko vs recepcjonistka AI (voicebot)',
+    metaTitle: 'Botiko vs recepcjonistka AI (voicebot) — co wybrać?',
+    metaDescription:
+      'Recepcjonistka AI (voicebot) odbiera telefony i umawia wizyty. Botiko to tekstowy bot na stronie, który odpowiada z Twojego cennika, zbiera leady i odsyła do rezerwacji. Zobacz, kiedy który się sprawdza.',
+    h1: 'Botiko a recepcjonistka AI (voicebot) — co wybrać dla firmy usługowej',
+    intro:
+      'To dwie różne kategorie narzędzi, choć trafiają na te same zapytania. Recepcjonistka AI (voicebot telefoniczny — np. Smart Asystenci, Assistron, Sekretarka AI) odbiera połączenia głosowe i umawia wizyty w kalendarzu. Botiko to tekstowy bot na Twojej stronie WWW: odpowiada z Twojego cennika i FAQ, zbiera leady i odsyła do rezerwacji (Booksy/Calendly). Poniżej uczciwe porównanie — zakres i ceny voicebotów zależą od dostawcy, więc sprawdź je u źródła.',
+    optionA: 'Botiko',
+    optionB: 'Recepcjonistka AI (voicebot)',
+    rows: [
+      { feature: 'Główny kanał', a: 'Czat tekstowy na stronie WWW', b: 'Połączenia telefoniczne (głos)' },
+      { feature: 'Główne zadanie', a: 'Odpowiada na pytania i zbiera leady', b: 'Odbiera telefon i umawia wizyty' },
+      { feature: 'Umawianie terminu', a: 'Odsyła do Twojego systemu (Booksy/Calendly) lub zbiera kontakt', b: 'Umawia bezpośrednio w kalendarzu' },
+      { feature: 'Odpowiada po godzinach i w nocy', a: true, b: true },
+      { feature: 'Odpowiada z Twojego cennika i FAQ', a: true, b: 'W zakresie skonfigurowanym' },
+      { feature: 'Zbiera leady (imię + telefon) z rozmowy na stronie', a: true, b: 'Raczej z rozmowy telefonicznej' },
+      { feature: 'Instalacja na stronie / WordPress', a: 'Natywnie, przez wtyczkę lub kod', b: 'Zwykle numer telefonu / integracja telefoniczna' },
+      { feature: 'Model cenowy', a: 'Jeden płaski plan 99 zł/mies', b: 'Zwykle wyższy próg (usługa głosowa) — sprawdź u dostawcy' },
+    ],
+    verdict:
+      'Jeśli tracisz klientów głównie na nieodebranych telefonach i zależy Ci, żeby coś realnie umawiało wizyty głosowo — właściwą kategorią jest recepcjonistka AI (voicebot). Botiko wybierz, gdy klienci piszą na stronie i po godzinach, a Ty chcesz taniego bota, który odpowiada z Twojego cennika, zbiera leady i odsyła do Twojej rezerwacji (Booksy/Calendly) — za przewidywalne 99 zł miesięcznie. To nie musi być „albo–albo": voicebot może odbierać telefon, a Botiko obsługiwać czat na stronie.',
+    faqs: [
+      {
+        q: 'Czym różni się Botiko od recepcjonistki AI?',
+        a: 'Recepcjonistka AI to zwykle voicebot telefoniczny — odbiera połączenia głosowe i umawia wizyty w kalendarzu. Botiko to tekstowy bot na stronie WWW: odpowiada na pisane pytania z Twojego cennika i FAQ, zbiera leady i odsyła do rezerwacji. Inny kanał, inne zadanie.',
+      },
+      {
+        q: 'Czy Botiko odbiera telefony?',
+        a: 'Nie. Botiko obsługuje czat tekstowy na stronie, nie połączenia głosowe. Łapie zapytania pisane (z widgetu, po godzinach) i zbiera kontakt, żebyś mógł oddzwonić. Odbieranie telefonów to domena voicebotów.',
+      },
+      {
+        q: 'Czy Botiko samo umawia wizyty jak recepcjonistka AI?',
+        a: 'Nie — Botiko celowo nie zarządza kalendarzem. Odsyła klienta do Twojego systemu rezerwacji (Booksy, Calendly) albo zbiera imię i telefon do oddzwonienia. Voicebot recepcyjny zwykle umawia bezpośrednio; Botiko zostawia rezerwację po Twojej stronie.',
+      },
+      {
+        q: 'Co jest tańsze — Botiko czy recepcjonistka AI?',
+        a: 'Botiko ma jeden płaski plan 99 zł miesięcznie. Voiceboty telefoniczne to zwykle wyższy próg cenowy, bo obsługa głosowa jest droższa — dokładne stawki i zakres sprawdzisz u konkretnego dostawcy. To dwa różne narzędzia, więc porównuj je przez pryzmat tego, co realnie potrzebujesz: czat na stronie czy odbieranie telefonu.',
+      },
+      {
+        q: 'Czy mogę używać obu naraz?',
+        a: 'Tak. Voicebot może odbierać połączenia telefoniczne, a Botiko obsługiwać czat na stronie i zbierać leady od osób, które wolą pisać. Kanały się uzupełniają.',
+      },
+    ],
+  },
 ];
 
 const BY_SLUG = new Map(COMPARISONS.map((c) => [c.slug, c]));
