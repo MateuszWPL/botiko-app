@@ -132,7 +132,7 @@ export class BotService {
         const host = new URL(tenant.websiteUrl).hostname;
         allowedDomains = [`https://${host}`, `https://www.${host}`];
       } catch {
-        // malformed websiteUrl — keep empty
+        // malformed websiteUrl: keep empty
       }
     }
 
@@ -371,7 +371,7 @@ export class BotService {
     const token = `botiko_pair_${randomBytes(24).toString('hex')}`;
     const expiresAt = new Date(Date.now() + PAIRING_TTL_MS);
 
-    // Keep at most one active pairing token per bot — delete + create atomically
+    // Keep at most one active pairing token per bot: delete + create atomically
     // so two concurrent "generate" clicks can't leave two valid tokens.
     await this.prisma.$transaction([
       this.prisma.botPairingToken.deleteMany({ where: { botId } }),
@@ -530,7 +530,7 @@ function isOriginAllowed(
 /** Pairing tokens are valid for 15 minutes. */
 const PAIRING_TTL_MS = 15 * 60 * 1000;
 
-/** SHA-256 of a raw pairing token — only the hash is ever persisted. */
+/** SHA-256 of a raw pairing token: only the hash is ever persisted. */
 function hashToken(token: string): string {
   return createHash('sha256').update(token).digest('hex');
 }
@@ -539,7 +539,7 @@ function hashToken(token: string): string {
  * Add a paired site's domain to a bot's allow-list.
  *
  * Returns the original array unchanged when the host is already allowed
- * (www-insensitive — idempotent re-pairing), a new array with the domain
+ * (www-insensitive, idempotent re-pairing), a new array with the domain
  * appended when there is room, or `null` when the 5-domain limit blocks it.
  * Mirrors the create() convention of storing both `https://host` and the www
  * variant. `originUrl` is a validated URL (Zod `.url()` upstream).

@@ -7,7 +7,7 @@ const validBase = {
   email: 'jan@example.com',
 };
 
-describe('createContactSchema — website URL (P2: validation)', () => {
+describe('createContactSchema: website URL (P2: validation)', () => {
   it('akceptuje brak pola website (pole opcjonalne)', () => {
     expect(createContactSchema.safeParse(validBase).success).toBe(true);
   });
@@ -33,8 +33,8 @@ describe('createContactSchema — website URL (P2: validation)', () => {
   it.each([
     'nie-url',
     'salon',
-    'ftp://example.pl', // not http/https but valid URL — zod accepts any URL scheme
-    'example.pl', // brak protokołu — Zod url() odrzuca
+    'ftp://example.pl', // not http/https but valid URL: zod accepts any URL scheme
+    'example.pl', // brak protokołu: Zod url() odrzuca
     '',
   ])('odrzuca lub pomija niepoprawny URL: "%s"', (website) => {
     // Zod .url() requires a full URL with protocol
@@ -57,7 +57,7 @@ describe('createContactSchema — website URL (P2: validation)', () => {
   });
 });
 
-describe('createContactSchema — message', () => {
+describe('createContactSchema: message', () => {
   it('odrzuca wiadomość krótszą niż 10 znaków', () => {
     expect(
       createContactSchema.safeParse({ ...validBase, message: 'Krótka' })
@@ -73,7 +73,7 @@ describe('createContactSchema — message', () => {
   });
 });
 
-describe('createContactSchema — topic enum', () => {
+describe('createContactSchema: topic enum', () => {
   it.each(['DEMO', 'WDROZENIE', 'CENNIK', 'WSPOLPRACA', 'INNE'] as const)(
     'akceptuje topic "%s"',
     (topic) => {

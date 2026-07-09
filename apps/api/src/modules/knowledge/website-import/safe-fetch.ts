@@ -20,7 +20,7 @@ export interface SafeFetchOptions {
   timeoutMs?: number;
   tenantWebsiteUrl?: string;
   // Skip the HTML content-type gate. Used for sitemap discovery, where the
-  // body is XML — the SSRF guarantee (DNS pinning + redirect re-validation)
+  // body is XML: the SSRF guarantee (DNS pinning + redirect re-validation)
   // still holds; only the content-type feature-check is relaxed.
   allowAnyContentType?: boolean;
 }
@@ -58,7 +58,7 @@ function requestOnce(url: URL, timeoutMs: number): Promise<RawResponse> {
           'User-Agent': BOTIKO_USER_AGENT,
           Accept: 'text/html,application/xhtml+xml;q=0.9',
           'Accept-Language': 'pl,en;q=0.5',
-          // Identity only — native http does not auto-decompress.
+          // Identity only: native http does not auto-decompress.
           'Accept-Encoding': 'identity',
         },
         lookup: secureLookup,
@@ -99,7 +99,7 @@ function readBodyWithLimit(body: Readable, maxBytes: number): Promise<string> {
     body.on('data', (chunk: Buffer) => {
       totalBytes += chunk.byteLength;
       if (totalBytes > maxBytes) {
-        // Stop reading — we have enough; truncate at the limit.
+        // Stop reading: we have enough; truncate at the limit.
         chunks.push(chunk);
         finish(() =>
           resolve(

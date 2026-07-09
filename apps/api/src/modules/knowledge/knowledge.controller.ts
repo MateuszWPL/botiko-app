@@ -41,7 +41,7 @@ import {
 } from './website-import/dto/classify-save.dto';
 import type { ExtractedPayload } from './website-import/extracted-payload.schema';
 
-// Write operations trigger OpenAI embedding calls — throttle to prevent
+// Write operations trigger OpenAI embedding calls: throttle to prevent
 // accidental or intentional API cost spikes (30 req/min per IP).
 @Throttle({ default: { limit: 30, ttl: 60000 } })
 @Controller('api/v1/knowledge')

@@ -1,7 +1,7 @@
 import { updateBotSchema } from './update-bot.dto';
 
-describe('updateBotSchema — linki http(s) (bezpieczeństwo: blokada javascript:/data:)', () => {
-  // Każde z tych pól używa helpera httpUrl() — te same reguły dla wszystkich.
+describe('updateBotSchema: linki http(s) (bezpieczeństwo: blokada javascript:/data:)', () => {
+  // Każde z tych pól używa helpera httpUrl(), te same reguły dla wszystkich.
   const urlFields = ['websiteUrl', 'googleMapsUrl', 'reservationUrl'] as const;
 
   it.each(urlFields)('akceptuje poprawny https:// w polu "%s"', (field) => {
@@ -38,7 +38,7 @@ describe('updateBotSchema — linki http(s) (bezpieczeństwo: blokada javascript
   );
 
   it.each(urlFields)('ODRZUCA schemat ftp:// w polu "%s"', (field) => {
-    // Zod .url() sam w sobie przepuszcza ftp: — refine http(s) musi to złapać.
+    // Zod .url() sam w sobie przepuszcza ftp:, refine http(s) musi to złapać.
     expect(
       updateBotSchema.safeParse({ [field]: 'ftp://przyklad.pl' }).success,
     ).toBe(false);
@@ -63,7 +63,7 @@ describe('updateBotSchema — linki http(s) (bezpieczeństwo: blokada javascript
     ).toBe(false);
   });
 
-  it('googleMapsUrl dopuszcza dłuższe linki (limit 1000) — długie URL-e Maps', () => {
+  it('googleMapsUrl dopuszcza dłuższe linki (limit 1000): długie URL-e Maps', () => {
     expect(
       updateBotSchema.safeParse({
         googleMapsUrl: 'https://maps.google.com/?q=' + 'x'.repeat(900),
@@ -72,7 +72,7 @@ describe('updateBotSchema — linki http(s) (bezpieczeństwo: blokada javascript
   });
 });
 
-describe('updateBotSchema — companyEmail', () => {
+describe('updateBotSchema: companyEmail', () => {
   it('akceptuje poprawny e-mail', () => {
     expect(
       updateBotSchema.safeParse({ companyEmail: 'kontakt@przyklad.pl' })
@@ -105,7 +105,7 @@ describe('updateBotSchema — companyEmail', () => {
   });
 });
 
-describe('updateBotSchema — nowe pola firmowe (nip, owner)', () => {
+describe('updateBotSchema: nowe pola firmowe (nip, owner)', () => {
   it('akceptuje nip i owner w granicach limitów', () => {
     expect(
       updateBotSchema.safeParse({
@@ -142,7 +142,7 @@ describe('updateBotSchema — nowe pola firmowe (nip, owner)', () => {
   });
 });
 
-describe('updateBotSchema — allowedDomains', () => {
+describe('updateBotSchema: allowedDomains', () => {
   it('akceptuje do 5 domen', () => {
     expect(
       updateBotSchema.safeParse({
@@ -179,7 +179,7 @@ describe('updateBotSchema — allowedDomains', () => {
   });
 });
 
-describe('updateBotSchema — primaryColor (hex)', () => {
+describe('updateBotSchema: primaryColor (hex)', () => {
   it('akceptuje poprawny hex 6-znakowy', () => {
     expect(updateBotSchema.safeParse({ primaryColor: '#6366F1' }).success).toBe(
       true,
@@ -194,7 +194,7 @@ describe('updateBotSchema — primaryColor (hex)', () => {
   );
 });
 
-describe('updateBotSchema — textColor / logoBgColor (ręczne kolory, nullable)', () => {
+describe('updateBotSchema: textColor / logoBgColor (ręczne kolory, nullable)', () => {
   it('akceptuje poprawny hex oraz null (czyszczenie override)', () => {
     expect(updateBotSchema.safeParse({ textColor: '#FFFFFF' }).success).toBe(
       true,
@@ -217,7 +217,7 @@ describe('updateBotSchema — textColor / logoBgColor (ręczne kolory, nullable)
   );
 });
 
-describe('updateBotSchema — godziny otwarcia (refine start < end)', () => {
+describe('updateBotSchema: godziny otwarcia (refine start < end)', () => {
   it('akceptuje start < end', () => {
     expect(
       updateBotSchema.safeParse({
@@ -243,7 +243,7 @@ describe('updateBotSchema — godziny otwarcia (refine start < end)', () => {
   });
 });
 
-describe('updateBotSchema — pusty payload', () => {
+describe('updateBotSchema: pusty payload', () => {
   it('akceptuje pusty obiekt (wszystkie pola opcjonalne)', () => {
     expect(updateBotSchema.safeParse({}).success).toBe(true);
   });

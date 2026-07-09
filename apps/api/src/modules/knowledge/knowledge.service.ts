@@ -54,7 +54,7 @@ export const MAX_CHUNK_LENGTH = 1200;
  * greedily packs paragraphs up to MAX_CHUNK_LENGTH. A single paragraph longer
  * than the limit is kept whole rather than cut mid-sentence.
  *
- * Content with no blank lines yields a single chunk — identical to the old
+ * Content with no blank lines yields a single chunk, identical to the old
  * behaviour, so short focused entries are unaffected.
  */
 export function splitContentIntoChunks(raw: string): string[] {
@@ -152,7 +152,7 @@ export class KnowledgeService {
         await this.embeddingService.generateAndStore(id, piece);
       }
     } catch (err: unknown) {
-      // Embedding (or insert) failed — roll back every chunk created in THIS
+      // Embedding (or insert) failed: roll back every chunk created in THIS
       // call so we never leave zero-vector rows. The client gets a 500 + retry.
       if (ids.length > 0) {
         await this.prisma.knowledgeChunk
@@ -169,7 +169,7 @@ export class KnowledgeService {
     this.logger.log(
       `Knowledge added + embedded: ${ids.length} chunk(s) to bot: ${botId}`,
     );
-    // Contract stays { id } — return the first chunk's id (the anchor row).
+    // Contract stays { id }: return the first chunk's id (the anchor row).
     return { id: ids[0] };
   }
 

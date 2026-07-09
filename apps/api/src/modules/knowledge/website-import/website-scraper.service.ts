@@ -64,7 +64,7 @@ export class WebsiteScraperService {
         totalBytes += html.length;
         if (totalBytes > MAX_TOTAL_BYTES) {
           this.logger.warn(
-            `Total byte budget exceeded at ${pageUrl.toString()} — stopping scrape`,
+            `Total byte budget exceeded at ${pageUrl.toString()}: stopping scrape`,
           );
           break;
         }

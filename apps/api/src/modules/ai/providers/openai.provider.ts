@@ -18,7 +18,7 @@ export class OpenAIProvider implements AIService {
   constructor() {
     if (!env.OPENAI_API_KEY) {
       this.logger.warn(
-        'OPENAI_API_KEY is not set — AI features will not work. Set it in apps/api/.env',
+        'OPENAI_API_KEY is not set: AI features will not work. Set it in apps/api/.env',
       );
     }
     this.client = new OpenAI({ apiKey: env.OPENAI_API_KEY ?? 'not-set' });
@@ -97,7 +97,7 @@ export class OpenAIProvider implements AIService {
         totalTokens = chunk.usage.total_tokens;
       }
       const choice = chunk.choices[0];
-      // finish_reason arrives on the last content-bearing chunk ('stop' | 'length' | …)
+      // finish_reason arrives on the last content-bearing chunk ('stop' | 'length' | ...)
       if (choice?.finish_reason) {
         finishReason = choice.finish_reason;
       }

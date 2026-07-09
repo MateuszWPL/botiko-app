@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-// Numer telefonu — jedna reguła spójna z create-lead-manual.dto.ts oraz
+// Numer telefonu: jedna reguła spójna z create-lead-manual.dto.ts oraz
 // z walidacją widgetu (apps/widget): polski numer to co najmniej 9 cyfr.
 export const phoneSchema = z
   .string()

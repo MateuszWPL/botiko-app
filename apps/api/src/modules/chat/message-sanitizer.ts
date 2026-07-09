@@ -8,7 +8,7 @@
  * Returns one of three actions:
  *  - 'proceed'  → sanitized text, run full RAG + AI pipeline
  *  - 'respond'  → skip AI entirely, return canned response immediately
- *  - 'no-rag'   → skip RAG but still call AI (greetings — let bot respond in-character)
+ *  - 'no-rag'   → skip RAG but still call AI (greetings: let bot respond in-character)
  */
 
 export type PreprocessResult =
@@ -36,7 +36,7 @@ const SCRIPT_PATTERNS: RegExp[] = [
 ];
 
 /**
- * Prompt injection — attempts to override or reveal system instructions.
+ * Prompt injection: attempts to override or reveal system instructions.
  * Word-boundary anchors reduce false positives on innocent sentences.
  */
 const PROMPT_INJECTION_PATTERNS: RegExp[] = [
@@ -71,7 +71,7 @@ const IMAGE_PATTERNS: RegExp[] = [
   /base64\s*,/i,
 ];
 
-/** Polish profanity — common roots with word boundaries where safe */
+/** Polish profanity: common roots with word boundaries where safe */
 const PROFANITY_PATTERNS: RegExp[] = [
   /\bkurw[aąy]\b/i,
   /\bchuj\b/i,
@@ -93,7 +93,7 @@ const PROFANITY_PATTERNS: RegExp[] = [
 ];
 
 /**
- * Pure greetings — message is ONLY a greeting, nothing more.
+ * Pure greetings: message is ONLY a greeting, nothing more.
  * We match start+end to avoid "hej, ile kosztuje manicure?" being caught.
  */
 const GREETING_ONLY_PATTERNS: RegExp[] = [
@@ -103,7 +103,7 @@ const GREETING_ONLY_PATTERNS: RegExp[] = [
 ];
 
 /**
- * Casual acknowledgments — conversational continuers that need no RAG lookup.
+ * Casual acknowledgments: conversational continuers that need no RAG lookup.
  * "okej fajnie", "dzięki", "super" etc. → let AI respond naturally in-character.
  */
 const ACKNOWLEDGMENT_PATTERNS: RegExp[] = [
@@ -133,7 +133,7 @@ function isGibberish(text: string): boolean {
 }
 
 /**
- * True when the message is essentially just contact info — a phone number or
+ * True when the message is essentially just contact info: a phone number or
  * an email, possibly with separators. Such a message must NOT be rejected as
  * gibberish: a bare phone number is 0% letters yet is the single most valuable
  * thing a user can send (they're leaving their contact). We let it proceed so
@@ -150,7 +150,7 @@ function isMostlyContactInfo(text: string): boolean {
   return leftover.length < 3;
 }
 
-/** Strip URLs — bot doesn't browse the internet; links add no value to RAG */
+/** Strip URLs: bot doesn't browse the internet; links add no value to RAG */
 function stripUrls(text: string): string {
   return text
     .replace(/https?:\/\/[^\s]+/g, '')
@@ -171,7 +171,7 @@ const RESPONSE_INJECTION =
 
 const RESPONSE_IMAGE =
   'Przepraszam, ale nie mogę przetwarzać obrazów, plików ani danych binarnych. ' +
-  'Proszę opisać pytanie słowami — chętnie pomogę.';
+  'Proszę opisać pytanie słowami. Chętnie pomogę.';
 
 const RESPONSE_PROFANITY =
   'Proszę o kulturalną rozmowę. ' +
@@ -179,7 +179,7 @@ const RESPONSE_PROFANITY =
 
 const RESPONSE_GIBBERISH =
   'Przepraszam, nie zrozumiałem wiadomości. ' +
-  'Proszę sformułować pytanie inaczej — chętnie pomogę.';
+  'Proszę sformułować pytanie inaczej. Chętnie pomogę.';
 
 const RESPONSE_FAREWELL =
   'Do widzenia! Jeśli pojawią się pytania, zawsze chętnie pomogę. Miłego dnia!';
@@ -215,23 +215,23 @@ export function preprocessMessage(raw: string): PreprocessResult {
     return { action: 'respond', response: RESPONSE_PROFANITY };
   }
 
-  // 5. Gibberish / keyboard spam — but never reject a bare phone/email; that's
+  // 5. Gibberish / keyboard spam: but never reject a bare phone/email; that's
   //    a lead leaving contact, handled downstream (opens the form).
   if (isGibberish(trimmed) && !isMostlyContactInfo(trimmed)) {
     return { action: 'respond', response: RESPONSE_GIBBERISH };
   }
 
-  // 6. Pure farewell — canned, no AI call needed
+  // 6. Pure farewell: canned, no AI call needed
   if (matches(trimmed, FAREWELL_ONLY_PATTERNS)) {
     return { action: 'respond', response: RESPONSE_FAREWELL };
   }
 
-  // 7. Pure greeting — let AI respond in-character, but skip RAG
+  // 7. Pure greeting: let AI respond in-character, but skip RAG
   if (matches(trimmed, GREETING_ONLY_PATTERNS)) {
     return { action: 'no-rag', text: trimmed };
   }
 
-  // 8. Casual acknowledgment — conversational continuer, skip RAG
+  // 8. Casual acknowledgment: conversational continuer, skip RAG
   if (matches(trimmed, ACKNOWLEDGMENT_PATTERNS)) {
     return { action: 'no-rag', text: trimmed };
   }
@@ -250,7 +250,7 @@ export function preprocessMessage(raw: string): PreprocessResult {
 export interface LeadIntentSignal {
   /** Confident the user is offering/asking for contact → open the form now. */
   hard: boolean;
-  /** Ambiguous — worth a cheap model check before deciding. */
+  /** Ambiguous: worth a cheap model check before deciding. */
   soft: boolean;
 }
 
@@ -283,7 +283,7 @@ const LEAD_INTENT_PHRASES = [
   'moge zostawic',
   'zostaw moje dane',
   'zapisz moje dane',
-  // Explicit "lead" vocabulary — users literally type these to request capture.
+  // Explicit "lead" vocabulary: users literally type these to request capture.
   'zapisz mojego leada',
   'zapisz leada',
   'dodaj leada',
@@ -325,7 +325,7 @@ function normalizeForIntent(text: string): string {
  * worth escalating to a cheap model classification. Both false → do nothing.
  *
  * Note: some phrases overlap with ChatService's ESCALATION_KEYWORDS
- * (e.g. "oddzwoń"). That's harmless — escalation is checked earlier and
+ * (e.g. "oddzwoń"). That's harmless: escalation is checked earlier and
  * returns before this runs.
  */
 export function detectLeadIntent(message: string): LeadIntentSignal {

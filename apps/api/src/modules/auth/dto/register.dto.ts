@@ -34,7 +34,7 @@ const websiteUrlSchema = z
 export const registerSchema = z.object({
   email: z.string().email('Nieprawidłowy adres email').toLowerCase(),
   // Reguła hasła musi być identyczna z frontendem (apps/web/lib/password.ts):
-  // 12 znaków + cyfra + znak specjalny. Brak wspólnego pakietu — celowa duplikacja.
+  // 12 znaków + cyfra + znak specjalny. Brak wspólnego pakietu: celowa duplikacja.
   password: z
     .string()
     .min(12, 'Hasło musi mieć minimum 12 znaków')
@@ -44,7 +44,7 @@ export const registerSchema = z.object({
       /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]/,
       'Hasło musi zawierać co najmniej jeden znak specjalny',
     ),
-  // Optional — a business that lives on Booksy/Facebook (very common in beauty)
+  // Optional: a business that lives on Booksy/Facebook (very common in beauty)
   // can register without a website and add it later in Ustawienia. Empty string
   // is treated as "no website yet". Note: the bot only works once a domain is
   // configured (DomainWhitelistGuard blocks empty allowedDomains in production),

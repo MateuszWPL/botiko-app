@@ -1,7 +1,7 @@
 // Mock env and Resend before any imports
 jest.mock('../../config/env', () => ({
   env: {
-    RESEND_API_KEY: null, // disabled — we test HTML generation, not email delivery
+    RESEND_API_KEY: null, // disabled: we test HTML generation, not email delivery
     RESEND_FROM_EMAIL: 'noreply@botiko.pl',
     APP_URL: 'https://app.botiko.pl',
   },
@@ -15,13 +15,13 @@ import { NotificationService } from './notification.service';
 // escapeHtml is a private function, but its output lands in the HTML emails.
 // We test it indirectly through sendTrialNotificationEmail which calls
 // escapeHtml(tenantName). With RESEND_API_KEY=null the service logs a warn
-// and skips sending — but we can verify escapeHtml via the public API by
+// and skips sending, but we can verify escapeHtml via the public API by
 // extracting the function logic into a separate pure-function export.
 //
 // Alternative: test directly via a spy on the private helper.
 // Chosen approach: extract and test the escaping rule set inline.
 
-describe('escapeHtml — P3 security: attribute injection prevention', () => {
+describe('escapeHtml: P3 security: attribute injection prevention', () => {
   // Replicate the exact escapeHtml implementation to verify spec-level contract.
   // If someone changes the implementation, these tests will catch a regression.
   function escapeHtml(str: string): string {
@@ -66,8 +66,8 @@ describe('escapeHtml — P3 security: attribute injection prevention', () => {
   });
 });
 
-// ── NotificationService — RESEND_API_KEY absent ──────────────────────────────
-describe('NotificationService — gdy RESEND_API_KEY nie jest ustawiony', () => {
+// ── NotificationService: RESEND_API_KEY absent ──────────────────────────────
+describe('NotificationService: gdy RESEND_API_KEY nie jest ustawiony', () => {
   it('tworzy się bez błędu i nie rzuca wyjątku przy sendNewLeadEmail', async () => {
     const service = new NotificationService();
 

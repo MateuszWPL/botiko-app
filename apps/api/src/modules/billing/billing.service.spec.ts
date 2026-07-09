@@ -24,7 +24,7 @@ jest.mock('../../email/email.service', () => ({
   emailToFirstName: jest.fn(() => 'Jan'),
 }));
 
-// Stripe constructor mock — returns a fake stripe instance.
+// Stripe constructor mock: returns a fake stripe instance.
 const mockStripeInstance = {
   webhooks: {
     constructEvent: jest.fn(),
@@ -111,7 +111,7 @@ function stubWebhookEvent(eventType: string, data: object) {
 
 // ── tests ─────────────────────────────────────────────────────────────────────
 
-describe('BillingService — handleWebhook', () => {
+describe('BillingService: handleWebhook', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -319,7 +319,7 @@ describe('BillingService — handleWebhook', () => {
       );
     });
 
-    it('does NOT change isActive when status is "past_due" (grace period — bot stays ON)', async () => {
+    it('does NOT change isActive when status is "past_due" (grace period, bot stays ON)', async () => {
       const prisma = makePrismaMock();
       const sub = { id: 'sub_1', status: 'past_due', customer: 'cus_1' };
       const { rawBody } = stubWebhookEvent(
@@ -392,7 +392,7 @@ describe('BillingService — handleWebhook', () => {
 
   // ── invoice.payment_failed ────────────────────────────────────────────────
   describe('invoice.payment_failed', () => {
-    it('does NOT update tenant (log only — deactivation handled by subscription.updated)', async () => {
+    it('does NOT update tenant (log only, deactivation handled by subscription.updated)', async () => {
       const prisma = makePrismaMock();
       const invoice = { customer: 'cus_1' };
       const { rawBody } = stubWebhookEvent('invoice.payment_failed', invoice);

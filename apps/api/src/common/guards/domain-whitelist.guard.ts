@@ -44,7 +44,7 @@ export class DomainWhitelistGuard implements CanActivate {
 
     // Empty allowedDomains:
     //  - In production: HARD FAIL. An unconfigured bot must not be usable
-    //    on arbitrary sites — otherwise competitors / abusers can embed it.
+    //    on arbitrary sites. Otherwise competitors / abusers can embed it.
     //  - In dev/test: allow, so onboarding flow works before the user
     //    finishes setup.
     if (bot.allowedDomains.length === 0) {

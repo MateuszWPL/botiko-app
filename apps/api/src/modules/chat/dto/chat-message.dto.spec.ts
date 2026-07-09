@@ -3,7 +3,7 @@ import { chatMessageSchema } from './chat-message.dto';
 const VALID_CUID = 'cjld2cjxh0000qzrmn831i7rn';
 const VALID_SESSION = 's_abc123';
 
-describe('chatMessageSchema — botId (P2: CUID validation)', () => {
+describe('chatMessageSchema: botId (P2: CUID validation)', () => {
   it('akceptuje poprawny CUID', () => {
     expect(
       chatMessageSchema.safeParse({
@@ -30,7 +30,7 @@ describe('chatMessageSchema — botId (P2: CUID validation)', () => {
   });
 });
 
-describe('chatMessageSchema — message (P0: limit długości)', () => {
+describe('chatMessageSchema: message (P0: limit długości)', () => {
   it('akceptuje wiadomość do 1000 znaków', () => {
     expect(
       chatMessageSchema.safeParse({
@@ -77,7 +77,7 @@ describe('chatMessageSchema — message (P0: limit długości)', () => {
   });
 });
 
-describe('chatMessageSchema — sessionId', () => {
+describe('chatMessageSchema: sessionId', () => {
   it('odrzuca sessionId dłuższy niż 64 znaki', () => {
     expect(
       chatMessageSchema.safeParse({

@@ -18,7 +18,7 @@ export function welcomeEmail(vars: WelcomeVars): {
     </p>
     <p style="margin:0 0 20px;font-size:15px;color:#475569;line-height:1.6;">
       Dzięki za rejestrację w Botiko. Twoje konto jest gotowe.
-      Masz <strong style="color:#6366F1;">14 dni trialu</strong> — bez karty, bez umowy.
+      Masz <strong style="color:#6366F1;">14 dni trialu</strong>. Bez karty, bez umowy.
     </p>
     <p style="margin:0 0 8px;font-size:14px;font-weight:600;color:#0f172a;">
       Żeby bot zaczął odpowiadać za Ciebie, zrób 3 rzeczy:
@@ -29,12 +29,12 @@ export function welcomeEmail(vars: WelcomeVars): {
       <li>Wklej kod na swoją stronę <span style="color:#94a3b8;">(3 min)</span></li>
     </ol>
     <p style="margin:0 0 20px;font-size:14px;color:#475569;line-height:1.6;">
-      Jak coś nie zadziała — odpisz na tego maila. Czytamy wszystko.
+      Jak coś nie zadziała, odpisz na tego maila. Czytamy wszystko.
     </p>
     <p style="margin:0;font-size:14px;color:#475569;">Zespół Botiko</p>`;
 
   return {
-    subject: 'Witaj w Botiko — zacznijmy od 5 minut konfiguracji',
+    subject: 'Witaj w Botiko. Zacznijmy od 5 minut konfiguracji',
     html: baseLayout({
       title: 'Konto gotowe. Twoj bot czeka na dane.',
       body,
@@ -59,26 +59,26 @@ export function onboardingReminderD1Email(vars: OnboardingReminderVars): {
   const body = `
     <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.6;">Cześć ${name},</p>
     <p style="margin:0 0 16px;font-size:15px;color:#475569;line-height:1.6;">
-      Widzimy, że konfiguracja bota utknęła. To normalne —
-      najczęstszy powód to etap &quot;co wpisać do bazy wiedzy&quot;.
+      Widzimy, że konfiguracja bota utknęła. To normalne.
+      Najczęstszy powód to etap &quot;co wpisać do bazy wiedzy&quot;.
     </p>
     <p style="margin:0 0 8px;font-size:14px;font-weight:600;color:#0f172a;">Krótka rada: zacznij od tego co masz pod ręką.</p>
     <ul style="margin:0 0 20px;padding-left:20px;color:#475569;font-size:14px;line-height:2;">
-      <li>Cennik — skopiuj jak jest, bot sam sobie poradzi</li>
-      <li>Godziny pracy — jedna linijka wystarczy</li>
-      <li>5–10 najczęstszych pytań które dostajesz telefonicznie</li>
+      <li>Cennik: skopiuj jak jest, bot sam sobie poradzi</li>
+      <li>Godziny pracy: jedna linijka wystarczy</li>
+      <li>5-10 najczęstszych pytań które dostajesz telefonicznie</li>
     </ul>
     <p style="margin:0 0 20px;font-size:14px;color:#475569;line-height:1.6;">
-      Bot nie potrzebuje idealnie ułożonej wiedzy. Potrzebuje Twojej rzeczywistej
-      — takiej jaką przekazujesz klientowi gdy dzwoni.
+      Bot nie potrzebuje idealnie ułożonej wiedzy. Potrzebuje Twojej rzeczywistej,
+      takiej jaką przekazujesz klientowi gdy dzwoni.
     </p>
     <p style="margin:0 0 20px;font-size:14px;color:#475569;line-height:1.6;">
-      Utknąłeś na konkretnym kroku? Odpisz na tego maila i powiedz na czym — pomogę osobiście.
+      Utknąłeś na konkretnym kroku? Odpisz na tego maila i powiedz na czym. Pomogę osobiście.
     </p>
     <p style="margin:0;font-size:14px;color:#475569;">Zespół Botiko</p>`;
 
   return {
-    subject: 'Twój bot czeka — zostało 10 minut',
+    subject: 'Twój bot czeka. Zostało 10 minut',
     html: baseLayout({
       title: 'Wróć do konfiguracji',
       body,
@@ -127,18 +127,18 @@ export function trialHalfwayD7Email(vars: TrialHalfwayVars): {
       </tr>
     </table>
     <p style="margin:0 0 16px;font-size:14px;color:#475569;line-height:1.6;">
-      Jeśli bot zebrał choć jednego leada który udało Ci się zamienić w klienta
-      — subskrypcja już się zwróciła.
+      Jeśli bot zebrał choć jednego leada który udało Ci się zamienić w klienta,
+      subskrypcja już się zwróciła.
     </p>
     <p style="margin:0 0 16px;font-size:14px;color:#475569;line-height:1.6;">
-      Jeśli liczby Cię nie powalają — napisz dlaczego. Każdy problem rozwiązujemy w 10 minut.
+      Jeśli liczby Cię nie powalają, napisz dlaczego. Każdy problem rozwiązujemy w 10 minut.
     </p>
     <p style="margin:0;font-size:14px;color:#475569;">Zespół Botiko</p>`;
 
   return {
-    subject: `${vars.leadsCount > 0 ? `${vars.leadsCount} leadów w tydzień. Warto?` : 'Pierwszy tydzień z Botiko — podsumowanie'}`,
+    subject: `${vars.leadsCount > 0 ? `${vars.leadsCount} leadów w tydzień. Warto?` : 'Pierwszy tydzień z Botiko: podsumowanie'}`,
     html: baseLayout({
-      title: 'Tydzień z Botiko — oto co się wydarzyło',
+      title: 'Tydzień z Botiko: oto co się wydarzyło',
       body,
       ctaText: 'Zobacz statystyki',
       ctaUrl: `${APP_URL}/dashboard/overview`,
@@ -178,21 +178,21 @@ export function trialConversionD12Email(vars: TrialConversionVars): {
       </tr>
     </table>
     <p style="margin:0 0 16px;font-size:14px;color:#475569;line-height:1.6;">
-      Żeby bot dalej pracował — aktywuj subskrypcję. <strong style="color:#6366F1;">99 zł miesięcznie.</strong>
+      Żeby bot dalej pracował, aktywuj subskrypcję. <strong style="color:#6366F1;">99 zł miesięcznie.</strong>
       Bez umowy. Anulujesz jednym kliknięciem.
     </p>
     <p style="margin:0 0 16px;font-size:14px;color:#475569;line-height:1.6;">
-      Masz wątpliwości? Odpisz na tego maila. Jeśli coś nie działa jak powinno — naprawimy to zanim zapłacisz.
+      Masz wątpliwości? Odpisz na tego maila. Jeśli coś nie działa jak powinno, naprawimy to zanim zapłacisz.
     </p>
     <p style="margin:0;font-size:14px;color:#475569;">Zespół Botiko</p>`;
 
   return {
     subject: `${name}, zostały 2 dni. Zostajesz?`,
     html: baseLayout({
-      title: '2 dni do końca trialu — co dalej?',
+      title: '2 dni do końca trialu: co dalej?',
       headerColor: '#F59E0B',
       body,
-      ctaText: 'Aktywuj plan — 99 zł/mies.',
+      ctaText: 'Aktywuj plan za 99 zł/mies.',
       ctaUrl: `${APP_URL}/dashboard/billing`,
       showUnsubscribe: true,
       unsubscribeUrl: vars.unsubscribeUrl,
@@ -217,12 +217,12 @@ export function trialExpiredD14Email(vars: TrialExpiredVars): {
     </p>
     <p style="margin:0 0 8px;font-size:14px;font-weight:600;color:#0f172a;">Twoje dane są bezpieczne:</p>
     <ul style="margin:0 0 20px;padding-left:20px;color:#475569;font-size:14px;line-height:2;">
-      <li>Leady i historia rozmów — zostają 30 dni</li>
-      <li>Baza wiedzy — zostaje na koncie</li>
+      <li>Leady i historia rozmów: zostają 30 dni</li>
+      <li>Baza wiedzy: zostaje na koncie</li>
       <li>Po 30 dniach wszystko jest bezpowrotnie usuwane (RODO)</li>
     </ul>
     <p style="margin:0 0 16px;font-size:14px;color:#475569;line-height:1.6;">
-      Jeśli nie wracasz — pomóż nam zrozumieć dlaczego. Odpisz jednym zdaniem:
+      Jeśli nie wracasz, pomóż nam zrozumieć dlaczego. Odpisz jednym zdaniem:
       za drogo / brak ruchu na stronie / bot nie działał jak oczekiwałem / inne.
     </p>
     <p style="margin:0;font-size:14px;color:#475569;">Zespół Botiko</p>`;
@@ -230,7 +230,7 @@ export function trialExpiredD14Email(vars: TrialExpiredVars): {
   return {
     subject: 'Twój bot właśnie się wyłączył',
     html: baseLayout({
-      title: 'Trial zakończony — co teraz z Twoimi danymi',
+      title: 'Trial zakończony: co teraz z Twoimi danymi',
       headerColor: '#64748B',
       body,
       ctaText: 'Reaktywuj plan',

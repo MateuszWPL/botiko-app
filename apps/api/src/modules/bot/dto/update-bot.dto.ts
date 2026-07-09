@@ -9,7 +9,7 @@ const dayScheduleSchema = z.object({
 });
 
 // http(s)-only URL (or empty string to clear). Rejects javascript:/data: schemes
-// that Zod's .url() would otherwise accept — defence-in-depth for anywhere these
+// that Zod's .url() would otherwise accept: defence-in-depth for anywhere these
 // links get rendered as an <a href> (widget map/reservation cards).
 const httpUrl = (max: number, msg: string) =>
   z
@@ -33,7 +33,7 @@ export const updateBotSchema = z
       .max(50, 'Nazwa bota jest zbyt długa')
       .trim()
       .optional(),
-    // Limity spójne z create-bot.dto.ts — edycja nie może odrzucać
+    // Limity spójne z create-bot.dto.ts: edycja nie może odrzucać
     // danych, które przeszły przy tworzeniu bota.
     welcomeMsg: z
       .string()
@@ -45,7 +45,7 @@ export const updateBotSchema = z
       .string()
       .regex(hexColorRegex, 'Kolor musi być poprawnym kodem hex')
       .optional(),
-    // Manual widget colours — null clears the override (back to auto-contrast).
+    // Manual widget colours: null clears the override (back to auto-contrast).
     textColor: z
       .string()
       .regex(hexColorRegex, 'Kolor musi być poprawnym kodem hex')

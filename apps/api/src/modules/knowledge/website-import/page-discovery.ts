@@ -80,7 +80,7 @@ async function trySitemaps(
 
   for (const sitemapUrl of candidates) {
     try {
-      // robots.txt sitemap entries are attacker-controlled — safeFetch pins DNS
+      // robots.txt sitemap entries are attacker-controlled: safeFetch pins DNS
       // and re-validates every redirect hop against the SSRF guard, closing the
       // DNS-rebinding / redirect-SSRF gap a raw fetch() would leave open.
       const { html: xml } = await safeFetch(new URL(sitemapUrl), {
@@ -157,7 +157,7 @@ async function crawlHomepageLinks(
       const linkText = $(el).text().trim().toLowerCase();
       const score = scoreUrl(parsed.pathname, linkText);
       // Keep 0-scored internal pages too (industry/feature pages that match no
-      // priority pattern) — ranking still puts priority pages first.
+      // priority pattern): ranking still puts priority pages first.
       if (score >= 0) {
         discovered.push({ url: normalized, score });
       }

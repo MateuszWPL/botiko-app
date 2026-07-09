@@ -26,7 +26,7 @@ import cors from 'cors';
  * provides defence-in-depth against CSRF if cookies are ever introduced.
  *
  * The API today uses JWT Bearer tokens (not cookies), so CORS is not an
- * active security boundary — but the explicit intent is documented here.
+ * active security boundary, but the explicit intent is documented here.
  *
  * Implementation note: NestJS's enableCors callback only receives `origin`,
  * not the full request, so path-differentiation requires a raw Express

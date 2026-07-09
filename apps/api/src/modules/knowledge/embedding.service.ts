@@ -19,7 +19,7 @@ const EMBEDDING_DIMENSIONS = 1536;
 /**
  * Validates that the embedding is a fixed-length array of finite numbers
  * before it is interpolated into a raw SQL vector literal.
- * This prevents injection — a poisoned embedding value can't escape the float array format.
+ * This prevents injection: a poisoned embedding value can't escape the float array format.
  */
 function assertValidEmbedding(embedding: number[]): void {
   if (!Array.isArray(embedding) || embedding.length !== EMBEDDING_DIMENSIONS) {

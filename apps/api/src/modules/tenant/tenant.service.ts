@@ -15,7 +15,7 @@ export class TenantService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Returns the current tenant's profile — used by the dashboard to prefill
+   * Returns the current tenant's profile, used by the dashboard to prefill
    * setup wizard fields (e.g. allowedDomains from websiteUrl).
    */
   async getMe(tenantId: string): Promise<{
@@ -57,7 +57,7 @@ export class TenantService {
 
   /**
    * Permanently deletes all tenant data (RODO: right to erasure).
-   * Order matters — FK constraints require child records deleted first.
+   * Order matters: FK constraints require child records deleted first.
    */
   async deleteAccount(tenantId: string, userId: string): Promise<void> {
     // Collect all bot IDs for this tenant (needed to delete conversations)
@@ -106,7 +106,7 @@ export class TenantService {
 
     this.logger.log(`Tenant deleted: ${tenantId}`);
 
-    // Delete Supabase Auth user — non-blocking, failure logged but not thrown
+    // Delete Supabase Auth user: non-blocking, failure logged but not thrown
     // (Prisma data is already gone, Auth cleanup is best-effort)
     this.supabase.auth.admin
       .deleteUser(userId)

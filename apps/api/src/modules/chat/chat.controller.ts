@@ -22,7 +22,7 @@ import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe';
 import { DomainWhitelistGuard } from '../../common/guards/domain-whitelist.guard';
 import { BotThrottleGuard } from '../../common/guards/bot-throttle.guard';
 
-// Public endpoint — widget calls this
+// Public endpoint: widget calls this
 // 20 req/min per IP (built-in throttler) + 60 req/min per botId (BotThrottleGuard)
 // The second layer prevents multi-IP abuse against a single bot.
 @Throttle({ default: { limit: 20, ttl: 60000 } })
@@ -66,7 +66,7 @@ export class ChatController {
       message: dto.message,
     });
 
-    // Peek first chunk — validation runs here and may throw, in which case
+    // Peek first chunk: validation runs here and may throw, in which case
     // Nest's exception filter formats a normal JSON error response.
     const first = await generator.next();
 
@@ -97,7 +97,7 @@ export class ChatController {
       }
     } catch (err) {
       this.logger.error('Stream failed mid-flight', err);
-      // Headers already sent — surface as an SSE error event, then close
+      // Headers already sent: surface as an SSE error event, then close
       send({ type: 'done' });
       res.write(
         `event: error\ndata: ${JSON.stringify({ code: 'STREAM_ERROR' })}\n\n`,

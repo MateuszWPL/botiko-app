@@ -8,7 +8,7 @@ export const classifyTextSchema = z.object({
   text: z
     .string()
     .min(30, 'Wklej trochę więcej treści (minimum 30 znaków).')
-    .max(90_000, 'Tekst jest zbyt długi — wklej najważniejsze fragmenty.'),
+    .max(90_000, 'Tekst jest zbyt długi. Wklej najważniejsze fragmenty.'),
 });
 
 export type ClassifyTextDto = z.infer<typeof classifyTextSchema>;

@@ -7,7 +7,7 @@ const validBase = {
   consentGiven: true as const,
 };
 
-describe('createLeadSchema — botId (CUID validation)', () => {
+describe('createLeadSchema: botId (CUID validation)', () => {
   it('akceptuje poprawny CUID', () => {
     expect(createLeadSchema.safeParse(validBase).success).toBe(true);
   });
@@ -22,7 +22,7 @@ describe('createLeadSchema — botId (CUID validation)', () => {
   );
 });
 
-describe('createLeadSchema — walidacja telefonu', () => {
+describe('createLeadSchema: walidacja telefonu', () => {
   it.each([
     '+48 600 123 456',
     '+48600123456',
@@ -61,7 +61,7 @@ describe('createLeadSchema — walidacja telefonu', () => {
   });
 });
 
-describe('createLeadSchema — zgoda RODO', () => {
+describe('createLeadSchema: zgoda RODO', () => {
   it('akceptuje consentGiven: true', () => {
     expect(
       createLeadSchema.safeParse({ ...validBase, consentGiven: true }).success,
@@ -81,7 +81,7 @@ describe('createLeadSchema — zgoda RODO', () => {
   });
 });
 
-describe('createLeadSchema — pola opcjonalne', () => {
+describe('createLeadSchema: pola opcjonalne', () => {
   it('akceptuje brak sessionId i message', () => {
     expect(createLeadSchema.safeParse(validBase).success).toBe(true);
   });

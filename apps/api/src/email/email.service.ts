@@ -27,7 +27,7 @@ export class EmailService {
   constructor(private readonly prisma: PrismaService) {
     this.resend = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null;
     if (!this.resend) {
-      this.logger.warn('RESEND_API_KEY not set — EmailService disabled');
+      this.logger.warn('RESEND_API_KEY not set: EmailService disabled');
     }
   }
 
