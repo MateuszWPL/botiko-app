@@ -1,4 +1,4 @@
-=== Botiko — AI Customer Service Bot ===
+=== Botiko. AI Customer Service Bot ===
 Contributors: mateuszworonowicz
 Tags: chatbot, customer service, live chat, lead generation, ai
 Requires at least: 5.8
@@ -12,16 +12,16 @@ Add the Botiko customer-service bot to your site. It answers visitors 24/7 and c
 
 == Description ==
 
-Botiko is a customer-service bot for small service businesses — beauty salons, health and spa studios, restaurants and car workshops. It answers customer questions 24/7 based on your business knowledge (prices, hours, services), captures leads, and points visitors to your booking tool.
+Botiko is a customer-service bot for small service businesses, beauty salons, health and spa studios, restaurants and car workshops. It answers customer questions 24/7 based on your business knowledge (prices, hours, services), captures leads, and points visitors to your booking tool.
 
 This plugin embeds the Botiko chat widget on your WordPress site without editing your theme and without any code.
 
 Highlights:
 
-* **One-code connection** — paste a connection code from the Botiko dashboard and the plugin fetches your bot and authorises this site's domain.
-* **Live status** — see whether the bot is connected, whether the domain is authorised, and whether the bot is online.
-* **Display rules** — show the bot on every page, everywhere except selected pages, or only on selected pages.
-* **Test mode** — show the bot to logged-in administrators first, before you make it public.
+* **One-code connection**: paste a connection code from the Botiko dashboard and the plugin fetches your bot and authorises this site's domain.
+* **Live status**: see whether the bot is connected, whether the domain is authorised, and whether the bot is online.
+* **Display rules**: show the bot on every page, everywhere except selected pages, or only on selected pages.
+* **Test mode**: show the bot to logged-in administrators first, before you make it public.
 * The bot never appears in the WordPress admin area.
 
 A Botiko account is required. The bot's appearance, working hours and suggested questions are configured in the Botiko dashboard and are shared across every site where the bot runs.
@@ -31,7 +31,7 @@ A Botiko account is required. The bot's appearance, working hours and suggested 
 1. Install and activate the plugin (Plugins → Add New → search for "Botiko", or upload the ZIP).
 2. Open the "Botiko" item in the WordPress admin menu.
 3. In the Botiko dashboard (botiko.pl → Install → WordPress), generate a connection code.
-4. Paste the code into the "Connect site" field and click the button. Done — the bot appears on the front end of your site.
+4. Paste the code into the "Connect site" field and click the button. Done, the bot appears on the front end of your site.
 
 No account yet? Create one at https://botiko.pl (14-day free trial).
 
@@ -47,7 +47,7 @@ In the Botiko dashboard: Install → WordPress → "Generate connection code". T
 On the plugin settings screen, check that the status shows "Domain authorised". If it does not, connect the site again with a code, or add the domain in the Botiko dashboard under Settings → Domains.
 
 = How do I change the bot colour or working hours? =
-In the Botiko dashboard — those settings are shared across every site where the bot runs.
+In the Botiko dashboard, those settings are shared across every site where the bot runs.
 
 == Screenshots ==
 
@@ -60,8 +60,8 @@ In the Botiko dashboard — those settings are shared across every site where th
 
 This plugin connects to the Botiko service so the customer-service bot can work:
 
-* **Botiko widget** — the plugin loads the widget script from `https://widget.botiko.pl/embed.js`. The script renders the chat window on the front end of your site.
-* **Botiko API** (`https://api.botiko.pl`) — the plugin calls the public configuration endpoint (to show the bot status) and the pairing endpoint (to authorise this site's domain when you connect). Data sent: the bot identifier and this site's address (domain). The plugin does not send visitor data or page content.
+* **Botiko widget**: the plugin loads the widget script from `https://widget.botiko.pl/embed.js`. The script renders the chat window on the front end of your site.
+* **Botiko API** (`https://api.botiko.pl`): the plugin calls the public configuration endpoint (to show the bot status) and the pairing endpoint (to authorise this site's domain when you connect). Data sent: the bot identifier and this site's address (domain). The plugin does not send visitor data or page content.
 
 Use of the Botiko service is subject to its terms (https://botiko.pl/regulamin) and privacy policy (https://botiko.pl/prywatnosc).
 

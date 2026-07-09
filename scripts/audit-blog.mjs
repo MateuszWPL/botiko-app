@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * audit-blog.mjs — sprawdza blog MDX pod kątem:
+ * audit-blog.mjs: sprawdza blog MDX pod kątem:
  * 1. Brakujące obrazki (frontmatter image)
  * 2. Broken href w CTABlock/DownloadPdf/buttonText
  * 3. Znaki "TL;DR:" i potencjalne artefakty specjalne
@@ -81,7 +81,7 @@ for (const file of files) {
     issues.push({ file, type: 'BROKEN_HREF', detail: `L${lineNum}: ${href}` });
   }
 
-  // 3. TL;DR artifacts — check for non-standard encoding around it
+  // 3. TL;DR artifacts: check for non-standard encoding around it
   lines.forEach((line, idx) => {
     if (/TL;?DR/i.test(line)) {
       // Check if it contains odd characters (non-standard quotes, broken encoding)

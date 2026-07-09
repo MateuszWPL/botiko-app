@@ -15,12 +15,12 @@ DIST="$HERE/dist"
 STAGE="$DIST/$SLUG"
 
 VERSION="$(grep -m1 -oE "Version:\s*[0-9]+\.[0-9]+\.[0-9]+" "$SRC/botiko.php" | grep -oE "[0-9]+\.[0-9]+\.[0-9]+")"
-echo "Building Botiko plugin v${VERSION}…"
+echo "Building Botiko plugin v${VERSION}..."
 
 rm -rf "$DIST"
 mkdir -p "$STAGE"
 
-# Ship only runtime files — exclude dev tooling and build artifacts.
+# Ship only runtime files, exclude dev tooling and build artifacts.
 rsync -a \
 	--exclude '.git*' \
 	--exclude 'composer.json' \

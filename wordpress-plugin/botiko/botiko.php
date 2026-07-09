@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Botiko — AI Customer Service Bot
+ * Plugin Name:       Botiko. AI Customer Service Bot
  * Plugin URI:        https://botiko.pl/integracje/wordpress
  * Description:        Add the Botiko customer-service bot to your site. It answers visitors 24/7 and captures leads. Connect your site with a single code, no theme editing.
  * Version:           1.0.6

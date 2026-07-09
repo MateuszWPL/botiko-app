@@ -109,7 +109,7 @@ class Botiko_Settings {
 	 * Sanitize raw input from the settings form.
 	 *
 	 * Connection fields (bot_id, bot_name, connected) are NOT taken from the
-	 * form here — they are managed by the pairing/connect flow — so we preserve
+	 * form here, they are managed by the pairing/connect flow, so we preserve
 	 * the stored values to avoid wiping the connection on a settings save.
 	 *
 	 * @param mixed $input Raw form input.
@@ -126,7 +126,7 @@ class Botiko_Settings {
 			'connected' => $current['connected'],
 		);
 
-		// Manual Bot ID entry (fallback path) — only when provided and valid.
+		// Manual Bot ID entry (fallback path), only when provided and valid.
 		if ( isset( $input['bot_id'] ) && '' !== trim( (string) $input['bot_id'] ) ) {
 			$candidate = self::sanitize_bot_id( $input['bot_id'] );
 			if ( '' !== $candidate ) {

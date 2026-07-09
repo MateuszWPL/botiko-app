@@ -11,15 +11,15 @@ build/
 .turbo/
 *.tsbuildinfo
 
-# Environment variables — NEVER commit these
+# Environment variables. NEVER commit these
 .env
 .env.local
 .env.development
 .env.production
 .env*.local
 
-# Internal files — not for the repo
-# (docs/ JEST w repo — patrz DOCS.md; wcześniejsza reguła "docs/" cicho blokowała nowe dokumenty)
+# Internal files, not for the repo
+# (docs/ JEST w repo, patrz DOCS.md; wcześniejsza reguła "docs/" cicho blokowała nowe dokumenty)
 BotikoIcons/
 botiko-bot-knowledge-base.md
 botiko-emails.md

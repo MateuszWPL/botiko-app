@@ -1,14 +1,14 @@
 ## Co zostało zmienione?
 
-<!-- Krótki opis zmian — co i dlaczego -->
+<!-- Krótki opis zmian, co i dlaczego -->
 
 ## Typ zmiany
 
-- [ ] `feat` — nowa funkcjonalność
-- [ ] `fix` — naprawa błędu
-- [ ] `chore` — zmiany konfiguracji, dependencies, infrastruktura
-- [ ] `refactor` — refaktoryzacja bez zmiany zachowania
-- [ ] `docs` — dokumentacja
+- [ ] `feat`: nowa funkcjonalność
+- [ ] `fix`: naprawa błędu
+- [ ] `chore`: zmiany konfiguracji, dependencies, infrastruktura
+- [ ] `refactor`: refaktoryzacja bez zmiany zachowania
+- [ ] `docs`: dokumentacja
 
 ## Checklisty
 

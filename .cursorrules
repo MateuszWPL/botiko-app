@@ -1,18 +1,18 @@
-# BOTIKO — CURSOR CONTEXT
+# BOTIKO. CURSOR CONTEXT
 
 Pełny kontekst projektu w `CLAUDE.md`. Poniżej kluczowe zasady dla codziennej pracy.
 
 ## Projekt w skrócie
-SaaS AI chatbot dla polskich mikrofirm usługowych. Widget na stronie klienta → bot AI odpowiada na pytania, zbiera leady. Dashboard dla właściciela. 3 osobne apps (web, api, widget) — każda z własnym `pnpm install`.
+SaaS AI chatbot dla polskich mikrofirm usługowych. Widget na stronie klienta → bot AI odpowiada na pytania, zbiera leady. Dashboard dla właściciela. 3 osobne apps (web, api, widget), każda z własnym `pnpm install`.
 
-**Główny fokus:** beauty, health/SPA, food, auto — 4 branże z gotowymi szablonami promptów. **Szerzej:** każda inna mikro/mała firma usługowa (fryzjer, fizjoterapeuta, korepetytor, fotograf, coach, trener itd.) → szablon generyczny `OTHER`.
+**Główny fokus:** beauty, health/SPA, food, auto, 4 branże z gotowymi szablonami promptów. **Szerzej:** każda inna mikro/mała firma usługowa (fryzjer, fizjoterapeuta, korepetytor, fotograf, coach, trener itd.) → szablon generyczny `OTHER`.
 
-**Stan (2026-05-14):** Faza 1A ukończona — **MVP zdeployowane na produkcji** (`botiko.pl`). Web→Vercel (auto-deploy z `main`), API→Railway, Widget→Vercel. 297+ unit tests, 24 Playwright E2E, 4-jobowy CI zielony. Teraz: Faza 2 — piloty i pierwsi klienci.
+**Stan (2026-05-14):** Faza 1A ukończona, **MVP zdeployowane na produkcji** (`botiko.pl`). Web→Vercel (auto-deploy z `main`), API→Railway, Widget→Vercel. 297+ unit tests, 24 Playwright E2E, 4-jobowy CI zielony. Teraz: Faza 2, piloty i pierwsi klienci.
 
 ## Stack
 - **web**: Next.js 14 App Router + Tailwind v4 + Supabase Auth SSR
 - **api**: NestJS + Prisma + Supabase PostgreSQL + pgvector + OpenAI + Stripe + Resend
-- **widget**: Preact + Vite — HARD LIMIT <12KB gzip, NIE używaj React
+- **widget**: Preact + Vite: HARD LIMIT <12KB gzip, NIE używaj React
 
 ## Co jest gotowe (nie ruszaj bez potrzeby)
 - RAG pipeline: embed → pgvector → gpt-4o-mini + pełny pre-processing wiadomości
@@ -24,32 +24,32 @@ SaaS AI chatbot dla polskich mikrofirm usługowych. Widget na stronie klienta �
 - Stripe: idempotency guard (ProcessedStripeEvent) + audit trail (BillingEvent)
 - System emailowy (Resend): szablony, drip scheduler onboardingowy, powiadomienia o leadach
 - System recenzji (Review model + moduł API)
-- Brand kit: SVG logo (`apps/web/public/botiko-*.svg`) — wordmark + znak, warianty light/dark/white
+- Brand kit: SVG logo (`apps/web/public/botiko-*.svg`): wordmark + znak, warianty light/dark/white
 - Blog: 32 posty MDX, daty 2026-03 → 2026-07, auto-publikacja wg daty (`lib/blog.ts` filtruje przyszłe). Grafiki w `public/blog/` ręcznie.
 
 ## Zasady których pilnujemy
 - TypeScript strict, zero `any`, zero `ts-ignore`
 - Zod na WSZYSTKICH inputach API (nie class-validator)
-- `tenant_id` w każdej operacji bazodanowej — izolacja multi-tenant
+- `tenant_id` w każdej operacji bazodanowej: izolacja multi-tenant
 - Widget: każdy dodany import = sprawdź rozmiar bundle (`pnpm build` w apps/widget)
-- PII (imię, telefon leada) zawsze przez `EncryptionService` — nigdy plaintext w DB
+- PII (imię, telefon leada) zawsze przez `EncryptionService`, nigdy plaintext w DB
 - Env variables tylko przez `src/config/env.ts` (Zod validated, process exits przy błędzie)
-- `botId` w DTO: `z.string().uuid()` — nie `z.string().min(1)`
-- `website` w formularzu: `z.string().url()` — nie `z.string()`
+- `botId` w DTO: `z.string().uuid()`: nie `z.string().min(1)`
+- `website` w formularzu: `z.string().url()`: nie `z.string()`
 
 ## Czego NIE robimy w MVP
 - Rezerwacje, płatności za usługi klientów, native apka, korporacje
-- Osobne domeny per branża — jedna platforma Botiko.pl
-- Turborepo/workspace — 3 osobne apps
-- Plany PRO/PREMIUM — tylko STARTER (99 zł/mies., 14 dni trial)
+- Osobne domeny per branża: jedna platforma Botiko.pl
+- Turborepo/workspace: 3 osobne apps
+- Plany PRO/PREMIUM: tylko STARTER (99 zł/mies., 14 dni trial)
 
 ## Kluczowe decyzje architektoniczne
 | Decyzja | Dlaczego |
 |---|---|
 | CORS otwarty dla wszystkich originów | Widget musi działać na domenie klienta; DomainWhitelistGuard to właściwa brama |
-| Bot odpowiada 24/7 | Główny value prop — offline banner jest tylko informacyjny, NIE blokuje chatu |
-| sessionStorage (nie localStorage) | Prywatność — historia ginie po zamknięciu zakładki |
-| Fetch timeout 30s + AbortController | OpenAI może się zawiesić — spinner nie może kręcić się w nieskończoność |
+| Bot odpowiada 24/7 | Główny value prop: offline banner jest tylko informacyjny, NIE blokuje chatu |
+| sessionStorage (nie localStorage) | Prywatność: historia ginie po zamknięciu zakładki |
+| Fetch timeout 30s + AbortController | OpenAI może się zawiesić, spinner nie może kręcić się w nieskończoność |
 | suggestedQuestions z API, nie hardcoded | Każda branża ma inne pytania startowe |
 
 ## Brand
@@ -57,11 +57,11 @@ SaaS AI chatbot dla polskich mikrofirm usługowych. Widget na stronie klienta �
 `beauty: #EC4899` | `health: #06B6D4` | `food: #F97316` | `auto: #64748B`
 `text: #0F172A` | `bg: #F8FAFC`
 
-Mów: **"bot"** — NIE "chatbot AI", NIE "asystentka" (kojarzy się tylko z branżą beauty, a Botiko obsługuje wiele branż). Bot NIE obsługuje rezerwacji — odsyła do Booksy/Calendly.
+Mów: **"bot"**. NIE "chatbot AI", NIE "asystentka" (kojarzy się tylko z branżą beauty, a Botiko obsługuje wiele branż). Bot NIE obsługuje rezerwacji, odsyła do Booksy/Calendly.
 
 ---
 
-## Git Workflow (OBOWIĄZKOWY — agent robi to autonomicznie)
+## Git Workflow (OBOWIĄZKOWY, agent robi to autonomicznie)
 
 ### Zasada główna
 **Użytkownik NIE pilnuje git. Agent wykonuje cały flow samodzielnie.**
@@ -70,7 +70,7 @@ Mów: **"bot"** — NIE "chatbot AI", NIE "asystentka" (kojarzy się tylko z bra
 1. Przed pracą → sprawdź branch. Jeśli `main` → utwórz nowy branch
 2. Podczas pracy → `git commit` + `git push` po każdym działającym etapie
 3. Po skończeniu zadania → `gh pr create` i podaj użytkownikowi link do PR
-4. Poinformuj co zrobiłeś — nie pytaj o pozwolenie na każdy krok
+4. Poinformuj co zrobiłeś: nie pytaj o pozwolenie na każdy krok
 
 ### Kiedy commitować
 | Zdarzenie | Akcja |
@@ -87,7 +87,7 @@ feat/<opis>      fix/<opis>      chore/<opis>
 refactor/<opis>  docs/<opis>
 ```
 
-### Format commitów (Conventional Commits — commitlint blokuje inne)
+### Format commitów (Conventional Commits, commitlint blokuje inne)
 ```
 feat(widget): dodaj obsługę błędów HTTP per status
 fix(api): CORS blokował widget na domenach klientów
@@ -97,7 +97,7 @@ test: dodaj testy EncryptionService
 ```
 Scope opcjonalny: `feat(api):`, `fix(web):`, `chore(widget):`
 
-### Staging — zawsze konkretne pliki
+### Staging, zawsze konkretne pliki
 ```bash
 git add apps/api/src/modules/...   # nigdy git add -A bez sprawdzenia
 ```
@@ -105,5 +105,5 @@ git add apps/api/src/modules/...   # nigdy git add -A bez sprawdzenia
 ### Nigdy nie commitować
 `.env`, `node_modules/`, `.next/`, `dist/`, sekrety, klucze API
 
-### Merge — robi użytkownik na GitHub
-Agent NIE merguje. Agent informuje: "PR gotowy: [link] — możesz mergować."
+### Merge, robi użytkownik na GitHub
+Agent NIE merguje. Agent informuje: "PR gotowy: [link], możesz mergować."

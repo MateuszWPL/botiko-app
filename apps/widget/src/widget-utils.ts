@@ -1,4 +1,4 @@
-/** Pure utility functions extracted from ChatWindow and embed — fully testable. */
+/** Pure utility functions extracted from ChatWindow and embed, fully testable. */
 
 export interface SessionData {
   sessionId: string;
@@ -9,7 +9,7 @@ export interface SessionData {
 
 /**
  * Picks a readable foreground (near-black or white) for text/icons sitting on
- * top of the given hex background. YIQ luminance — cheap, no deps. Falls back
+ * top of the given hex background. YIQ luminance, cheap, no deps. Falls back
  * to white for malformed input (keeps prior behaviour on odd values).
  */
 export function onPrimary(hex: string): string {
@@ -40,7 +40,7 @@ export function isAdminPath(pathname: string): boolean {
   );
 }
 
-/** Returns true when the salon is physically closed — bot still works, used only for the info banner. */
+/** Returns true when the salon is physically closed, bot still works, used only for the info banner. */
 export function isSalonClosed(
   start: number | null,
   end: number | null,
@@ -55,7 +55,7 @@ export function isSalonClosed(
   return hour < start || hour >= end;
 }
 
-/** Lenient phone check — 9-15 digits covers PL local (9) and international. */
+/** Lenient phone check, 9-15 digits covers PL local (9) and international. */
 export function isValidPhone(raw: string): boolean {
   const digits = raw.replace(/\D/g, '');
   return digits.length >= 9 && digits.length <= 15;
@@ -91,12 +91,12 @@ export function errorMessageForStatus(
       return 'Bot jest chwilowo niedostępny.';
     }
     showLeadFormCallback();
-    return 'Dziękuję za rozmowę! Zostaw swój numer — odezwiemy się i odpowiemy na wszystkie pytania.';
+    return 'Dziękuję za rozmowę! Zostaw swój numer, odezwiemy się i odpowiemy na wszystkie pytania.';
   }
   if (status === 429) {
     return 'Zbyt wiele wiadomości z rzędu. Odczekaj chwilę i spróbuj ponownie.';
   }
-  return 'Mamy chwilową przerwę techniczną. Spróbuj za moment — zwykle trwa to kilka sekund.';
+  return 'Mamy chwilową przerwę techniczną. Spróbuj za moment, zwykle trwa to kilka sekund.';
 }
 
 export const ABORT_ERROR_MSG =
@@ -151,7 +151,7 @@ export function loadSession(botId: string, welcomeMessage: string): SessionData 
       }
     }
   } catch {
-    // ignore — use defaults
+    // ignore, use defaults
   }
   return {
     sessionId: generateSessionId(),
@@ -165,6 +165,6 @@ export function saveSession(botId: string, data: SessionData): void {
   try {
     sessionStorage.setItem(`botiko_${botId}`, JSON.stringify(data));
   } catch {
-    // sessionStorage unavailable (private mode, quota exceeded) — ignore
+    // sessionStorage unavailable (private mode, quota exceeded), ignore
   }
 }

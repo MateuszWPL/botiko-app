@@ -1,7 +1,7 @@
 /**
  * Botiko admin styles.
  *
- * Design language: clean, branded, card-based — close to the WordPress admin
+ * Design language: clean, branded, card-based, close to the WordPress admin
  * but a notch more polished (this screen is the plugin's storefront).
  */
 
@@ -10,7 +10,7 @@
 	margin-right: 20px;
 }
 
-/* Icons — block display removes the inline baseline gap so icons sit level
+/* Icons, block display removes the inline baseline gap so icons sit level
    with adjacent text inside flex rows. */
 .botiko-ico {
 	display: block;
