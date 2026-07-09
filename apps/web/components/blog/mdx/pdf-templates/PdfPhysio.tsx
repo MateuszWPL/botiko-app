@@ -1,4 +1,4 @@
-/** Szablon PDF: Gabinet Fizjoterapii — rozbudowana baza wiedzy dla bota */
+/** Szablon PDF: Gabinet Fizjoterapii, rozbudowana baza wiedzy dla bota */
 export function PdfPhysio({ title }: { title: string }) {
   return (
     <div style={{ minHeight: '1123px', backgroundColor: '#ffffff', color: '#1e293b' }}>
@@ -26,20 +26,20 @@ export function PdfPhysio({ title }: { title: string }) {
         <div style={{ backgroundColor: '#ffffff', borderRadius: '12px', border: '1px solid #a7f3d0', overflow: 'hidden', marginBottom: '28px', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
           <div style={{ backgroundColor: '#ecfdf5', borderBottom: '1px solid #a7f3d0', padding: '14px 24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ fontSize: '18px' }}>🤖</span>
-            <strong style={{ fontSize: '15px', color: '#064e3b' }}>1. Instrukcja Systemowa — Główny Prompt</strong>
+            <strong style={{ fontSize: '15px', color: '#064e3b' }}>1. Instrukcja Systemowa. Główny Prompt</strong>
           </div>
           <div style={{ padding: '24px', fontSize: '13.5px', lineHeight: 1.8, color: '#334155' }}>
             <p style={{ margin: '0 0 10px 0', fontSize: '11px', fontStyle: 'italic', color: '#64748b' }}>Wklej w panelu: Konfiguracja › Zachowanie asystenta › Prompt systemowy</p>
             <div style={{ borderLeft: '4px solid #0d9488', paddingLeft: '16px' }}>
               {/* eslint-disable-next-line react/no-unescaped-entities */}
               Jesteś wirtualnym asystentem recepcji w gabinecie fizjoterapii <strong style={{ color: '#000' }}>[NAZWA_GABINETU]</strong> w <strong style={{ color: '#000' }}>[MIASTO, ULICA]</strong>, prowadzonym przez <strong style={{ color: '#000' }}>[IMIĘ FIZJOTERAPEUTY]</strong>.<br /><br />
-              Twoim celem jest odpowiadanie na pytania pacjentów o dostępne terapie, ceny, zasady i przygotowanie do wizyt. Zawsze dbasz o spokojny, profesjonalny i empatyczny ton — Twoi rozmówcy często cierpią z powodu bólu.<br /><br />
+              Twoim celem jest odpowiadanie na pytania pacjentów o dostępne terapie, ceny, zasady i przygotowanie do wizyt. Zawsze dbasz o spokojny, profesjonalny i empatyczny ton. Twoi rozmówcy często cierpią z powodu bólu.<br /><br />
               <span style={{ color: '#dc2626', fontWeight: 700 }}>🔴 ZASADY BEZWZGLĘDNE:</span><br />
               1. Nigdy nie stawiasz diagnozy ani nie doradzasz w kwestiach stricte medycznych. Odsyłasz do fizjoterapeuty lub lekarza.<br />
-              2. Nigdy nie potwierdzasz konkretnych wolnych terminów — nie masz dostępu do kalendarza. Zawsze zbierasz numer telefonu i imię pacjenta, aby recepcja oddzwoniła.<br />
+              2. Nigdy nie potwierdzasz konkretnych wolnych terminów, nie masz dostępu do kalendarza. Zawsze zbierasz numer telefonu i imię pacjenta, aby recepcja oddzwoniła.<br />
               {/* eslint-disable-next-line react/no-unescaped-entities */}
-              3. Nie obiecujesz skuteczności konkretnych terapii — używasz sformułowań &quot;może pomóc&quot;, &quot;warto omówić z terapeutą&quot;.<br /><br />
-              Gdy pytanie wykracza poza Twoją wiedzę — zbierz dane kontaktowe i poinformuj, że terapeuta osobiście odpowie.
+              3. Nie obiecujesz skuteczności konkretnych terapii, używasz sformułowań &quot;może pomóc&quot;, &quot;warto omówić z terapeutą&quot;.<br /><br />
+              Gdy pytanie wykracza poza Twoją wiedzę, zbierz dane kontaktowe i poinformuj, że terapeuta osobiście odpowie.
             </div>
           </div>
         </div>
@@ -47,14 +47,14 @@ export function PdfPhysio({ title }: { title: string }) {
         {/* ── 2. FAQ heading ── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', paddingBottom: '14px', borderBottom: '2px solid #e2e8f0' }}>
           <span style={{ fontSize: '20px' }}>📋</span>
-          <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 700, color: '#0f172a' }}>2. Wpisy Bazy Wiedzy — Kopiuj-Wklej (FAQ)</h2>
+          <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 700, color: '#0f172a' }}>2. Wpisy Bazy Wiedzy. Kopiuj-Wklej (FAQ)</h2>
         </div>
         <p style={{ margin: '0 0 22px 0', fontSize: '12px', color: '#64748b', lineHeight: 1.6 }}>
           {/* eslint-disable-next-line react/no-unescaped-entities */}
           Poniżej 8 rozbudowanych wpisów FAQ. Każdy wpis to osobna &quot;karta wiedzy&quot; do dodania w sekcji Botiko. Zastąp <strong>[ZMIENNE]</strong> własnymi danymi przed wklejeniem.
         </p>
 
-        <PhysioFaqCard number="FAQ 1" title="Rezerwacja — zbieranie leada (priorytetowe)">
+        <PhysioFaqCard number="FAQ 1" title="Rezerwacja, zbieranie leada (priorytetowe)">
           <PhysioRow icon="🔲" label="Tagi / zamiary użytkownika">
             Chcę umówić wizytę. Czy jest wolne w piątek? Jak zapisać się do fizjoterapeuty? Chcę zarezerwować termin.
           </PhysioRow>
@@ -71,27 +71,27 @@ export function PdfPhysio({ title }: { title: string }) {
           </PhysioRow>
           <PhysioRow icon="🟩" label="Odpowiedź bota (kopiuj)">
             Oto nasz aktualny cennik usług:<br /><br />
-            🔹 <strong>Konsultacja wstępna (wywiad + badanie)</strong> — <strong>[CENA]</strong> zł / ok. <strong>[CZAS]</strong> min<br />
-            🔹 <strong>Sesja terapii manualnej</strong> — <strong>[CENA]</strong> zł / ok. <strong>[CZAS]</strong> min<br />
-            🔹 <strong>Masaż leczniczy (całe plecy)</strong> — <strong>[CENA]</strong> zł / ok. <strong>[CZAS]</strong> min<br />
-            🔹 <strong>Fizjoterapia sportowa</strong> — <strong>[CENA]</strong> zł / ok. <strong>[CZAS]</strong> min<br />
-            🔹 <strong>Kinesiotaping</strong> — <strong>[CENA]</strong> zł<br />
-            🔹 <strong>Pakiet rehabilitacyjny (X sesji)</strong> — <strong>[CENA_PAKIETU]</strong> zł (oszczędzasz [PROCENT]%)<br /><br />
-            <span style={{ fontSize: '11px', color: '#64748b', fontStyle: 'italic' }}>(Instrukcja dla bota: Przy pytaniu o NFZ lub ubezpieczenie — zbierz numer i zaproponuj rozmowę telefoniczną z recepcją.)</span>
+            🔹 <strong>Konsultacja wstępna (wywiad + badanie)</strong>, <strong>[CENA]</strong> zł / ok. <strong>[CZAS]</strong> min<br />
+            🔹 <strong>Sesja terapii manualnej</strong>, <strong>[CENA]</strong> zł / ok. <strong>[CZAS]</strong> min<br />
+            🔹 <strong>Masaż leczniczy (całe plecy)</strong>, <strong>[CENA]</strong> zł / ok. <strong>[CZAS]</strong> min<br />
+            🔹 <strong>Fizjoterapia sportowa</strong>, <strong>[CENA]</strong> zł / ok. <strong>[CZAS]</strong> min<br />
+            🔹 <strong>Kinesiotaping</strong>, <strong>[CENA]</strong> zł<br />
+            🔹 <strong>Pakiet rehabilitacyjny (X sesji)</strong>, <strong>[CENA_PAKIETU]</strong> zł (oszczędzasz [PROCENT]%)<br /><br />
+            <span style={{ fontSize: '11px', color: '#64748b', fontStyle: 'italic' }}>(Instrukcja dla bota: Przy pytaniu o NFZ lub ubezpieczenie, zbierz numer i zaproponuj rozmowę telefoniczną z recepcją.)</span>
           </PhysioRow>
         </PhysioFaqCard>
 
-        <PhysioFaqCard number="FAQ 3" title="Pierwsza wizyta — jak się przygotować">
+        <PhysioFaqCard number="FAQ 3" title="Pierwsza wizyta, jak się przygotować">
           <PhysioRow icon="🔲" label="Tagi / zamiary użytkownika">
             Co zabrać na pierwszą wizytę? Jak się przygotować do fizjoterapii? Czy przynieść wyniki badań, RTG, MRI?
           </PhysioRow>
           <PhysioRow icon="🟩" label="Odpowiedź bota (kopiuj)">
             Na pierwszą wizytę warto przygotować się w kilku punktach 📋<br /><br />
-            ✅ <strong>Dokumentacja medyczna</strong> — jeśli posiadasz RTG, MRI, wyniki badań krwi lub skierowanie od lekarza, zabierz je ze sobą. To przyspieszy diagnozę.<br />
-            ✅ <strong>Ubranie</strong> — wygodne i przewiewne. Sesja może wymagać dostępu do pleców, bioder lub nóg.<br />
-            ✅ <strong>Lista leków</strong> — jeśli przyjmujesz leki na stałe, poinformuj terapeutę (szczególnie leki na krzepliwość krwi).<br />
-            ✅ <strong>Czas</strong> — pierwsza wizyta trwa ok. <strong>[CZAS]</strong> minut i obejmuje wywiad, pomiary i plan terapii.<br /><br />
-            Masz pytanie o konkretny problem zdrowotny przed wizytą? Zostaw numer — terapeuta chętnie odpowie telefonicznie.
+            ✅ <strong>Dokumentacja medyczna</strong>, jeśli posiadasz RTG, MRI, wyniki badań krwi lub skierowanie od lekarza, zabierz je ze sobą. To przyspieszy diagnozę.<br />
+            ✅ <strong>Ubranie</strong>, wygodne i przewiewne. Sesja może wymagać dostępu do pleców, bioder lub nóg.<br />
+            ✅ <strong>Lista leków</strong>, jeśli przyjmujesz leki na stałe, poinformuj terapeutę (szczególnie leki na krzepliwość krwi).<br />
+            ✅ <strong>Czas</strong>, pierwsza wizyta trwa ok. <strong>[CZAS]</strong> minut i obejmuje wywiad, pomiary i plan terapii.<br /><br />
+            Masz pytanie o konkretny problem zdrowotny przed wizytą? Zostaw numer, terapeuta chętnie odpowie telefonicznie.
           </PhysioRow>
         </PhysioFaqCard>
 
@@ -101,13 +101,13 @@ export function PdfPhysio({ title }: { title: string }) {
           </PhysioRow>
           <PhysioRow icon="🟩" label="Odpowiedź bota (kopiuj)">
             W naszym gabinecie specjalizujemy się w następujących obszarach 🏥<br /><br />
-            🔸 <strong>Dolegliwości kręgosłupa</strong> — bóle szyi, odcinek lędźwiowy, rwa kulszowa, dyskopatia<br />
-            🔸 <strong>Rehabilitacja pooperacyjna</strong> — po operacjach stawu kolanowego, biodrowego, barku<br />
-            🔸 <strong>Fizjoterapia sportowa</strong> — urazy, przeciążenia, przygotowanie motoryczne<br />
-            🔸 <strong>Terapia manualna</strong> — mobilizacje stawów, techniki tkanek miękkich<br />
+            🔸 <strong>Dolegliwości kręgosłupa</strong>, bóle szyi, odcinek lędźwiowy, rwa kulszowa, dyskopatia<br />
+            🔸 <strong>Rehabilitacja pooperacyjna</strong>, po operacjach stawu kolanowego, biodrowego, barku<br />
+            🔸 <strong>Fizjoterapia sportowa</strong>, urazy, przeciążenia, przygotowanie motoryczne<br />
+            🔸 <strong>Terapia manualna</strong>, mobilizacje stawów, techniki tkanek miękkich<br />
             🔸 <strong>[INNE_SPECJALIZACJE]</strong><br /><br />
-            Nie jestem w stanie ocenić, czy konkretna metoda będzie dla Ciebie odpowiednia — to zależy od badania. Umów się na konsultację — terapeuta dobierze plan indywidualnie.<br /><br />
-            <span style={{ fontSize: '11px', color: '#64748b', fontStyle: 'italic' }}>(Instrukcja: Nie diagnozuj, nie obiecuj skuteczności. Przy pytaniach o diagnozy — zawsze odsyłaj do terapeuty.)</span>
+            Nie jestem w stanie ocenić, czy konkretna metoda będzie dla Ciebie odpowiednia, to zależy od badania. Umów się na konsultację, terapeuta dobierze plan indywidualnie.<br /><br />
+            <span style={{ fontSize: '11px', color: '#64748b', fontStyle: 'italic' }}>(Instrukcja: Nie diagnozuj, nie obiecuj skuteczności. Przy pytaniach o diagnozy, zawsze odsyłaj do terapeuty.)</span>
           </PhysioRow>
         </PhysioFaqCard>
 
@@ -116,9 +116,9 @@ export function PdfPhysio({ title }: { title: string }) {
             Chcę odwołać wizytę, spóźnię się, zmiana terminu rehabilitacji, zasady anulacji.
           </PhysioRow>
           <PhysioRow icon="🟩" label="Odpowiedź bota (kopiuj)">
-            Zdarzają się niespodziewane sytuacje — rozumiemy! 🤝<br /><br />
-            ⏱ <strong>Spóźnienie:</strong> Tolerujemy spóźnienia do <strong>[X] minut</strong>. Prosimy jednak o informację — wyślij tu swoje imię i szacowany czas przybycia, przekażemy to terapeucie.<br /><br />
-            ❌ <strong>Odwołanie / zmiana:</strong> Prosimy odwołać wizytę najpóźniej <strong>[X godzin]</strong> przed terminem. Zostaw tu imię, nazwisko i datę wizyty — skreślimy Cię z grafiku bez opłat.<br /><br />
+            Zdarzają się niespodziewane sytuacje, rozumiemy! 🤝<br /><br />
+            ⏱ <strong>Spóźnienie:</strong> Tolerujemy spóźnienia do <strong>[X] minut</strong>. Prosimy jednak o informację, wyślij tu swoje imię i szacowany czas przybycia, przekażemy to terapeucie.<br /><br />
+            ❌ <strong>Odwołanie / zmiana:</strong> Prosimy odwołać wizytę najpóźniej <strong>[X godzin]</strong> przed terminem. Zostaw tu imię, nazwisko i datę wizyty, skreślimy Cię z grafiku bez opłat.<br /><br />
             ⚠️ Odwołanie w krótszym czasie niż <strong>[X]</strong> może skutkować opłatą za zarezerwowany czas terapeuty w wysokości <strong>[KWOTA]</strong> zł.
           </PhysioRow>
         </PhysioFaqCard>
@@ -130,9 +130,9 @@ export function PdfPhysio({ title }: { title: string }) {
           <PhysioRow icon="🟩" label="Odpowiedź bota (kopiuj)">
             {/* eslint-disable-next-line react/no-unescaped-entities */}
             📍 Gabinet mieści się pod adresem: <strong>[ULICA, NUMER, MIASTO]</strong>, <strong>[NUMER_KONDYGNACJI]</strong> piętro / lokal <strong>[X]</strong>.<br /><br />
-            🚗 <strong>Parkowanie:</strong> [OPIS PARKINGU — np. &quot;Darmowy parking na tyłach budynku od ul. X&quot; lub &quot;Płatna strefa, miejsca przy wejściu&quot;]<br /><br />
-            🚌 <strong>Komunikacja miejska:</strong> Autobus/tramwaj nr <strong>[NUMER]</strong>, przystanek <strong>[NAZWA]</strong> — ok. <strong>[X]</strong> minut piechotą.<br /><br />
-            Masz problem z dojazdem? Napisz tu swój numer — recepcja zadzwoni i naprowadzi Cię osobiście 🗺️
+            🚗 <strong>Parkowanie:</strong> [OPIS PARKINGU, np. &quot;Darmowy parking na tyłach budynku od ul. X&quot; lub &quot;Płatna strefa, miejsca przy wejściu&quot;]<br /><br />
+            🚌 <strong>Komunikacja miejska:</strong> Autobus/tramwaj nr <strong>[NUMER]</strong>, przystanek <strong>[NAZWA]</strong>, ok. <strong>[X]</strong> minut piechotą.<br /><br />
+            Masz problem z dojazdem? Napisz tu swój numer, recepcja zadzwoni i naprowadzi Cię osobiście 🗺️
           </PhysioRow>
         </PhysioFaqCard>
 
@@ -142,10 +142,10 @@ export function PdfPhysio({ title }: { title: string }) {
           </PhysioRow>
           <PhysioRow icon="🟩" label="Odpowiedź bota (kopiuj)">
             {/* eslint-disable-next-line react/no-unescaped-entities */}
-            Gabinet działa w systemie <strong>komercyjnym (prywatnym)</strong> — nie realizujemy wizyt w ramach NFZ.<br /><br />
+            Gabinet działa w systemie <strong>komercyjnym (prywatnym)</strong>, nie realizujemy wizyt w ramach NFZ.<br /><br />
             🔹 <strong>Pakiety prywatne:</strong> Akceptujemy ubezpieczenia: <strong>[WPISZ: np. Medicover, Lux Med, PZU Zdrowie]</strong>. Przy umawianiu wizyty poinformuj recepcję o posiadanym pakiecie.<br />
-            🔹 <strong>Faktury VAT:</strong> Wystawiamy faktury na firmy i osoby fizyczne — można odliczyć w ramach ulgi rehabilitacyjnej.<br /><br />
-            Chcesz potwierdzić, czy Twój pakiet jest obsługiwany? Zostaw numer — recepcja sprawdzi i oddzwoni.
+            🔹 <strong>Faktury VAT:</strong> Wystawiamy faktury na firmy i osoby fizyczne, można odliczyć w ramach ulgi rehabilitacyjnej.<br /><br />
+            Chcesz potwierdzić, czy Twój pakiet jest obsługiwany? Zostaw numer, recepcja sprawdzi i oddzwoni.
           </PhysioRow>
         </PhysioFaqCard>
 
@@ -154,8 +154,8 @@ export function PdfPhysio({ title }: { title: string }) {
             Czy ćwiczenia pomogą na moją chorobę? Mam cukrzycę, czy mogę? Ile sesji potrzebuję na wyzdrowienie?
           </PhysioRow>
           <PhysioRow icon="🟩" label="Odpowiedź bota (kopiuj)">
-            To pytanie wymaga indywidualnej oceny terapeuty — nie chcę odpowiadać ogólnikami w tak ważnej sprawie 🙏<br /><br />
-            Zostaw proszę swoje imię i numer telefonu. <strong>[IMIĘ FIZJOTERAPEUTY]</strong> zadzwoni osobiście w godzinach <strong>[X–Y]</strong> i odpowie na Twoje pytania przed umówieniem wizyty. To sposób, by mieć pewność, że trafiasz na właściwe ręce.
+            To pytanie wymaga indywidualnej oceny terapeuty, nie chcę odpowiadać ogólnikami w tak ważnej sprawie 🙏<br /><br />
+            Zostaw proszę swoje imię i numer telefonu. <strong>[IMIĘ FIZJOTERAPEUTY]</strong> zadzwoni osobiście w godzinach <strong>[X-Y]</strong> i odpowie na Twoje pytania przed umówieniem wizyty. To sposób, by mieć pewność, że trafiasz na właściwe ręce.
           </PhysioRow>
         </PhysioFaqCard>
 
@@ -166,17 +166,17 @@ export function PdfPhysio({ title }: { title: string }) {
             <strong style={{ fontSize: '13px', color: '#92400e' }}>3. Dodatkowe tipy konfiguracji bota dla fizjo</strong>
           </div>
           <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '12.5px', lineHeight: 1.8, color: '#78350f' }}>
-            <li>Ustaw empatyczny, spokojny ton — pacjenci często są w bólu lub zestresowani.</li>
+            <li>Ustaw empatyczny, spokojny ton, pacjenci często są w bólu lub zestresowani.</li>
             <li>Słowa-klucze do wychwycenia intencji rezerwacyjnej: &quot;termin&quot;, &quot;zapisać&quot;, &quot;umówić&quot;, &quot;wolne&quot;, &quot;kiedy&quot;.</li>
-            <li>Po zebraniu numeru — dodaj etykietę &quot;FIZJO_LEAD&quot; w panelu, by odróżnić od innych zapytań.</li>
-            <li>Ogranicz bota do max 3 zdań na wiadomość — długie odpowiedzi zniechęcają pacjentów mobilnych.</li>
-            <li>Jeśli ktoś opisuje ostry ból / nagły uraz — bot powinien zaproponować kontakt telefoniczny NATYCHMIAST.</li>
+            <li>Po zebraniu numeru, dodaj etykietę &quot;FIZJO_LEAD&quot; w panelu, by odróżnić od innych zapytań.</li>
+            <li>Ogranicz bota do max 3 zdań na wiadomość, długie odpowiedzi zniechęcają pacjentów mobilnych.</li>
+            <li>Jeśli ktoś opisuje ostry ból / nagły uraz, bot powinien zaproponować kontakt telefoniczny NATYCHMIAST.</li>
           </ul>
         </div>
 
         {/* FOOTER */}
         <div style={{ marginTop: '28px', paddingTop: '20px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '12px', fontWeight: 600, color: '#94a3b8' }}>botiko.pl — Asystenci AI dla gabinetów</span>
+          <span style={{ fontSize: '12px', fontWeight: 600, color: '#94a3b8' }}>botiko.pl. Asystenci AI dla gabinetów</span>
           <span style={{ fontSize: '11px', color: '#cbd5e1', fontStyle: 'italic' }}>8 wpisów FAQ · Placeholder gotowy · v1.0</span>
         </div>
       </div>

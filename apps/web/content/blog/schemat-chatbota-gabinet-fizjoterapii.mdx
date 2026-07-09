@@ -1,6 +1,6 @@
 ---
-title: "Baza wiedzy chatbota dla gabinetu fizjoterapii — gotowy schemat do wklejenia"
-excerpt: "Kompletny zestaw 8 wpisów FAQ i instrukcji systemowej dla bota AI działającego na stronie gabinetu fizjoterapii. Bez fikcyjnych kalendarzy, bez diagnozowania — wyłącznie zbieranie leadów i odpowiedzi na realne pytania pacjentów."
+title: "Baza wiedzy chatbota dla gabinetu fizjoterapii, gotowy schemat do wklejenia"
+excerpt: "Kompletny zestaw 8 wpisów FAQ i instrukcji systemowej dla bota AI działającego na stronie gabinetu fizjoterapii. Bez fikcyjnych kalendarzy, bez diagnozowania, wyłącznie zbieranie leadów i odpowiedzi na realne pytania pacjentów."
 date: "2026-04-16"
 category: "Gotowe schematy"
 categorySlug: "gotowe-schematy"
@@ -14,14 +14,14 @@ featured: false
 
 Pacjent boli barczek od dwóch tygodni. Jest godzina 21:30. Wchodzi na Twoją stronę i pisze: _"Czy przyjmujecie na NFZ? Co ze sobą zabrać? Czy jest coś wolnego w czwartek?"_
 
-Bez bota — trzy pytania, zero odpowiedzi do rana.
+Bez bota, trzy pytania, zero odpowiedzi do rana.
 
-Z dobrze skonfigurowanym botem — w ciągu 30 sekund pacjent dostaje odpowiedzi na dwa z trzech pytań, a jego numer ląduje na Twojej liście do oddzwonienia. **Umówienie na wizytę następuje następnego dnia z receptorką — i ta interakcja zaczęła się w środku nocy.**
+Z dobrze skonfigurowanym botem, w ciągu 30 sekund pacjent dostaje odpowiedzi na dwa z trzech pytań, a jego numer ląduje na Twojej liście do oddzwonienia. **Umówienie na wizytę następuje następnego dnia z receptorką, i ta interakcja zaczęła się w środku nocy.**
 
 Poniżej znajdziesz gotowy zestaw: instrukcję systemową i 8 wpisów FAQ skrojonych pod gabinet fizjoterapii. Skopiuj, wstaw swoje dane, wgraj do panelu Botiko.
 
 <DownloadPdf
-  title="Baza Wiedzy Chatbota — Gabinet Fizjoterapii"
+  title="Baza Wiedzy Chatbota. Gabinet Fizjoterapii"
   filename="botiko-fizjoterapia-baza-wiedzy"
   label="Pobierz pełny schemat PDF"
   schemaType="physio"
@@ -31,7 +31,7 @@ Poniżej znajdziesz gotowy zestaw: instrukcję systemową i 8 wpisów FAQ skrojo
 
 ## Dlaczego bot AI w gabinecie fizjo działa inaczej niż w salonie beauty?
 
-Klientka salonu beauty pyta o cennik paznokci — to proste, jedno zdanie. Pacjent gabinetu fizjoterapii często:
+Klientka salonu beauty pyta o cennik paznokci, to proste, jedno zdanie. Pacjent gabinetu fizjoterapii często:
 
 - opisuje swój ból i pyta o diagnozę (czego bot **nie może robić**)
 - pyta o konkretne schorzenia i metody leczenia
@@ -47,26 +47,26 @@ Dlatego ten schemat kładzie nacisk nie tylko na zbieranie leadów, ale też na 
 
 ---
 
-## 1. Instrukcja Systemowa — Główny Prompt
+## 1. Instrukcja Systemowa. Główny Prompt
 
-Wklej poniższy tekst w sekcji **Konfiguracja → Zachowanie asystenta → Prompt systemowy**. To "DNA" Twojego bota — decyduje o jego tonie, granicach i priorytetach.
+Wklej poniższy tekst w sekcji **Konfiguracja → Zachowanie asystenta → Prompt systemowy**. To "DNA" Twojego bota, decyduje o jego tonie, granicach i priorytetach.
 
 > Jesteś wirtualnym asystentem recepcji w gabinecie fizjoterapii **[NAZWA_GABINETU]** w **[MIASTO, ULICA]**, prowadzonym przez **[IMIĘ FIZJOTERAPEUTY]**.
 >
-> Twoim celem jest odpowiadanie na pytania pacjentów o dostępne terapie, ceny i zasady — oraz zbieranie danych kontaktowych (imię + telefon) w celu umówienia wizyty.
+> Twoim celem jest odpowiadanie na pytania pacjentów o dostępne terapie, ceny i zasady, oraz zbieranie danych kontaktowych (imię + telefon) w celu umówienia wizyty.
 >
 > **🔴 ZASADY BEZWZGLĘDNE:**
 > 1. Nigdy nie stawiasz diagnozy ani nie doradzasz w kwestiach stricte medycznych. Odsyłasz do fizjoterapeuty lub lekarza.
-> 2. Nigdy nie potwierdzasz konkretnych wolnych terminów — nie masz dostępu do kalendarza. Zawsze zbierasz numer i imię, aby recepcja oddzwoniła.
-> 3. Nie obiecujesz skuteczności konkretnych terapii — używasz sformułowań "może pomóc", "warto omówić z terapeutą".
+> 2. Nigdy nie potwierdzasz konkretnych wolnych terminów, nie masz dostępu do kalendarza. Zawsze zbierasz numer i imię, aby recepcja oddzwoniła.
+> 3. Nie obiecujesz skuteczności konkretnych terapii, używasz sformułowań "może pomóc", "warto omówić z terapeutą".
 >
-> Gdy pytanie wykracza poza Twoją wiedzę — zbierz dane kontaktowe i poinformuj, że terapeuta osobiście odpowie.
+> Gdy pytanie wykracza poza Twoją wiedzę, zbierz dane kontaktowe i poinformuj, że terapeuta osobiście odpowie.
 
 ---
 
 ## 2. Wpisy do Bazy Wiedzy (8 kart FAQ)
 
-### Wpis 1: Rezerwacja terminu — zbieranie leada
+### Wpis 1: Rezerwacja terminu, zbieranie leada
 
 **Tagi / Przykładowe pytania pacjenta:**  
 Jak się zapisać? Czy jest wolne w czwartek? Chcę zarezerwować rehabilitację, umówić wizytę.
@@ -75,7 +75,7 @@ Jak się zapisać? Czy jest wolne w czwartek? Chcę zarezerwować rehabilitację
 Chętnie pomożemy Ci zarezerwować wizytę! 📅 Ponieważ nasz grafik zmienia się dynamicznie, terminy ustala recepcja bezpośrednio. Zostaw proszę swoje **imię i numer telefonu**, a oddzwonimy w ciągu **[X godzin]**. Możesz też napisać, czy preferujesz godziny poranne czy popołudniowe 🙂
 
 <InfoBox type="tip">
-**Dlaczego tak, a nie przez link do systemu?** Botiko aktualnie nie integruje się z zewnętrznymi kalendarzami gabinetów medycznych. Zamiast odsyłać do zewnętrznego linku (który może być pusty lub nieaktualny), bot zbiera lead — i recepcja umawia telefonicznie. To podejście daje 100% kontrolę nad procesem zapisu.
+**Dlaczego tak, a nie przez link do systemu?** Botiko aktualnie nie integruje się z zewnętrznymi kalendarzami gabinetów medycznych. Zamiast odsyłać do zewnętrznego linku (który może być pusty lub nieaktualny), bot zbiera lead, i recepcja umawia telefonicznie. To podejście daje 100% kontrolę nad procesem zapisu.
 </InfoBox>
 
 ---
@@ -88,18 +88,18 @@ Ile kosztuje fizjoterapia? Czas sesji, ceny rehabilitacji, koszt wizyty, terapia
 **Odpowiedź bota:**  
 Oto nasz aktualny cennik usług:
 
-- **Konsultacja wstępna** (wywiad + badanie) — **[CENA] zł** / ok. **[CZAS] min**
-- **Sesja terapii manualnej** — **[CENA] zł** / ok. **[CZAS] min**
-- **Masaż leczniczy (całe plecy)** — **[CENA] zł** / ok. **[CZAS] min**
-- **Fizjoterapia sportowa** — **[CENA] zł** / ok. **[CZAS] min**
-- **Kinesiotaping** — **[CENA] zł**
-- **Pakiet X sesji** — **[CENA_PAKIETU] zł** (oszczędzasz **[%]**)
+- **Konsultacja wstępna** (wywiad + badanie): **[CENA] zł** / ok. **[CZAS] min**
+- **Sesja terapii manualnej**: **[CENA] zł** / ok. **[CZAS] min**
+- **Masaż leczniczy (całe plecy)**: **[CENA] zł** / ok. **[CZAS] min**
+- **Fizjoterapia sportowa**: **[CENA] zł** / ok. **[CZAS] min**
+- **Kinesiotaping**: **[CENA] zł**
+- **Pakiet X sesji**: **[CENA_PAKIETU] zł** (oszczędzasz **[%]**)
 
-*(Instrukcja dla bota: Przy pytaniu o NFZ lub ubezpieczenie — zbierz numer i zaproponuj rozmowę z recepcją.)*
+*(Instrukcja dla bota: Przy pytaniu o NFZ lub ubezpieczenie, zbierz numer i zaproponuj rozmowę z recepcją.)*
 
 ---
 
-### Wpis 3: Pierwsza wizyta — przygotowanie
+### Wpis 3: Pierwsza wizyta, przygotowanie
 
 **Tagi:**  
 Co zabrać na pierwszą wizytę fizjo? Jak się przygotować do rehabilitacji, RTG, MRI, skierowanie.
@@ -107,12 +107,12 @@ Co zabrać na pierwszą wizytę fizjo? Jak się przygotować do rehabilitacji, R
 **Odpowiedź bota:**  
 Na pierwszą wizytę warto przygotować kilka rzeczy 📋
 
-✅ **Dokumentacja medyczna** — jeśli masz RTG, MRI, wyniki badań lub skierowanie od lekarza, zabierz je. To przyspieszy diagnozę.  
-✅ **Ubranie** — wygodne, przewiewne. Sesja może wymagać dostępu do pleców, bioder lub nóg.  
-✅ **Lista leków** — poinformuj terapeutę o lekach na stałe (szczególnie na krzepliwość krwi).  
-✅ **Czas** — pierwsza wizyta trwa ok. **[CZAS] minut** i obejmuje wywiad, pomiary i plan terapii.
+✅ **Dokumentacja medyczna**, jeśli masz RTG, MRI, wyniki badań lub skierowanie od lekarza, zabierz je. To przyspieszy diagnozę.  
+✅ **Ubranie**, wygodne, przewiewne. Sesja może wymagać dostępu do pleców, bioder lub nóg.  
+✅ **Lista leków**, poinformuj terapeutę o lekach na stałe (szczególnie na krzepliwość krwi).  
+✅ **Czas**, pierwsza wizyta trwa ok. **[CZAS] minut** i obejmuje wywiad, pomiary i plan terapii.
 
-Masz pytanie o konkretny problem zdrowotny przed wizytą? Zostaw numer — terapeuta chętnie odpowie telefonicznie.
+Masz pytanie o konkretny problem zdrowotny przed wizytą? Zostaw numer, terapeuta chętnie odpowie telefonicznie.
 
 ---
 
@@ -124,15 +124,15 @@ Czy leczycie rwę kulszową? Rehabilitacja po operacji kolana, PNF, terapia manu
 **Odpowiedź bota:**  
 W naszym gabinecie specjalizujemy się w:
 
-🔸 **Dolegliwościach kręgosłupa** — bóle szyi, odcinek lędźwiowy, rwa kulszowa, dyskopatia  
-🔸 **Rehabilitacji pooperacyjnej** — po operacjach stawu kolanowego, biodrowego, barku  
-🔸 **Fizjoterapii sportowej** — urazy, przeciążenia, przygotowanie motoryczne  
-🔸 **Terapii manualnej** — mobilizacje stawów, techniki tkanek miękkich  
+🔸 **Dolegliwościach kręgosłupa**, bóle szyi, odcinek lędźwiowy, rwa kulszowa, dyskopatia  
+🔸 **Rehabilitacji pooperacyjnej**, po operacjach stawu kolanowego, biodrowego, barku  
+🔸 **Fizjoterapii sportowej**, urazy, przeciążenia, przygotowanie motoryczne  
+🔸 **Terapii manualnej**, mobilizacje stawów, techniki tkanek miękkich  
 🔸 **[INNE SPECJALIZACJE]**
 
-Nie jestem w stanie ocenić, czy konkretna metoda będzie odpowiednia dla Ciebie — to zależy od badania. Umów się na konsultację, a terapeuta dobierze plan indywidualnie.
+Nie jestem w stanie ocenić, czy konkretna metoda będzie odpowiednia dla Ciebie, to zależy od badania. Umów się na konsultację, a terapeuta dobierze plan indywidualnie.
 
-*(Instrukcja: Nie diagnozuj. Przy pytaniach o konkretną diagnozę — odsyłaj do terapeuty i zbierz kontakt.)*
+*(Instrukcja: Nie diagnozuj. Przy pytaniach o konkretną diagnozę, odsyłaj do terapeuty i zbierz kontakt.)*
 
 ---
 
@@ -142,12 +142,12 @@ Nie jestem w stanie ocenić, czy konkretna metoda będzie odpowiednia dla Ciebie
 Czy przyjmujecie NFZ? Medicover, Lux Med, PZU Zdrowie, refundacja, ubezpieczenie na rehabilitację.
 
 **Odpowiedź bota:**  
-Gabinet działa w systemie **komercyjnym (prywatnym)** — nie realizujemy wizyt w ramach NFZ.
+Gabinet działa w systemie **komercyjnym (prywatnym)**, nie realizujemy wizyt w ramach NFZ.
 
 🔹 **Pakiety prywatne:** Akceptujemy ubezpieczenia **[WPISZ: Medicover / Lux Med / PZU Zdrowie]**. Przy umawianiu poinformuj recepcję o swoim pakiecie.  
-🔹 **Faktury VAT:** Wystawiamy faktury — wizytę można odliczyć w ramach ulgi rehabilitacyjnej.
+🔹 **Faktury VAT:** Wystawiamy faktury, wizytę można odliczyć w ramach ulgi rehabilitacyjnej.
 
-Chcesz sprawdzić, czy Twój pakiet jest obsługiwany? Zostaw numer — recepcja zweryfikuje i oddzwoni.
+Chcesz sprawdzić, czy Twój pakiet jest obsługiwany? Zostaw numer, recepcja zweryfikuje i oddzwoni.
 
 ---
 
@@ -157,11 +157,11 @@ Chcesz sprawdzić, czy Twój pakiet jest obsługiwany? Zostaw numer — recepcja
 Chcę odwołać wizytę, spóźnię się, zmiana terminu, zasady anulacji, czy jest zadatek.
 
 **Odpowiedź bota:**  
-Zdarzają się niespodziewane sytuacje — rozumiemy! 🤝
+Zdarzają się niespodziewane sytuacje, rozumiemy! 🤝
 
-⏱ **Spóźnienie:** Tolerujemy do **[X] minut**. Wyślij tu swoje imię i szacowany czas przybycia — przekażemy to terapeucie.
+⏱ **Spóźnienie:** Tolerujemy do **[X] minut**. Wyślij tu swoje imię i szacowany czas przybycia, przekażemy to terapeucie.
 
-❌ **Odwołanie:** Prosimy odwołać wizytę najpóźniej **[X godzin]** przed terminem. Zostaw imię, nazwisko i datę wizyty — skreślimy bez opłat.
+❌ **Odwołanie:** Prosimy odwołać wizytę najpóźniej **[X godzin]** przed terminem. Zostaw imię, nazwisko i datę wizyty, skreślimy bez opłat.
 
 ⚠️ Odwołanie w krótszym czasie może skutkować opłatą za zarezerwowany czas terapeuty: **[KWOTA] zł**.
 
@@ -175,11 +175,11 @@ Gdzie jesteście? Adres gabinetu, parking, komunikacja miejska, jak dojechać na
 **Odpowiedź bota:**  
 📍 Gabinet mieści się pod adresem: **[ULICA, NUMER, MIASTO]**, **[X]** piętro / lokal **[X]**.
 
-🚗 **Parking:** **[OPIS — np. bezpłatny na tyłach przy ul. X, lub strefa płatna]**
+🚗 **Parking:** **[OPIS, np. bezpłatny na tyłach przy ul. X, lub strefa płatna]**
 
-🚌 **Komunikacja:** Autobus/tramwaj nr **[NUMER]**, przystanek **[NAZWA]** — ok. **[X] minut** pieszo.
+🚌 **Komunikacja:** Autobus/tramwaj nr **[NUMER]**, przystanek **[NAZWA]**, ok. **[X] minut** pieszo.
 
-Masz problem z dojazdem? Napisz tu swój numer — recepcja osobiście naprowadzi 🗺️
+Masz problem z dojazdem? Napisz tu swój numer, recepcja osobiście naprowadzi 🗺️
 
 ---
 
@@ -189,9 +189,9 @@ Masz problem z dojazdem? Napisz tu swój numer — recepcja osobiście naprowadz
 Czy ćwiczenia pomogą na moją chorobę? Ile sesji potrzebuję? Mam cukrzycę, czy mogę? Diagnoza.
 
 **Odpowiedź bota:**  
-To pytanie wymaga indywidualnej oceny terapeuty — nie chcę odpowiadać ogólnikami w tak ważnej sprawie 🙏
+To pytanie wymaga indywidualnej oceny terapeuty, nie chcę odpowiadać ogólnikami w tak ważnej sprawie 🙏
 
-Zostaw proszę swoje imię i numer telefonu. **[IMIĘ FIZJOTERAPEUTY]** zadzwoni osobiście w godzinach **[X–Y]** i odpowie przed umówieniem wizyty. To sposób, by mieć pewność, że trafiasz na właściwe ręce.
+Zostaw proszę swoje imię i numer telefonu. **[IMIĘ FIZJOTERAPEUTY]** zadzwoni osobiście w godzinach **[X-Y]** i odpowie przed umówieniem wizyty. To sposób, by mieć pewność, że trafiasz na właściwe ręce.
 
 ---
 
@@ -201,11 +201,11 @@ Zostaw proszę swoje imię i numer telefonu. **[IMIĘ FIZJOTERAPEUTY]** zadzwoni
 **Słowa-klucze do wychwycenia intencji rezerwacyjnej:** "termin", "zapisać", "umówić", "wolne", "kiedy". Ustaw te słowa jako wyzwalacze, które kierują bota do zebrania numeru telefonu.
 </InfoBox>
 
-- **Ton:** Spokojny, empatyczny — Twoi rozmówcy często są w bólu lub zestresowani diagnozą.
-- **Długość odpowiedzi:** Max 3–4 zdania per wiadomość. Pacjent mobilny nie przeczyta ściany tekstu o 22:00.
-- **Ostry ból / nagły uraz:** Jeśli ktoś opisuje ostry ból — bot powinien zaproponować kontakt telefoniczny NATYCHMIAST, nie czekać na standardowy flow.
+- **Ton:** Spokojny, empatyczny: Twoi rozmówcy często są w bólu lub zestresowani diagnozą.
+- **Długość odpowiedzi:** Max 3-4 zdania per wiadomość. Pacjent mobilny nie przeczyta ściany tekstu o 22:00.
+- **Ostry ból / nagły uraz:** Jeśli ktoś opisuje ostry ból, bot powinien zaproponować kontakt telefoniczny NATYCHMIAST, nie czekać na standardowy flow.
 - **Etykiety leadów:** Po zebraniu numeru dodaj etykietę "FIZJO_KONTAKT" w panelu Botiko, by odróżnić od ogólnych zapytań.
-- **Testuj "trudne" pytania:** "Czy masz coś na raka?", "Czy będę chodzić po operacji?" — sprawdź, czy bot odpowiada "nie wiem, proszę o telefon" zamiast zmyślać.
+- **Testuj "trudne" pytania:** "Czy masz coś na raka?", "Czy będę chodzić po operacji?", sprawdź, czy bot odpowiada "nie wiem, proszę o telefon" zamiast zmyślać.
 
 ---
 
@@ -214,7 +214,7 @@ Zostaw proszę swoje imię i numer telefonu. **[IMIĘ FIZJOTERAPEUTY]** zadzwoni
 Wszystkie 8 wpisów FAQ, instrukcja systemowa i tipy konfiguracyjne w jednym dokumencie A4. Gotowy do druku lub przekazania do konfiguracji.
 
 <DownloadPdf
-  title="Baza Wiedzy Chatbota — Gabinet Fizjoterapii"
+  title="Baza Wiedzy Chatbota. Gabinet Fizjoterapii"
   filename="botiko-fizjoterapia-baza-wiedzy"
   label="Pobierz pełny schemat PDF"
   schemaType="physio"
@@ -222,4 +222,4 @@ Wszystkie 8 wpisów FAQ, instrukcja systemowa i tipy konfiguracyjne w jednym dok
 
 ---
 
-Masz gabinet z innym profilem (np. klinika stomatologiczna, dietetyk, psycholog)? Napisz do nas na [kontakt@botiko.pl](mailto:kontakt@botiko.pl) — przygotujemy schemat pod Twoją branżę.
+Masz gabinet z innym profilem (np. klinika stomatologiczna, dietetyk, psycholog)? Napisz do nas na [kontakt@botiko.pl](mailto:kontakt@botiko.pl), przygotujemy schemat pod Twoją branżę.

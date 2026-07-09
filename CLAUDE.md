@@ -6,20 +6,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Projekt
 
-Botiko.pl — polska SaaS platforma AI chatbot B2B dla mikro/małych firm usługowych. Jeden produkt, wiele branż. Klient wybiera branżę w onboardingu → dostaje gotowy szablon bota.
+Botiko.pl, polska SaaS platforma AI chatbot B2B dla mikro/małych firm usługowych. Jeden produkt, wiele branż. Klient wybiera branżę w onboardingu → dostaje gotowy szablon bota.
 
-**Główny fokus (gotowe szablony branżowe):** salony beauty, gabinety zdrowia/SPA, restauracje, warsztaty samochodowe. **Szerzej:** każda inna mikro/mała firma usługowa — fryzjer, kosmetyczka, fizjoterapeuta, korepetytor, fotograf, coach, trener personalny, sklep lokalny itp. → w onboardingu wybiera `OTHER` i dostaje generyczny szablon bota.
+**Główny fokus (gotowe szablony branżowe):** salony beauty, gabinety zdrowia/SPA, restauracje, warsztaty samochodowe. **Szerzej:** każda inna mikro/mała firma usługowa, fryzjer, kosmetyczka, fizjoterapeuta, korepetytor, fotograf, coach, trener personalny, sklep lokalny itp. → w onboardingu wybiera `OTHER` i dostaje generyczny szablon bota.
 
 **Cel MVP:** 15 płacących klientów w 6 miesięcy.
 
 ### Czego NIE robimy w MVP
 - NIE budujemy systemu rezerwacji (bot odsyła do Booksy/Calendly)
 - NIE obsługujemy płatności za usługi klientów końcowych
-- NIE budujemy osobnych domen per branża — JEDNA platforma Botiko.pl
-- NIE robimy natywnej apki mobilnej — dashboard jest responsive PWA
-- NIE targetujemy korporacji — tylko mikro i małe firmy usługowe
-- NIE używamy Turborepo/monorepo workspace — 3 osobne apps z własnym `pnpm install`
-- NIE supportujemy oficjalnie Webflow / Shopify / Squarespace / Wix / PrestaShop / Shoper — skrypt JS działa technicznie, ale nie ma per-platformowych instrukcji ani gwarancji. **Priority 1: WordPress + uniwersalny skrypt HTML.**
+- NIE budujemy osobnych domen per branża: JEDNA platforma Botiko.pl
+- NIE robimy natywnej apki mobilnej: dashboard jest responsive PWA
+- NIE targetujemy korporacji: tylko mikro i małe firmy usługowe
+- NIE używamy Turborepo/monorepo workspace: 3 osobne apps z własnym `pnpm install`
+- NIE supportujemy oficjalnie Webflow / Shopify / Squarespace / Wix / PrestaShop / Shoper, skrypt JS działa technicznie, ale nie ma per-platformowych instrukcji ani gwarancji. **Priority 1: WordPress + uniwersalny skrypt HTML.**
 
 ---
 
@@ -36,12 +36,12 @@ docs/CODEMAPS/ → 6 plików architektonicznych (ENG): INDEX, backend, frontend,
 apps/api/src/brand-templates/ → szablony promptów per branża (beauty, health, food, auto + generyczny)
 ```
 
-**Dokumentacja — `DOCS.md` to mapa-źródło prawdy (funkcja → dokument).** Najważniejsze:
-- `DOCS.md` — indeks wszystkich dokumentów; przy dodaniu/przeniesieniu/usunięciu docsa zaktualizuj go w tym samym commicie
-- `TASK.md` — szczegółowy checklist faz (1A, 1B…) — tu szukaj deployment checklist (§1A.6)
-- `docs/AI-COMMANDS.md` — quick reference komend Claude Code / MCP
-- `docs/seo/PLAYBOOK.md` — playbook SEO/GEO (on-page + off-page + backlog)
-- `README.md` — setup instructions + architecture overview
+**Dokumentacja, `DOCS.md` to mapa-źródło prawdy (funkcja → dokument).** Najważniejsze:
+- `DOCS.md`: indeks wszystkich dokumentów; przy dodaniu/przeniesieniu/usunięciu docsa zaktualizuj go w tym samym commicie
+- `TASK.md`: szczegółowy checklist faz (1A, 1B...), tu szukaj deployment checklist (§1A.6)
+- `docs/AI-COMMANDS.md`: quick reference komend Claude Code / MCP
+- `docs/seo/PLAYBOOK.md`: playbook SEO/GEO (on-page + off-page + backlog)
+- `README.md`: setup instructions + architecture overview
 
 ---
 
@@ -92,7 +92,7 @@ Skopiuj z root `.env.example`:
 
 Wymagane zmienne: `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY`, `JWT_SECRET` (min. 64 znaki hex), `ENCRYPTION_KEY` (min. 64 znaki hex).
 
-API waliduje wszystkie zmienne przez Zod przy starcie (`src/config/env.ts`) — process exits przy błędzie.
+API waliduje wszystkie zmienne przez Zod przy starcie (`src/config/env.ts`), process exits przy błędzie.
 
 **Windows + Supabase SSL**: dodaj `NODE_TLS_REJECT_UNAUTHORIZED=0` do `apps/api/.env`.
 
@@ -101,16 +101,16 @@ API waliduje wszystkie zmienne przez Zod przy starcie (`src/config/env.ts`) — 
 ## Architektura
 
 ### Multi-Tenancy
-Każda tabela ma `tenant_id`. Supabase RLS policies wymuszają izolację wierszy. W NestJS — `TenantGuard` + `@CurrentTenant()` dekorator wyciągają `tenant_id` z JWT (`user_metadata.tenant_id`). Widget nie ma auth — używa `botId` do mapowania na tenant.
+Każda tabela ma `tenant_id`. Supabase RLS policies wymuszają izolację wierszy. W NestJS, `TenantGuard` + `@CurrentTenant()` dekorator wyciągają `tenant_id` z JWT (`user_metadata.tenant_id`). Widget nie ma auth, używa `botId` do mapowania na tenant.
 
 ### Authentication Flow
 1. **Web**: Supabase Auth (SSR via `@supabase/ssr`) → JWT
 2. **API**: `AuthGuard` weryfikuje JWT przez `supabase.auth.getUser(token)` (service role)
-3. **Widget** (`/chat`, `/leads`, `/bot/:id/config`): publiczne, bez auth — chronione domain whitelistingiem (`bot.allowedDomains`) i rate limitami
+3. **Widget** (`/chat`, `/leads`, `/bot/:id/config`): publiczne, bez auth, chronione domain whitelistingiem (`bot.allowedDomains`) i rate limitami
 
 ### Chat / RAG Pipeline
 `POST /api/v1/chat` → ChatService:
-1. **Pre-processing** (`message-sanitizer.ts`) — zanim cokolwiek trafi do DB lub OpenAI:
+1. **Pre-processing** (`message-sanitizer.ts`): zanim cokolwiek trafi do DB lub OpenAI:
    - Script/HTML injection → canned response
    - Prompt injection (PL + EN patterns) → canned response
    - Image/binary data → canned response
@@ -129,15 +129,15 @@ Każda tabela ma `tenant_id`. Supabase RLS policies wymuszają izolację wierszy
 10. Zapisz parę wiadomości, zwróć odpowiedź
 
 ### Data Security
-- **PII encryption**: imię i telefon leada — AES-256-GCM at-rest
-- **Format**: `{iv}:{authTag}:{ciphertext}` (hex) — `src/common/services/encryption.service.ts`
+- **PII encryption**: imię i telefon leada: AES-256-GCM at-rest
+- **Format**: `{iv}:{authTag}:{ciphertext}` (hex): `src/common/services/encryption.service.ts`
 - **Walidacja**: wszystkie request DTOs przez Zod + custom `ZodValidationPipe`
 
 ### API Middleware Stack (kolejność ma znaczenie)
 Helmet → CORS → Throttler → GlobalExceptionFilter → ZodValidationPipe → AuthGuard → TenantGuard
 
 ### CORS
-CORS jest **otwarty dla wszystkich originów** — widget musi działać na dowolnej domenie klienta (salonbeauty.pl, restauracja.pl itd.). `DomainWhitelistGuard` jest rzeczywistą warstwą bezpieczeństwa dla publicznych endpointów widgetu — sprawdza `bot.allowedDomains` vs `Origin` header. API używa JWT Bearer tokenów (nie cookies), więc CORS nie jest tu warstwą auth.
+CORS jest **otwarty dla wszystkich originów**, widget musi działać na dowolnej domenie klienta (salonbeauty.pl, restauracja.pl itd.). `DomainWhitelistGuard` jest rzeczywistą warstwą bezpieczeństwa dla publicznych endpointów widgetu, sprawdza `bot.allowedDomains` vs `Origin` header. API używa JWT Bearer tokenów (nie cookies), więc CORS nie jest tu warstwą auth.
 
 ### Rate Limits (per IP)
 - Default: 100 req/min
@@ -147,29 +147,29 @@ CORS jest **otwarty dla wszystkich originów** — widget musi działać na dowo
 - Contact form: 10 req/min
 
 ### Widget Constraints
-- **Hard limit**: <14KB gzip — wymuszany przez plugin Vite w `vite.config.ts` (bumped z 12 → 13 → 14KB; ostatni bump dla streamingu SSE + reveal-buffer typewriter)
-- **Primary platform: WordPress** — instalacja przez wtyczkę WPCode, instrukcje w `EmbedCode.tsx`. Skrypt działa też na każdej innej stronie HTML (fallback). Inne CMS — Webflow/Shopify/Wix/Squarespace — wycięte z oficjalnych instrukcji.
+- **Hard limit**: <14KB gzip: wymuszany przez plugin Vite w `vite.config.ts` (bumped z 12 → 13 → 14KB; ostatni bump dla streamingu SSE + reveal-buffer typewriter)
+- **Primary platform: WordPress**: instalacja przez wtyczkę WPCode, instrukcje w `EmbedCode.tsx`. Skrypt działa też na każdej innej stronie HTML (fallback). Inne CMS. Webflow/Shopify/Wix/Squarespace, wycięte z oficjalnych instrukcji.
 - Shadow DOM izoluje style od strony hosta
-- Preact (nie React) — dla rozmiaru bundle
+- Preact (nie React): dla rozmiaru bundle
 - Konfigurowany przez `data-bot-id` na tagu `<script>`
-- `document.currentScript` fallback na `querySelector('[data-bot-id]')` — guard against double-init (React Strict Mode, snippet wklejony 2x)
-- `BotikoWidget.open/close/toggle` — globalne API dla strony hosta
-- Session persistence: `sessionStorage` per `botiko_{botId}` (historia ginie po zamknięciu zakładki — celowo, prywatność)
-- **Bot odpowiada 24/7** — `businessHours` config jest czysto informacyjny (banner), nigdy nie blokuje chatu
-- Fetch timeout 30s via `AbortController` — spinner nie kręci się w nieskończoność
-- Obsługa HTTP error codes: 400 / 403 (plan limit → lead form) / 429 / 5xx / AbortError — każdy ma osobny komunikat PL
-- `suggestedQuestions` z `GET /api/v1/bot/:id/config` — branżowe, nie hardcoded
+- `document.currentScript` fallback na `querySelector('[data-bot-id]')`, guard against double-init (React Strict Mode, snippet wklejony 2x)
+- `BotikoWidget.open/close/toggle`: globalne API dla strony hosta
+- Session persistence: `sessionStorage` per `botiko_{botId}` (historia ginie po zamknięciu zakładki, celowo, prywatność)
+- **Bot odpowiada 24/7**: `businessHours` config jest czysto informacyjny (banner), nigdy nie blokuje chatu
+- Fetch timeout 30s via `AbortController`: spinner nie kręci się w nieskończoność
+- Obsługa HTTP error codes: 400 / 403 (plan limit → lead form) / 429 / 5xx / AbortError, każdy ma osobny komunikat PL
+- `suggestedQuestions` z `GET /api/v1/bot/:id/config`: branżowe, nie hardcoded
 
-### Database Schema (Prisma — `apps/api/prisma/schema.prisma`)
+### Database Schema (Prisma, `apps/api/prisma/schema.prisma`)
 Główne modele: `Tenant`, `User`, `Bot`, `KnowledgeChunk` (pgvector), `Lead` (PII encrypted), `Conversation`, `Message`, `Review`, `ProcessedStripeEvent` (idempotency guard webhooków), `BillingEvent` (audit trail: ACTIVATED/DEACTIVATED/PLAN_CHANGED/TRIAL_EXPIRED)
 
-Enums: `Industry` (BEAUTY/HEALTH/FOOD/AUTO/OTHER), `Plan` (STARTER/PRO/PREMIUM — w MVP używamy tylko STARTER), `LeadStatus` (NEW/CONTACTED/CONVERTED/LOST), `MsgRole` (USER/ASSISTANT), `UserRole` (OWNER/MEMBER)
+Enums: `Industry` (BEAUTY/HEALTH/FOOD/AUTO/OTHER), `Plan` (STARTER/PRO/PREMIUM, w MVP używamy tylko STARTER), `LeadStatus` (NEW/CONTACTED/CONVERTED/LOST), `MsgRole` (USER/ASSISTANT), `UserRole` (OWNER/MEMBER)
 
-**Industry templates:** BEAUTY/HEALTH/FOOD/AUTO mają własne pliki w `apps/api/src/brand-templates/`. `OTHER` korzysta z generycznego szablonu — obsługuje każdą branżę usługową bez dedykowanego prompta.
+**Industry templates:** BEAUTY/HEALTH/FOOD/AUTO mają własne pliki w `apps/api/src/brand-templates/`. `OTHER` korzysta z generycznego szablonu, obsługuje każdą branżę usługową bez dedykowanego prompta.
 
-### Schema changes — zasada źródła prawdy
-- **Każda zmiana `apps/api/prisma/schema.prisma` MUSI mieć w tym samym commicie migrację Prisma** — `pnpm prisma migrate dev --name <opis>` w `apps/api/`. Railway robi `prisma migrate deploy` przy starcie API; bez migracji = produkcja pada (incydent: PR #50 dodał `Message.wasFallback` bez migracji → prod 500 → hotfix PR #52).
-- **`supabase/migrations/` służy WYŁĄCZNIE do RLS policies i rzeczy Postgres-specific** (extensions, GRANT-y). Nigdy nie duplikuj tu zmian DDL — to powoduje drift. Szczegóły w `supabase/migrations/README.md`.
+### Schema changes, zasada źródła prawdy
+- **Każda zmiana `apps/api/prisma/schema.prisma` MUSI mieć w tym samym commicie migrację Prisma**, `pnpm prisma migrate dev --name <opis>` w `apps/api/`. Railway robi `prisma migrate deploy` przy starcie API; bez migracji = produkcja pada (incydent: PR #50 dodał `Message.wasFallback` bez migracji → prod 500 → hotfix PR #52).
+- **`supabase/migrations/` służy WYŁĄCZNIE do RLS policies i rzeczy Postgres-specific** (extensions, GRANT-y). Nigdy nie duplikuj tu zmian DDL, to powoduje drift. Szczegóły w `supabase/migrations/README.md`.
 
 ### Moduły API (`apps/api/src/modules/`)
 | Moduł | Endpointy | Auth |
@@ -183,25 +183,25 @@ Enums: `Industry` (BEAUTY/HEALTH/FOOD/AUTO/OTHER), `Plan` (STARTER/PRO/PREMIUM �
 | `billing` | `/api/v1/billing/*` | AuthGuard (checkout/portal/status); webhook publiczny |
 | `tenant` | `/api/v1/tenant/*` | AuthGuard+TenantGuard |
 | `review` | `/api/v1/reviews/*` | AuthGuard+TenantGuard |
-| `ai` | — (wewnętrzny provider OpenAI, bez endpointów publicznych) | — |
+| `ai` |: (wewnętrzny provider OpenAI, bez endpointów publicznych) |, |
 
 ---
 
 ## Konwencje
 
-- TypeScript strict mode — zero `any`, zero `ts-ignore`
+- TypeScript strict mode: zero `any`, zero `ts-ignore`
 - Walidacja przez Zod na WSZYSTKICH endpoints (nie class-validator)
-- Brak wspólnego pakietu `@botiko/types` — każda aplikacja ma własne typy
+- Brak wspólnego pakietu `@botiko/types`: każda aplikacja ma własne typy
 - Komponenty: PascalCase | Hooks: use+PascalCase | Utils: camelCase | Types: PascalCase
 - API endpoints: REST, format `/api/v1/*`
 
 ---
 
-## Git Workflow (OBOWIĄZKOWY — Claude robi to autonomicznie)
+## Git Workflow (OBOWIĄZKOWY. Claude robi to autonomicznie)
 
-### Zasada główna — Claude zarządza git samodzielnie
+### Zasada główna. Claude zarządza git samodzielnie
 **Użytkownik NIE musi pilnować commitów, pushów ani PR-ów.**
-Claude wykonuje cały flow git autonomicznie po każdym logicznym etapie pracy — bez czekania na polecenie.
+Claude wykonuje cały flow git autonomicznie po każdym logicznym etapie pracy, bez czekania na polecenie.
 
 ### Autonomiczny flow Claude'a (krok po kroku)
 ```
@@ -211,7 +211,7 @@ Claude wykonuje cały flow git autonomicznie po każdym logicznym etapie pracy �
 4. Po skończeniu zadania → gh pr create (jeśli PR jeszcze nie istnieje)
 ```
 
-Claude informuje użytkownika co zrobił ("Zacommitowałem X na branchu Y, PR: link") — ale nie pyta o pozwolenie na każdy krok.
+Claude informuje użytkownika co zrobił ("Zacommitowałem X na branchu Y, PR: link"), ale nie pyta o pozwolenie na każdy krok.
 
 ### Kiedy commitować (checkpoint strategy)
 | Zdarzenie | Akcja Claude'a |
@@ -243,40 +243,40 @@ ci: dodaj job sprawdzający rozmiar widgetu
 ```
 Scope opcjonalny: `feat(api):`, `fix(web):`, `chore(widget):`
 
-### Staging — zawsze konkretne pliki
+### Staging, zawsze konkretne pliki
 ```bash
 git add <konkretne pliki>   # NIGDY git add -A bez weryfikacji
 git add apps/api/src/...    # jawnie, żeby nie commitować .env przez pomyłkę
 ```
 
 ### Czego NIGDY nie commitować
-- Pliki `.env` — pre-commit hook blokuje automatycznie
+- Pliki `.env`: pre-commit hook blokuje automatycznie
 - `node_modules/`, `.next/`, `dist/`
 - Sekrety, klucze API, tokeny
 
-### Styl commitów i PR — bez śladów AI
+### Styl commitów i PR, bez śladów AI
 - **Nie dodawaj** stopki `Co-Authored-By: Claude …` do commitów ani `🤖 Generated with …` do opisów PR.
 - Commit message i opis PR piszemy rzeczowo, po polsku, bez wzmianek o AI/asystencie.
-- Dotyczy też komentarzy w kodzie i treści — żadnych „Made by Claude" itp.
+- Dotyczy też komentarzy w kodzie i treści: żadnych „Made by Claude" itp.
 
-### CI (GitHub Actions) — uruchamia się automatycznie na każdym PR
-- `API (lint + test)` — ESLint + Jest (testy jednostkowe + Supertest E2E)
-- `Web (lint + type-check)` — ESLint + tsc
-- `Widget (build + size check)` — Vite build z limitem <14KB gzip
-- `E2E — landing pages (Playwright)` — smoke testy landing pages (chromium only)
-- `WordPress plugin (PHPCS + build)` — php -l + PHPCS (WordPress + Extra) + build ZIP
+### CI (GitHub Actions), uruchamia się automatycznie na każdym PR
+- `API (lint + test)`: ESLint + Jest (testy jednostkowe + Supertest E2E)
+- `Web (lint + type-check)`: ESLint + tsc
+- `Widget (build + size check)`: Vite build z limitem <14KB gzip
+- `E2E: landing pages (Playwright)`, smoke testy landing pages (chromium only)
+- `WordPress plugin (PHPCS + build)`: php -l + PHPCS (WordPress + Extra) + build ZIP
 
 Merge możliwy tylko gdy wszystkie przechodzą. Claude informuje o statusie CI.
 
 ## Workflow agentów (armia subagentów)
 
-Claude orkiestruje zespół subagentów i dobiera ich do etapu pracy automatycznie. Pełny proces — kiedy którego agenta i „definition of done" — w [`docs/AGENT-WORKFLOW.md`](docs/AGENT-WORKFLOW.md).
+Claude orkiestruje zespół subagentów i dobiera ich do etapu pracy automatycznie. Pełny proces, kiedy którego agenta i „definition of done", w [`docs/AGENT-WORKFLOW.md`](docs/AGENT-WORKFLOW.md).
 
 **7 ról:** architekt/plan (`architect`/`planner`) · builder (`build-error-resolver`) · security/RODO (`security-reviewer`) · logika biznesowa (`botiko-business`) · poprawność treści PL (`botiko-content`) · SEO/GEO (`claude-seo:*`) · dokumentacja (`doc-updater`). Agenci `botiko-business` i `botiko-content` są wersjonowane w repo (`.claude/agents/`).
 
 **Pipeline:** plan → build → review równoległy (security + content + business, zależnie od typu zmiany) → fix → docs → **wpis do [`WORKLOG.md`](WORKLOG.md)** → commit/PR.
 
-**Dziennik prac:** po każdym logicznym etapie Claude dopisuje wpis do `WORKLOG.md` (data, dzień, co zrobione, którzy agenci sprawdzili, status) — to backlog + historia w jednym miejscu. `TASK.md` = co PLANUJEMY, `WORKLOG.md` = co ZROBIONE.
+**Dziennik prac:** po każdym logicznym etapie Claude dopisuje wpis do `WORKLOG.md` (data, dzień, co zrobione, którzy agenci sprawdzili, status), to backlog + historia w jednym miejscu. `TASK.md` = co PLANUJEMY, `WORKLOG.md` = co ZROBIONE.
 
 ## Brand Colors
 
@@ -289,13 +289,13 @@ text: '#0F172A'     bg: '#F8FAFC'
 
 ## Język marketingowy
 
-NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z branżą beauty, a Botiko obsługuje wiele branż. Bot NIE obsługuje rezerwacji — odsyła do Booksy/Calendly.
+NIE mów "chatbot AI". Mów **"bot"**, "asystentka" kojarzy się tylko z branżą beauty, a Botiko obsługuje wiele branż. Bot NIE obsługuje rezerwacji, odsyła do Booksy/Calendly.
 - Ból: "tracisz klientki o 22:00 bo nie odbierasz"
 - ROI: "1 klientka = 150-300 zł. Bot = 99 zł/mies."
 
 ## Aktualny stan projektu (2026-07-01)
 
-**Faza:** 1A ukończona — **MVP zdeployowane na produkcji** (`botiko.pl`, zaindeksowane w Google). Jesteśmy w Fazie 2 (piloty, pierwsi klienci). Oficjalna wtyczka WordPress zbudowana i **zgłoszona do katalogu WordPress.org** (czeka na review).
+**Faza:** 1A ukończona, **MVP zdeployowane na produkcji** (`botiko.pl`, zaindeksowane w Google). Jesteśmy w Fazie 2 (piloty, pierwsi klienci). Oficjalna wtyczka WordPress zbudowana i **zgłoszona do katalogu WordPress.org** (czeka na review).
 
 **Infrastruktura produkcyjna:**
 - **Web** (`apps/web`) → Vercel, auto-deploy po merge na `main`
@@ -307,30 +307,30 @@ NIE mów "chatbot AI". Mów **"bot"** — "asystentka" kojarzy się tylko z bran
 - Core bot (RAG + OpenAI) z pełnym pre-processingiem wiadomości
 - Widget embedded (<14KB, Shadow DOM, natywnie zoptymalizowany pod WordPress; działa też na dowolnej innej stronie WWW)
 - Dashboard (10 stron: overview, leads, conversations, knowledge, knowledge-base, settings, embed, billing, help)
-- Onboarding: modal `SetupWizard` (`components/dashboard/SetupWizard.tsx`) — 4 kroki: branża → dane firmy → wiedza → embed. Uruchamia się automatycznie po pierwszym logowaniu. Strony `/onboarding/step-1..5` zostały usunięte (martwy kod po refaktorze na modal).
-- Embed installer (`apps/web/app/dashboard/embed/EmbedCode.tsx`) — WordPress (generowanie kodu połączenia dla oficjalnej wtyczki + fallback WPCode) i Inna strona (uniwersalny skrypt HTML)
-- Oficjalna wtyczka WordPress (`wordpress-plugin/botiko/`) — osadza widget bez edycji motywu, one-click pairing (autoryzacja domeny kodem), panel statusu; instalowalna z ZIP, zgłoszona do wp.org (slug `botiko-ai-customer-service-bot`). Proces wydań: `wordpress-plugin/PUBLISHING.md`
-- 5 landing pages branżowych (`/dla/salon-beauty`, `/dla/gabinet-spa`, `/dla/restauracja`, `/dla/warsztat-mechaniczny`, `/dla/inna`) — każda z wzmianką WordPress-first
+- Onboarding: modal `SetupWizard` (`components/dashboard/SetupWizard.tsx`), 4 kroki: branża → dane firmy → wiedza → embed. Uruchamia się automatycznie po pierwszym logowaniu. Strony `/onboarding/step-1..5` zostały usunięte (martwy kod po refaktorze na modal).
+- Embed installer (`apps/web/app/dashboard/embed/EmbedCode.tsx`). WordPress (generowanie kodu połączenia dla oficjalnej wtyczki + fallback WPCode) i Inna strona (uniwersalny skrypt HTML)
+- Oficjalna wtyczka WordPress (`wordpress-plugin/botiko/`), osadza widget bez edycji motywu, one-click pairing (autoryzacja domeny kodem), panel statusu; instalowalna z ZIP, zgłoszona do wp.org (slug `botiko-ai-customer-service-bot`). Proces wydań: `wordpress-plugin/PUBLISHING.md`
+- 5 landing pages branżowych (`/dla/salon-beauty`, `/dla/gabinet-spa`, `/dla/restauracja`, `/dla/warsztat-mechaniczny`, `/dla/inna`), każda z wzmianką WordPress-first
 - Stripe billing (STARTER 99 zł/mies., 14 dni trial, webhooks, idempotency guard, audit trail BillingEvent)
-- System emailowy (Resend) — szablony, drip scheduler onboardingowy, powiadomienia o leadach, billing webhooks
+- System emailowy (Resend): szablony, drip scheduler onboardingowy, powiadomienia o leadach, billing webhooks
 - System recenzji (`Review` model + moduł API)
 - Landing page marketingowy + blog SEO + formularz kontaktowy
-- Finalny brand kit (`apps/web/public/botiko-*.svg` — wordmark + znak, warianty light/dark/white)
+- Finalny brand kit (`apps/web/public/botiko-*.svg`: wordmark + znak, warianty light/dark/white)
 - Security hardening (CORS, UUID validation, HTML escaping, HTTP error handling, walidacja hasła: 12 znaków + cyfra + znak specjalny)
 - Pokrycie testami: testy jednostkowe (Jest) + E2E landing pages (Playwright) + E2E API (Supertest); 5-jobowy CI zielony (API, Web, Widget, E2E, WordPress plugin)
 
-### Blog — content runway
+### Blog, content runway
 
 - **32 posty MDX** w `apps/web/content/blog/`, w tym 5 pillar per branża + pillar „Botiko dla WordPress" (`botiko-dla-wordpress-przewodnik-2026.mdx`)
-- **Daty 2026-03-28 → 2026-07-28** — `apps/web/lib/blog.ts` filtruje posty z datą przyszłą (`date <= dziś`), więc posty **auto-publikują się w dniu z frontmatter**. Mamy zaplanowaną treść do końca lipca 2026.
-- Każdy post ma 3 grafiki w `apps/web/public/blog/`: `{slug}-hero.jpg` + `{slug}-1.jpg` + `{slug}-2.jpg`. Fallback: `default-hero.jpg`. Grafiki generowane ręcznie, nie ma automatu — dodając post trzeba dorzucić obrazy.
+- **Daty 2026-03-28 → 2026-07-28**: `apps/web/lib/blog.ts` filtruje posty z datą przyszłą (`date <= dziś`), więc posty **auto-publikują się w dniu z frontmatter**. Mamy zaplanowaną treść do końca lipca 2026.
+- Każdy post ma 3 grafiki w `apps/web/public/blog/`: `{slug}-hero.jpg` + `{slug}-1.jpg` + `{slug}-2.jpg`. Fallback: `default-hero.jpg`. Grafiki generowane ręcznie, nie ma automatu, dodając post trzeba dorzucić obrazy.
 - Komponenty MDX (FAQ, ROICalculator, ComparisonTable, CTABlock, Callout, InfoBox, ImageGallery, VideoEmbed, CallToAction) w `apps/web/components/blog/mdx/`
 
-**Backlog (drobne poprawki — nie blokują):**
+**Backlog (drobne poprawki, nie blokują):**
 - Monitoring produkcyjny: Sentry + UptimeRobot (`TASK.md §2.4`)
 - Weryfikacja crona `trial-notifications` na produkcji (`TASK.md §1A.8`)
 
 **W roadmapie (Faza 2+):**
 - Piloty: cold outreach, 3 darmowe piloty 30-dniowe, case studies
 - Wtyczka WordPress.org: po akceptacji review → deploy przez SVN (`.github/workflows/wp-deploy.yml`), dorobienie screenshotów, aktualizacja landingu/EmbedCode/SetupWizard na „zainstaluj z katalogu"
-- SEO off-page (główny bloker wzrostu): backlinki, Google Business Profile, wzmianki marki — patrz `docs/seo/PLAYBOOK.md` i `docs/seo/audyt-2026-06-30.md`
+- SEO off-page (główny bloker wzrostu): backlinki, Google Business Profile, wzmianki marki, patrz `docs/seo/PLAYBOOK.md` i `docs/seo/audyt-2026-06-30.md`

@@ -95,8 +95,8 @@ function MockupKnowledge() {
       <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Baza wiedzy</p>
       <div className="flex flex-col gap-2.5">
         {[
-          { label: 'Cennik usług', preview: 'Manicure hybrydowy — 90 zł, Pedicure — 80 zł...', color: '#6366F1' },
-          { label: 'Godziny otwarcia', preview: 'Pon–Pt 9:00–19:00, Sob 9:00–15:00...', color: '#10B981' },
+          { label: 'Cennik usług', preview: 'Manicure hybrydowy, 90 zł, Pedicure, 80 zł...', color: '#6366F1' },
+          { label: 'Godziny otwarcia', preview: 'Pon-Pt 9:00-19:00, Sob 9:00-15:00...', color: '#10B981' },
           { label: 'FAQ', preview: 'Czy przyjmujecie bez rezerwacji? Tak, jeśli...', color: '#F59E0B' },
         ].map((item) => (
           <div key={item.label} className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-100">
@@ -167,14 +167,14 @@ const STEPS = [
   {
     num: '01',
     title: 'Wybierz branżę',
-    desc: 'Salon beauty, gabinet, restauracja, warsztat — wybierasz jeden szablon. Bot dostaje gotową wiedzę o Twojej branży od razu.',
+    desc: 'Salon beauty, gabinet, restauracja, warsztat, wybierasz jeden szablon. Bot dostaje gotową wiedzę o Twojej branży od razu.',
     badge: 'Gotowe szablony dla 5 branż',
     Mockup: MockupBranch,
   },
   {
     num: '02',
     title: 'Dodaj wiedzę o firmie',
-    desc: 'Wklej cennik, godziny pracy, odpowiedzi na najczęstsze pytania. Bot uczy się w kilka minut — bez programowania.',
+    desc: 'Wklej cennik, godziny pracy, odpowiedzi na najczęstsze pytania. Bot uczy się w kilka minut, bez programowania.',
     badge: 'Wdrożenie w ~15 minut',
     Mockup: MockupKnowledge,
   },

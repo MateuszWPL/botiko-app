@@ -1,4 +1,4 @@
-# Backend API Codemap — NestJS + Prisma
+# Backend API Codemap. NestJS + Prisma
 
 **Last Updated:** 2026-04-18  
 **Location:** `apps/api/`  
@@ -10,10 +10,10 @@
 ## Quick Overview
 
 NestJS application with 9 modules (auth, bot, chat, knowledge, lead, billing, tenant, contact, ai). Each module has:
-- `*.controller.ts` — HTTP routes
-- `*.service.ts` — Business logic
-- `*.dto.ts` — Request/response shapes (Zod-validated)
-- `*.module.ts` — Module definition
+- `*.controller.ts`: HTTP routes
+- `*.service.ts`: Business logic
+- `*.dto.ts`: Request/response shapes (Zod-validated)
+- `*.module.ts`: Module definition
 
 **Tech Stack:**
 - Framework: NestJS 9
@@ -155,7 +155,7 @@ prisma/
 
 ## Modules at a Glance
 
-### 1. `auth` — Authentication
+### 1. `auth`. Authentication
 
 **Purpose:** User registration, login, JWT issuance, refresh tokens
 
@@ -186,7 +186,7 @@ POST /api/v1/auth/refresh
 
 ---
 
-### 2. `bot` — Bot Management
+### 2. `bot`. Bot Management
 
 **Purpose:** Create/read/update/delete bot instances; configure personality, domains, welcome message
 
@@ -222,7 +222,7 @@ PATCH /api/v1/bot/:id
 
 ---
 
-### 3. `chat` — RAG Pipeline & Chat Processing
+### 3. `chat`. RAG Pipeline & Chat Processing
 
 **Purpose:** Core chat logic: embeddings, similarity search, OpenAI, context injection, message sanitization
 
@@ -295,16 +295,16 @@ GET /api/v1/conversations/:id/messages
 ```
 
 **Key Services:**
-- `ChatService` — orchestrates pipeline
-- `MessageSanitizer` — injection/profanity/gibberish detection
-- `AiService` (OpenAI provider) — embeddings + chat completion
-- `EmbeddingService` — pgvector storage & similarity search
+- `ChatService`: orchestrates pipeline
+- `MessageSanitizer`: injection/profanity/gibberish detection
+- `AiService` (OpenAI provider): embeddings + chat completion
+- `EmbeddingService`: pgvector storage & similarity search
 
 **Guards:** DomainWhitelistGuard (validates Origin vs bot.allowedDomains), BotThrottleGuard (20 req/min per IP)
 
 ---
 
-### 4. `knowledge` — Knowledge Base Management
+### 4. `knowledge`. Knowledge Base Management
 
 **Purpose:** Store, retrieve, embed company-specific information for RAG
 
@@ -335,12 +335,12 @@ DELETE /api/v1/knowledge/:id
 - Re-embedding is expensive: cache when possible (but MVP doesn't cache)
 
 **Services:**
-- `KnowledgeService` — CRUD
-- `EmbeddingService` — OpenAI integration + pgvector queries
+- `KnowledgeService`: CRUD
+- `EmbeddingService`: OpenAI integration + pgvector queries
 
 ---
 
-### 5. `lead` — Lead Capture & Management
+### 5. `lead`. Lead Capture & Management
 
 **Purpose:** Collect leads via widget form; manage status; export
 
@@ -388,7 +388,7 @@ model Lead {
 
 ---
 
-### 6. `billing` — Stripe Integration
+### 6. `billing`. Stripe Integration
 
 **Purpose:** Handle subscriptions, trial logic, plan enforcement
 
@@ -427,12 +427,12 @@ POST /api/v1/billing/webhook (Stripe)
 - Audit trail: `BillingEvent` table logs state changes (ACTIVATED, DEACTIVATED, PLAN_CHANGED)
 
 **Services:**
-- `BillingService` — Stripe integration, plan state
-- `NotificationService` — Sends trial warning emails
+- `BillingService`: Stripe integration, plan state
+- `NotificationService`: Sends trial warning emails
 
 ---
 
-### 7. `tenant` — Account Management
+### 7. `tenant`. Account Management
 
 **Purpose:** Account settings, team member management (future), tenant info
 
@@ -454,7 +454,7 @@ PATCH /api/v1/tenant
 
 ---
 
-### 8. `contact` — Landing Page Contact Form
+### 8. `contact`. Landing Page Contact Form
 
 **Purpose:** Collect inquiries from landing page
 
@@ -471,13 +471,13 @@ POST /api/v1/contact
 
 ---
 
-### 9. `ai` — AI Provider Interface
+### 9. `ai`. AI Provider Interface
 
 **Purpose:** Abstract OpenAI integration (future: support Claude, other models)
 
 **Services:**
-- `AiServiceInterface` — Abstract interface
-- `OpenAiProvider` — Concrete implementation
+- `AiServiceInterface`: Abstract interface
+- `OpenAiProvider`: Concrete implementation
   - `chat(messages, model, temp)` → string response
   - `embed(text)` → number[] (1536-dim)
 
@@ -530,15 +530,15 @@ export class CreateBotDto {
 See `CODEMAPS/database.md` for full schema details.
 
 Key tables:
-- `Tenant` — Account
-- `User` — Team member
-- `Bot` — AI bot instance
-- `KnowledgeChunk` — Embeddings (pgvector)
-- `Lead` — Leads (PII encrypted)
-- `Conversation` — Chat session
-- `Message` — Individual messages
-- `ProcessedStripeEvent` — Webhook idempotency
-- `BillingEvent` — Audit trail
+- `Tenant`: Account
+- `User`: Team member
+- `Bot`: AI bot instance
+- `KnowledgeChunk`: Embeddings (pgvector)
+- `Lead`: Leads (PII encrypted)
+- `Conversation`: Chat session
+- `Message`: Individual messages
+- `ProcessedStripeEvent`: Webhook idempotency
+- `BillingEvent`: Audit trail
 
 ---
 
@@ -596,7 +596,7 @@ RESEND_API_KEY=re_...
 NODE_ENV=development
 ```
 
-**Validation:** `apps/api/src/config/env.ts` (Zod) — process exits if any var is missing or invalid.
+**Validation:** `apps/api/src/config/env.ts` (Zod), process exits if any var is missing or invalid.
 
 ---
 

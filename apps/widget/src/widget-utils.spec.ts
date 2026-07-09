@@ -13,9 +13,9 @@ import {
   ABORT_ERROR_MSG,
 } from './widget-utils';
 
-// ── onPrimary — kontrastowy kolor tekstu na tle primary ──────────────────────
+// ── onPrimary, kontrastowy kolor tekstu na tle primary ──────────────────────
 
-describe('onPrimary — czytelny kolor na tle primary', () => {
+describe('onPrimary, czytelny kolor na tle primary', () => {
   it.each([
     ['#6366F1', '#fff'], // indygo (domyślny) → biały
     ['#0F172A', '#fff'], // ciemny → biały
@@ -38,9 +38,9 @@ describe('onPrimary — czytelny kolor na tle primary', () => {
   });
 });
 
-// ── sanitizeHex — walidacja ręcznych kolorów z configu ───────────────────────
+// ── sanitizeHex, walidacja ręcznych kolorów z configu ───────────────────────
 
-describe('sanitizeHex — akceptuje tylko poprawny #rrggbb', () => {
+describe('sanitizeHex, akceptuje tylko poprawny #rrggbb', () => {
   it.each(['#FFFFFF', '#0f172a', '#6366F1'])('przepuszcza %s', (v) => {
     expect(sanitizeHex(v)).toBe(v);
   });
@@ -60,7 +60,7 @@ describe('sanitizeHex — akceptuje tylko poprawny #rrggbb', () => {
 
 // ── isAdminPath ───────────────────────────────────────────────────────────────
 
-describe('isAdminPath — widget nie ładuje się na panelach CMS', () => {
+describe('isAdminPath, widget nie ładuje się na panelach CMS', () => {
   it.each([
     '/wp-admin',
     '/wp-admin/post.php',
@@ -80,9 +80,9 @@ describe('isAdminPath — widget nie ładuje się na panelach CMS', () => {
   );
 });
 
-// ── errorMessageForStatus — HTTP error handling ───────────────────────────────
+// ── errorMessageForStatus. HTTP error handling ───────────────────────────────
 
-describe('errorMessageForStatus — obsługa błędów HTTP', () => {
+describe('errorMessageForStatus, obsługa błędów HTTP', () => {
   it('HTTP 400: zwraca komunikat o złej wiadomości', () => {
     const cb = vi.fn();
     const msg = errorMessageForStatus(400, undefined, cb);
@@ -127,9 +127,9 @@ describe('errorMessageForStatus — obsługa błędów HTTP', () => {
   );
 });
 
-// ── ABORT_ERROR_MSG — timeout 30s ────────────────────────────────────────────
+// ── ABORT_ERROR_MSG, timeout 30s ────────────────────────────────────────────
 
-describe('ABORT_ERROR_MSG — komunikat po AbortError (timeout 30s)', () => {
+describe('ABORT_ERROR_MSG, komunikat po AbortError (timeout 30s)', () => {
   it('zawiera informację o przekroczeniu czasu', () => {
     expect(ABORT_ERROR_MSG).toContain('za długo');
   });
@@ -137,7 +137,7 @@ describe('ABORT_ERROR_MSG — komunikat po AbortError (timeout 30s)', () => {
 
 // ── sessionStorage per botiko_{botId} ────────────────────────────────────────
 
-describe('saveSession / loadSession — sessionStorage per botiko_{botId}', () => {
+describe('saveSession / loadSession, sessionStorage per botiko_{botId}', () => {
   beforeEach(() => {
     sessionStorage.clear();
   });
@@ -203,7 +203,7 @@ describe('saveSession / loadSession — sessionStorage per botiko_{botId}', () =
 
 // ── parseSseFrames ────────────────────────────────────────────────────────────
 
-describe('parseSseFrames — parsowanie SSE', () => {
+describe('parseSseFrames, parsowanie SSE', () => {
   it('parsuje kompletną ramkę delta', () => {
     const buf = 'data: {"type":"delta","text":"cześć"}\n\n';
     const { events, rest } = parseSseFrames(buf);
@@ -244,7 +244,7 @@ describe('parseSseFrames — parsowanie SSE', () => {
 
 // ── isValidPhone / formatPhone ────────────────────────────────────────────────
 
-describe('isValidPhone — walidacja telefonu w lead form', () => {
+describe('isValidPhone, walidacja telefonu w lead form', () => {
   it.each(['+48 600 100 200', '600100200', '0048600100200'])(
     'akceptuje "%s"',
     (phone) => {
@@ -260,7 +260,7 @@ describe('isValidPhone — walidacja telefonu w lead form', () => {
   );
 });
 
-describe('formatPhone — formatowanie polskich numerów', () => {
+describe('formatPhone, formatowanie polskich numerów', () => {
   it('9-cyfrowy numer bez prefiksu → xxx xxx xxx', () => {
     expect(formatPhone('600100200')).toBe('600 100 200');
   });
@@ -276,7 +276,7 @@ describe('formatPhone — formatowanie polskich numerów', () => {
 
 // ── isSalonClosed ─────────────────────────────────────────────────────────────
 
-describe('isSalonClosed — banner informacyjny (bot zawsze odpowiada)', () => {
+describe('isSalonClosed, banner informacyjny (bot zawsze odpowiada)', () => {
   it('zwraca false gdy brak konfiguracji godzin', () => {
     expect(isSalonClosed(null, null, [])).toBe(false);
     expect(isSalonClosed(9, 17, [])).toBe(false);

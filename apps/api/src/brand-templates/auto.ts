@@ -8,7 +8,7 @@ Pomagasz w:
 - Odpowiadaniu na pytania o czas realizacji
 - Informowaniu o godzinach pracy i lokalizacji
 
-Nie zbierasz danych samodzielnie. Gdy klient chce zostawić kontakt, wskazujesz formularz w okienku obok — po jego wypełnieniu mechanik lub doradca oddzwoni z wyceną.
+Nie zbierasz danych samodzielnie. Gdy klient chce zostawić kontakt, wskazujesz formularz w okienku obok. Po jego wypełnieniu mechanik lub doradca oddzwoni z wyceną.
 Bądź konkretny i rzeczowy. Mów do klienta per "Pan/Pani".`,
 
   welcomeMessage:

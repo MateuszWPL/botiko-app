@@ -35,7 +35,7 @@ type StripeInstance = ReturnType<typeof StripeLib>;
  *   after the first failed payment attempt and keeps retrying (smart retry)
  *   for several days. During that window the subscription is still live
  *   and the card may succeed on the next attempt. We do NOT deactivate on
- *   `past_due` — the bot continues serving traffic during the grace period.
+ *   `past_due`: the bot continues serving traffic during the grace period.
  *   Deactivation only fires when Stripe gives up and sets status to `unpaid`
  *   (after exhausting all retries) or `canceled`.
  *
@@ -44,7 +44,7 @@ type StripeInstance = ReturnType<typeof StripeLib>;
  *
  * Grace period summary:
  *   active / trialing → bot ON
- *   past_due          → bot ON (Stripe still retrying — grace period)
+ *   past_due          → bot ON (Stripe still retrying, grace period)
  *   incomplete        → bot ON (initial payment pending)
  *   unpaid            → bot OFF (Stripe exhausted retries)
  *   canceled          → bot OFF
@@ -109,7 +109,7 @@ export class BillingService {
 
     if (!this.stripe) {
       this.logger.warn(
-        'STRIPE_SECRET_KEY not set — billing endpoints disabled',
+        'STRIPE_SECRET_KEY not set: billing endpoints disabled',
       );
     }
   }
@@ -130,7 +130,7 @@ export class BillingService {
     if (!tenant) throw new NotFoundException('Tenant not found');
 
     // Audit A11: do NOT auto-deactivate tenants here (race condition when
-    // dashboard is open in multiple tabs — each tab fires a parallel UPDATE,
+    // dashboard is open in multiple tabs: each tab fires a parallel UPDATE,
     // last-write wins in unexpected ways). Trial expiry is handled exclusively
     // by the cron endpoint `POST /api/v1/billing/cron/trial-notifications`,
     // which runs once per day. Read-only here.
@@ -193,7 +193,7 @@ export class BillingService {
       const daysLeft = Math.ceil(msLeft / (1000 * 60 * 60 * 24));
       const ownerEmail = tenant.users[0]?.email;
 
-      // Auto-deactivate expired trials (idempotent — guarded by isActive)
+      // Auto-deactivate expired trials (idempotent, guarded by isActive)
       if (daysLeft <= 0 && tenant.isActive) {
         await this.prisma.tenant.update({
           where: { id: tenant.id },
@@ -203,7 +203,7 @@ export class BillingService {
           trialEndDate: trialEnd.toISOString(),
         });
         this.logger.log(
-          `Cron: trial expired — deactivated tenant: ${tenant.id}`,
+          `Cron: trial expired, deactivated tenant: ${tenant.id}`,
         );
       }
 
@@ -265,7 +265,7 @@ export class BillingService {
         this.logger.warn(
           `Failed to retrieve subscription ${tenant.stripeSubscriptionId}: ${msg}`,
         );
-        // If Stripe can't confirm the subscription, fail closed — the
+        // If Stripe can't confirm the subscription, fail closed: the
         // safer behaviour is to send the user to the portal to manage
         // the existing record rather than risk a duplicate charge.
         stillActive = true;
@@ -389,7 +389,7 @@ export class BillingService {
         await this.onInvoicePaymentFailed(event.data.object as StripeInvoice);
         break;
       default:
-        // Unhandled events — safe no-op, already recorded for idempotency.
+        // Unhandled events: safe no-op, already recorded for idempotency.
         break;
     }
   }
@@ -413,7 +413,7 @@ export class BillingService {
       if (code === 'P2002') {
         return true;
       }
-      // Any other error is unexpected — don't swallow, force a 500 so
+      // Any other error is unexpected: don't swallow, force a 500 so
       // Stripe retries (and eventually surfaces the issue in logs).
       throw err;
     }
@@ -452,7 +452,7 @@ export class BillingService {
       session.status === 'complete';
     if (!paid) {
       this.logger.warn(
-        `checkout.session.completed not paid (status=${String(session.status)}, payment_status=${String(session.payment_status)}) — skipping activation for tenant ${tenantId}`,
+        `checkout.session.completed not paid (status=${String(session.status)}, payment_status=${String(session.payment_status)}), skipping activation for tenant ${tenantId}`,
       );
       return;
     }
@@ -467,7 +467,7 @@ export class BillingService {
         : session.subscription?.id;
 
     // Retrieve line_items for plan resolution. If the call fails we log
-    // and throw — Stripe will retry the webhook rather than silently
+    // and throw: Stripe will retry the webhook rather than silently
     // activating the tenant on the wrong plan (audit A8).
     let plan: Plan = Plan.STARTER;
     try {
@@ -502,7 +502,7 @@ export class BillingService {
     });
 
     this.logger.log(
-      `Checkout completed — tenant activated: ${tenantId}, plan: ${plan}`,
+      `Checkout completed, tenant activated: ${tenantId}, plan: ${plan}`,
     );
   }
 
@@ -513,7 +513,7 @@ export class BillingService {
     const tenant = await this.resolveTenantForSubscription(subscription);
     if (!tenant) {
       this.logger.warn(
-        `subscription.updated: no tenant matched ${subscription.id} — ignoring`,
+        `subscription.updated: no tenant matched ${subscription.id}, ignoring`,
       );
       return;
     }
@@ -525,9 +525,9 @@ export class BillingService {
     );
 
     if (!shouldActivate && !shouldDeactivate) {
-      // past_due, incomplete — leave tenant alone, Stripe is still trying.
+      // past_due, incomplete: leave tenant alone, Stripe is still trying.
       this.logger.log(
-        `Subscription ${subscription.id} status=${subscription.status} — no activity change`,
+        `Subscription ${subscription.id} status=${subscription.status}: no activity change`,
       );
       return;
     }
@@ -578,7 +578,7 @@ export class BillingService {
       reason: 'subscription_deleted',
     });
 
-    this.logger.log(`Subscription deleted — tenant deactivated: ${tenant.id}`);
+    this.logger.log(`Subscription deleted, tenant deactivated: ${tenant.id}`);
 
     const ownerEmail = tenantWithUsers?.users?.[0]?.email;
     if (ownerEmail) {
@@ -650,7 +650,7 @@ export class BillingService {
           cardBrand = card.brand.charAt(0).toUpperCase() + card.brand.slice(1);
         if (card?.last4) last4 = card.last4;
       } catch {
-        // Non-critical — fall back to defaults
+        // Non-critical: fall back to defaults
       }
     }
 
@@ -701,7 +701,7 @@ export class BillingService {
         ? invoice.customer
         : invoice.customer?.id;
     this.logger.warn(
-      `invoice.payment_failed for customer ${customerId ?? '<unknown>'} — awaiting subscription.updated before deactivating`,
+      `invoice.payment_failed for customer ${customerId ?? '<unknown>'}: awaiting subscription.updated before deactivating`,
     );
 
     if (!customerId) return;
@@ -737,7 +737,7 @@ export class BillingService {
    *
    * Audit A4: handle out-of-order delivery. We may receive
    * `subscription.updated` before `checkout.session.completed` has set
-   * `stripeSubscriptionId` on the tenant — so we fall back to matching
+   * `stripeSubscriptionId` on the tenant, so we fall back to matching
    * by `stripeCustomerId` (set on the Stripe side first).
    */
   private async resolveTenantForSubscription(
@@ -769,7 +769,7 @@ export class BillingService {
 
   /**
    * Maps a Stripe price ID to the corresponding Plan enum value.
-   * Extend this when adding PRO or PREMIUM tiers — add STRIPE_PRO_PRICE_ID
+   * Extend this when adding PRO or PREMIUM tiers: add STRIPE_PRO_PRICE_ID
    * to env.ts and map it here.
    */
   private resolvePlan(priceId: string | null | undefined): Plan {
@@ -787,7 +787,7 @@ export class BillingService {
    * Appends an immutable record to the billing audit log (audit A13).
    *
    * Non-blocking: failures are caught and logged, never thrown. The audit
-   * log is a best-effort record — a write failure must not abort the main
+   * log is a best-effort record: a write failure must not abort the main
    * billing operation that triggered it.
    */
   private async logBillingEvent(
@@ -811,7 +811,7 @@ export class BillingService {
   }
 }
 
-/** Day key "YYYY-MM-DD" in the server's timezone — good enough for daily idempotency. */
+/** Day key "YYYY-MM-DD" in the server's timezone, good enough for daily idempotency. */
 function toDayKey(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }

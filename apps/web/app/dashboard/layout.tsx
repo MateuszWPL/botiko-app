@@ -12,7 +12,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-auto pt-14 md:pt-0">
-        {/* Trial/subscription banner — shown globally when trial is ending or expired */}
+        {/* Trial/subscription banner, shown globally when trial is ending or expired */}
         <Suspense fallback={null}>
           <TrialBanner />
         </Suspense>
@@ -29,7 +29,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           },
         }}
       />
-      {/* Setup wizard — auto-opens for new users, reopenable from sidebar */}
+      {/* Setup wizard, auto-opens for new users, reopenable from sidebar */}
       <SetupWizardProvider />
       <ReviewBadge />
       <WelcomeTrialModal />

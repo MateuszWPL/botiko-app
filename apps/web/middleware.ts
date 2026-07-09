@@ -45,7 +45,7 @@ export async function middleware(request: NextRequest) {
     },
   );
 
-  // getSession() reads and decodes the JWT locally — no network round-trip unless
+  // getSession() reads and decodes the JWT locally, no network round-trip unless
   // the access token is expired and needs a refresh. Much faster than getUser()
   // which always hits the Supabase auth API. Full re-validation happens in
   // server components via getUser() for actual data access.

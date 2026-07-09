@@ -67,7 +67,7 @@ function devLocalhostAllowed(hostname: string): boolean {
 }
 
 export async function assertSafePublicHost(hostname: string): Promise<void> {
-  // Allow localhost in dev (explicit env flag required — never default true in prod)
+  // Allow localhost in dev (explicit env flag required, never default true in prod)
   if (devLocalhostAllowed(hostname)) {
     return;
   }
@@ -111,7 +111,7 @@ type LookupCallback = (
  * 169.254.169.254) for the actual connection. Because this lookup is what the
  * socket uses, the address we validate is the address we connect to.
  *
- * TLS is unaffected — SNI and certificate validation still use the original
+ * TLS is unaffected: SNI and certificate validation still use the original
  * hostname, only the resolved IP is pinned by this function.
  */
 export function secureLookup(

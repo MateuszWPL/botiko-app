@@ -9,9 +9,9 @@ interface BotConfig {
   name: string;
   welcomeMsg: string;
   primaryColor: string;
-  /** Manual override for text/icons on the accent — null = auto-contrast. */
+  /** Manual override for text/icons on the accent, null = auto-contrast. */
   textColor: string | null;
-  /** Manual override for the avatar/logo circle background — null = auto. */
+  /** Manual override for the avatar/logo circle background, null = auto. */
   logoBgColor: string | null;
   online: boolean;
   companyPhone: string | null;
@@ -78,10 +78,10 @@ function Widget({
 }
 
 async function init() {
-  // Skip known CMS admin panels — widget has no business appearing in /wp-admin etc.
+  // Skip known CMS admin panels, widget has no business appearing in /wp-admin etc.
   if (isAdminPath(window.location.pathname)) return;
 
-  // Guard against double-init — synchronous flag na documentElement ustawiony PRZED
+  // Guard against double-init, synchronous flag na documentElement ustawiony PRZED
   // async init, odporny na race condition gdy dwa skrypty ładują się równolegle.
   // getElementById jest async i może przepuścić dwa równoległe init().
   if (document.documentElement.hasAttribute('data-botiko-init')) {
@@ -106,7 +106,7 @@ async function init() {
     return;
   }
 
-  // API URL is fixed at build time — no runtime override to prevent PII exfiltration
+  // API URL is fixed at build time, no runtime override to prevent PII exfiltration
   const apiUrl = (import.meta.env.VITE_API_URL as string | undefined) ?? 'https://api.botiko.pl';
 
   let config: BotConfig = {
@@ -134,7 +134,7 @@ async function init() {
       config = (await res.json()) as BotConfig;
     }
   } catch {
-    // use defaults — bot still works without remote config
+    // use defaults, bot still works without remote config
   }
 
   // The API computes domainAllowed from the Origin header. When this Origin
@@ -144,7 +144,7 @@ async function init() {
     config.online = false;
   }
 
-  // Shadow DOM — isolates widget CSS from host page
+  // Shadow DOM, isolates widget CSS from host page
   const host = document.createElement('div');
   host.id = 'botiko-host';
   // Expose --botiko-primary on the host element so the page owner can override:
@@ -155,9 +155,9 @@ async function init() {
 
   // Inject CSS variables into shadow root so components can use var(--botiko-primary)
   const styleEl = document.createElement('style');
-  // Sanitize to hex color only — prevents CSS injection through the primaryColor value
+  // Sanitize to hex color only, prevents CSS injection through the primaryColor value
   const safeColor = config.primaryColor.replace(/[^#0-9a-fA-F]/g, '');
-  // Contrast-aware foreground for text/icons on the primary background — keeps
+  // Contrast-aware foreground for text/icons on the primary background, keeps
   // the widget readable even when the tenant picks a light accent colour.
   const accentOn = onPrimary(safeColor);
 
@@ -166,8 +166,8 @@ async function init() {
   const onPrimaryColor = textOverride ?? accentOn;
 
   // Avatar/logo circle: manual background if set (with contrast-matched border
-  // + foreground), else an auto backdrop — frosted white on a dark accent,
-  // subtle dark tint on a light accent — so the logo/initial never vanishes
+  // + foreground), else an auto backdrop, frosted white on a dark accent,
+  // subtle dark tint on a light accent, so the logo/initial never vanishes
   // into a same-colour header.
   const logoOverride = sanitizeHex(config.logoBgColor);
   let avatarBg: string;

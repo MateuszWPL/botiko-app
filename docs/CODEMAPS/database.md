@@ -188,7 +188,7 @@ model KnowledgeChunk {
 ```
 
 **Key Insights:**
-- `embedding`: pgvector(1536) — one embedding per chunk
+- `embedding`: pgvector(1536): one embedding per chunk
 - pgvector enables cosine similarity search: `embedding <-> query_vector`
 - When chunk is created/updated, we embed via OpenAI API
 - RAG queries: `SELECT * FROM KnowledgeChunk WHERE bot_id = ? ORDER BY embedding <-> embedding_vector LIMIT 5`
@@ -235,7 +235,7 @@ enum LeadStatus {
 
 **Key Insights:**
 - `firstName`, `phone` are encrypted in DB
-- Format: `{iv}:{authTag}:{ciphertext}` (hex) — all 3 parts hex-encoded
+- Format: `{iv}:{authTag}:{ciphertext}` (hex): all 3 parts hex-encoded
 - Encryption happens in `EncryptionService` before saving to DB
 - Decryption only in dashboard, exports, or when returning to authenticated users
 - `email` is NOT encrypted (optional, not always captured)
@@ -457,13 +457,13 @@ model User {
 
 ### Foreign Keys & Cascades
 
-- `User.tenantId` → `Tenant.id` (onDelete: Cascade) — delete tenant = delete users
-- `Bot.tenantId` → `Tenant.id` (onDelete: Cascade) — delete tenant = delete bots
-- `KnowledgeChunk.botId` → `Bot.id` (onDelete: Cascade) — delete bot = delete chunks
-- `Lead.tenantId` → `Tenant.id` (onDelete: Cascade) — delete tenant = delete leads
+- `User.tenantId` → `Tenant.id` (onDelete: Cascade): delete tenant = delete users
+- `Bot.tenantId` → `Tenant.id` (onDelete: Cascade): delete tenant = delete bots
+- `KnowledgeChunk.botId` → `Bot.id` (onDelete: Cascade): delete bot = delete chunks
+- `Lead.tenantId` → `Tenant.id` (onDelete: Cascade): delete tenant = delete leads
 - `Lead.botId` is not FK (can be non-existent, for deleted bots)
-- `Conversation.botId` → `Bot.id` (onDelete: Cascade) — delete bot = delete chats
-- `Message.conversationId` → `Conversation.id` (onDelete: Cascade) — delete conv = delete msgs
+- `Conversation.botId` → `Bot.id` (onDelete: Cascade): delete bot = delete chats
+- `Message.conversationId` → `Conversation.id` (onDelete: Cascade), delete conv = delete msgs
 
 ---
 
@@ -561,7 +561,7 @@ export class EncryptionService {
 
 ### Why Not Just Hashing?
 
-Hashing (bcrypt, SHA) is one-way — we need to decrypt for customer export. AES-256-GCM is reversible + authenticated (can't forge).
+Hashing (bcrypt, SHA) is one-way, we need to decrypt for customer export. AES-256-GCM is reversible + authenticated (can't forge).
 
 ---
 

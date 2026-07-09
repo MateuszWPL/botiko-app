@@ -36,7 +36,7 @@ export default function ResetPasswordPage() {
     const { error: updateError } = await supabase.auth.updateUser({ password });
 
     if (updateError) {
-      setError('Nie udało się zmienić hasła. Link mógł wygasnąć — wyślij nowy.');
+      setError('Nie udało się zmienić hasła. Link mógł wygasnąć, wyślij nowy.');
       setLoading(false);
       return;
     }
@@ -142,8 +142,8 @@ export default function ResetPasswordPage() {
 
       <AuthLeftPanel
         headline="Bezpieczeństwo przede wszystkim"
-        sub="Ustaw silne hasło — Twój panel i dane klientów będą bezpieczne."
-        badge="14 dni za darmo — bez karty"
+        sub="Ustaw silne hasło. Twój panel i dane klientów będą bezpieczne."
+        badge="14 dni za darmo, bez karty"
       />
     </main>
   );

@@ -25,7 +25,7 @@ export default defineConfig({
   ],
   webServer: {
     // CI: build then start (production mode, faster test run)
-    // Local: reuse the already-running dev server — no extra startup cost
+    // Local: reuse the already-running dev server, no extra startup cost
     command: process.env.CI ? 'pnpm build && pnpm start' : 'pnpm dev',
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,

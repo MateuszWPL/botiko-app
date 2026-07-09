@@ -3,10 +3,10 @@ import { ArrowRight } from 'lucide-react';
 
 /**
  * Kontekstowy link z wpisu bloga do strony pieniężnej /dla/*.
- * - Wpis branżowy (categorySlug beauty/zdrowie/food/auto…) → link do konkretnej branży.
+ * - Wpis branżowy (categorySlug beauty/zdrowie/food/auto...) → link do konkretnej branży.
  * - Wpis ogólny → blok ze wszystkimi branżami (każdy wpis linkuje do stron konwersji).
  *
- * Cel: linkowanie wewnętrzne blog → /dla/* (audyt SEO/GSC — strony pieniężne
+ * Cel: linkowanie wewnętrzne blog → /dla/* (audyt SEO/GSC, strony pieniężne
  * były dotąd bez linków przychodzących z treści).
  */
 
@@ -75,7 +75,7 @@ export default function IndustryCta({
           Prowadzisz tego typu firmę? Zobacz, jak Botiko działa u Ciebie
         </h2>
         <p className="text-sm text-slate-600 mb-5 leading-relaxed">
-          Gotowy bot dla {industry.label} — odpowiada klientom 24/7, zbiera
+          Gotowy bot dla {industry.label}, odpowiada klientom 24/7, zbiera
           kontakt i odsyła do rezerwacji. 99 zł/mies., 14 dni za darmo.
         </p>
         <Link
@@ -90,7 +90,7 @@ export default function IndustryCta({
     );
   }
 
-  // Wpis ogólny — link do wszystkich branż.
+  // Wpis ogólny, link do wszystkich branż.
   return (
     <div className="mt-12 rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-8">
       <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">

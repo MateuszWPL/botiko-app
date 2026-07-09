@@ -25,7 +25,7 @@ import { BillingService, type BillingStatus } from './billing.service';
 export class BillingController {
   constructor(private readonly billingService: BillingService) {}
 
-  /** Current plan & activation status — dashboard reads this */
+  /** Current plan & activation status: dashboard reads this */
   @Get('status')
   @UseGuards(AuthGuard, TenantGuard)
   getStatus(@CurrentTenant() tenantId: string): Promise<BillingStatus> {
@@ -52,7 +52,7 @@ export class BillingController {
   }
 
   /**
-   * Internal cron endpoint — called by Vercel Cron / Railway / Upstash once daily.
+   * Internal cron endpoint: called by Vercel Cron / Railway / Upstash once daily.
    * Sends trial reminder emails and deactivates expired trials.
    * Protected by Authorization: Bearer <CRON_SECRET>.
    */
@@ -70,7 +70,7 @@ export class BillingController {
   }
 
   /**
-   * Stripe webhook — public endpoint, no AuthGuard.
+   * Stripe webhook: public endpoint, no AuthGuard.
    * Signature verified inside BillingService using STRIPE_WEBHOOK_SECRET.
    * Throttle set high to not block legitimate Stripe retries.
    */

@@ -12,10 +12,10 @@ type State = 'idle' | 'starting' | 'polling' | 'preview' | 'confirming' | 'done'
 const ERROR_MESSAGES: Record<string, string> = {
   SSRF_BLOCKED: 'URL musi prowadzić do publicznej domeny.',
   ROBOTS_DISALLOWED: 'Strona blokuje skanowanie w robots.txt.',
-  NO_CONTENT: 'Twoja strona ładuje treść JavaScript-em — dodaj dane ręcznie lub prześlij PDF.',
+  NO_CONTENT: 'Twoja strona ładuje treść JavaScript-em, dodaj dane ręcznie lub prześlij PDF.',
   TIMEOUT: 'Strona za wolno odpowiada.',
   NON_HTML_CONTENT: 'URL nie wskazuje na stronę HTML.',
-  LLM_INVALID_JSON: 'Nie udało się rozpoznać struktury — spróbuj ponownie lub dodaj dane ręcznie.',
+  LLM_INVALID_JSON: 'Nie udało się rozpoznać struktury, spróbuj ponownie lub dodaj dane ręcznie.',
   INVALID_SCHEMA: 'Wyekstraktowane dane nie pasują do oczekiwanego formatu.',
 };
 
@@ -36,7 +36,7 @@ export function WebsiteImportButton({ botId, tenantWebsiteUrl, onComplete }: Pro
 
   const isDisabled = !tenantWebsiteUrl;
 
-  // On mount — reconnect to any in-progress job (survives page refresh)
+  // On mount, reconnect to any in-progress job (survives page refresh)
   useEffect(() => {
     const savedJobId = localStorage.getItem(storageKey(botId));
     if (!savedJobId) return;
@@ -49,7 +49,7 @@ export function WebsiteImportButton({ botId, tenantWebsiteUrl, onComplete }: Pro
         setJob(existing);
         setState('polling');
       } else {
-        // CONFIRMED / FAILED / CANCELLED — no longer relevant
+        // CONFIRMED / FAILED / CANCELLED, no longer relevant
         localStorage.removeItem(storageKey(botId));
       }
     }).catch(() => {
@@ -142,7 +142,7 @@ export function WebsiteImportButton({ botId, tenantWebsiteUrl, onComplete }: Pro
           Importuj ze strony
         </button>
         <p className="text-xs text-slate-400 text-center">
-          Import skanuje stronę i analizuje ją przez AI — możesz go uruchomić maksymalnie 3 razy na 7 dni.
+          Import skanuje stronę i analizuje ją przez AI, możesz go uruchomić maksymalnie 3 razy na 7 dni.
         </p>
       </div>
     );
@@ -163,7 +163,7 @@ export function WebsiteImportButton({ botId, tenantWebsiteUrl, onComplete }: Pro
           <span className="text-sm text-slate-600">{statusLabel}</span>
         </div>
         <p className="text-xs text-slate-400 text-center">
-          Możesz zamknąć tę stronę — skanowanie będzie kontynuowane w tle.
+          Możesz zamknąć tę stronę, skanowanie będzie kontynuowane w tle.
         </p>
       </div>
     );

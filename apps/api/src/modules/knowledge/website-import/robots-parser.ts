@@ -46,7 +46,7 @@ export function parseRobotsTxt(
     }
 
     if (key === 'allow' && value) {
-      // Allow overrides disallow — track with negative priority (ignore for simplicity: allow = allowed already)
+      // Allow overrides disallow: track with negative priority (ignore for simplicity: allow = allowed already)
     }
   }
 
@@ -83,7 +83,7 @@ export async function fetchAndCheckRobots(origin: URL): Promise<RobotsRules> {
     const text = await response.text();
     return parseRobotsTxt(text);
   } catch {
-    // Network error or timeout — default to allow all (RFC behavior)
+    // Network error or timeout: default to allow all (RFC behavior)
     return allowAll();
   }
 }

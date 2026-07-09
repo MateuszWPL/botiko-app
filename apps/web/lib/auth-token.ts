@@ -3,7 +3,7 @@ import { createClient } from './supabase';
 /**
  * Returns a valid Supabase access token for authenticating API calls.
  *
- * `getSession()` reads the stored session but does NOT proactively refresh it —
+ * `getSession()` reads the stored session but does NOT proactively refresh it,
  * if the tab was left idle past the token's expiry (auto-refresh timer paused
  * while backgrounded), the stored token is empty/expired and the API rejects
  * the request with 401 "Missing authorization token". This happened when
@@ -11,7 +11,7 @@ import { createClient } from './supabase';
  *
  * Here we refresh proactively when the token is missing or within 60s of
  * expiry, so mutations don't fail with a stale session. Returns '' only when
- * the refresh token itself is gone (user must log in again) — callers surface a
+ * the refresh token itself is gone (user must log in again), callers surface a
  * clear "session expired" message in that case.
  */
 export async function getAccessToken(): Promise<string> {

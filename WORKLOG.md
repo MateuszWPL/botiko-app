@@ -1,4 +1,4 @@
-# WORKLOG — dziennik prac Botiko.pl
+# WORKLOG, dziennik prac Botiko.pl
 
 **Jeden plik-źródło prawdy: co, kiedy i przez kogo zostało zrobione.**
 Najnowsze wpisy na górze. Claude dopisuje wpis po każdym logicznym etapie (przy commicie).
@@ -23,335 +23,348 @@ Legenda statusu: ✅ ukończone i sprawdzone · 🔄 w toku · ⏸ zablokowane/c
 
 ---
 
+## 2026-07-09 (środa)
+
+### Usunięcie śladów AI z całego repo (długie myślniki, TL;DR, en-dash, wielokropek). Claude, branch `chore/usun-slady-ai-mysliniki`
+- Kontekst: user zgłosił, że długi myślnik `—` (U+2014) od razu zdradza tekst pisany przez AI („ChatGPT dash"). Research (PL + EN) potwierdził też en-dash w zakresach, wielokropek `…`, marker `**TL;DR:**` i frazy-wypełniacze jako typowe „telltale signs". Skala wyjściowa: 4 496 wystąpień `—` w 291 plikach.
+- Zamiana kontekstowa (nie mechaniczna): `—` → przecinek / dwukropek / kropka+nowe zdanie / dywiz zależnie od zdania; en-dash w zakresach (`1–2`, `30–40%`, `7:00–9:00`) → dywiz; `…` → `...`; `**TL;DR:**` → `**W skrócie:**`.
+- Obszary wyczyszczone: prompty bota (`brand-templates`, `chat.service`, `extraction-prompt`), maile Resend (onboarding/billing/notification), canned responses, landing pages + dashboard (`apps/web`), 43 posty blogowe MDX (proza + przykłady w blokach kodu), widget, wtyczka WordPress (PHP/readme), dokumentacja, treści publikowalne (outreach `docs/seo/offpage`, `BOTIKO_CONTEXT.md`, `docs/content`), definicje agentów `.claude/agents`.
+- Świadomie zachowane (nie ślad AI): polskie cudzysłowy `„…"`, placeholdery pustej wartości `'—'` w tabelach dashboardu/maili, detektor `scripts/audit-blog.mjs` (`/[""''–—]/`), dane testowe Unicode w `encryption.service.spec`, komentarze w **zaaplikowanych migracjach** Prisma/Supabase (checksum — edycja psuje `migrate deploy`), oraz bloki kodu w wewnętrznych docsach technicznych (drzewa katalogów, komendy).
+- Metoda: najbardziej wrażliwe copy (prompty, maile) ręcznie; reszta deterministycznym, fence-aware skryptem z regułami kontekstowymi (przecinek/dwukropek/kropka + label→dwukropek), potem ręczne dopięcie ~25 przypadków JSX z myślnikiem na końcu linii.
+- Weryfikacja: `tsc` web ✓ + api ✓ (oba exit 0), `node scripts/audit-blog.mjs` parsuje wszystkie MDX bez błędu i nie zgłasza artefaktów znakowych, `git grep` potwierdza zero `—/–/…` poza świadomymi wyjątkami. CI (5 jobów) do potwierdzenia na PR.
+- Status: ✅ done (branch/PR).
+
+---
+
 ## 2026-07-07 (wtorek)
 
-### UX onboardingu dla nietechnicznego usera (fryzjerka) — Claude — branch `feat/onboarding-ux-nietechniczny`
+### UX onboardingu dla nietechnicznego usera (fryzjerka). Claude, branch `feat/onboarding-ux-nietechniczny`
 - Kontekst: przegląd całego flow oczami właścicielki salonu (rejestracja → kreator → wiedza → instalacja) na prośbę usera. Werdykt: do „wklej kod na stronę" radzi sobie dobrze; ściany są 2 (instalacja poza WordPress + ręczne wpisywanie usług). User zlecił wdrożenie 5 poprawek.
-- **Krok „Oferta" w kreatorze — wklejanie cennika jako ścieżka główna:** duże pole „Wklej swój cennik i opis usług" (feed do `additionalInfo` → istniejący chunk builder + split na akapity), ręczna lista usług zdegradowana do „albo dodaj pojedynczo". Koniec zniechęcającego wpisywania 40 pozycji ręcznie.
-- **Przycisk „Wyślij kod webmasterowi" (mailto):** na ekranie „gotowe" kreatora i na stronie Instalacja — gotowy mail z kodem + prostą instrukcją dla osoby robiącej stronę. Rozwiązuje główną ścianę: właścicielka nie dotyka własnej strony.
-- **„Leady" → „Kontakty" w dashboardzie** (sidebar, strona, overview) — żargon marketerów niezrozumiały dla targetu; marketing zostaje przy „leady".
-- **Domena w rejestracji opcjonalna:** backend `register.dto` (pusty string → undefined, `websiteUrl` optional) + `auth.service` (fallback `tenant.name` z e-maila, `websiteUrl null`); frontend bez `required` + hint „nie masz strony? zostaw puste". **Uwaga bezpieczeństwa:** `DomainWhitelistGuard` twardo blokuje pustą listę domen na produkcji — więc kreator pokazuje teraz **jawne ostrzeżenie**, gdy brak domeny (inaczej cichy „Bot nie jest skonfigurowany").
-- **Neutralne formy językowe** w kreatorze („podałeś"/„Gotowy" → „podanych danych"/„Wszystko gotowe") — główny target to kobiety.
+- **Krok „Oferta" w kreatorze: wklejanie cennika jako ścieżka główna:** duże pole „Wklej swój cennik i opis usług" (feed do `additionalInfo` → istniejący chunk builder + split na akapity), ręczna lista usług zdegradowana do „albo dodaj pojedynczo". Koniec zniechęcającego wpisywania 40 pozycji ręcznie.
+- **Przycisk „Wyślij kod webmasterowi" (mailto):** na ekranie „gotowe" kreatora i na stronie Instalacja, gotowy mail z kodem + prostą instrukcją dla osoby robiącej stronę. Rozwiązuje główną ścianę: właścicielka nie dotyka własnej strony.
+- **„Leady" → „Kontakty" w dashboardzie** (sidebar, strona, overview), żargon marketerów niezrozumiały dla targetu; marketing zostaje przy „leady".
+- **Domena w rejestracji opcjonalna:** backend `register.dto` (pusty string → undefined, `websiteUrl` optional) + `auth.service` (fallback `tenant.name` z e-maila, `websiteUrl null`); frontend bez `required` + hint „nie masz strony? zostaw puste". **Uwaga bezpieczeństwa:** `DomainWhitelistGuard` twardo blokuje pustą listę domen na produkcji, więc kreator pokazuje teraz **jawne ostrzeżenie**, gdy brak domeny (inaczej cichy „Bot nie jest skonfigurowany").
+- **Neutralne formy językowe** w kreatorze („podałeś"/„Gotowy" → „podanych danych"/„Wszystko gotowe"), główny target to kobiety.
 - Weryfikacja: web `tsc` ✓ + `next build` ✓, api `tsc` ✓ + **398 testów ✓** (`register.dto.spec` zaktualizowany: pusty URL teraz akceptowany), lint web+api ✓.
-- Status: ✅ done (branch/PR). Punkty 1–2 zobaczymy na żywo przy pierwszych pilotach (obserwacja onboardingu klientki).
-### Ulepszenia RAG/chat po przeglądzie pipeline'u — Claude — branch `feat/rag-chat-improvements`
+- Status: ✅ done (branch/PR). Punkty 1-2 zobaczymy na żywo przy pierwszych pilotach (obserwacja onboardingu klientki).
+### Ulepszenia RAG/chat po przeglądzie pipeline'u. Claude, branch `feat/rag-chat-improvements`
 - Kontekst: przegląd konfiguracji bota (RAG + prompt OpenAI) na prośbę usera → werdykt „mądrze zrobione", ale 1 bug UX + kilka słabości widocznych u pilotów. User zlecił naprawę wszystkich.
-- **Bug (najważniejszy): sam numer telefonu odbijany jako „nie zrozumiałem"** — detekcja bełkotu (`<25% liter`) łapała bare telefon/e-mail przed detekcją leada. `message-sanitizer`: guard `isMostlyContactInfo` (telefon/e-mail nie jest bełkotem), przy zerowym kontekście hard-intent → nowa odpowiedź `LEAD_CAPTURE_RESPONSE` zamiast generycznego fallbacku. „1234567890qwe" nadal bełkot (testy).
+- **Bug (najważniejszy): sam numer telefonu odbijany jako „nie zrozumiałem"**, detekcja bełkotu (`<25% liter`) łapała bare telefon/e-mail przed detekcją leada. `message-sanitizer`: guard `isMostlyContactInfo` (telefon/e-mail nie jest bełkotem), przy zerowym kontekście hard-intent → nowa odpowiedź `LEAD_CAPTURE_RESPONSE` zamiast generycznego fallbacku. „1234567890qwe" nadal bełkot (testy).
 - **RAG multi-turn (query condensation):** przy istniejącej historii follow-up („a ile to kosztuje?") jest przepisywany na samodzielne pytanie (gpt-4o-mini, temp 0) PRZED embeddingiem → retrieval trafia w cennik zamiast w fallback. Toggle `RAG_QUERY_CONDENSATION` (domyślnie on), gated na niepustą historię, never-throw (fallback do surowego pytania).
 - **Dedup `sendMessage`/`sendMessageStream`:** ~150 zdublowanych linii → jeden `prepareResponse` (+ helpery `loadBotOrThrow`, `runGuards`, `loadRecentHistory`, `retrieveContext`, `resolveLeadForm`). Efekt uboczny: lead-intent + leadHint działają teraz spójnie na obu ścieżkach (wcześniej tylko stream).
-- **Chunking:** `knowledge.service` dzieli wieloakapitową wklejkę na osobne chunki (embedding per chunk, rollback wszystkich przy błędzie) — koniec „rozmytego" wektora z 4000-znakowego bloba. Single-paragraph bez zmian (kontrakt `{id}` zachowany).
+- **Chunking:** `knowledge.service` dzieli wieloakapitową wklejkę na osobne chunki (embedding per chunk, rollback wszystkich przy błędzie), koniec „rozmytego" wektora z 4000-znakowego bloba. Single-paragraph bez zmian (kontrakt `{id}` zachowany).
 - **Drobne:** prefiks `[kategoria]` przy chunkach w prompt; łagodniejszy blok przy pustym kontekście (powitanie nie mówi już „nie mam informacji"); `OPENAI_CHAT_MODEL` + `RAG_SIMILARITY_THRESHOLD`/`RAG_TOP_K` do env (koniec hardkodów, tunowalne na danych pilotów).
-- **Świadomie NIE ruszone:** słowa-klucze eskalacji zostają na `includes()` — granice słów zepsułyby polską odmianę („człowiekiem" ≠ „człowiek"); zmiana byłaby regresją.
+- **Świadomie NIE ruszone:** słowa-klucze eskalacji zostają na `includes()`, granice słów zepsułyby polską odmianę („człowiekiem" ≠ „człowiek"); zmiana byłaby regresją.
 - Weryfikacja: `tsc` ✓, `eslint` ✓, **408 testów jednostkowych ✓** (było 393 + 15 nowych: guard kontaktu, condensation, splitter, lead-capture). Pliki: `chat.service.ts`, `message-sanitizer.ts`, `knowledge.service.ts`, `openai.provider.ts`, `config/env.ts` (+ specy), `.env.example`.
 - Status: ✅ done (branch/PR); progi RAG do weryfikacji na danych pilotów (`Message.wasFallback` mierzalny).
 
-### Enablement sprzedażowy pilotów + „Start za Ciebie" na cenniku — Claude — branch `feat/sprzedaz-piloty-enablement`
-- Kontekst: przegląd stanu projektu (0 płacących) → wniosek, że produkt/treść są gotowe, a od 3–7.07 nietknięty został plan sprzedaży z `PLAN-DZIALANIA.md` („Dzień 1 = lista firm, nie kod"). User zlecił wykonanie punktów wspierających sprzedaż.
+### Enablement sprzedażowy pilotów + „Start za Ciebie" na cenniku. Claude, branch `feat/sprzedaz-piloty-enablement`
+- Kontekst: przegląd stanu projektu (0 płacących) → wniosek, że produkt/treść są gotowe, a od 3-7.07 nietknięty został plan sprzedaży z `PLAN-DZIALANIA.md` („Dzień 1 = lista firm, nie kod"). User zlecił wykonanie punktów wspierających sprzedaż.
 - **Nowy katalog `docs/sprzedaz/`** (3 pliki, zarejestrowane w `DOCS.md`):
-  - `skrypty-outreach.md` — skrypt telefoniczny (rdzeń + warianty per branża), wiadomości przez polecenie, follow-upy, tabela obiekcji→odpowiedzi, zasady (zero masowego cold-mailu PKE/UŚUDE), co zapisać pod bramkę decyzyjną.
-  - `onboarding-pilota.md` — checklist wdrożenia pilota w ~1h (dane firmy → baza wiedzy → test bota → instalacja WP/skrypt → przekazanie), plan 30 dni, częste problemy+fix.
-  - `lista-firm.md` — **29 realnych firm z Białegostoku** zebranych z Map Google (nazwa/ocena/adres/telefon/WWW zweryfikowane), tiery: warsztaty+auto (7) i fizjo (8) z pełnym telefonem+stroną; restauracje (7) i beauty (7) z telefonem do potwierdzenia. Filtr: własna strona WWW + aktywny profil. Metoda rozszerzania listy w pliku.
+  - `skrypty-outreach.md`: skrypt telefoniczny (rdzeń + warianty per branża), wiadomości przez polecenie, follow-upy, tabela obiekcji→odpowiedzi, zasady (zero masowego cold-mailu PKE/UŚUDE), co zapisać pod bramkę decyzyjną.
+  - `onboarding-pilota.md`: checklist wdrożenia pilota w ~1h (dane firmy → baza wiedzy → test bota → instalacja WP/skrypt → przekazanie), plan 30 dni, częste problemy+fix.
+  - `lista-firm.md`: **29 realnych firm z Białegostoku** zebranych z Map Google (nazwa/ocena/adres/telefon/WWW zweryfikowane), tiery: warsztaty+auto (7) i fizjo (8) z pełnym telefonem+stroną; restauracje (7) i beauty (7) z telefonem do potwierdzenia. Filtr: własna strona WWW + aktywny profil. Metoda rozszerzania listy w pliku.
 - **Kod (`/cennik`):** opcjonalna usługa done-for-you **„Start za Ciebie" 199 zł** (sekcja + 2 pozycje FAQ, spójne z FAQPage schema). CTA = mailto kontakt@botiko.pl (brak automatycznego zakupu). Plan 99 zł bez zmian. Ikona Lucide `Rocket`, bez emoji. `tsc --noEmit` ✓.
-- **Weryfikacja ścieżki trial→płatność (task, bez zmian w kodzie):** ścieżka poprawna (signup ustawia `trialEndsAt` → Stripe Checkout `trial_period_days:14` → webhook `checkout.session.completed` aktywuje → `subscription.updated/deleted` utrzymują status; guard podwójnej subskrypcji; `invoice.payment_failed` czeka na `subscription.updated`). **Jedyne do potwierdzenia ręcznie na prod:** czy zewnętrzny cron faktycznie uderza `POST /api/v1/email/cron/drip?secret=...` (brak definicji crona w repo; `TASK.md §1A.8` sam sobie przeczy — raz `[x]`, raz backlog). Uwaga: sekret idzie **query paramem**, nie nagłówkiem (komentarz w kontrolerze mówi inaczej).
+- **Weryfikacja ścieżki trial→płatność (task, bez zmian w kodzie):** ścieżka poprawna (signup ustawia `trialEndsAt` → Stripe Checkout `trial_period_days:14` → webhook `checkout.session.completed` aktywuje → `subscription.updated/deleted` utrzymują status; guard podwójnej subskrypcji; `invoice.payment_failed` czeka na `subscription.updated`). **Jedyne do potwierdzenia ręcznie na prod:** czy zewnętrzny cron faktycznie uderza `POST /api/v1/email/cron/drip?secret=...` (brak definicji crona w repo; `TASK.md §1A.8` sam sobie przeczy, raz `[x]`, raz backlog). Uwaga: sekret idzie **query paramem**, nie nagłówkiem (komentarz w kontrolerze mówi inaczej).
 - Status: ✅ materiały + kod gotowe (branch/PR); listę firm rozszerza founder tą samą metodą; weryfikacja crona = akcja founder na prod.
 
-### Blog — poszerzenie `pytania-nocne` poza beauty + naprawa fabrykacji — Claude + botiko-content — branch `feat/blog-pytania-nocne-broaden`
-- Kontekst: backlog (Priorytet B kalendarza) — poszerzyć „ogólny" post o nocnych pytaniach poza beauty. Przy okazji wykryte i naprawione **fabrykacje w żywym poście** (ryzyko fałszywej reklamy): niezweryfikowane „Wiemy to z danych. 68%…" → ujęcie jakościowe; **„Nasze klientki, które wdrożyły bota, raportują 40–60 dodatkowych rezerwacji"** (nie mamy płacących klientów) → mechanizm + jawne „przykładowe wyliczenie, nie obietnica".
-- Dodana sekcja „Te same 5 pytań wraca w restauracji, warsztacie i gabinecie" (cross-branżowe przykłady + link do pillara automatyzacji) — realnie różnicuje od lokalnego `7-pytan-…-bialystok`. `updatedAt: 2026-07-07`.
+### Blog, poszerzenie `pytania-nocne` poza beauty + naprawa fabrykacji. Claude + botiko-content, branch `feat/blog-pytania-nocne-broaden`
+- Kontekst: backlog (Priorytet B kalendarza): poszerzyć „ogólny" post o nocnych pytaniach poza beauty. Przy okazji wykryte i naprawione **fabrykacje w żywym poście** (ryzyko fałszywej reklamy): niezweryfikowane „Wiemy to z danych. 68%..." → ujęcie jakościowe; **„Nasze klientki, które wdrożyły bota, raportują 40-60 dodatkowych rezerwacji"** (nie mamy płacących klientów) → mechanizm + jawne „przykładowe wyliczenie, nie obietnica".
+- Dodana sekcja „Te same 5 pytań wraca w restauracji, warsztacie i gabinecie" (cross-branżowe przykłady + link do pillara automatyzacji), realnie różnicuje od lokalnego `7-pytan-…-bialystok`. `updatedAt: 2026-07-07`.
 - Weryfikacja: `botiko-content` + `next build`. Kalendarz: Priorytet B odhaczony.
 - Status: ✅ done.
 
-### Blog — partia 8 postów sie–wrz (cały kalendarz) przez claude-blog — Claude + claude-blog + botiko-content — branch `feat/blog-batch-sie-wrz`
-- Kontekst: user zlecił napisanie wszystkich pozostałych tematów z `docs/content/blog-kalendarz.md` (runway kończył się 28.07). 8 postów napisanych RÓWNOLEGLE przez 8× `claude-blog:blog-writer` z wiązaniami BRAND/VOICE, każdy ~2000–2200 słów, przyszłodatowane 11.08–29.09 (auto-publikacja).
+### Blog, partia 8 postów sie-wrz (cały kalendarz) przez claude-blog. Claude + claude-blog + botiko-content, branch `feat/blog-batch-sie-wrz`
+- Kontekst: user zlecił napisanie wszystkich pozostałych tematów z `docs/content/blog-kalendarz.md` (runway kończył się 28.07). 8 postów napisanych RÓWNOLEGLE przez 8× `claude-blog:blog-writer` z wiązaniami BRAND/VOICE, każdy ~2000-2200 słów, przyszłodatowane 11.08-29.09 (auto-publikacja).
 - Posty: `voicebot-czy-bot-na-stronie` (porównania, wspiera `/porownanie/botiko-vs-recepcjonistka-ai`), `bot-dla-trenera-personalnego` + `bot-dla-fotografa` (vertical OTHER), `wtyczka-chatbot-wordpress-problemy` (satelita WP, troubleshooting), `ile-kosztuje-bot-dla-restauracji-2026` (cost-intent gastro), `jak-napisac-faq-dla-bota-przyklady` (20 par Q&A per branża), `bledy-przy-wdrazaniu-bota-obslugi-klienta` (antywzorce), `bot-vs-formularz-kontaktowy` (head-to-head).
 - QA (ręczne, przed placementem): usunięte artefakty pluginu (markery `[PERSONAL EXPERIENCE]/[UNIQUE INSIGHT]/[ORIGINAL DATA]`, placeholdery `[IMAGE]/[CHART]`, etykiety „Do zacytowania"). **Naprawione 2 ryzyka:** (1) fabrykacja „w pilotażowych wdrożeniach widzimy" w poście o restauracji → przepisane na mechanizm (nie mamy pilotów); (2) niezweryfikowana statystyka „Toast 44%" (WebSearch nie potwierdził liczby) → usunięta/jakościowo. Usunięty `<ROICalculator/>` (bierze propsy, beauty-flavored). Emoji ✅/❌ w tabeli → tekst.
 - Weryfikacja: `next build` ✓ (wszystkie renderują); zbiorczy `botiko-content` **0 blokerów** (język marki, brak rezerwacji, 99 zł/MVP, jedyne źródło zewn. = HBR 2011).
 - **Do zrobienia (founder):** po 3 grafiki na post (`{slug}-hero/-1/-2.jpg`) przed datą publikacji. Kalendarz Priorytet A wyczerpany; zostają rezerwowe tematy + poszerzenie `pytania-nocne`.
 - Status: ✅ 8 postów zaakceptowane (user delegował) i mergowane.
 
-### Naprawa błędów uporządkowanych danych z GSC — Claude — PR #123
+### Naprawa błędów uporządkowanych danych z GSC. Claude. PR #123
 - Kontekst: 2 maile z Google Search Console o problemach ze structured data. Weryfikacja bezpośrednio w GSC (przez przeglądarkę) ujawniła 3 problemy, nie 2.
-- **Menu nawigacyjne (krytyczny)** — `/integracje/wordpress`: breadcrumb miał pośredni crumb „Integracje" bez `href` → `ListItem` bez pola `item`, które Google odrzuca (pominięcie `item` jest legalne tylko dla ostatniego elementu). Nie ma strony `/integracje` → usunięto ten crumb (`Botiko.pl › WordPress`). Pozostałe strony (5) były prawidłowe.
-- **Informacje o sprzedawcy (krytyczny) + Opisy produktów (niekrytyczny)** — `/cennik`: `@type: 'Product'` + `Offer` klasyfikował stronę jako listing sklepowy → wymagane pola sklepowe (`image`, `review`, `aggregateRating`). `image` było w kodzie, ale strona i tak nigdy nie spełni wymagań sklepu. Zmiana na `@type: 'Service'` + `Offer` (spójnie z `/dla/*`, które nie były flagowane) — cena zachowana, bez fałszowania recenzji.
+- **Menu nawigacyjne (krytyczny)**: `/integracje/wordpress`: breadcrumb miał pośredni crumb „Integracje" bez `href` → `ListItem` bez pola `item`, które Google odrzuca (pominięcie `item` jest legalne tylko dla ostatniego elementu). Nie ma strony `/integracje` → usunięto ten crumb (`Botiko.pl › WordPress`). Pozostałe strony (5) były prawidłowe.
+- **Informacje o sprzedawcy (krytyczny) + Opisy produktów (niekrytyczny)**, `/cennik`: `@type: 'Product'` + `Offer` klasyfikował stronę jako listing sklepowy → wymagane pola sklepowe (`image`, `review`, `aggregateRating`). `image` było w kodzie, ale strona i tak nigdy nie spełni wymagań sklepu. Zmiana na `@type: 'Service'` + `Offer` (spójnie z `/dla/*`, które nie były flagowane), cena zachowana, bez fałszowania recenzji.
 - Pliki: `apps/web/app/(marketing)/cennik/page.tsx`, `apps/web/app/(marketing)/integracje/wordpress/page.tsx`, `apps/web/lib/seo.ts` (wzmocniony komentarz: każdy crumb poza ostatnim musi mieć `href`).
 - Weryfikacja: CI zielone (Web tsc, E2E, Widget, API, WP); live prod potwierdzony (`@type:Service` na /cennik, 2-elementowy breadcrumb na /integracje/wordpress); w GSC uruchomiono „Sprawdź poprawkę" dla obu krytycznych raportów (Weryfikacja rozpoczęto 7.07).
 - Status: ✅ zmergowane i zdeployowane; walidacja GSC w toku (Google przecrawluje w ciągu kilku dni).
 
-### Blog — setup claude-blog (BRAND/VOICE) + pilotażowy post korepetytor — Claude + claude-blog + botiko-content — branch `chore/blog-brand-context`, `feat/blog-korepetytor`
+### Blog, setup claude-blog (BRAND/VOICE) + pilotażowy post korepetytor. Claude + claude-blog + botiko-content, branch `chore/blog-brand-context`, `feat/blog-korepetytor`
 - Kontekst: user chce pisać posty pluginem `claude-blog` (runway bloga kończył się 28.07). Weryfikacja pluginu: działa, MDX-capable, ale brak brand-kontekstu + domyślne komponenty (`<FAQSchema>`) ≠ nasze.
-- **Setup (PR #121):** `BRAND.md` + `VOICE.md` w roocie — plugin auto-ładuje przy każdym pisaniu. Kodują reguły Botiko (bot nie chatbot AI, brak rezerwacji, 99 zł, tabu-frazy, persony, konkurenci) + **pinują nasz format MDX** (frontmatter `excerpt/category/categorySlug/image/imageAlt`, komponenty `<FAQ items>`/`<CTABlock>`/`<Callout>`). Review botiko-content: 0 blokerów.
+- **Setup (PR #121):** `BRAND.md` + `VOICE.md` w roocie: plugin auto-ładuje przy każdym pisaniu. Kodują reguły Botiko (bot nie chatbot AI, brak rezerwacji, 99 zł, tabu-frazy, persony, konkurenci) + **pinują nasz format MDX** (frontmatter `excerpt/category/categorySlug/image/imageAlt`, komponenty `<FAQ items>`/`<CTABlock>`/`<Callout>`). Review botiko-content: 0 blokerów.
 - **Pilotażowy post `bot-dla-korepetytora`** (vertical OTHER, biała plama; data 2026-08-04): napisany przez `claude-blog:blog-writer` z wiązaniami BRAND/VOICE. Answer-first + „W skrócie" + przykład rozmowy + `<ComparisonTable>` + `<FAQ>` (6) + `<CTABlock>`; linki do `/dla/inna`, `pillar-automatyzacja`, `jak-zbierac-leady`, `/cennik`. 1 realna stat (HBR 2011, z atrybucją), zero zmyślonych.
 - Weryfikacja: `botiko-content` 0 blokerów; `claude-blog:blog-reviewer` **86/100 „Strong"** (burstiness 0.55, 0 fraz AI-slop); `next build` ✓. Poprawki po review: tytuł 68→58 zn., excerpt 230→~150 zn.
-- **Do zrobienia (founder):** 3 grafiki `bot-dla-korepetytora-hero/-1/-2.jpg` przed 04.08. Pipeline zwalidowany — kolejne posty wg `docs/content/blog-kalendarz.md`.
+- **Do zrobienia (founder):** 3 grafiki `bot-dla-korepetytora-hero/-1/-2.jpg` przed 04.08. Pipeline zwalidowany, kolejne posty wg `docs/content/blog-kalendarz.md`.
 - Status: ✅ setup + pilot zaakceptowane i mergowane.
 
-### Blog — kalendarz redakcyjny (runway sierpień–wrzesień) — Claude + botiko-content — branch `docs/blog-kalendarz-redakcyjny`
-- Kontekst: audyt stanu bloga — 34 posty, tylko 4 zaplanowane, runway kończy się 28.07 → potem cisza. Kadencja historyczna ~1/tydz.
-- Nowy `docs/content/blog-kalendarz.md`: 9 tematów (sie–wrz, tygodniowo) z datami/slugami/intencją/mapą linków + kolumna „Różni się od" (anty-kanibalizacja po Fazie 1A). Priorytet: biała plama **vertical OTHER** (korepetytor/trener/fotograf), wsparcie `/porownanie/botiko-vs-recepcjonistka-ai`, satelita WP (troubleshooting), cost-intent gastronomia, klaster FAQ. + tania poprawka: poszerzyć `pytania-nocne` poza beauty.
-- Review `botiko-content`: 7/9 czyste, 0 blokerów; 2 tematy (#8 błędy wdrożenia, #9 bot vs formularz) — zaostrzony kąt w kolumnie „Różni się od" (linkować do istniejących, nie duplikować); dodane 2 rezerwowe tematy. Zaznaczone: **każdy post wymaga 3 grafik + akceptacji** (wąskie gardło).
-- Zaktualizowany `DOCS.md` (indeks). Pisanie postów — osobno, przez botiko-content, z bramką akceptacji.
+### Blog, kalendarz redakcyjny (runway sierpień-wrzesień). Claude + botiko-content, branch `docs/blog-kalendarz-redakcyjny`
+- Kontekst: audyt stanu bloga: 34 posty, tylko 4 zaplanowane, runway kończy się 28.07 → potem cisza. Kadencja historyczna ~1/tydz.
+- Nowy `docs/content/blog-kalendarz.md`: 9 tematów (sie-wrz, tygodniowo) z datami/slugami/intencją/mapą linków + kolumna „Różni się od" (anty-kanibalizacja po Fazie 1A). Priorytet: biała plama **vertical OTHER** (korepetytor/trener/fotograf), wsparcie `/porownanie/botiko-vs-recepcjonistka-ai`, satelita WP (troubleshooting), cost-intent gastronomia, klaster FAQ. + tania poprawka: poszerzyć `pytania-nocne` poza beauty.
+- Review `botiko-content`: 7/9 czyste, 0 blokerów; 2 tematy (#8 błędy wdrożenia, #9 bot vs formularz), zaostrzony kąt w kolumnie „Różni się od" (linkować do istniejących, nie duplikować); dodane 2 rezerwowe tematy. Zaznaczone: **każdy post wymaga 3 grafik + akceptacji** (wąskie gardło).
+- Zaktualizowany `DOCS.md` (indeks). Pisanie postów: osobno, przez botiko-content, z bramką akceptacji.
 - Status: ✅ kalendarz gotowy; drafty na życzenie.
 
-### SEO — plan „zaistnieć w internecie": sprint zakończony i zmergowany — Claude — [PR #114–#118]
+### SEO, plan „zaistnieć w internecie": sprint zakończony i zmergowany. Claude, [PR #114-#118]
 - **Zmergowane do `main`** (wszystkie z review agentów + `tsc`/`next build` zielone, CI zielone, auto-deploy Vercel):
-  - #114 Faza 0 — hygiena schema/robots (jedna encja marki, `@id` publisher/provider, `/blog` CollectionPage, `/cennik` Product image, AI-crawlery w robots).
-  - #115 Faza 1A — kanibalizacja bloga (2 pary → 301, reszta zachowana jako komplementarna).
-  - #116 Faza 1B — `/porownanie/botiko-vs-recepcjonistka-ai` (segmentacja vs voiceboty).
-  - #117 Faza 2 — materiały off-page (`docs/seo/offpage/*`).
-  - #118 Faza 3 — reframe „bot nie rezerwuje = zaleta" (`/dla/salon-beauty`, `/cennik`).
+  - #114 Faza 0: hygiena schema/robots (jedna encja marki, `@id` publisher/provider, `/blog` CollectionPage, `/cennik` Product image, AI-crawlery w robots).
+  - #115 Faza 1A: kanibalizacja bloga (2 pary → 301, reszta zachowana jako komplementarna).
+  - #116 Faza 1B: `/porownanie/botiko-vs-recepcjonistka-ai` (segmentacja vs voiceboty).
+  - #117 Faza 2: materiały off-page (`docs/seo/offpage/*`).
+  - #118 Faza 3: reframe „bot nie rezerwuje = zaleta" (`/dla/salon-beauty`, `/cennik`).
 - **Status planu (done/todo):** `docs/seo/PLAYBOOK.md` → sekcja „Sprint widoczności 2026-07-07".
 - **Pozostało:** mobilne LCP 5 s (osobny mierzony etap), `Review`/`AggregateRating` (na realnych opiniach pilotów), poszerzenie `pytania-nocne`; **wykonanie off-page po stronie foundera** (gotowce w `docs/seo/offpage/`).
-- Status: ✅ część kodowa/treściowa/materiałowa planu ukończona i na produkcji; off-page = akcja foundera. (Wpisy szczegółowe Faza 0–3 poniżej — statusy „🔄 w toku" były punktem w czasie przed merge.)
+- Status: ✅ część kodowa/treściowa/materiałowa planu ukończona i na produkcji; off-page = akcja foundera. (Wpisy szczegółowe Faza 0-3 poniżej, statusy „🔄 w toku" były punktem w czasie przed merge.)
 
-### Audyt SEO + Faza 0 (hygiena schema/robots) — Claude + claude-seo (content/geo/schema/sxo) — branch `feat/seo-visibility-faza0`
-- Kontekst: pełny audyt SEO (`/claude-seo:seo-audit botiko.pl`) → Health Score **84/100**. Strona technicznie/on-page znakomita, ale niewidoczna w SERP (0 backlinków, widoczność 0). Wniosek: wąskie gardło = off-page + treść pod intencję, nie technika. Plan naprawy „zaistnieć w internecie" (pełny 360°) zatwierdzony — patrz plik planu.
-- **Faza 0 — poprawki w kodzie (ten commit):**
+### Audyt SEO + Faza 0 (hygiena schema/robots). Claude + claude-seo (content/geo/schema/sxo), branch `feat/seo-visibility-faza0`
+- Kontekst: pełny audyt SEO (`/claude-seo:seo-audit botiko.pl`) → Health Score **84/100**. Strona technicznie/on-page znakomita, ale niewidoczna w SERP (0 backlinków, widoczność 0). Wniosek: wąskie gardło = off-page + treść pod intencję, nie technika. Plan naprawy „zaistnieć w internecie" (pełny 360°) zatwierdzony, patrz plik planu.
+- **Faza 0: poprawki w kodzie (ten commit):**
   - Scalona podwójna encja marki: homepage nie emituje już osobnego `LocalBusiness #business`; `organizationSchema()` w `lib/seo.ts` ma teraz `@type: ["Organization","LocalBusiness"]` z address/areaServed/priceRange/image + `sameAs` (wp.org). Jedna encja `#organization` w całym serwisie.
   - `Article.publisher` (blog) i `Service.provider` (5× `/dla/*` + programatyczne `/dla/[branza]/[miasto]`) → referencja `{ '@id': '.../#organization' }` zamiast inline duplikatów.
   - `/blog` (index): dodane `CollectionPage` + `BreadcrumbList` (wcześniej brak JSON-LD).
   - `/cennik`: `image` w schemacie `Product` (wymóg Google do product snippet).
   - `robots.ts`: jawne reguły `allow` dla crawlerów AI (GPTBot/OAI-SearchBot/ChatGPT-User/ClaudeBot/PerplexityBot/Google-Extended).
-  - `lastmod` bloga z frontmatter — już było w `sitemap.ts` (`post.updatedAt ?? post.date`), bez zmian.
+  - `lastmod` bloga z frontmatter: już było w `sitemap.ts` (`post.updatedAt ?? post.date`), bez zmian.
 - Pliki: `apps/web/lib/seo.ts`, `app/(marketing)/{page,blog/page,blog/[slug]/page,cennik/page,dla/*/page,dla/[branza]/[miasto]/page}.tsx`, `app/robots.ts`.
 - Weryfikacja: web `tsc --noEmit` ✓ (0 błędów); `next lint` ✓ (tylko wcześniejsze warny w nietkniętych plikach). Schema live do walidacji w Rich Results Test po deployu.
-- Do zrobienia dalej (wg planu): Faza 1 kanibalizacja bloga + `/porownanie` (realni konkurenci), Faza 2 materiały off-page (`docs/seo/offpage/*`), Faza 3 trust on-page. Mobilne LCP 5,0 s — osobny, mierzony etap (przyczyna „opacity animation" już rozwiązana przez `heroRise`).
+- Do zrobienia dalej (wg planu): Faza 1 kanibalizacja bloga + `/porownanie` (realni konkurenci), Faza 2 materiały off-page (`docs/seo/offpage/*`), Faza 3 trust on-page. Mobilne LCP 5,0 s, osobny, mierzony etap (przyczyna „opacity animation" już rozwiązana przez `heroRise`).
 - Status: 🔄 Faza 0 gotowa (branch, czeka na CI/PR); dalsze fazy w toku.
 
-### SEO Faza 1A — konsolidacja kanibalizacji bloga — Claude + botiko-content — branch `feat/seo-blog-cannibalization`
-- Kontekst: audyt SEO wskazał kanibalizację słów kluczowych w blogu. Wstępnie 8 „par", ale weryfikacja `botiko-content` (ocena domenowa + świadomość lokalnego SEO Białystok) zawęziła do **2 realnych par** — reszta okazała się komplementarna (celowe warianty lokalne / pillar+satelita / różne intencje) i została nietknięta.
+### SEO Faza 1A, konsolidacja kanibalizacji bloga. Claude + botiko-content, branch `feat/seo-blog-cannibalization`
+- Kontekst: audyt SEO wskazał kanibalizację słów kluczowych w blogu. Wstępnie 8 „par", ale weryfikacja `botiko-content` (ocena domenowa + świadomość lokalnego SEO Białystok) zawęziła do **2 realnych par**, reszta okazała się komplementarna (celowe warianty lokalne / pillar+satelita / różne intencje) i została nietknięta.
 - **2× 301 + fold treści:**
-  - `/blog/rodo-chatbot` → `/blog/chatbot-a-rodo-dane-klientow`. Do survivora przeniesiony 5-krokowy plan wdrożenia RODO (polityka → zgoda → szyfrowanie → DPA → prawo do usunięcia), w czystej formie bez łamania zasady „bot nie rezerwuje" (usuwany post to łamał — dodatkowy powód usunięcia). `updatedAt: 2026-07-07`.
+  - `/blog/rodo-chatbot` → `/blog/chatbot-a-rodo-dane-klientow`. Do survivora przeniesiony 5-krokowy plan wdrożenia RODO (polityka → zgoda → szyfrowanie → DPA → prawo do usunięcia), w czystej formie bez łamania zasady „bot nie rezerwuje" (usuwany post to łamał, dodatkowy powód usunięcia). `updatedAt: 2026-07-07`.
   - `/blog/chatbot-recepcja` → `/blog/czy-bot-ai-zastapi-recepcjonistke`. Do survivora przeniesiona rozpiska czasowa recepcji (480 min/dzień, Messenger 37%) + realokacja uwolnionego czasu + 3-krokowy plan wdrożenia w zespole. `updatedAt: 2026-07-07`.
-- Komplementarne (bez zmian merytorycznych, dodane wzajemne linki): para Booksy (`booksy-vs-bot` ↔ `booksy-vs-chatbot-salon-bialystok`). Baza wiedzy i pytania nocne — zostają (różne intencje); poszerzenie `pytania-nocne` poza beauty → osobny etap.
+- Komplementarne (bez zmian merytorycznych, dodane wzajemne linki): para Booksy (`booksy-vs-bot` ↔ `booksy-vs-chatbot-salon-bialystok`). Baza wiedzy i pytania nocne, zostają (różne intencje); poszerzenie `pytania-nocne` poza beauty → osobny etap.
 - Mechanika: redirecty `permanent: true` w `next.config.mjs`; usunięte 2 pliki MDX (`git rm`); zaktualizowany 1 link wewnętrzny w `bot-dla-warsztatu-samochodowego-bialystok.mdx`. Kategoria „prawo" (miała tylko usuwany post) była już noindex/poza sitemap (próg `MIN_INDEXABLE_CATEGORY_POSTS = 3`), pusty slug → czysty `notFound()`.
-- Review: `botiko-content` (werdykt kanibalizacji + co zachować). Weryfikacja: `tsc` ✓, `next lint` ✓, `next build` (walidacja MDX/redirectów) — w toku.
+- Review: `botiko-content` (werdykt kanibalizacji + co zachować). Weryfikacja: `tsc` ✓, `next lint` ✓, `next build` (walidacja MDX/redirectów), w toku.
 - Status: 🔄 gotowe do PR (branch), po zielonym buildzie.
 
-### SEO Faza 1B — /porownanie z realnym konkurentem (recepcjonistka AI) — Claude + botiko-content + botiko-business — branch `feat/seo-porownanie-konkurenci`
-- Kontekst: SXO z audytu wskazał, że dla zapytań komercyjnych („chatbot dla salonu cena", „recepcjonistka AI") SERP zdominowany przez konkurentów z bezpośrednią rezerwacją (Smart Asystenci, Assistron, Sekretarka AI — voiceboty telefoniczne). Botiko nie było w porównaniach z realną konkurencją.
-- Zamiast 4 nakładających się stron (ryzyko samo-kanibalizacji jak w 1A) — **jedna mocna strona kategorii**: `/porownanie/botiko-vs-recepcjonistka-ai`. Pokrywa cały klaster „recepcjonistka AI / wirtualna recepcjonistka / asystent umawiający wizyty" i wprost segmentuje kategorie: Botiko (tekstowy bot na WWW, odsyła do rezerwacji, 99 zł) vs voicebot telefoniczny (odbiera telefon, umawia wizyty, wyższy próg).
-- Research (WebSearch) potwierdził realność i kategorię konkurentów; **BeautyBoost AI odrzucone** (niepotwierdzone); Tidio (istniejący wpis) — fakty aktualne, bez zmian. Zgodnie z konwencją pliku: **bez twardych cen konkurenta** (nominative fair use, „sprawdź u dostawcy").
+### SEO Faza 1B, /porownanie z realnym konkurentem (recepcjonistka AI). Claude + botiko-content + botiko-business, branch `feat/seo-porownanie-konkurenci`
+- Kontekst: SXO z audytu wskazał, że dla zapytań komercyjnych („chatbot dla salonu cena", „recepcjonistka AI") SERP zdominowany przez konkurentów z bezpośrednią rezerwacją (Smart Asystenci, Assistron, Sekretarka AI, voiceboty telefoniczne). Botiko nie było w porównaniach z realną konkurencją.
+- Zamiast 4 nakładających się stron (ryzyko samo-kanibalizacji jak w 1A), **jedna mocna strona kategorii**: `/porownanie/botiko-vs-recepcjonistka-ai`. Pokrywa cały klaster „recepcjonistka AI / wirtualna recepcjonistka / asystent umawiający wizyty" i wprost segmentuje kategorie: Botiko (tekstowy bot na WWW, odsyła do rezerwacji, 99 zł) vs voicebot telefoniczny (odbiera telefon, umawia wizyty, wyższy próg).
+- Research (WebSearch) potwierdził realność i kategorię konkurentów; **BeautyBoost AI odrzucone** (niepotwierdzone); Tidio (istniejący wpis), fakty aktualne, bez zmian. Zgodnie z konwencją pliku: **bez twardych cen konkurenta** (nominative fair use, „sprawdź u dostawcy").
 - Nowy wpis: 8-wierszowa tabela (kanał, zadanie, umawianie, po godzinach, cennik/FAQ, leady, instalacja, model cenowy) + werdykt („nie albo-albo") + 5 FAQ (zasila FAQPage schema → GEO). Dodany do `lib/comparisons.ts`; indeks `/porownanie` i sitemap auto-listują (getAllComparisonSlugs).
-- Review: `botiko-content` (0 blokerów — język marki, fair play, PL) + `botiko-business` (0 blokerów — wszystkie roszczenia o Botiko zgodne z realnym produktem/MVP, brak scope creep). 1 drobna poprawka stylistyczna naniesiona.
-- Weryfikacja: `tsc` ✓, `next build` — w toku.
+- Review: `botiko-content` (0 blokerów: język marki, fair play, PL) + `botiko-business` (0 blokerów, wszystkie roszczenia o Botiko zgodne z realnym produktem/MVP, brak scope creep). 1 drobna poprawka stylistyczna naniesiona.
+- Weryfikacja: `tsc` ✓, `next build`: w toku.
 - Status: 🔄 gotowe do PR (branch), po zielonym buildzie.
 
-### SEO Faza 2 — materiały off-page (główna dźwignia) — Claude + botiko-content — branch `docs/seo-offpage-materialy`
-- Kontekst: audyt + GSC potwierdzają, że wąskim gardłem jest off-page (0 backlinków, widoczność 0). Founder wykonuje off-page ręcznie (backlinków nie da się zrobić z kodu) — przygotowane gotowce do działania.
+### SEO Faza 2, materiały off-page (główna dźwignia). Claude + botiko-content, branch `docs/seo-offpage-materialy`
+- Kontekst: audyt + GSC potwierdzają, że wąskim gardłem jest off-page (0 backlinków, widoczność 0). Founder wykonuje off-page ręcznie (backlinków nie da się zrobić z kodu), przygotowane gotowce do działania.
 - Nowe pliki `docs/seo/offpage/`:
-  - `katalogi-nap.md` — spójny blok NAP (źródło prawdy zgodne ze schematem: Botiko.pl, Białystok/Podlaskie, kontakt@botiko.pl, Mateusz Woronowicz) + 3 długości opisu firmy + kuratorowana lista katalogów PL (Aleo, Panorama Firm, PKT, GoWork, Bing Places) i SaaS (Capterra, GetApp, G2, SaaSHub, AlternativeTo, Product Hunt) z kolejnością działania. **Decyzja dla foundera: telefon/adres** (schema ich nie ma — nie fabrykowane).
-  - `outreach-guest-posty.md` — 8 tematów guest postów zmapowanych na pillary/landingi + 3 szablony maili (propozycja, follow-up, „unlinked mention") + higiena outreachu.
-  - `youtube-demo.md` — scenariusz demo (2:30–3:00, 7 scen, bez obietnicy rezerwacji), metadane SEO (tytuł/opis/tagi/rozdziały), wariant Shorts, miejsca osadzenia (VideoEmbed na `/` i `/integracje/wordpress`) + domknięcie `sameAs`/`VideoObject`.
-  - `reddit-fb.md` — subreddity + kategorie grup FB, twarde zasady (value-first, disclosure, regulaminy), wzorce odpowiedzi/postów, rytm działania.
-- Zaktualizowany `DOCS.md` (indeks — nowy wiersz `docs/seo/offpage/`). Zasada „bez black-hat / farm linków" wprost w materiałach.
-- Review: `botiko-content` (język marki, brak obietnic spoza MVP) — w toku.
+  - `katalogi-nap.md`: spójny blok NAP (źródło prawdy zgodne ze schematem: Botiko.pl, Białystok/Podlaskie, kontakt@botiko.pl, Mateusz Woronowicz) + 3 długości opisu firmy + kuratorowana lista katalogów PL (Aleo, Panorama Firm, PKT, GoWork, Bing Places) i SaaS (Capterra, GetApp, G2, SaaSHub, AlternativeTo, Product Hunt) z kolejnością działania. **Decyzja dla foundera: telefon/adres** (schema ich nie ma, nie fabrykowane).
+  - `outreach-guest-posty.md`: 8 tematów guest postów zmapowanych na pillary/landingi + 3 szablony maili (propozycja, follow-up, „unlinked mention") + higiena outreachu.
+  - `youtube-demo.md`: scenariusz demo (2:30-3:00, 7 scen, bez obietnicy rezerwacji), metadane SEO (tytuł/opis/tagi/rozdziały), wariant Shorts, miejsca osadzenia (VideoEmbed na `/` i `/integracje/wordpress`) + domknięcie `sameAs`/`VideoObject`.
+  - `reddit-fb.md`: subreddity + kategorie grup FB, twarde zasady (value-first, disclosure, regulaminy), wzorce odpowiedzi/postów, rytm działania.
+- Zaktualizowany `DOCS.md` (indeks: nowy wiersz `docs/seo/offpage/`). Zasada „bez black-hat / farm linków" wprost w materiałach.
+- Review: `botiko-content` (język marki, brak obietnic spoza MVP), w toku.
 - Status: 🔄 gotowe do PR (branch), po review.
 
-### SEO Faza 3 (część) — reframe „bot nie rezerwuje = zaleta" — Claude + botiko-content — branch `feat/seo-trust-rezerwacja-reframe`
-- Kontekst: SXO z audytu wskazał najsłabszą personę („szukający rezerwacji") — konkurenci-voiceboty umawiają wizyty, a Botiko odsyła do Booksy, co dziś brzmiało jak brak funkcji (schowany w FAQ). Reframe zamienia to w zaletę, przy cenie/CTA.
-- `/dla/salon-beauty`: nowa sekcja „Bot nie umawia wizyt za Ciebie — i to zaleta" (3 karty: własny kalendarz / brak podwójnych rezerwacji / Ty domykasz), między Features a ROI. Ikony Lucide (CalendarCheck/ShieldCheck/PhoneCall). Tło ROI przełożone na `bg-bg` (uniknięcie dwóch białych sekcji obok siebie).
+### SEO Faza 3 (część), reframe „bot nie rezerwuje = zaleta", Claude + botiko-content, branch `feat/seo-trust-rezerwacja-reframe`
+- Kontekst: SXO z audytu wskazał najsłabszą personę („szukający rezerwacji"), konkurenci-voiceboty umawiają wizyty, a Botiko odsyła do Booksy, co dziś brzmiało jak brak funkcji (schowany w FAQ). Reframe zamienia to w zaletę, przy cenie/CTA.
+- `/dla/salon-beauty`: nowa sekcja „Bot nie umawia wizyt za Ciebie, i to zaleta" (3 karty: własny kalendarz / brak podwójnych rezerwacji / Ty domykasz), między Features a ROI. Ikony Lucide (CalendarCheck/ShieldCheck/PhoneCall). Tło ROI przełożone na `bg-bg` (uniknięcie dwóch białych sekcji obok siebie).
 - `/cennik`: analogiczna, cross-branżowa sekcja „Co Botiko robi, a czego świadomie nie robi" między planem a FAQ.
-- Zakres świadomie ograniczony: `Review`/`AggregateRating` schema + realne referencje pilotów **czekają na pierwsze opinie** (nie fabrykujemy). Poszerzenie `pytania-nocne` poza beauty — osobno.
-- Review: `botiko-content` (język marki, szczerość przekazu, brak sugestii że bot rezerwuje) — w toku. Weryfikacja: `tsc` ✓, `next build` — w toku.
+- Zakres świadomie ograniczony: `Review`/`AggregateRating` schema + realne referencje pilotów **czekają na pierwsze opinie** (nie fabrykujemy). Poszerzenie `pytania-nocne` poza beauty, osobno.
+- Review: `botiko-content` (język marki, szczerość przekazu, brak sugestii że bot rezerwuje), w toku. Weryfikacja: `tsc` ✓, `next build`, w toku.
 - Status: 🔄 gotowe do PR (branch), po review + buildzie.
 
 ## 2026-07-06 (poniedziałek)
 
-### Fixy dashboard/widget — kontrast na jasnym akcencie, scroll ustawień, refresh sesji — Claude — [PR #112 | branch `fix/widget-contrast-settings-scroll-auth`]
-- Kontekst: 3 zgłoszenia usera — 401 przy nadpisywaniu wpisu w bazie wiedzy, zbędny pionowy scroll paska zakładek w Ustawieniach, znikające napisy/logo przy jasnym (białym) akcencie widgetu.
-- **401 „Missing authorization token"**: `getSession()` nie odświeżał wygasłego tokenu po bezczynności → pusty Bearer. Nowy `lib/auth-token.ts::getAccessToken()` (proaktywny refresh gdy brak tokenu lub <60 s do exp), podpięty pod bazę wiedzy i zapis ustawień + czytelny komunikat „Sesja wygasła…".
+### Fixy dashboard/widget: kontrast na jasnym akcencie, scroll ustawień, refresh sesji. Claude, [PR #112 | branch `fix/widget-contrast-settings-scroll-auth`]
+- Kontekst: 3 zgłoszenia usera: 401 przy nadpisywaniu wpisu w bazie wiedzy, zbędny pionowy scroll paska zakładek w Ustawieniach, znikające napisy/logo przy jasnym (białym) akcencie widgetu.
+- **401 „Missing authorization token"**: `getSession()` nie odświeżał wygasłego tokenu po bezczynności → pusty Bearer. Nowy `lib/auth-token.ts::getAccessToken()` (proaktywny refresh gdy brak tokenu lub <60 s do exp), podpięty pod bazę wiedzy i zapis ustawień + czytelny komunikat „Sesja wygasła...".
 - **Scroll zakładek**: `overflow-x-auto` wymusza `overflow-y:auto`, a `-mb-px` przycisków dawał 1px nadmiaru → dodane `overflow-y-hidden`.
-- **Kontrast jasnego akcentu**: realny widget już auto-kontrastuje tekst (`onPrimary`), ale podgląd w ustawieniach miał `text-white` na sztywno (naprawione — mirror `onPrimary` w `lib/contrast.ts`), a tło koła awatara/logo było białą półprzezroczystością w podglądzie i widgecie (nowe zmienne `--botiko-avatar-bg/-border/-fg`).
+- **Kontrast jasnego akcentu**: realny widget już auto-kontrastuje tekst (`onPrimary`), ale podgląd w ustawieniach miał `text-white` na sztywno (naprawione, mirror `onPrimary` w `lib/contrast.ts`), a tło koła awatara/logo było białą półprzezroczystością w podglądzie i widgecie (nowe zmienne `--botiko-avatar-bg/-border/-fg`).
 - **Ręczne pickery (na życzenie usera)**: dodane pola `Bot.textColor` + `Bot.logoBgColor` (nullable, migracja `20260706000001`), walidacja hex w DTO, zwracane w publicznym config widgetu. UI: dwie kontrolki `ColorField` (Auto + presety + własny kolor) w zakładce „Wygląd widgetu". `null` = auto-kontrast (fallback), więc istniejące boty bez zmian. Widget czyta override'y przez `sanitizeHex` (ochrona przed CSS injection).
 - Pliki: `apps/web/lib/{contrast,auth-token}.ts`, `settings/{SettingsForm.tsx,page.tsx}`, `knowledge/KnowledgeManager.tsx`, `apps/api/{prisma,modules/bot}`, `apps/widget/src/{embed.ts,ChatWindow.tsx,widget-utils.ts}`.
 - Weryfikacja: web `tsc`+`eslint` ✓; api `tsc`+`jest` (393 + nowe DTO) ✓; widget `tsc`+`vite build` (14,3 KB gzip) ✓ + `vitest` ✓.
 - Status: ✅ done (PR #112, czeka na CI/merge)
 
-### Blog WordPress — aktualizacja 2 postów + SEO check + audyt GSC — Claude + botiko-content — branch `fix/blog-wordpress-plugin-live`
+### Blog WordPress, aktualizacja 2 postów + SEO check + audyt GSC. Claude + botiko-content, branch `fix/blog-wordpress-plugin-live`
 - Kontekst: po publikacji wtyczki w katalogu blog wciąż mówił „WPCode-first / wtyczka w przygotowaniu". Uruchomiono `blog-seo-check` (pillar) → wykryto realny bug + nieaktualną treść.
-- Pillar `botiko-dla-wordpress-przewodnik-2026.mdx`: usunięty **podwójny H1** (MDX `#` dublował `<h1>` z szablonu — jedyny post z tym problemem), `updatedAt: 2026-07-06`, instalacja przepisana (oficjalna wtyczka z katalogu = główny tor, WPCode = alternatywa), sekcja „roadmapa" → „wtyczka w katalogu", statystyka „93% (agencja WiWi)" → dane W3Techs z linkiem zewnętrznym, FAQ/case study zaktualizowane, excerpt skrócony.
+- Pillar `botiko-dla-wordpress-przewodnik-2026.mdx`: usunięty **podwójny H1** (MDX `#` dublował `<h1>` z szablonu, jedyny post z tym problemem), `updatedAt: 2026-07-06`, instalacja przepisana (oficjalna wtyczka z katalogu = główny tor, WPCode = alternatywa), sekcja „roadmapa" → „wtyczka w katalogu", statystyka „93% (agencja WiWi)" → dane W3Techs z linkiem zewnętrznym, FAQ/case study zaktualizowane, excerpt skrócony.
 - Sibling `jak-ustawic-bota-na-wordpress-krok-po-kroku.mdx`: reorder „3 sposoby" (Sposób 1 = wtyczka z katalogu, 2 = WPCode, 3 = motyw), tabela/CTA/podsumowanie/FAQ/troubleshooting spójne z nowym torem, tag „chatbot AI" → „bot wordpress".
-- Review `botiko-content`: 0 blokerów marki, 4 uwagi (niespójności FAQ/troubleshooting) + 3 sugestie — wszystko naniesione.
-- **Audyt GSC** (przez claude-seo `gsc_inspect`/`gsc_query`, service account): sitemap czysty (0 błędów); **kluczowe strony /cennik, /integracje/wordpress i pillar są „unknown to Google"** (nie zaindeksowane) mimo bycia w sitemap i braku noindex → dyskretność/crawl budget przy zero-backlink. GSC Performance: kliknięcia tylko na „botiko" (brand, poz. 2,2); frazy niebrandowe poz. 43–98, 0 kliknięć. Potwierdza „sufit bez backlinków" z PLAYBOOK — wtyczka w katalogu (backlink DA~100) to pierwszy realny ruch w tej sprawie.
-- Status: 🔄 blog fixy gotowe (PR); GSC — czekam na treść maila od usera, by potwierdzić dokładny typ powiadomienia.
+- Review `botiko-content`: 0 blokerów marki, 4 uwagi (niespójności FAQ/troubleshooting) + 3 sugestie, wszystko naniesione.
+- **Audyt GSC** (przez claude-seo `gsc_inspect`/`gsc_query`, service account): sitemap czysty (0 błędów); **kluczowe strony /cennik, /integracje/wordpress i pillar są „unknown to Google"** (nie zaindeksowane) mimo bycia w sitemap i braku noindex → dyskretność/crawl budget przy zero-backlink. GSC Performance: kliknięcia tylko na „botiko" (brand, poz. 2,2); frazy niebrandowe poz. 43-98, 0 kliknięć. Potwierdza „sufit bez backlinków" z PLAYBOOK, wtyczka w katalogu (backlink DA~100) to pierwszy realny ruch w tej sprawie.
+- Status: 🔄 blog fixy gotowe (PR); GSC: czekam na treść maila od usera, by potwierdzić dokładny typ powiadomienia.
 
-### Wtyczka WordPress LIVE — publikacja SVN + aktualizacja strony/panelu + baner + SEO — Claude + botiko-content + security-reviewer — branch `feat/wp-plugin-live-site`
+### Wtyczka WordPress LIVE, publikacja SVN + aktualizacja strony/panelu + baner + SEO. Claude + botiko-content + security-reviewer, branch `feat/wp-plugin-live-site`
 - Kontekst: wtyczka `botiko-ai-customer-service-bot` (v1.0.6) **zatwierdzona i opublikowana w katalogu WordPress.org** (pierwszy deploy SVN przez tag `1.0.6` → workflow `wp-deploy.yml`; API wp.org potwierdza download_link). Plugin URI = `botiko.pl/integracje/wordpress` → darmowy backlink DA~100 na tę stronę.
 - Korekty faktów: usunięto 4 nieaktualne „w przygotowaniu / lista oczekujących / w trakcie weryfikacji" (`EmbedCode.tsx`, `Pricing.tsx`, `lib/faq.ts`, strona integracji).
 - „Instalacja z katalogu" jako główny tor: przepisana `integracje/wordpress/page.tsx` (kroki katalog-first, WPCode → fallback, metadata+OG+Twitter, HowTo schema), `PluginDownload` w panelu (katalog + ZIP jako alternatywa), `SetupWizard` (koniec z edycją `footer.php`). Bloker z review: stary 4-krokowy WPCode w panelu przeniesiony pod nagłówek „Wolisz bez wtyczki? Alternatywna metoda (WPCode)".
 - Subtelny baner marki: nowy `public/wordpress.svg`, pigułka w Hero, „W katalogu WordPress.org" w trust-stripie Pricing + badge kroku 03 HowItWorks.
 - SEO: nowy builder `softwareApplicationSchema()` (`sameAs`/`downloadUrl` → wp.org, bez aggregateRating), dwustronne linki integracja↔blog, wpis do `PLAYBOOK.md` (backlink). Poprawki z content-review: usunięto niepotwierdzone „93%", usunięto nazwy Wix/Squarespace (platformy nieobsługiwane oficjalnie).
 - Pliki/obszar: apps/web (strona integracji, panel embed, kreator, Hero/Pricing/HowItWorks, lib/seo, lib/faq), public asset, docs/seo/PLAYBOOK.
-- Review: `botiko-content` (1 bloker naprawiony + 5 uwag naniesionych) · `security-reviewer` (SECURE — JSON-LD statyczny, linki z `rel=noopener`, SVG bez skryptów). tsc + eslint czyste.
+- Review: `botiko-content` (1 bloker naprawiony + 5 uwag naniesionych) · `security-reviewer` (SECURE. JSON-LD statyczny, linki z `rel=noopener`, SVG bez skryptów). tsc + eslint czyste.
 - Zakres świadomie ograniczony: blog (pillar + sibling), `dla/*`, `llms.txt`, `local-seo`, screenshoty wp.org → follow-up.
 - Status: ✅ done.
 
-### Hardening puli DB — koniec szumu 57P01 w Sentry — Claude — branch `fix/db-pool-hardening`
-- Kontekst: Sentry (produkcja, free tier) złapało `DriverAdapterError: terminating connection due to administrator command` (Postgres 57P01) na endpointcie `GET /api/v1/conversations` — pooler Supabase (Supavisor) recyklinguje bezczynne połączenia, a pula `pg` oddawała do requestu zerwane połączenie → 500 dla usera.
+### Hardening puli DB, koniec szumu 57P01 w Sentry. Claude, branch `fix/db-pool-hardening`
+- Kontekst: Sentry (produkcja, free tier) złapało `DriverAdapterError: terminating connection due to administrator command` (Postgres 57P01) na endpointcie `GET /api/v1/conversations`, pooler Supabase (Supavisor) recyklinguje bezczynne połączenia, a pula `pg` oddawała do requestu zerwane połączenie → 500 dla usera.
 - Co zrobione (`apps/api/src/prisma/prisma.service.ts`): dodano `pool.on('error')` (loguje transient jako warn zamiast wypuszczać do Sentry), `keepAlive: true`, `maxUses: 7500` (rotacja połączeń), `connectionTimeoutMillis: 10s`. Handler po `super()` (ograniczenie `this` w konstruktorze klasy pochodnej).
 - Pliki/obszar: warstwa połączenia Prisma ↔ Supabase.
 - Review: self (tsc + eslint czyste); zmiana konfiguracyjna puli, bez wpływu na logikę.
-- Status: ✅ done — do obserwacji na Sentry; jeśli mimo to trafia do userów, kolejny krok = retry transient errors.
+- Status: ✅ done: do obserwacji na Sentry; jeśli mimo to trafia do userów, kolejny krok = retry transient errors.
 
 ## 2026-07-03 (piątek)
 
-### Testy DTO + audyt bezpieczeństwa świeżych zmian (SSRF fix) — Claude + security-reviewer — branch `test/dto-coverage-security`
-- Kontekst: prośba o dopisanie brakujących testów + audyt bezpieczeństwa. Ustalono, że 3 „brakujące" specy z backlogu (`chat-message.dto`, `create-contact.dto`, `auth.guard`) **już istnieją i są kompletne** — wpis w CLAUDE.md był nieaktualny (usunięty).
-- **Testy**: nowy `update-bot.dto.spec.ts` (45 przypadków) — pokrywa fix bezpieczeństwa `httpUrl` (blokada `javascript:`/`data:`/`ftp:` w linkach map/rezerwacji/WWW), walidację `companyEmail`/`nip`/`owner`, `allowedDomains` max 5, hex koloru, refine godzin. Suite API: 348 → 393 testy.
-- **Security audit** (7 plików z 6 ostatnich PR-ów): 6/7 bezpieczne — `getPublicConfig` nie wystawia `nip`/`owner`/`companyEmail` (allow-list), `nip`/`owner` nie trafiają do promptu, `linkify` tylko `https?:` (brak XSS), plugin-download chroniony 401.
-- **Znalezisko HIGH (naprawione)**: `page-discovery.ts` (`trySitemaps`, `crawlHomepageLinks`) używał surowego `fetch()` bez DNS pinningu — luka na DNS rebinding + redirect-SSRF (sitemap z robots.txt = attacker-controlled). Fix: podmiana na `safeFetch` (secureLookup + re-walidacja przekierowań); dodana flaga `allowAnyContentType` dla sitemap XML.
+### Testy DTO + audyt bezpieczeństwa świeżych zmian (SSRF fix). Claude + security-reviewer, branch `test/dto-coverage-security`
+- Kontekst: prośba o dopisanie brakujących testów + audyt bezpieczeństwa. Ustalono, że 3 „brakujące" specy z backlogu (`chat-message.dto`, `create-contact.dto`, `auth.guard`) **już istnieją i są kompletne**, wpis w CLAUDE.md był nieaktualny (usunięty).
+- **Testy**: nowy `update-bot.dto.spec.ts` (45 przypadków), pokrywa fix bezpieczeństwa `httpUrl` (blokada `javascript:`/`data:`/`ftp:` w linkach map/rezerwacji/WWW), walidację `companyEmail`/`nip`/`owner`, `allowedDomains` max 5, hex koloru, refine godzin. Suite API: 348 → 393 testy.
+- **Security audit** (7 plików z 6 ostatnich PR-ów): 6/7 bezpieczne, `getPublicConfig` nie wystawia `nip`/`owner`/`companyEmail` (allow-list), `nip`/`owner` nie trafiają do promptu, `linkify` tylko `https?:` (brak XSS), plugin-download chroniony 401.
+- **Znalezisko HIGH (naprawione)**: `page-discovery.ts` (`trySitemaps`, `crawlHomepageLinks`) używał surowego `fetch()` bez DNS pinningu, luka na DNS rebinding + redirect-SSRF (sitemap z robots.txt = attacker-controlled). Fix: podmiana na `safeFetch` (secureLookup + re-walidacja przekierowań); dodana flaga `allowAnyContentType` dla sitemap XML.
 - Review: security-reviewer (werdykt: 1 HIGH → wdrożony, reszta czysta).
 - Status: ✅ done
 
-### Skaner WWW (zmyślony telefon + chuda ekstrakcja) + mobile scroll — Claude — PR #104, #105
+### Skaner WWW (zmyślony telefon + chuda ekstrakcja) + mobile scroll. Claude. PR #104, #105
 - Kontekst: feedback z testów. Analiza agentem + weryfikacja WebFetch (numer `+48 259 442 090` NIE ma go na botiko.pl).
 - **#105 skaner**: zmyślony telefon = NIE halucynacja, tylko regex (opcjonalny +48, brak granic cyfr) po pełnym HTML PO usunięciu stopki z prawdziwym `tel:`. Fix: `tel:`/`mailto:` z DOM przed strippingiem; regex fallback na widocznym tekście z granicami cyfr. Bogatsza ekstrakcja: oferty bez ceny → `price:null`, FAQ z nagłówków, `about` 3-6 zdań, wzorce stron branżowych w discovery. Nowe `content-extractor.spec`.
-- **#104 mobile**: ekran skakał na mobile przy pisaniu bota (klawiatura otwarta) — `scrollIntoView` przewijał dokument przy każdym tokenie. Fix: przewijamy tylko kontener wiadomości.
-- Odłożone (do decyzji): pełny „informacyjny" kubełek w schemacie importu (retencja sekcji marketingowych) — większa zmiana, jeśli po tym nadal za chudo.
+- **#104 mobile**: ekran skakał na mobile przy pisaniu bota (klawiatura otwarta), `scrollIntoView` przewijał dokument przy każdym tokenie. Fix: przewijamy tylko kontener wiadomości.
+- Odłożone (do decyzji): pełny „informacyjny" kubełek w schemacie importu (retencja sekcji marketingowych), większa zmiana, jeśli po tym nadal za chudo.
 - Status: ✅ done
 
-### Naprawa leadów (krytyczne) + fixy UX + „Informacje o firmie" — Claude — PR #100, #101, #102
+### Naprawa leadów (krytyczne) + fixy UX + „Informacje o firmie", Claude. PR #100, #101, #102
 - Kontekst: testy na żywo ujawniły błędy (część w głównym produkcie). Analiza 3 agentami (lead capture, pobieranie wtyczki/linki, dane firmy).
-- **#100 (KRYTYCZNE) lead capture**: bot kłamał „Twój lead został zapisany" (chat nigdy nie zapisuje — tylko formularz) i nie otwierał okienka na „zapisz mojego leada". Fix: reguła 11 w prompcie (nie udawaj zapisu, kieruj do formularza), przeredagowane szablony branżowe, słownik intencji (`zapisz leada`/`zostaw moje dane`…), reset `autoOpened` w widgecie.
-- **#101 fixy UX**: pobieranie wtyczki (ZIP base64 w module — koniec `plugin-download.txt`, `import.meta.url` zawodził na Vercelu); `linkify` parsuje markdown `[url](url)` (koniec dublowania) + karty **Google Maps**/**Booksy** na żądanie, usunięta stała karta adresu; copy „Wklej cokolwiek"→„Dodaj wiedzę z tekstu"; fallback „Zapisz jako notatkę"; o-nas copy; limit widgetu 14→15KB.
-- **#102 „Informacje o firmie"**: migracja Bot (nip, owner, companyEmail, websiteUrl, googleMapsUrl, reservationUrl); sekcja w Ustawieniach; usunięta zdublowana zakładka Kontakt; **blok `=== DANE FIRMY ===` zawsze w prompcie** (nie RAG) — bot pewnie zna adres/mapę/rezerwację i podaje link (widget → karta). URL-e tylko http(s) (po review).
-- Review: security-reviewer (1 rekom. http(s) — wdrożona), botiko-content (blokery health/food + literówki — naprawione). CI zielone, wszystkie zmergowane.
+- **#100 (KRYTYCZNE) lead capture**: bot kłamał „Twój lead został zapisany" (chat nigdy nie zapisuje, tylko formularz) i nie otwierał okienka na „zapisz mojego leada". Fix: reguła 11 w prompcie (nie udawaj zapisu, kieruj do formularza), przeredagowane szablony branżowe, słownik intencji (`zapisz leada`/`zostaw moje dane`...), reset `autoOpened` w widgecie.
+- **#101 fixy UX**: pobieranie wtyczki (ZIP base64 w module, koniec `plugin-download.txt`, `import.meta.url` zawodził na Vercelu); `linkify` parsuje markdown `[url](url)` (koniec dublowania) + karty **Google Maps**/**Booksy** na żądanie, usunięta stała karta adresu; copy „Wklej cokolwiek"→„Dodaj wiedzę z tekstu"; fallback „Zapisz jako notatkę"; o-nas copy; limit widgetu 14→15KB.
+- **#102 „Informacje o firmie"**: migracja Bot (nip, owner, companyEmail, websiteUrl, googleMapsUrl, reservationUrl); sekcja w Ustawieniach; usunięta zdublowana zakładka Kontakt; **blok `=== DANE FIRMY ===` zawsze w prompcie** (nie RAG), bot pewnie zna adres/mapę/rezerwację i podaje link (widget → karta). URL-e tylko http(s) (po review).
+- Review: security-reviewer (1 rekom. http(s): wdrożona), botiko-content (blokery health/food + literówki, naprawione). CI zielone, wszystkie zmergowane.
 - Status: ✅ done
 
 ## 2026-07-02 (czwartek)
 
-### P2.7 „Wklej cokolwiek" + P1.6 karta lokalizacji — Claude — PR #97, #98
+### P2.7 „Wklej cokolwiek" + P1.6 karta lokalizacji. Claude. PR #97, #98
 - Kontekst: dwie największe odłożone pozycje z `docs/PLAN-DZIALANIA.md`. Analiza 3 agentami (frontend/backend wiedzy + źródło adresu). Ustalenia: podgląd `WebsiteImportPreview` re-użyty 1:1; `Bot.companyAddress` już istniał end-to-end (bez migracji).
-- **#98 (P2.7)** — jedno pole „Wklej cokolwiek" → AI klasyfikuje wklejony tekst na wpisy (reuse pipeline'u website-import: `buildClassifyMessages`, `runExtractionFromMessages`, `saveConfirmedChunks` bez blanket-delete/prefix `paste:`). Nowe route `POST :botId/classify` + `/classify/save` (throttle 5/min), DTO 30–90k / services 40 / faq 30. Frontend: `PasteAnythingPanel` (reuse podglądu), panel wklej jako główny + zwijane „Dodaj ręcznie", kubełek „Usługi", `router.refresh`. **Security fix (HIGH)**: `saveConfirmedChunks` sanityzuje treść (`sanitizeContent`+`detectKnowledgeInjection`) — naprawia też istniejącą lukę w `confirmJob`. 340 testów zielonych.
-- **#97 (P1.6)** — karta lokalizacji w widgecie: `getPublicConfig` wystawia `companyAddress`, widget renderuje kartę (pin + adres + „Otwórz w Google Maps"). Build 13.7KB gzip. Bez migracji.
+- **#98 (P2.7)**: jedno pole „Wklej cokolwiek" → AI klasyfikuje wklejony tekst na wpisy (reuse pipeline'u website-import: `buildClassifyMessages`, `runExtractionFromMessages`, `saveConfirmedChunks` bez blanket-delete/prefix `paste:`). Nowe route `POST :botId/classify` + `/classify/save` (throttle 5/min), DTO 30-90k / services 40 / faq 30. Frontend: `PasteAnythingPanel` (reuse podglądu), panel wklej jako główny + zwijane „Dodaj ręcznie", kubełek „Usługi", `router.refresh`. **Security fix (HIGH)**: `saveConfirmedChunks` sanityzuje treść (`sanitizeContent`+`detectKnowledgeInjection`), naprawia też istniejącą lukę w `confirmJob`. 340 testów zielonych.
+- **#97 (P1.6)**: karta lokalizacji w widgecie: `getPublicConfig` wystawia `companyAddress`, widget renderuje kartę (pin + adres + „Otwórz w Google Maps"). Build 13.7KB gzip. Bez migracji.
 - Review: security-reviewer (1 HIGH naprawiony) + botiko-content (odmiana liczebnika); CI zielone, oba PR zmergowane.
 - Odłożone dalej: **P0.2 headless render** (po pilotach), dedupe chunków po hashu (follow-up).
 - Status: ✅ done
 
-### PR4 quick-winy: bugi produktowe P0/P1/P2 (po dokładnej analizie) — Claude — PR #92–95
+### PR4 quick-winy: bugi produktowe P0/P1/P2 (po dokładnej analizie). Claude. PR #92-95
 - Kontekst: analiza całego PR4 z `docs/PLAN-DZIALANIA.md` (3 równoległe agenty). Ustalenia zmieniające plan: P0.3 mobilny viewport **już zrobiony** (commit `0a7abec`); P0.2 podgląd z edycją **już istnieje**; „3 zdania" to dosłownie `about: "max 3 zdania"` w prompcie.
 - **#92 (P0.4)** ucinane odpowiedzi: RAG `maxTokens` 600→1000, powitania 150→200; `chatStream` łapie `finish_reason`, log przy `length`.
 - **#93 (P0.1/P0.3/P1.5)** widget: `onPrimary()` luminancja → `--botiko-on-primary` (kontrast przy jasnym kolorze), fallback `100dvh`, klikalne chipy z linkami w odpowiedziach. Build 13.5KB gzip (<14).
 - **#94 (P2.7 cleanup)** usunięty martwy route `/dashboard/knowledge-base`.
 - **#95 (P0.2)** skaner WWW: limity ekstrakcji w górę (services 20→40, faq 15→30, tekst 8k→14k, agregat 50k→90k, output 4k→8k), `about` „max 3 zdania"→„5-6 zdań", komunikat przy chudej treści (<600 zn.).
-- Odłożone (świadomie): **P1.6 karta mapy** (wymaga adresu w configu/SSE), **P0.2 headless render** (po pilotach), **P2.7 główne** — 1 pole „wklej cokolwiek" + endpoint klasyfikacji (duże, ~1-2 dni).
+- Odłożone (świadomie): **P1.6 karta mapy** (wymaga adresu w configu/SSE), **P0.2 headless render** (po pilotach), **P2.7 główne**, 1 pole „wklej cokolwiek" + endpoint klasyfikacji (duże, ~1-2 dni).
 - Review: security-reviewer + botiko-business (przy auto-lead), botiko-content (treści); wszystkie CI zielone, PR-y zmergowane.
 - Status: ✅ done (quick-winy); ⏸ 3 większe pozycje czekają na decyzję/kolejny sprint
 
-### Auto-otwarcie formularza leada przy intencji kontaktu — Claude — PR #91 — branch feat/bot-auto-lead-form
+### Auto-otwarcie formularza leada przy intencji kontaktu. Claude. PR #91, branch feat/bot-auto-lead-form
 - Co zrobione: bot sam otwiera istniejące okienko leada (imię i nazwisko + telefon, bez zmian pól) gdy wykryje, że user zostawia/prosi o kontakt. Hybryda: tanie wzorce (regex e-mail/telefon + frazy) → dla niejasnych jedno tanie zapytanie gpt-4o-mini (TAK/NIE). Sygnał w done-event streamu, liczony równolegle (twardy 1s guard). Przy pewnej intencji podpowiedź w system prompcie, by bot słownie zaprosił do kontaktu. Widget: flag `autoOpened` (raz na sesję, ręczne zamknięcie respektowane).
 - Pliki/obszar: `apps/api/src/modules/chat/{message-sanitizer,chat.service}.ts` (+ spec), `apps/widget/src/ChatWindow.tsx`
-- Review: security-reviewer (ReDoS/DoS/XSS — czysto, wejście ≤1000 zn.), botiko-business (w zakresie MVP); 156 testów zielonych, tsc+eslint OK, widget 13.2KB gzip
+- Review: security-reviewer (ReDoS/DoS/XSS: czysto, wejście ≤1000 zn.), botiko-business (w zakresie MVP); 156 testów zielonych, tsc+eslint OK, widget 13.2KB gzip
 - Status: ✅ done (PR do review CI)
 
-### Chronione pobieranie wtyczki WordPress z panelu — Claude — PR #90 — branch feat/wp-plugin-download
+### Chronione pobieranie wtyczki WordPress z panelu. Claude. PR #90, branch feat/wp-plugin-download
 - Co zrobione: sekcja „Pobierz wtyczkę Botiko" + baner w panelu (embed), plik ZIP (v1.0.6) commitowany poza `/public`, serwowany przez chroniony route Next.js z auth Supabase (`getUser()` → 401 dla niezalogowanych). `next.config` `outputFileTracingIncludes` wciąga ZIP do funkcji serverless. Poprawiona kopia `PluginPairing` (nie zakłada katalogu wp.org). Udokumentowany krok odświeżania w `PUBLISHING.md`.
 - Pliki/obszar: `apps/web/app/dashboard/embed/plugin-download/{route.ts,botiko-plugin.zip}`, `apps/web/app/dashboard/embed/EmbedCode.tsx`, `apps/web/next.config.mjs`, `wordpress-plugin/PUBLISHING.md`
 - Review: tsc+eslint OK; ZIP 15 plików, slug `botiko-ai-customer-service-bot/`
 - Status: ✅ done (PR do review CI)
 
-### Higiena treści web — stopka, karta kontaktu, maile kontakt@, FAQ płatności — Claude — PR #89 — branch fix/site-copy-emails
+### Higiena treści web, stopka, karta kontaktu, maile kontakt@, FAQ płatności. Claude. PR #89, branch fix/site-copy-emails
 - Co zrobione: stopka bez „Projekt z Białegostoku"; karta „Odpowiadam osobiście" na Mateusza Woronowicza (twórca Botiko); nagłówek o-nas w rzędzie flex (lewo/prawo); usunięcie Messengera z landingu; ujednolicenie maili user-facing do `kontakt@botiko.pl` (rodo@/pomoc@); sekcja FAQ o płatnościach w billing; „Cancel"→„Anuluj", usunięty claim „jedyny bot".
 - Pliki/obszar: `apps/web/components/marketing/{Footer,Problem,Hero}.tsx`, `apps/web/app/(marketing)/{kontakt,o-nas}/…`, `apps/web/app/{prywatnosc,regulamin,dashboard/help,dashboard/billing}/…`, `docs/content/bot-knowledge-base.md`, `BOTIKO_CONTEXT.md`
 - Review: botiko-content (poprawiony błąd gramatyczny + dwuznaczność rezerwacji); next lint + tsc czysto
 - Status: ✅ done (PR do review CI)
 
-### Poprawki wtyczki WordPress po review wp.org (v1.0.6) — Claude — branch fix/wp-plugin-review-enqueue
+### Poprawki wtyczki WordPress po review wp.org (v1.0.6). Claude, branch fix/wp-plugin-review-enqueue
 - Co zrobione (2 uwagi z review `P0TDX334837HGN`):
-  - **Enqueue widgetu**: `Botiko_Embed` przepisane z surowego `printf('<script data-bot-id async>')` na `wp_footer` → `wp_enqueue_script()` na `wp_enqueue_scripts` (footer, strategia `async` przez `wp_script_add_data`, back-compat od WP 5.8). `data-bot-id` doklejane przez filtr `script_loader_tag`. Usunięte `phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript` — sniff przechodzi naturalnie.
+  - **Enqueue widgetu**: `Botiko_Embed` przepisane z surowego `printf('<script data-bot-id async>')` na `wp_footer` → `wp_enqueue_script()` na `wp_enqueue_scripts` (footer, strategia `async` przez `wp_script_add_data`, back-compat od WP 5.8). `data-bot-id` doklejane przez filtr `script_loader_tag`. Usunięte `phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript`, sniff przechodzi naturalnie.
   - **Contributors**: `readme.txt` `botiko` → `mateuszworonowicz` (username właściciela na wp.org).
   - Bump wersji 1.0.5 → 1.0.6 (`botiko.php` header + `BOTIKO_VERSION`, `readme.txt` Stable tag), wpis do changelogu.
-  - Samodzielny przegląd „get ahead of us": ABSPATH guardy OK we wszystkich plikach (`uninstall.php` używa `WP_UNINSTALL_PLUGIN` — poprawnie); reszta enqueue/escaping/nonce bez zastrzeżeń.
+  - Samodzielny przegląd „get ahead of us": ABSPATH guardy OK we wszystkich plikach (`uninstall.php` używa `WP_UNINSTALL_PLUGIN`, poprawnie); reszta enqueue/escaping/nonce bez zastrzeżeń.
 - Pliki/obszar: `wordpress-plugin/botiko/includes/class-botiko-embed.php`, `readme.txt`, `botiko.php`
 - Review: kod zgodny z podlinkowaną dokumentacją make.wordpress.org (async strategy 6.3 + script attributes 5.7); PHPCS/`php -l` lokalnie niedostępne (brak PHP na maszynie) → weryfikacja w CI job `WordPress plugin`
 - Status: 🔄 czeka na test na czystym WP (WP_DEBUG) + re-upload ZIP 1.0.6 przez „Add your plugin" i odpowiedź na maila
 
-### Audyt strategiczny + plan działania — Claude — branch docs/plan-dzialania
+### Audyt strategiczny + plan działania. Claude, branch docs/plan-dzialania
 - Co zrobione:
   - **Pełny audyt strategiczny**: web research konkurencji (Tidio/Lyro, Smartsupp Mira, polska nisza: BeautyBoost AI, Smart-Asystenci, AutomatyzujSalon), benchmarki churnu SMB SaaS, dane GUS o stronach WWW mikrofirm; walkthrough na żywo botiko.pl + dashboard + widget (Chrome).
   - **Zweryfikowane w kodzie defekty produktu**: hardkod `#fff` w `ChatWindow.tsx` (biały tekst na jasnym akcencie), skaner WWW bez renderu JS (`safe-fetch.ts`) + agresywne limity ekstrakcji, skaczący ekran mobile przy klawiaturze, ucinane odpowiedzi bota (demo live).
-  - **Nowy dokument** `docs/PLAN-DZIALANIA.md`: werdykt (cena 99 zł zostaje — najtańsza w segmencie; problem = dystrybucja + polish), sprinty naprawcze P0–P2 w dniach, higiena copy („Cancel kiedy chcesz" ×3 na landingu), plan sprzedaży (piloty done-for-you, „Start za Ciebie" 199 zł, partnerstwa z twórcami stron), bramka decyzyjna po 10 rozmowach, lista „czego NIE robić".
+  - **Nowy dokument** `docs/PLAN-DZIALANIA.md`: werdykt (cena 99 zł zostaje, najtańsza w segmencie; problem = dystrybucja + polish), sprinty naprawcze P0-P2 w dniach, higiena copy („Cancel kiedy chcesz" ×3 na landingu), plan sprzedaży (piloty done-for-you, „Start za Ciebie" 199 zł, partnerstwa z twórcami stron), bramka decyzyjna po 10 rozmowach, lista „czego NIE robić".
 - Pliki/obszar: `docs/PLAN-DZIALANIA.md` (nowy), `DOCS.md` (indeks)
 - Review: audyt oparty o dane (GSC/Senuto z audytu SEO 2026-06-30, research 2026-07); kod nie zmieniany
 - Status: ✅ raport gotowy · 🔄 sprinty naprawcze i sprzedaż wg planu
 
 ## 2026-07-01 (środa)
 
-### Nowy wpis blogowy „Urlop bez utraty klientów" + fix lokalnego dev — Claude — branch feat/blog-urlop
+### Nowy wpis blogowy „Urlop bez utraty klientów" + fix lokalnego dev. Claude, branch feat/blog-urlop
 - Co zrobione:
-  - **Nowy post MDX** `urlop-bez-utraty-klientow-firma-uslugowa.mdx` (temat sezonowy: bot odbiera pytania, gdy właściciel jest na urlopie). Answer-first, box „W skrócie", InfoBox ze **zweryfikowaną statystyką** (78% klientów kupuje u firmy, która odpowie pierwsza — Vendasta/Lead Connect 2025), Callout, CTABlock, FAQ, 4 linki wewnętrzne (pytania-nocne, WordPress, ROI, leady). 3 grafiki (hero + 2 inline) wygenerowane przez Gemini nano banana (AI Studio), zoptymalizowane do webp (81/48/96 KB) w `public/blog/`.
+  - **Nowy post MDX** `urlop-bez-utraty-klientow-firma-uslugowa.mdx` (temat sezonowy: bot odbiera pytania, gdy właściciel jest na urlopie). Answer-first, box „W skrócie", InfoBox ze **zweryfikowaną statystyką** (78% klientów kupuje u firmy, która odpowie pierwsza. Vendasta/Lead Connect 2025), Callout, CTABlock, FAQ, 4 linki wewnętrzne (pytania-nocne, WordPress, ROI, leady). 3 grafiki (hero + 2 inline) wygenerowane przez Gemini nano banana (AI Studio), zoptymalizowane do webp (81/48/96 KB) w `public/blog/`.
   - **Fix lokalnego dev** (`apps/web`): `.env.local` nie miał wymaganych `NEXT_PUBLIC_SUPABASE_*` (middleware 500 na każdej trasie) → dodane placeholdery; `node_modules` był niekompletny (brak `@vercel/speed-insights`) → reinstall pnpm 9. Szczegóły w pamięci projektu.
 - Pliki/obszar: `apps/web/content/blog/urlop-*.mdx`, `apps/web/public/blog/urlop-*.webp`
-- Review: **botiko-content — 0 blokerów** (język marki, cena 99 zł, brak obietnic rezerwacji → Booksy/Calendly, autor Mateusz Woronowicz, bez emoji, statystyka ocytowana). Poprawione niespójne cudzysłowy. Zweryfikowane renderem lokalnym (HTTP 200).
+- Review: **botiko-content: 0 blokerów** (język marki, cena 99 zł, brak obietnic rezerwacji → Booksy/Calendly, autor Mateusz Woronowicz, bez emoji, statystyka ocytowana). Poprawione niespójne cudzysłowy. Zweryfikowane renderem lokalnym (HTTP 200).
 - Status: 🔄 wpis gotowy, data publikacji 15.07.2026 (auto-publish); PR do review
 
-### PageSpeed: LCP hero + labelki suwaków (a11y/agentic) — Claude — branch fix/pagespeed-lcp-a11y
+### PageSpeed: LCP hero + labelki suwaków (a11y/agentic). Claude, branch fix/pagespeed-lcp-a11y
 - Co zrobione:
-  - **LCP** (mobile 5,4 s → element LCP malował się ~3,4 s po FCP): `<h1>` hero miał `animate-fade-in-up` (opacity 0→1), a animowanie opacity elementu LCP opóźnia Largest Contentful Paint. Nowy keyframe `heroRise` (tylko `transform: translateY`, bez opacity) + klasa `animate-hero-rise` z guardem `prefers-reduced-motion`. Wszystkie elementy above-the-fold hero (badge, h1, opis, CTA, mockup) malują się teraz od razu przy pełnej widoczności — entrance zachowany, ale bez kosztu LCP.
+  - **LCP** (mobile 5,4 s → element LCP malował się ~3,4 s po FCP): `<h1>` hero miał `animate-fade-in-up` (opacity 0→1), a animowanie opacity elementu LCP opóźnia Largest Contentful Paint. Nowy keyframe `heroRise` (tylko `transform: translateY`, bez opacity) + klasa `animate-hero-rise` z guardem `prefers-reduced-motion`. Wszystkie elementy above-the-fold hero (badge, h1, opis, CTA, mockup) malują się teraz od razu przy pełnej widoczności, entrance zachowany, ale bez kosztu LCP.
   - **Dostępność 89 + Przeglądanie agentowe 2/3** („Form elements must have labels"): dwa suwaki `range` w `Pricing.tsx` (kalkulator ROI) nie miały powiązanych labeli. Dodane `htmlFor`/`id` do widocznych `<label>` + `aria-label`. Pozostałe suwaki (`ROICalculator`, `LostClientsCalculator`) już miały `aria-label`.
 - Pliki/obszar: `apps/web/components/marketing/Hero.tsx`, `apps/web/components/marketing/Pricing.tsx`, `apps/web/app/globals.css`
 - Review: type-check czysty (jedyny błąd pre-existujący: brak `@vercel/speed-insights` w lokalnym env). Weryfikacja wyniku PSI po deployu.
-- Status: 🔄 wdrożone w kodzie — do potwierdzenia re-runem PageSpeed Insights po merge
+- Status: 🔄 wdrożone w kodzie: do potwierdzenia re-runem PageSpeed Insights po merge
 
-### Porządki repo + spójność oferty — Claude — PR #82, #83
+### Porządki repo + spójność oferty. Claude. PR #82, #83
 - Co zrobione:
-  - **Spójność cen** (audyt subagentem): `docs/CODEMAPS/*` miały nieaktualne 149 PLN (10 miejsc, m.in. „Stripe charges") → 99 zł. Kod billingu był OK. Naprawiony over-promise rezerwacji w `blog/chatbot-recepcja.mdx` (live sloty, „integracja z systemem rezerwacji", tabela, FAQ) — bot odsyła do Booksy/Calendly. Usunięte martwe PRO/PREMIUM w `BillingClient.tsx` (MVP = jeden plan).
-  - **Kontekst**: `CLAUDE.md` — aktualny stan (wtyczka WP zgłoszona do wp.org), roadmapa Fazy 2, limit widgetu ujednolicony do 14 KB (był rozjazd 12/13/14), lista 5 jobów CI. Nowa zasada: **commity/PR bez śladów AI** + wpis w pamięci.
+  - **Spójność cen** (audyt subagentem): `docs/CODEMAPS/*` miały nieaktualne 149 PLN (10 miejsc, m.in. „Stripe charges") → 99 zł. Kod billingu był OK. Naprawiony over-promise rezerwacji w `blog/chatbot-recepcja.mdx` (live sloty, „integracja z systemem rezerwacji", tabela, FAQ), bot odsyła do Booksy/Calendly. Usunięte martwe PRO/PREMIUM w `BillingClient.tsx` (MVP = jeden plan).
+  - **Kontekst**: `CLAUDE.md`: aktualny stan (wtyczka WP zgłoszona do wp.org), roadmapa Fazy 2, limit widgetu ujednolicony do 14 KB (był rozjazd 12/13/14), lista 5 jobów CI. Nowa zasada: **commity/PR bez śladów AI** + wpis w pamięci.
   - **Sprzątanie**: usunięte binaria `MasterPlan` i nietrackowany `botiko.pl-audit/` (raport został w `docs/seo/audyt-2026-06-30.md`), usunięty nieużywany `components/ui/Spinner.tsx`, emoji z `apps/api/README.md`. Emoji w szablonach PDF świadomie zostawione.
 - Pliki/obszar: `docs/CODEMAPS/*`, `CLAUDE.md`, `DOCS.md`, `.github/workflows/ci.yml`, `apps/web` (BillingClient, chatbot-recepcja, Spinner), `apps/api/README.md`
 - Review: audyt cen/oferty + raport martwego kodu przez subagentów; CI zielone na obu PR-ach.
-- Status: ✅ done — repo uporządkowane i spójne przed kolejnymi zmianami
+- Status: ✅ done: repo uporządkowane i spójne przed kolejnymi zmianami
 
-### Zgłoszenie wtyczki do wp.org + zgodność z Plugin Check — Claude — PR #78, #79, #80
+### Zgłoszenie wtyczki do wp.org + zgodność z Plugin Check. Claude. PR #78, #79, #80
 - Co zrobione:
   - **Fix builda Railway** (PR #77): `railway.json` buildCommand ustawiał `NODE_ENV=production` → `pnpm install` przycinał devDeps (prisma, @nestjs/cli) → `prisma generate` padał. Prefiks `NODE_ENV=development` + `--frozen-lockfile`.
-  - **Plugin Check — runda 1** (PR #78, v1.0.3): readme.txt w całości po angielsku (wymóg wp.org), `Tested up to: 7.0`, usunięto `load_plugin_textdomain()`, Plugin Name/Description po angielsku (UI panelu zostaje PL).
+  - **Plugin Check: runda 1** (PR #78, v1.0.3): readme.txt w całości po angielsku (wymóg wp.org), `Tested up to: 7.0`, usunięto `load_plugin_textdomain()`, Plugin Name/Description po angielsku (UI panelu zostaje PL).
   - **Slug** (PR #79, v1.0.4): slug wynika z nazwy → `botiko-ai-customer-service-bot`. Zsynchronizowano review URL w panelu, `SLUG` w `wp-deploy.yml`, `PUBLISHING.md`.
-  - **Plugin Check — runda 2** (PR #80, v1.0.5): 72 błędy `TextDomainMismatch` — text domain musi = slug. Zmieniono text domain we wszystkich wywołaniach i18n + nagłówek + `phpcs.xml.dist` + `.pot`; `build.sh` pakuje ZIP do folderu = slug (folder instalacji musi = text domain). `PAGE_SLUG` bez zmian.
+  - **Plugin Check: runda 2** (PR #80, v1.0.5): 72 błędy `TextDomainMismatch`, text domain musi = slug. Zmieniono text domain we wszystkich wywołaniach i18n + nagłówek + `phpcs.xml.dist` + `.pot`; `build.sh` pakuje ZIP do folderu = slug (folder instalacji musi = text domain). `PAGE_SLUG` bez zmian.
 - Pliki/obszar: `apps/api/railway.json`, `wordpress-plugin/botiko/*`, `wordpress-plugin/build.sh`, `.github/workflows/wp-deploy.yml`, `wordpress-plugin/PUBLISHING.md`
 - Review: **Plugin Check = 0 błędów** (potwierdzone przez użytkownika). CI zielone na każdym PR.
-- Status: ✅ wtyczka zgłoszona do katalogu wp.org, czeka na review zespołu Plugins (~1–10 dni)
+- Status: ✅ wtyczka zgłoszona do katalogu wp.org, czeka na review zespołu Plugins (~1-10 dni)
 
-### M4 — przygotowanie do publikacji w wp.org — Claude — branch `chore/wordpress-org-publishing`
+### M4, przygotowanie do publikacji w wp.org. Claude, branch `chore/wordpress-org-publishing`
 - Co zrobione:
-  - **Merge** PR #75 (przeprojektowany panel) do `main` — PR #74 (pairing) już wcześniej wdrożony na produkcję; endpointy `/bot/pair` i `/bot/:id/pairing-token` żywe (zweryfikowane curl: 200/401/400).
-  - **Assety katalogu** w `wordpress-plugin/.wordpress-org/`: `icon.svg` (gradient marki + biały mark), `icon-256/128.png`, `banner-772x250.png`, `banner-1544x500.png` (wygenerowane z brand SVG: svglib+cairo render + Pillow gradient/tekst). Screenshoty — do dorobienia przez użytkownika z żywego panelu (opisy już w `readme.txt`).
+  - **Merge** PR #75 (przeprojektowany panel) do `main`: PR #74 (pairing) już wcześniej wdrożony na produkcję; endpointy `/bot/pair` i `/bot/:id/pairing-token` żywe (zweryfikowane curl: 200/401/400).
+  - **Assety katalogu** w `wordpress-plugin/.wordpress-org/`: `icon.svg` (gradient marki + biały mark), `icon-256/128.png`, `banner-772x250.png`, `banner-1544x500.png` (wygenerowane z brand SVG: svglib+cairo render + Pillow gradient/tekst). Screenshoty, do dorobienia przez użytkownika z żywego panelu (opisy już w `readme.txt`).
   - **Automatyzacja wydań**: `.github/workflows/wp-deploy.yml` (10up action, trigger na tag semver, nieaktywny do czasu sekretów SVN_USERNAME/PASSWORD + akceptacji wp.org).
   - **Guide**: `wordpress-plugin/PUBLISHING.md` (proces zgłoszenia + wydań + „co PO publikacji"); wpis w `DOCS.md`.
   - Wersja wtyczki 1.0.2 (cache-bust CSS + poprawki: wyśrodkowane pola wyboru, link do `/dashboard/overview`).
 - Pliki/obszar: `wordpress-plugin/.wordpress-org/`, `wordpress-plugin/PUBLISHING.md`, `.github/workflows/wp-deploy.yml`, `DOCS.md`, `wordpress-plugin/botiko/*` (v1.0.2)
-- Review: CI zielone (PHPCS + build). Landing/EmbedCode/SetupWizard **świadomie NIE zmieniane** — dopiero po realnej publikacji w katalogu (bez fałszywych obietnic).
-- Status: ✅ assety + tooling + docs gotowe · ⏸ samo zgłoszenie do wp.org + review (~1–2 tyg) = akcja użytkownika (konto wp.org, upload ZIP)
+- Review: CI zielone (PHPCS + build). Landing/EmbedCode/SetupWizard **świadomie NIE zmieniane**, dopiero po realnej publikacji w katalogu (bez fałszywych obietnic).
+- Status: ✅ assety + tooling + docs gotowe · ⏸ samo zgłoszenie do wp.org + review (~1-2 tyg) = akcja użytkownika (konto wp.org, upload ZIP)
 
-### Przeprojektowanie panelu wtyczki (UX/UI) — Claude — branch `feat/wordpress-plugin`
+### Przeprojektowanie panelu wtyczki (UX/UI). Claude, branch `feat/wordpress-plugin`
 - Co zrobione:
   - **Menu top-level** z logo Botiko (base64 SVG mark) zamiast pozycji w „Ustawienia" (`add_menu_page`); zaktualizowane URL-e i `screen->id` w notices + hook `enqueue`.
-  - **Zero emoji/znaków-jako-ikon** — cały panel na inline SVG (styl Lucide, `currentColor`), wypisywane przez `wp_kses()` z allowlistą svg/path/line/circle/polyline/polygon. Usunięte 🤖 ✓ ⚠ ● ○.
+  - **Zero emoji/znaków-jako-ikon**: cały panel na inline SVG (styl Lucide, `currentColor`), wypisywane przez `wp_kses()` z allowlistą svg/path/line/circle/polyline/polygon. Usunięte 🤖 ✓ ⚠ ● ○.
   - **Branded header** (gradient marki + biały wordmark `botiko-logo-white.svg` + pill wersji/panelu), układ 2-kolumnowy (main + sidebar), karty z zaokrągleniami/cieniem.
-  - **Naprawiony rozjeżdżający się napis** „Przytrzymaj Ctrl/Cmd" — hint jako blok pod selectem (nie inline), select 100% szer.; picker stron chowa się dla trybu „wszystkie" (progressive disclosure w JS).
+  - **Naprawiony rozjeżdżający się napis** „Przytrzymaj Ctrl/Cmd", hint jako blok pod selectem (nie inline), select 100% szer.; picker stron chowa się dla trybu „wszystkie" (progressive disclosure w JS).
   - **Rozbudowana pomoc** (sidebar): karta „Przydatne linki" (dokumentacja / panel / kontakt) z ikonami, karta-notka „wygląd zmienisz w panelu", **karta z prośbą o opinię** (gwiazdki + „Oceń wtyczkę" → wp.org reviews, filtrowalny URL).
   - Przebudowany ZIP do uploadu (`C:\…\Downloads\botiko.zip`, 15 plików).
 - Pliki/obszar: `wordpress-plugin/botiko/includes/class-botiko-admin.php` (rewrite), `assets/admin.css` (rewrite), `assets/admin.js`, `assets/botiko-logo-white.svg` (nowy), `includes/class-botiko-notices.php`, `readme.txt`
-- Review: reguła „SVG nie emoji" zapisana w pamięci (rozszerzona na PHP/WordPress). PHP niesprawdzalne lokalnie (brak PHP) — walidacja przez CI (PHPCS + php -l).
+- Review: reguła „SVG nie emoji" zapisana w pamięci (rozszerzona na PHP/WordPress). PHP niesprawdzalne lokalnie (brak PHP), walidacja przez CI (PHPCS + php -l).
 - Status: 🔄 czeka na zielony CI (PHPCS) + wizualną akceptację użytkownika
 
-### Oficjalna wtyczka WordPress + one-click pairing — Claude — branch `feat/wordpress-plugin`
+### Oficjalna wtyczka WordPress + one-click pairing. Claude, branch `feat/wordpress-plugin`
 - Co zrobione:
-  - **M1 — rdzeń wtyczki (PHP)** w `wordpress-plugin/botiko/`: Settings API, wstrzyknięcie loadera widgetu w `wp_footer` (skip `wp-admin`), reguły wyświetlania + tryb testowy, panel statusu przez publiczny `/bot/:id/config` (`domainAllowed`), i18n PL+EN, `uninstall.php`, `readme.txt`, GPLv2. Bezpieczeństwo: nonce, `manage_options`, sanityzacja (CUID), escapowanie.
-  - **M2 — one-click pairing (cross-app):** model `BotPairingToken` + migracja (token 15 min, jednorazowy, w DB tylko SHA-256); `POST /bot/:id/pairing-token` (auth) + `POST /bot/pair` (publiczny, throttle, Zod, atomowa wymiana w `$transaction`, dopis domeny www-insensitive, limit 5); UI „Generuj kod połączenia" w panelu (`EmbedCode.tsx`); flow „Połącz" we wtyczce. 8 testów jednostkowych.
-  - **M3 — tooling/CI:** composer + PHPCS (WordPress + Extra), `build.sh` (ZIP), nowy job CI „WordPress plugin (PHPCS + build)".
+  - **M1: rdzeń wtyczki (PHP)** w `wordpress-plugin/botiko/`: Settings API, wstrzyknięcie loadera widgetu w `wp_footer` (skip `wp-admin`), reguły wyświetlania + tryb testowy, panel statusu przez publiczny `/bot/:id/config` (`domainAllowed`), i18n PL+EN, `uninstall.php`, `readme.txt`, GPLv2. Bezpieczeństwo: nonce, `manage_options`, sanityzacja (CUID), escapowanie.
+  - **M2: one-click pairing (cross-app):** model `BotPairingToken` + migracja (token 15 min, jednorazowy, w DB tylko SHA-256); `POST /bot/:id/pairing-token` (auth) + `POST /bot/pair` (publiczny, throttle, Zod, atomowa wymiana w `$transaction`, dopis domeny www-insensitive, limit 5); UI „Generuj kod połączenia" w panelu (`EmbedCode.tsx`); flow „Połącz" we wtyczce. 8 testów jednostkowych.
+  - **M3: tooling/CI:** composer + PHPCS (WordPress + Extra), `build.sh` (ZIP), nowy job CI „WordPress plugin (PHPCS + build)".
 - Pliki/obszar: `wordpress-plugin/`, `apps/api/src/modules/bot/*`, `apps/api/prisma/*`, `apps/web/app/dashboard/embed/EmbedCode.tsx`, `.github/workflows/ci.yml`
-- Review: `security-reviewer` na endpoincie pairing — **zero Critical/High**; naprawione 2 drobne (twardsza walidacja domeny http(s), atomowy delete+create tokena). API: tsc + ESLint + 8 testów ✅.
-- Status: ✅ M1–M3 done · ⏸ M4 (publikacja w katalogu WordPress.org + aktualizacja landingu „dostępna") — czeka na review wp.org (osobny proces ~1–2 tyg.); do tego czasu landing trzyma obecną obietnicę (bez fałszywych twierdzeń).
+- Review: `security-reviewer` na endpoincie pairing: **zero Critical/High**; naprawione 2 drobne (twardsza walidacja domeny http(s), atomowy delete+create tokena). API: tsc + ESLint + 8 testów ✅.
+- Status: ✅ M1-M3 done · ⏸ M4 (publikacja w katalogu WordPress.org + aktualizacja landingu „dostępna"), czeka na review wp.org (osobny proces ~1-2 tyg.); do tego czasu landing trzyma obecną obietnicę (bez fałszywych twierdzeń).
 
 ---
 
 ## 2026-06-30 (wtorek)
 
-### Workflow armii subagentów + dziennik prac — Claude — branch `feat/agent-workflow`
+### Workflow armii subagentów + dziennik prac. Claude, branch `feat/agent-workflow`
 - Co zrobione:
-  - Utworzono `WORKLOG.md` (ten plik) — jeden dziennik prac, wpis po każdym etapie.
-  - Utworzono `docs/AGENT-WORKFLOW.md` — spisany proces „kiedy którego agenta" + definition of done.
+  - Utworzono `WORKLOG.md` (ten plik): jeden dziennik prac, wpis po każdym etapie.
+  - Utworzono `docs/AGENT-WORKFLOW.md`: spisany proces „kiedy którego agenta" + definition of done.
   - Dodano 2 nowe agenty wersjonowane w repo: `.claude/agents/botiko-content.md` (poprawność treści PL + język marki) i `.claude/agents/botiko-business.md` (logika biznesowa + zakres MVP).
   - Zmapowano 7 ról zespołu na istniejących + nowych agentów.
   - Zarejestrowano nowe dokumenty w `DOCS.md`; dodano sekcję workflow do `CLAUDE.md`.

@@ -41,8 +41,8 @@ export async function generateMetadata({
     cat.count >= MIN_INDEXABLE_CATEGORY_POSTS && page === 1;
 
   return {
-    title: `${cat.name} — Blog Botiko.pl`,
-    description: `Artykuły z kategorii "${cat.name}" — praktyczne porady o automatyzacji i AI dla małych firm usługowych.`,
+    title: `${cat.name}. Blog Botiko.pl`,
+    description: `Artykuły z kategorii "${cat.name}", praktyczne porady o automatyzacji i AI dla małych firm usługowych.`,
     alternates: { canonical },
     robots: { index: indexable, follow: true },
   };

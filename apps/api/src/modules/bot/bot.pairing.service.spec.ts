@@ -83,7 +83,7 @@ describe('BotService.createPairingToken', () => {
       [{ data: { tokenHash: string } }]
     >;
     const created = createCalls[0][0];
-    // Raw token must never be persisted — only its SHA-256.
+    // Raw token must never be persisted, only its SHA-256.
     expect(created.data.tokenHash).toBe(
       createHash('sha256').update(token).digest('hex'),
     );
@@ -151,7 +151,7 @@ describe('BotService.redeemPairing', () => {
     ).rejects.toThrow(/wygas/);
   });
 
-  it('jest idempotentny — nie dubluje już dodanej domeny (www-insensitive)', async () => {
+  it('jest idempotentny: nie dubluje już dodanej domeny (www-insensitive)', async () => {
     const prisma = buildPrisma();
     prisma.botPairingToken.findUnique.mockResolvedValue({ botId: 'bot-1' });
     prisma.bot.findUnique.mockResolvedValue({

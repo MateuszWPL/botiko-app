@@ -1,4 +1,4 @@
-# Agent Workflow — armia subagentów Botiko.pl
+# Agent Workflow, armia subagentów Botiko.pl
 
 **Jak pracujemy z subagentami: kiedy którego odpalić i kiedy zadanie jest „done".**
 Quick-ref samych komend → [`AI-COMMANDS.md`](AI-COMMANDS.md). Tu jest *proces*.
@@ -14,7 +14,7 @@ wiele wywołań), bo ich obszary są niezależne.
 
 ---
 
-## Zespół — 7 ról → agent
+## Zespół, 7 ról → agent
 
 | # | Rola | Agent | Kiedy odpalić |
 |---|---|---|---|
@@ -29,7 +29,7 @@ wiele wywołań), bo ich obszary są niezależne.
 Wsparcie (na żądanie): `typescript-reviewer`, `code-reviewer`, `refactor-cleaner`,
 `performance-optimizer` (widget <14KB), `e2e-runner`, `tdd-guide`.
 
-🆕 = agent wersjonowany w repo (`.claude/agents/`). Reszta — globalna instalacja.
+🆕 = agent wersjonowany w repo (`.claude/agents/`). Reszta, globalna instalacja.
 
 ---
 
@@ -60,16 +60,16 @@ Każde nielogiczne zadanie przechodzi przez te etapy. Drobny fix może pominąć
 | Treść (landing/blog/copy/maile/prompty) | `botiko-content` |
 | Treść SEO / nowy post / schema | `botiko-content` + `claude-seo:*` |
 | Nowa funkcja / zmiana zakresu | `botiko-business` (najpierw, na etapie planu) |
-| Schema Prisma | `database-migrations` skill — migracja w TYM SAMYM commicie |
+| Schema Prisma | `database-migrations` skill: migracja w TYM SAMYM commicie |
 | Zmiana architektury/modułów | `doc-updater` (codemapy) |
-| Widget (rozmiar) | `performance-optimizer` — limit <14KB gzip |
+| Widget (rozmiar) | `performance-optimizer`: limit <14KB gzip |
 
 ---
 
-## Reguły twarde (z CLAUDE.md — nie naruszać)
+## Reguły twarde (z CLAUDE.md, nie naruszać)
 
 - **Schema Prisma = migracja w tym samym commicie** (Railway robi `migrate deploy`; brak migracji = prod 500).
-- **`supabase/migrations/` tylko RLS/Postgres-specific** — nigdy DDL (drift).
+- **`supabase/migrations/` tylko RLS/Postgres-specific**, nigdy DDL (drift).
 - **Walidacja Zod na wszystkich endpointach**, TypeScript strict (zero `any`/`ts-ignore`).
 - **Git:** branch per zmiana, nigdy direct push na `main`, commit po każdym etapie.
 - **Treść:** „bot"/„Botiko" nie „asystentka"; SVG Lucide nie emoji; jeden plan 99 zł.

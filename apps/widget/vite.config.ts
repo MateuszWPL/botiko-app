@@ -45,7 +45,7 @@ export default defineConfig({
   server: {
     cors: true,
   },
-  // preview serves dist/ — used locally instead of `pnpm dev` to get embed.js at /embed.js
+  // preview serves dist/, used locally instead of `pnpm dev` to get embed.js at /embed.js
   preview: {
     port: 5173,
     strictPort: true,

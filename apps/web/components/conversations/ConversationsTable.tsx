@@ -113,7 +113,7 @@ function ConversationRows({ conversations }: { conversations: Conversation[] }) 
       {conversations.map((conv) => {
         const preview =
           conv.firstMessage && conv.firstMessage.length > 60
-            ? conv.firstMessage.slice(0, 60) + '…'
+            ? conv.firstMessage.slice(0, 60) + '...'
             : conv.firstMessage || '—';
         const clientName = formatClientName(conv.leadName);
         const initials =

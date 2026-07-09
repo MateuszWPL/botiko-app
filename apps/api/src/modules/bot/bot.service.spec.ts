@@ -54,7 +54,7 @@ async function buildService(prisma = buildPrismaMock()) {
   return { service: module.get(BotService), prisma };
 }
 
-describe('BotService.getPublicConfig — isActive gate', () => {
+describe('BotService.getPublicConfig: isActive gate', () => {
   it('rzuca NotFoundException gdy bot nie istnieje lub tenant.isActive = false', async () => {
     // findFirst returns null when WHERE filters out inactive tenant/bot
     const { service } = await buildService(buildPrismaMock(null));
@@ -74,9 +74,9 @@ describe('BotService.getPublicConfig — isActive gate', () => {
   });
 });
 
-describe('BotService.getPublicConfig — suggestedQuestions', () => {
+describe('BotService.getPublicConfig: suggestedQuestions', () => {
   it('zwraca suggestedQuestions z brand template gdy bot ma pustą listę', async () => {
-    // suggestedQuestions: [] — powinien użyć template
+    // suggestedQuestions: [], powinien użyć template
     const { service } = await buildService();
 
     const config = await service.getPublicConfig('bot-1');

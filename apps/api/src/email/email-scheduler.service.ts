@@ -10,10 +10,10 @@ import { EmailService, emailToFirstName } from './email.service';
  * Trigger from Railway/Vercel Cron/Upstash at 09:00 Warsaw time daily.
  *
  * Milestone logic:
- *   D+1         — onboarding reminder (signup+1, if bot has no knowledge)
- *   D+7         — first-week stats summary (signup+7)
- *   2 days left — conversion push (relative to trialEndsAt)
- *   expired     — trial expired notice (relative to trialEndsAt)
+ *   D+1:         onboarding reminder (signup+1, if bot has no knowledge)
+ *   D+7:         first-week stats summary (signup+7)
+ *   2 days left: conversion push (relative to trialEndsAt)
+ *   expired:     trial expired notice (relative to trialEndsAt)
  *
  * The conversion/expiry milestones key off trialEndsAt (not createdAt), so
  * longer pilot periods get the right emails on the right days.
@@ -110,7 +110,7 @@ export class EmailSchedulerService {
       hasKnowledge,
     } = opts;
 
-    // Days left relative to the explicit trial end — correct for standard
+    // Days left relative to the explicit trial end: correct for standard
     // 14-day trials and longer pilot periods alike.
     const trialDaysLeft = Math.ceil(
       (trialEndsAt.getTime() - Date.now()) / 86_400_000,

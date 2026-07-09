@@ -149,7 +149,7 @@ describe('preprocessMessage', () => {
     });
 
     it('nadal odrzuca cyfry sklejone z losowymi literami', () => {
-      // "1234567890qwe" — po usunięciu cyfr zostają realne znaki → gibberish.
+      // "1234567890qwe": po usunięciu cyfr zostają realne znaki → gibberish.
       const result = preprocessMessage('1234567890qwe');
       expect(result.action).toBe('respond');
     });
@@ -300,7 +300,7 @@ describe('preprocessMessage', () => {
 });
 
 describe('detectLeadIntent', () => {
-  describe('hard — otwiera formularz od razu', () => {
+  describe('hard: otwiera formularz od razu', () => {
     it.each([
       'Mój numer to 600 700 800, oddzwońcie proszę',
       'proszę o kontakt',
@@ -317,7 +317,7 @@ describe('detectLeadIntent', () => {
     });
   });
 
-  describe('soft — niejasne, dopiero pytamy model', () => {
+  describe('soft: niejasne, dopiero pytamy model', () => {
     it.each([
       'Czy mogę umówić się na później?',
       'Interesuje mnie wycena',
@@ -329,7 +329,7 @@ describe('detectLeadIntent', () => {
     });
   });
 
-  describe('brak intencji — nic nie otwiera', () => {
+  describe('brak intencji: nic nie otwiera', () => {
     it.each([
       'cześć',
       'Ile kosztuje manicure?',

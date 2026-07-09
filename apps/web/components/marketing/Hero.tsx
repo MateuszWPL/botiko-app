@@ -50,7 +50,7 @@ const SCENES = [
     botWelcome: 'Hej! Masz pytania?',
     suggestions: ['Jakie usługi oferujecie?', 'Jakie są godziny otwarcia?', 'Jak się skontaktować?'],
     userMsg: 'Jakie są godziny otwarcia?',
-    botReply: 'Przyjmujemy pon–pt 9–20, sob 9–17. Zostaw numer — oddzwonimy i dobierzemy termin!',
+    botReply: 'Przyjmujemy pon-pt 9-20, sob 9-17. Zostaw numer, oddzwonimy i dobierzemy termin!',
     leadName: 'Kasia W.',
     leadTag: 'Zapytanie · beauty',
   },
@@ -58,7 +58,7 @@ const SCENES = [
     botWelcome: 'Dzień dobry! W czym mogę pomóc?',
     suggestions: ['Cennik konsultacji', 'Jak się skontaktować?', 'Godziny otwarcia'],
     userMsg: 'Cennik konsultacji',
-    botReply: 'Konsultacja wstępna to 180 zł / 60 min. Zostaw numer — terapeuta oddzwoni i odpowie na pytania.',
+    botReply: 'Konsultacja wstępna to 180 zł / 60 min. Zostaw numer, terapeuta oddzwoni i odpowie na pytania.',
     leadName: 'Marek P.',
     leadTag: 'Zapytanie · fizjo',
   },
@@ -66,7 +66,7 @@ const SCENES = [
     botWelcome: 'Witamy! Czym mogę służyć?',
     suggestions: ['Jakie macie menu?', 'Godziny otwarcia', 'Jak się skontaktować?'],
     userMsg: 'Jakie macie menu?',
-    botReply: 'Serwujemy kuchnię polską i włoską. Zostaw numer — zadzwonimy i odpowiemy na wszystkie pytania!',
+    botReply: 'Serwujemy kuchnię polską i włoską. Zostaw numer, zadzwonimy i odpowiemy na wszystkie pytania!',
     leadName: 'Ania K.',
     leadTag: 'Zapytanie · restauracja',
   },
@@ -128,7 +128,7 @@ function ChatMockup() {
       {/* ── Rząd 1: Chat window + boczne badge ── */}
       <div className="flex items-start gap-3">
 
-        {/* Chat window — identyczny styl jak widget, fixed height */}
+        {/* Chat window, identyczny styl jak widget, fixed height */}
         <motion.div
           className="flex-1 rounded-2xl overflow-hidden shadow-2xl"
           initial={{ y: 16, opacity: 0 }}
@@ -213,7 +213,7 @@ function ChatMockup() {
               </AnimatePresence>
             </motion.div>
 
-            {/* Suggested questions — po prawej, jak w widgecie */}
+            {/* Suggested questions, po prawej, jak w widgecie */}
             <AnimatePresence>
               {showSuggestions && (
                 <motion.div
@@ -383,7 +383,7 @@ function ChatMockup() {
         </motion.div>
       </div>
 
-      {/* ── Rząd 2: dolne badges — zawsze 2, drugi swap z leadem ── */}
+      {/* ── Rząd 2: dolne badges, zawsze 2, drugi swap z leadem ── */}
       <motion.div
         className="flex gap-2.5"
         initial={{ opacity: 0, y: 8 }}
@@ -407,7 +407,7 @@ function ChatMockup() {
           <p className="text-white/45 text-[10px] leading-none">oszczędza 2h dziennie</p>
         </div>
 
-        {/* Badge 2: swap "Bez kodowania" ↔ "Lead zebrany" — layout się nie zmienia */}
+        {/* Badge 2: swap "Bez kodowania" ↔ "Lead zebrany", layout się nie zmienia */}
         <div className="flex-1 relative" style={{ minHeight: 44 }}>
           <AnimatePresence mode="wait">
             {showLead ? (
@@ -499,7 +499,7 @@ export default function Hero() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-20">
         <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] gap-12 lg:gap-10 items-center">
 
-          {/* Left — copy */}
+          {/* Left, copy */}
           <div className="min-w-0">
             <div className="animate-hero-rise flex flex-wrap items-center gap-2 mb-6">
               <div
@@ -541,7 +541,7 @@ export default function Hero() {
               className="animate-hero-rise text-lg text-indigo-200 leading-relaxed mb-8 max-w-lg"
               style={{ animationDelay: '0.2s' }}
             >
-              Gotowy bot dla każdej firmy usługowej — odpowiada na pytania klientów,
+              Gotowy bot dla każdej firmy usługowej, odpowiada na pytania klientów,
               zbiera leady i odsyła do rezerwacji.{' '}
               <strong className="text-white">Bez programowania. Bez umowy.</strong>
             </p>
@@ -554,7 +554,7 @@ export default function Hero() {
                 href="/rejestracja"
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-white text-brand font-bold text-base shadow-xl hover:shadow-2xl hover:bg-brand-soft transition-all cursor-pointer w-full sm:w-auto"
               >
-                Uruchom bota — 14 dni za darmo
+                Uruchom bota, 14 dni za darmo
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -577,7 +577,7 @@ export default function Hero() {
             </p>
           </div>
 
-          {/* Right — animated chat mockup */}
+          {/* Right, animated chat mockup */}
           <div
             className="animate-hero-rise flex flex-col justify-center items-center lg:items-start"
             style={{ animationDelay: '0.2s' }}

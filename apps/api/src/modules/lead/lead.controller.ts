@@ -33,7 +33,7 @@ import { CurrentTenant } from '../../common/decorators/current-tenant.decorator'
 export class LeadController {
   constructor(private readonly leadService: LeadService) {}
 
-  // Public endpoint — widget submits lead
+  // Public endpoint: widget submits lead
   // 5 req/min per IP (antyspam) + 60 req/min per botId (BotThrottleGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -44,7 +44,7 @@ export class LeadController {
     return this.leadService.create(dto);
   }
 
-  // Protected endpoint — dashboard adds lead manually (without widget)
+  // Protected endpoint: dashboard adds lead manually (without widget)
   @Post('manual')
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(AuthGuard, TenantGuard)
@@ -56,14 +56,14 @@ export class LeadController {
     return this.leadService.createManual(tenantId, dto);
   }
 
-  // Protected endpoint — dashboard fetches leads
+  // Protected endpoint: dashboard fetches leads
   @Get()
   @UseGuards(AuthGuard, TenantGuard)
   findAll(@CurrentTenant() tenantId: string): Promise<LeadResponse[]> {
     return this.leadService.findAll(tenantId);
   }
 
-  // Protected endpoint — update lead status
+  // Protected endpoint: update lead status
   @Patch(':id/status')
   @UseGuards(AuthGuard, TenantGuard)
   @UsePipes(new ZodValidationPipe(updateLeadStatusSchema))
@@ -75,7 +75,7 @@ export class LeadController {
     return this.leadService.updateStatus(tenantId, id, dto.status);
   }
 
-  // Protected endpoint — delete lead (RODO: right to erasure)
+  // Protected endpoint: delete lead (RODO: right to erasure)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(AuthGuard, TenantGuard)

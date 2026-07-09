@@ -45,7 +45,7 @@ export function WelcomeTrialModal() {
           if (bots.length > 0) return;
         }
       } catch {
-        // Non-fatal — if the check fails we simply don't auto-open the wizard
+        // Non-fatal, if the check fails we simply don't auto-open the wizard
         return;
       }
       window.dispatchEvent(new Event('botiko:open-wizard'));
@@ -74,7 +74,7 @@ export function WelcomeTrialModal() {
           </div>
           <h2 className="text-2xl font-extrabold text-slate-900">Witaj w Botiko!</h2>
           <p className="mt-2 text-slate-600 text-sm leading-relaxed">
-            Twoje konto jest gotowe. Masz <strong className="text-indigo-600">14 dni darmowego dostępu</strong> — bez karty, bez umowy.
+            Twoje konto jest gotowe. Masz <strong className="text-indigo-600">14 dni darmowego dostępu</strong>, bez karty, bez umowy.
           </p>
         </div>
 

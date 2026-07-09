@@ -13,7 +13,7 @@ import { ROICalculator } from './ROICalculator';
 
 // Markdown images render as a <figure> (block element). Extracted to a named
 // component so the `p` renderer can detect a lone image child and skip the <p>
-// wrapper — otherwise a standalone markdown image becomes <figure> inside <p>,
+// wrapper, otherwise a standalone markdown image becomes <figure> inside <p>,
 // which is invalid HTML and triggers a React hydration error.
 function BlogImage({ src, alt }: ComponentPropsWithoutRef<'img'>) {
   return (
@@ -103,7 +103,7 @@ export const mdxComponents = {
   ),
 
   p: ({ children }: ComponentPropsWithoutRef<'p'>) => {
-    // A lone markdown image renders as a <figure> — never wrap it in <p>.
+    // A lone markdown image renders as a <figure>, never wrap it in <p>.
     if (hasBlockImageChild(children)) return <>{children}</>;
     return <p className="text-slate-700 leading-relaxed mb-5">{children}</p>;
   },

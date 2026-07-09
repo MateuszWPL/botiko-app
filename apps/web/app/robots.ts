@@ -14,7 +14,7 @@ export default function robots(): MetadataRoute.Robots {
 
   // AI-search crawlers. Allowed by the `*` rule already, but named explicitly so
   // our intent to be crawled/cited is unambiguous (GEO signal). Same disallow
-  // set — only auth/dashboard/API stays private.
+  // set, only auth/dashboard/API stays private.
   const aiCrawlers = [
     'GPTBot',
     'OAI-SearchBot',

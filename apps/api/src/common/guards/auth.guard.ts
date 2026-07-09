@@ -28,7 +28,7 @@ interface CacheEntry {
  *
  * Without this, every dashboard request (page load, API call) triggers an
  * outbound HTTP round-trip to Supabase Auth. At 100 RPS that's 100 external
- * calls/second — Supabase rate limits and latency become a bottleneck.
+ * calls/second. Supabase rate limits and latency become a bottleneck.
  *
  * Cache entry TTL is intentionally short (60 s) so revoked tokens stop
  * working within 1 minute. Supabase JWTs expire after 1 hour by default,
@@ -52,8 +52,8 @@ function gcCache(): void {
 }
 
 /**
- * Reads the `exp` claim (in ms) from a JWT without verifying its signature —
- * verification is done by Supabase's getUser(). Used only to cap how long a
+ * Reads the `exp` claim (in ms) from a JWT without verifying its signature.
+ * Verification is done by Supabase's getUser(). Used only to cap how long a
  * verified token may stay in the local cache. Returns null if the token can't
  * be parsed or has no numeric exp.
  */
@@ -103,8 +103,8 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('User has no associated tenant');
     }
 
-    // Cache for up to CACHE_TTL_MS, but never beyond the token's own exp —
-    // otherwise a token that expires in a few seconds would keep working for
+    // Cache for up to CACHE_TTL_MS, but never beyond the token's own exp.
+    // Otherwise a token that expires in a few seconds would keep working for
     // the full local TTL after its first use.
     const now = Date.now();
     const tokenExpMs = decodeJwtExpMs(token);

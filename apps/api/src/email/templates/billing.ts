@@ -83,7 +83,7 @@ export function recurringInvoiceEmail(vars: RecurringInvoiceVars): {
       </tr>
       <tr>
         <td style="padding:12px 16px;color:#64748b;border-bottom:1px solid #e2e8f0;">Okres</td>
-        <td style="padding:12px 16px;color:#0f172a;border-bottom:1px solid #e2e8f0;">${escapeHtml(vars.periodStart)} — ${escapeHtml(vars.periodEnd)}</td>
+        <td style="padding:12px 16px;color:#0f172a;border-bottom:1px solid #e2e8f0;">od ${escapeHtml(vars.periodStart)} do ${escapeHtml(vars.periodEnd)}</td>
       </tr>
       <tr style="background:#f8fafc;">
         <td style="padding:12px 16px;color:#64748b;">Metoda płatności</td>
@@ -92,7 +92,7 @@ export function recurringInvoiceEmail(vars: RecurringInvoiceVars): {
     </table>`;
 
   return {
-    subject: `Faktura VAT — Botiko ${escapeHtml(vars.month)}/${escapeHtml(vars.year)}`,
+    subject: `Faktura VAT Botiko ${escapeHtml(vars.month)}/${escapeHtml(vars.year)}`,
     html: baseLayout({
       title: `Faktura VAT ${escapeHtml(vars.month)}/${escapeHtml(vars.year)}`,
       body,
@@ -127,12 +127,12 @@ export function paymentFailedEmail(vars: PaymentFailedVars): {
       <li>Bank zablokował płatność (bezpieczeństwo)</li>
     </ul>
     <p style="margin:0 0 16px;font-size:14px;color:#475569;line-height:1.6;">
-      Bot dalej działa — mamy kilka dni na ponowną próbę.
+      Bot dalej działa, mamy kilka dni na ponowną próbę.
       Jeśli nie zaktualizujesz do <strong>${escapeHtml(vars.retryDate)}</strong>, bot zostanie wstrzymany.
     </p>`;
 
   return {
-    subject: 'Problem z płatnością — zaktualizuj kartę',
+    subject: 'Problem z płatnością: zaktualizuj kartę',
     html: baseLayout({
       title: 'Problem z płatnością',
       headerColor: '#DC2626',
@@ -161,19 +161,19 @@ export function subscriptionCancelledEmail(vars: SubscriptionCancelledVars): {
     </p>
     <p style="margin:0 0 8px;font-size:14px;font-weight:600;color:#0f172a;">Co dalej:</p>
     <ul style="margin:0 0 20px;padding-left:20px;color:#475569;font-size:14px;line-height:2;">
-      <li>Bot pracuje do <strong>${escapeHtml(vars.endDate)}</strong> — za opłacony okres</li>
+      <li>Bot pracuje do <strong>${escapeHtml(vars.endDate)}</strong> (za opłacony okres)</li>
       <li>Po tej dacie widget przestanie odpowiadać</li>
-      <li>Leady i dane zostają 30 dni — potem RODO wyczyszczenie</li>
-      <li>Możesz reaktywować plan kiedy zechcesz — dane wrócą</li>
+      <li>Leady i dane zostają 30 dni, potem RODO wyczyszczenie</li>
+      <li>Możesz reaktywować plan kiedy zechcesz, dane wrócą</li>
     </ul>
     <p style="margin:0 0 16px;font-size:14px;color:#475569;line-height:1.6;">
-      Jedna prośba — odpisz na tego maila jednym zdaniem dlaczego odchodzisz.
+      Jedna prośba: odpisz na tego maila jednym zdaniem dlaczego odchodzisz.
       To dla nas najważniejszy feedback.
     </p>
     <p style="margin:0;font-size:14px;color:#475569;">Zespół Botiko</p>`;
 
   return {
-    subject: 'Subskrypcja anulowana — potwierdzenie',
+    subject: 'Subskrypcja anulowana: potwierdzenie',
     html: baseLayout({
       title: 'Subskrypcja anulowana',
       headerColor: '#64748B',

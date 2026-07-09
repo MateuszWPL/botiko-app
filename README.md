@@ -139,21 +139,21 @@ Scope (opcjonalny): `api`, `web`, `widget`
 **`DOCS.md` to mapa wszystkich dokumentów (funkcja → dokument).** Zacznij tam, jeśli szukasz, gdzie co mieszka.
 
 ### Dla AI (Claude)
-- `CLAUDE.md` — Pełny kontekst architektoniczny + konwencje
-- `TASK.md` — Mapa zadań (roadmapa, etapy)
-- `docs/AI-COMMANDS.md` — Quick reference komend / agentów / MCP
+- `CLAUDE.md`: Pełny kontekst architektoniczny + konwencje
+- `TASK.md`: Mapa zadań (roadmapa, etapy)
+- `docs/AI-COMMANDS.md`: Quick reference komend / agentów / MCP
 
 ### Dla Całego Zespołu
-- `DOCS.md` — Indeks całej dokumentacji
-- `/docs/CODEMAPS/` — Detailowana architektura techniczna (angielski)
-- `/docs/seo/` — Playbook i audyty SEO/GEO
+- `DOCS.md`: Indeks całej dokumentacji
+- `/docs/CODEMAPS/`: Detailowana architektura techniczna (angielski)
+- `/docs/seo/`: Playbook i audyty SEO/GEO
 - README.md files w każdym app (`apps/api/README.md`, etc.)
 
 ---
 
 ## Project Status
 
-**Faza:** 1A ukończona — **MVP na produkcji** (`botiko.pl`). Trwa Faza 2 (piloty).
+**Faza:** 1A ukończona, **MVP na produkcji** (`botiko.pl`). Trwa Faza 2 (piloty).
 
 **Infrastruktura:** Web → Vercel (auto-deploy z `main`) · API → Railway · Widget → Vercel.
 Instrukcja env vars + DNS: [`docs/PRODUCTION_ENV.md`](./docs/PRODUCTION_ENV.md)
@@ -162,7 +162,7 @@ Instrukcja env vars + DNS: [`docs/PRODUCTION_ENV.md`](./docs/PRODUCTION_ENV.md)
 - ✅ RAG pipeline (embeddings → pgvector → GPT-4o-mini)
 - ✅ Widget (<12KB, Shadow DOM, natywnie pod WordPress; działa też na każdej innej stronie WWW)
 - ✅ Dashboard (10 stron + Stripe billing + import strony WWW)
-- ✅ System emailowy (Resend — drip scheduler, powiadomienia o leadach, billing webhooks)
+- ✅ System emailowy (Resend: drip scheduler, powiadomienia o leadach, billing webhooks)
 - ✅ Landing page + blog SEO (32 posty MDX z content runway do lipca 2026, auto-publikacja wg daty)
 - ✅ Security (CORS, UUID validation, AES-256-GCM encryption)
 

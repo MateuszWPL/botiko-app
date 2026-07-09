@@ -10,13 +10,13 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 // Bump together with wordpress-plugin/botiko/botiko.php when refreshing the ZIP
-// (see wordpress-plugin/PUBLISHING.md — ścieżka A).
+// (see wordpress-plugin/PUBLISHING.md, ścieżka A).
 const PLUGIN_VERSION = '1.0.6';
 const DOWNLOAD_FILENAME = `botiko-ai-customer-service-bot-${PLUGIN_VERSION}.zip`;
 
 export async function GET() {
   // Gate to logged-in users. An <a href download> is a same-origin navigation,
-  // so the Supabase auth cookies ride along — no Bearer header needed.
+  // so the Supabase auth cookies ride along, no Bearer header needed.
   const supabase = await createServerSupabaseClient();
   const {
     data: { user },

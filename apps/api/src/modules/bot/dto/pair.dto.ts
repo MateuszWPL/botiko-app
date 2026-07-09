@@ -5,14 +5,14 @@ import { z } from 'zod';
  * WordPress plugin to redeem a one-click pairing token.
  */
 export const redeemPairingSchema = z.object({
-  // `botiko_pair_<hex>` — letters, digits, underscores only.
+  // `botiko_pair_<hex>`: letters, digits, underscores only.
   token: z
     .string()
     .min(12)
     .max(128)
     .regex(/^[A-Za-z0-9_]+$/, 'Nieprawidłowy kod połączenia'),
   // The pairing site's origin (scheme://host[:port]). Must be a real http(s)
-  // URL with a non-empty host — rejects `mailto:`, `data:`, `https://` etc.
+  // URL with a non-empty host: rejects `mailto:`, `data:`, `https://` etc.
   // so a degenerate entry can't waste one of the 5 allowed-domain slots.
   domain: z
     .string()

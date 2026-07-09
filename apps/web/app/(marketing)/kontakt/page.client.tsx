@@ -42,7 +42,7 @@ function buildMailto(params: {
   topic: ContactTopic;
   message: string;
 }) {
-  const subject = `Botiko — kontakt: ${TOPIC_LABEL[params.topic]}`;
+  const subject = `Botiko, kontakt: ${TOPIC_LABEL[params.topic]}`;
   const lines = [
     `Imię: ${params.name}`,
     `E-mail: ${params.email}`,
@@ -125,7 +125,7 @@ export default function ContactPageClient() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
-  // Lustrzane do create-contact.dto.ts — żeby front nie przepuszczał danych,
+  // Lustrzane do create-contact.dto.ts, żeby front nie przepuszczał danych,
   // które backend i tak odrzuci.
   const emailLooksValid = /^\S+@\S+\.\S+$/.test(email.trim());
   const canGoStep2 =
@@ -141,7 +141,7 @@ export default function ContactPageClient() {
     setSubmitting(true);
     setSubmitError(null);
     try {
-      // Backend waliduje website przez .url() — wymaga protokołu.
+      // Backend waliduje website przez .url(), wymaga protokołu.
       const normalizedWebsite = website.trim()
         ? /^https?:\/\//i.test(website.trim())
           ? website.trim()
@@ -189,7 +189,7 @@ export default function ContactPageClient() {
             </h1>
 
             <p className="mt-4 text-indigo-200 text-base leading-relaxed max-w-xl">
-              Napisz, z czym chcesz wystartować. Odpowiemy i podpowiemy, jak wdrożyć bota na Twojej stronie — szybko i sensownie.
+              Napisz, z czym chcesz wystartować. Odpowiemy i podpowiemy, jak wdrożyć bota na Twojej stronie, szybko i sensownie.
             </p>
 
             <ul className="mt-5 space-y-3 max-w-xl">
@@ -205,7 +205,7 @@ export default function ContactPageClient() {
               ))}
             </ul>
 
-            {/* Founder card — honest, no fake testimonial */}
+            {/* Founder card, honest, no fake testimonial */}
             <div className="mt-6 max-w-xl" style={{ position: 'relative', zIndex: 0 }}>
               <div
                 style={{
@@ -257,7 +257,7 @@ export default function ContactPageClient() {
                 </div>
 
                 <p className="text-indigo-100 leading-relaxed" style={{ fontSize: '15px' }}>
-                  Piszę do Ciebie ja — Mateusz Woronowicz, twórca Botiko. Nie bot filtrujący zapytania,
+                  Piszę do Ciebie ja. Mateusz Woronowicz, twórca Botiko. Nie bot filtrujący zapytania,
                   nie automatyczna kolejka. Odpiszę w ciągu 1 dnia roboczego.
                 </p>
 
@@ -443,7 +443,7 @@ export default function ContactPageClient() {
                       onClick={handleSubmit}
                       className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 text-white font-extrabold text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-emerald-600 transition-colors"
                     >
-                      {submitting ? 'Wysyłam…' : 'Wyślij'}
+                      {submitting ? 'Wysyłam...' : 'Wyślij'}
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M22 2 11 13" strokeLinecap="round" strokeLinejoin="round" />
                         <path d="M22 2 15 22l-4-9-9-4 20-7z" strokeLinecap="round" strokeLinejoin="round" />

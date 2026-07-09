@@ -19,7 +19,7 @@ const securityHeaders = [
     key: 'Permissions-Policy',
     value: 'camera=(), microphone=(), geolocation=()',
   },
-  // CSP — tightened for dashboard SaaS (no inline scripts except Next.js needs)
+  // CSP, tightened for dashboard SaaS (no inline scripts except Next.js needs)
   {
     key: 'Content-Security-Policy',
     value: [
@@ -47,7 +47,7 @@ const securityHeaders = [
 
 const nextConfig = {
   experimental: {
-    // Avoid re-exporting entire packages — only import what's used
+    // Avoid re-exporting entire packages, only import what's used
     optimizePackageImports: ['@supabase/supabase-js', '@supabase/ssr'],
   },
   async redirects() {
@@ -68,7 +68,7 @@ const nextConfig = {
         destination: '/blog/kategoria/narzedzia',
         permanent: true,
       },
-      // Konsolidacja kanibalizacji bloga (audyt SEO Faza 1A) — unikalna treść
+      // Konsolidacja kanibalizacji bloga (audyt SEO Faza 1A), unikalna treść
       // przeniesiona do survivorów, stare URL-e 301 na docelowe.
       {
         source: '/blog/rodo-chatbot',
@@ -93,7 +93,7 @@ const nextConfig = {
   },
 };
 
-// Sentry wrapper — no-op when SENTRY_DSN is unset (DSN gating happens inside the
+// Sentry wrapper, no-op when SENTRY_DSN is unset (DSN gating happens inside the
 // sentry.*.config.ts init blocks). Wrapping is safe to always apply.
 import { withSentryConfig } from '@sentry/nextjs';
 

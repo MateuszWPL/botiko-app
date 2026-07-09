@@ -1,6 +1,6 @@
 import { registerSchema } from './register.dto';
 
-describe('registerSchema — walidacja hasła', () => {
+describe('registerSchema: walidacja hasła', () => {
   const base = {
     email: 'test@example.com',
     websiteUrl: 'https://salon.pl',
@@ -16,7 +16,7 @@ describe('registerSchema — walidacja hasła', () => {
   });
 
   it('akceptuje hasło bez dużej litery (wielka litera NIE jest wymagana)', () => {
-    // Regresja: backend wymagał wcześniej wielkiej litery, frontend nie —
+    // Regresja: backend wymagał wcześniej wielkiej litery, frontend nie,
     // przez co zielony wskaźnik nie zgadzał się z odrzuceniem rejestracji.
     expect(parse('mojehaslo1234!').success).toBe(true);
   });
@@ -58,7 +58,7 @@ describe('registerSchema — walidacja hasła', () => {
   });
 });
 
-describe('registerSchema — walidacja websiteUrl', () => {
+describe('registerSchema: walidacja websiteUrl', () => {
   const base = {
     email: 'test@example.com',
     password: 'StrongPass1234!',
@@ -77,7 +77,7 @@ describe('registerSchema — walidacja websiteUrl', () => {
     }
   });
 
-  it('akceptuje domenę z www (www jest zachowane — guard normalizuje podczas porównania)', () => {
+  it('akceptuje domenę z www (www jest zachowane, guard normalizuje podczas porównania)', () => {
     const result = parse('www.salon.pl');
     expect(result.success).toBe(true);
     if (result.success) {
@@ -115,7 +115,7 @@ describe('registerSchema — walidacja websiteUrl', () => {
   });
 });
 
-describe('registerSchema — walidacja email', () => {
+describe('registerSchema: walidacja email', () => {
   const base = {
     password: 'StrongPass1234!',
     websiteUrl: 'https://salon.pl',

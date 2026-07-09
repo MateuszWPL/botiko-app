@@ -9,7 +9,7 @@ export interface ExtractedPage {
   emails: string[];
 }
 
-// Phone regex with digit boundaries — must NOT be part of a longer digit run
+// Phone regex with digit boundaries: must NOT be part of a longer digit run
 // (guards against NIP/REGON/timestamps). Used only as a fallback over VISIBLE
 // text; the primary source is tel: links (below).
 const POLISH_PHONE_RE =
@@ -25,7 +25,7 @@ export function extractMainContent(
 ): ExtractedPage | null {
   const $ = cheerio.load(html);
 
-  // Contact from the ORIGINAL DOM (before noise removal) — the real phone/email
+  // Contact from the ORIGINAL DOM (before noise removal): the real phone/email
   // almost always live in the footer / a tel:/mailto: link, exactly what gets
   // stripped below. Prefer these authoritative sources over regex guessing.
   const telPhones = new Set<string>();

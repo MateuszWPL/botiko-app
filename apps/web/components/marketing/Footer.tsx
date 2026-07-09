@@ -40,13 +40,13 @@ export default function Footer() {
             <Link href="/" className="inline-flex items-center mb-4">
               <Image
                 src="/botiko-logo-full-white.svg"
-                alt="Botiko.pl — bot obsługi klienta 24/7"
+                alt="Botiko.pl, bot obsługi klienta 24/7"
                 width={130}
                 height={35}
               />
             </Link>
             <p className="text-sm leading-relaxed mb-5">
-              Bot obsługi klienta dla polskich firm usługowych. Odpowiada za Ciebie 24/7 — bez programowania, bez umowy.
+              Bot obsługi klienta dla polskich firm usługowych. Odpowiada za Ciebie 24/7, bez programowania, bez umowy.
             </p>
             <div className="text-xs leading-relaxed space-y-1">
               <p className="flex items-center gap-2">
@@ -90,7 +90,7 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs">
-            © {new Date().getFullYear()} Botiko.pl — bot AI dla polskich firm usługowych.
+            © {new Date().getFullYear()} Botiko.pl, bot AI dla polskich firm usługowych.
           </p>
           <div className="flex items-center gap-2 text-xs">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />

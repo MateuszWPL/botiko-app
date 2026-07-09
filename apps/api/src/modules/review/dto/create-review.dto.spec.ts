@@ -1,6 +1,6 @@
 import { createReviewSchema } from './create-review.dto';
 
-describe('createReviewSchema — walidacja ratingu', () => {
+describe('createReviewSchema: walidacja ratingu', () => {
   it.each([1, 2, 3, 4, 5])('akceptuje rating %d', (rating) => {
     expect(createReviewSchema.safeParse({ rating }).success).toBe(true);
   });
@@ -30,7 +30,7 @@ describe('createReviewSchema — walidacja ratingu', () => {
   });
 });
 
-describe('createReviewSchema — pole message', () => {
+describe('createReviewSchema: pole message', () => {
   it('akceptuje brak wiadomości (pole opcjonalne)', () => {
     expect(createReviewSchema.safeParse({ rating: 5 }).success).toBe(true);
   });

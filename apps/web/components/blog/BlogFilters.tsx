@@ -41,7 +41,7 @@ export default function BlogFilters({
     <div
       className={`w-full min-w-0 max-w-full transition-opacity ${isPending ? 'opacity-60 pointer-events-none' : ''}`}
     >
-      {/* Category pills — wrap on narrow screens, no horizontal page scroll */}
+      {/* Category pills, wrap on narrow screens, no horizontal page scroll */}
       <div className="flex flex-wrap gap-2">
         <button
           type="button"

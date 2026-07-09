@@ -12,14 +12,14 @@ import { Request } from 'express';
  *
  * Throttles requests to public widget endpoints (chat, leads) on a
  * per-botId basis, independent of client IP. Complements the built-in
- * per-IP ThrottlerGuard — an attacker using a pool of proxies can
+ * per-IP ThrottlerGuard. An attacker using a pool of proxies can
  * bypass per-IP limits but still hits this bot-scoped cap.
  *
- * Storage is in-memory (single process) — acceptable for MVP.
+ * Storage is in-memory (single process): acceptable for MVP.
  * Restart resets the window, which is strictly safer (never over-blocks
  * legitimate traffic across deploys).
  */
-// Shared in-memory state — single source of truth for all BotThrottleGuard
+// Shared in-memory state: single source of truth for all BotThrottleGuard
 // instances, regardless of which module instantiated them. This keeps the
 // per-bot counter consistent across /chat and /leads endpoints.
 const BUCKETS = new Map<string, number[]>();

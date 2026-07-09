@@ -73,7 +73,7 @@ class Botiko_Pairing {
 	 */
 	public static function sanitize_pairing_code( $raw ) {
 		$value = trim( (string) $raw );
-		// Tokens are `botiko_pair_<base32>` — letters, digits and underscores only.
+		// Tokens are `botiko_pair_<base32>`, letters, digits and underscores only.
 		return preg_match( '/^[A-Za-z0-9_]{12,128}$/', $value ) ? $value : '';
 	}
 

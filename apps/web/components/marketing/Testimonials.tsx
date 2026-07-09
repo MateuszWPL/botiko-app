@@ -14,36 +14,36 @@ type Scenario = {
 
 const SCENARIOS: Scenario[] = [
   {
-    situation: 'Piątek, 22:15 — salon zamknięty od 2 godzin.',
+    situation: 'Piątek, 22:15, salon zamknięty od 2 godzin.',
     customer: 'Ile kosztuje manicure hybrydowy i czy macie jeszcze wolne w sobotę?',
-    bot: 'Manicure hybrydowy to 90 zł, czas ok. 75 min. W soboty pracujemy 9:00–17:00. Zostaw imię i telefon — rano sprawdzimy wolne godziny i oddzwonimy z propozycją.',
+    bot: 'Manicure hybrydowy to 90 zł, czas ok. 75 min. W soboty pracujemy 9:00-17:00. Zostaw imię i telefon, rano sprawdzimy wolne godziny i oddzwonimy z propozycją.',
     outcome: 'Lead zebrany o 22:17. Rano oddzwaniasz do klientki, która czeka.',
     industry: 'Salon beauty',
     color: '#EC4899',
     bg: '#FDF2F8',
   },
   {
-    situation: 'Wtorek, 14:00 — gabinet fizjo, terapeuta na zabiegu.',
+    situation: 'Wtorek, 14:00, gabinet fizjo, terapeuta na zabiegu.',
     customer: 'Czy przyjmujecie bez skierowania i ile to kosztuje?',
-    bot: 'Tak, bez skierowania. Pierwsza konsultacja 60 min to 150 zł. Zostaw imię, telefon i krótki opis problemu — terapeuta oddzwoni po zabiegu.',
+    bot: 'Tak, bez skierowania. Pierwsza konsultacja 60 min to 150 zł. Zostaw imię, telefon i krótki opis problemu, terapeuta oddzwoni po zabiegu.',
     outcome: 'Pacjent opisał problem. Terapeuta oddzwonił z gotowym kontekstem.',
     industry: 'Gabinet / SPA',
     color: '#06B6D4',
     bg: '#ECFEFF',
   },
   {
-    situation: 'Sobota, 19:45 — restauracja w szczycie obsługi.',
+    situation: 'Sobota, 19:45, restauracja w szczycie obsługi.',
     customer: 'Czy są dania bez glutenu w dzisiejszym menu?',
-    bot: 'Tak — risotto z warzywami i grillowany łosoś są bez glutenu. Jeśli chcesz rezerwację stolika, podaj imię, liczbę osób i godzinę — obsługa oddzwoni z potwierdzeniem.',
+    bot: 'Tak, risotto z warzywami i grillowany łosoś są bez glutenu. Jeśli chcesz rezerwację stolika, podaj imię, liczbę osób i godzinę, obsługa oddzwoni z potwierdzeniem.',
     outcome: 'Kelnerzy nie przerywają obsługi, gość dostaje konkretną odpowiedź.',
     industry: 'Restauracja',
     color: '#F97316',
     bg: '#FFF7ED',
   },
   {
-    situation: 'Niedziela wieczorem — warsztat zamknięty.',
+    situation: 'Niedziela wieczorem, warsztat zamknięty.',
     customer: 'Ile kosztuje wymiana rozrządu w Passacie B6 2.0 TDI?',
-    bot: 'Wymiana rozrządu w B6 2.0 TDI to orientacyjnie 1200–1600 zł (robocizna + części). Zostaw numer i rok produkcji — w poniedziałek rano zadzwonimy z dokładną wyceną i wolnym terminem.',
+    bot: 'Wymiana rozrządu w B6 2.0 TDI to orientacyjnie 1200-1600 zł (robocizna + części). Zostaw numer i rok produkcji, w poniedziałek rano zadzwonimy z dokładną wyceną i wolnym terminem.',
     outcome: 'Klient zaczął tydzień z gotową ofertą zamiast „oddzwonimy w tygodniu”.',
     industry: 'Warsztat',
     color: '#64748B',
@@ -136,7 +136,7 @@ export default function Testimonials() {
           </h2>
           <p className="text-indigo-200 text-sm mt-4 max-w-2xl mx-auto leading-relaxed">
             Nie mamy jeszcze cytatów od klientów (dopiero startujemy).
-            Zamiast tego pokazujemy realne scenariusze z firm usługowych — bot odpowiada z Twojej bazy wiedzy i zbiera kontakt, Ty oddzwaniasz.
+            Zamiast tego pokazujemy realne scenariusze z firm usługowych, bot odpowiada z Twojej bazy wiedzy i zbiera kontakt, Ty oddzwaniasz.
           </p>
         </ScrollReveal>
       </div>

@@ -85,7 +85,7 @@ export class WebsiteImportService {
       },
     });
 
-    // Fire-and-forget — response returns immediately with jobId
+    // Fire-and-forget: response returns immediately with jobId
     setImmediate(() => {
       this.runImportJob(
         job.id,
@@ -268,7 +268,7 @@ export class WebsiteImportService {
             status: 'FAILED',
             errorCode: 'NO_CONTENT',
             errorMessage:
-              'Nie udało się pobrać żadnej treści ze strony. Możliwe, że strona ładuje treść przez JavaScript — dodaj dane ręcznie lub prześlij PDF.',
+              'Nie udało się pobrać żadnej treści ze strony. Możliwe, że strona ładuje treść przez JavaScript. Dodaj dane ręcznie lub prześlij PDF.',
             scrapedPages: scraperResult.scrapedUrls,
             failedPages: scraperResult.failedUrls,
             completedAt: new Date(),
@@ -279,7 +279,7 @@ export class WebsiteImportService {
 
       // Thin content: pages loaded but almost no extractable text (partial JS
       // shell, page-builder splash, or a mostly-image site). Extracting would
-      // yield a near-empty knowledge base — tell the user instead of failing
+      // yield a near-empty knowledge base: tell the user instead of failing
       // silently with "3 sentences".
       const totalTextLength = scraperResult.pages.reduce(
         (sum, p) => sum + p.text.length,
@@ -292,7 +292,7 @@ export class WebsiteImportService {
             status: 'FAILED',
             errorCode: 'NO_CONTENT',
             errorMessage:
-              'Twoja strona zwróciła bardzo mało tekstu — prawdopodobnie ładuje treść przez JavaScript. Wklej najważniejsze informacje ręcznie lub prześlij PDF.',
+              'Twoja strona zwróciła bardzo mało tekstu, prawdopodobnie ładuje treść przez JavaScript. Wklej najważniejsze informacje ręcznie lub prześlij PDF.',
             scrapedPages: scraperResult.scrapedUrls,
             failedPages: scraperResult.failedUrls,
             completedAt: new Date(),
@@ -350,7 +350,7 @@ export class WebsiteImportService {
 
   /**
    * Classify a single pasted text blob into structured knowledge (contact /
-   * services / faq / hours / about). Synchronous — no job row, no crawl. The
+   * services / faq / hours / about). Synchronous: no job row, no crawl. The
    * per-route throttle guards LLM cost.
    */
   async classifyText(
@@ -372,7 +372,7 @@ export class WebsiteImportService {
   /**
    * Persist the reviewed classify payload as knowledge chunks. Unlike the web
    * import, it does NOT blanket-delete prior chunks (that semantics belongs to
-   * re-scraping a site) — pasted content is additive, tagged with a `paste:`
+   * re-scraping a site): pasted content is additive, tagged with a `paste:`
    * source.
    */
   async saveClassifiedChunks(
@@ -439,7 +439,7 @@ export class WebsiteImportService {
         throw new BadRequestException({
           code: 'LLM_INVALID_JSON',
           message:
-            'Nie udało się rozpoznać struktury strony — spróbuj ponownie lub dodaj dane ręcznie.',
+            'Nie udało się rozpoznać struktury strony. Spróbuj ponownie lub dodaj dane ręcznie.',
         });
       }
     }
@@ -449,7 +449,7 @@ export class WebsiteImportService {
       throw new BadRequestException({
         code: 'INVALID_SCHEMA',
         message:
-          'Wyekstraktowane dane nie pasują do oczekiwanego formatu — spróbuj ponownie.',
+          'Wyekstraktowane dane nie pasują do oczekiwanego formatu. Spróbuj ponownie.',
       });
     }
 
@@ -461,7 +461,7 @@ export class WebsiteImportService {
    * Build + persist reviewed chunks. Shared by web-import confirm and paste
    * classify-save. `source` is the full source string (e.g. `web:<url>` or
    * `paste:<ts>`). `opts.deletePriorSourceLike` triggers a blanket delete
-   * before insert — only the web-import re-import flow uses it.
+   * before insert: only the web-import re-import flow uses it.
    */
   private async saveConfirmedChunks(
     botId: string,
@@ -479,7 +479,7 @@ export class WebsiteImportService {
 
     // Sanitize + drop injection-y chunks before persisting. The client edits the
     // reviewed payload freely on /classify/save (and /confirm), so we must apply
-    // the same defence as addChunk/updateChunk — the /classify preview sanitizer
+    // the same defence as addChunk/updateChunk: the /classify preview sanitizer
     // only touched the copy returned for review, not what gets saved.
     const chunksToCreate = buildChunksFromConfirm(dto, source)
       .map((c) => ({ ...c, content: sanitizeContent(c.content) }))
@@ -507,7 +507,7 @@ export class WebsiteImportService {
         await this.embeddingService.generateAndStore(id, content);
         created++;
       } catch (err) {
-        // Rollback this single chunk — don't fail the whole confirm
+        // Rollback this single chunk: don't fail the whole confirm
         await this.prisma.knowledgeChunk
           .delete({ where: { id } })
           .catch(() => {});

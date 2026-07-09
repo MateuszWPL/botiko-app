@@ -1,7 +1,7 @@
 interface PageHeaderProps {
-  /** Unused — tytuł renderuje DashboardTopBar. Prop zostawiony dla zgodności. */
+  /** Unused, tytuł renderuje DashboardTopBar. Prop zostawiony dla zgodności. */
   title?: string;
-  /** Unused — opis renderuje DashboardTopBar. Prop zostawiony dla zgodności. */
+  /** Unused, opis renderuje DashboardTopBar. Prop zostawiony dla zgodności. */
   description?: string;
   badge?: { label: string; color?: string };
   action?: React.ReactNode;

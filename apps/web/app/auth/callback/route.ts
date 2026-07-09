@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '../../../lib/supabase-server';
 
-// Supabase PKCE auth callback — exchanges one-time code for a session.
+// Supabase PKCE auth callback, exchanges one-time code for a session.
 // Email links (magic link, password reset, email confirm) all land here first.
 // After exchange, redirects to `next` param (default: dashboard).
 export async function GET(request: Request) {
@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   const code = url.searchParams.get('code');
   const next = url.searchParams.get('next') ?? '/dashboard/overview';
 
-  // Sanitize redirect target — only allow relative paths to prevent open redirect
+  // Sanitize redirect target, only allow relative paths to prevent open redirect
   const safeNext =
     next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard/overview';
 

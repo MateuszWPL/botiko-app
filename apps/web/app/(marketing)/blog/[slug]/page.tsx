@@ -36,7 +36,7 @@ export async function generateMetadata({
   if (!post) return {};
 
   return {
-    // Szablon `%s | Botiko.pl` z layoutu dokłada brand — nie dublujemy go w tytule.
+    // Szablon `%s | Botiko.pl` z layoutu dokłada brand, nie dublujemy go w tytule.
     title: post.title,
     description: post.excerpt,
     alternates: { canonical: `https://botiko.pl/blog/${post.slug}` },
@@ -110,7 +110,7 @@ export default async function BlogPostPage({
       sameAs: [...AUTHOR.sameAs],
     },
     // Reference the single site-wide Organization entity (@id) instead of an
-    // inline duplicate — keeps one canonical "Botiko.pl" brand node.
+    // inline duplicate, keeps one canonical "Botiko.pl" brand node.
     publisher: { '@id': 'https://botiko.pl/#organization' },
     mainEntityOfPage: {
       '@type': 'WebPage',
@@ -306,7 +306,7 @@ export default async function BlogPostPage({
             </aside>
           </div>
 
-          {/* Box „o autorze" — realne autorstwo (sygnał E-E-A-T) */}
+          {/* Box „o autorze", realne autorstwo (sygnał E-E-A-T) */}
           <AuthorBox />
 
           {/* Kontekstowy link do strony pieniężnej /dla/* (linkowanie wewnętrzne) */}

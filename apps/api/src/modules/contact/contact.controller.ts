@@ -18,7 +18,7 @@ import {
 export class ContactController {
   constructor(private readonly contactService: ContactService) {}
 
-  // Public endpoint — marketing contact form (anti-spam throttling)
+  // Public endpoint: marketing contact form (anti-spam throttling)
   @Post()
   @HttpCode(HttpStatus.NO_CONTENT)
   @Throttle({ default: { limit: 10, ttl: 60000 } })

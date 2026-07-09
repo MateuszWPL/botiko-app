@@ -6,7 +6,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 async function getAuthToken(): Promise<string | null> {
   const supabase = await createServerSupabaseClient();
-  // Audit C6: use getUser() in SSR — it verifies the JWT against the Supabase
+  // Audit C6: use getUser() in SSR, it verifies the JWT against the Supabase
   // Auth server on every call, preventing forged cookie attacks. getSession()
   // only reads the cookie value without re-validating the signature.
   const {
@@ -31,7 +31,7 @@ export async function createCheckoutAction(): Promise<{ url?: string; error?: st
     });
 
     if (!res.ok) {
-      // API signals an existing active subscription with 409 — pass the message
+      // API signals an existing active subscription with 409, pass the message
       // through so the UI can steer the user to the customer portal instead
       // of silently showing "płatność nie powiodła się".
       if (res.status === 409) {

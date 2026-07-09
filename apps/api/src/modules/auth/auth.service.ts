@@ -44,7 +44,7 @@ export class AuthService {
       await this.supabase.auth.admin.createUser({
         email: dto.email,
         password: dto.password,
-        // Skip email confirmation — trial + Stripe card capture is the real
+        // Skip email confirmation: trial + Stripe card capture is the real
         // verification step; adding a confirm-email click only adds friction.
         email_confirm: true,
       });
@@ -118,7 +118,7 @@ export class AuthService {
         select: { id: true },
       });
       if (dbUser) {
-        // Fire-and-forget — registration must not fail because of email
+        // Fire-and-forget: registration must not fail because of email
         void this.emailService
           .sendWelcome({
             userId: dbUser.id,
@@ -153,7 +153,7 @@ export class AuthService {
     });
 
     if (error || !data.session) {
-      // Never reveal whether email exists — always generic message
+      // Never reveal whether email exists: always generic message
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -170,7 +170,7 @@ export class AuthService {
       'local',
     );
     if (error) {
-      // Non-critical — client should discard tokens regardless
+      // Non-critical: client should discard tokens regardless
       this.logger.warn('Supabase signout warning', error.message);
     }
   }

@@ -2,7 +2,7 @@
  * Contrast helpers for the widget live-preview in the dashboard.
  *
  * Mirrors `onPrimary()` from apps/widget (YIQ luminance) so the settings preview
- * shows exactly what the embedded widget renders — most importantly a readable
+ * shows exactly what the embedded widget renders, most importantly a readable
  * foreground when the tenant picks a light accent (e.g. white), instead of the
  * previously hardcoded white text that vanished on light backgrounds.
  */
@@ -21,10 +21,10 @@ export function onPrimary(hex: string): string {
 
 /**
  * Backdrop + border + foreground for the avatar/logo circle on the accent
- * header. When `override` is a hex the tenant picked a background manually —
+ * header. When `override` is a hex the tenant picked a background manually,
  * we use it with a contrast-matched border and foreground. Otherwise it's an
  * auto backdrop: frosted white on a dark accent, subtle dark tint on a light
- * accent — so an uploaded logo (or the letter fallback) never disappears into a
+ * accent, so an uploaded logo (or the letter fallback) never disappears into a
  * same-colour background.
  */
 export function avatarBackdrop(

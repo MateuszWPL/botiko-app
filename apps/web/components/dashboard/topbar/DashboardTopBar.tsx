@@ -67,7 +67,7 @@ export function DashboardTopBar() {
             hasSubscription: boolean;
             trialEndsAt: string | null;
           };
-          // Derive effective state from date — cron may not have run yet.
+          // Derive effective state from date, cron may not have run yet.
           const trialExpired =
             !status.hasSubscription &&
             !!status.trialEndsAt &&
@@ -75,7 +75,7 @@ export function DashboardTopBar() {
           if (mounted) setBotActive(status.isActive && !trialExpired);
         }
       } catch {
-        // silent — fall back to default
+        // silent, fall back to default
       }
     })();
     return () => { mounted = false; };
@@ -88,7 +88,7 @@ export function DashboardTopBar() {
   return (
     <div className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-slate-200/70">
       <div className="mx-auto w-full max-w-[1600px] 2xl:max-w-[2000px] min-[2200px]:max-w-[2400px] min-[2800px]:max-w-[2600px] px-4 md:px-8 py-4 md:py-5 flex items-center gap-6">
-        {/* Left side — title + greeting */}
+        {/* Left side, title + greeting */}
         <div className="min-w-0 flex-1 space-y-2">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <div className="flex items-center gap-3 min-w-0">
@@ -120,7 +120,7 @@ export function DashboardTopBar() {
           </p>
         </div>
 
-        {/* Right side — Help + Notifications */}
+        {/* Right side. Help + Notifications */}
         <div className="flex items-center gap-2 flex-shrink-0">
           <HelpButton />
           <NotificationsBell />

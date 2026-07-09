@@ -28,7 +28,7 @@ import { ChatService } from './chat.service';
 import { PrismaService } from '../../prisma/prisma.service';
 import { EmbeddingService } from '../knowledge/embedding.service';
 import { AI_SERVICE } from '../ai/ai.service.interface';
-// Mocked env (see jest.mock above) — mutable, so a test can flip a flag.
+// Mocked env (see jest.mock above): mutable, so a test can flip a flag.
 import { env } from '../../config/env';
 
 const mockBot = {
@@ -116,7 +116,7 @@ describe('ChatService', () => {
     mockAiService.chatStream.mockImplementation(() => defaultStream());
   });
 
-  describe('sendMessage — fallback', () => {
+  describe('sendMessage: fallback', () => {
     it('returns fallback response when no relevant chunks found', async () => {
       mockEmbeddingService.findRelevantChunks.mockResolvedValue([]);
       const { service } = await buildService();
@@ -163,7 +163,7 @@ describe('ChatService', () => {
     });
   });
 
-  describe('sendMessage — bare contact info (lead)', () => {
+  describe('sendMessage: bare contact info (lead)', () => {
     it('bare phone number with no context → lead-capture reply + form', async () => {
       mockEmbeddingService.findRelevantChunks.mockResolvedValue([]);
       const { service } = await buildService();
@@ -174,14 +174,14 @@ describe('ChatService', () => {
         message: '692 022 228',
       });
 
-      // Not the generic fallback — the lead-capture line, and the form opens.
+      // Not the generic fallback: the lead-capture line, and the form opens.
       expect(result.message).toContain('Zostaw');
       expect(result.showLeadForm).toBe(true);
       expect(mockAiService.chat).not.toHaveBeenCalled();
     });
   });
 
-  describe('sendMessage — query condensation', () => {
+  describe('sendMessage: query condensation', () => {
     afterEach(() => {
       (env as { RAG_QUERY_CONDENSATION: boolean }).RAG_QUERY_CONDENSATION =
         false;
@@ -231,7 +231,7 @@ describe('ChatService', () => {
     });
   });
 
-  describe('sendMessage — escalation', () => {
+  describe('sendMessage: escalation', () => {
     const escalationCases = [
       'chcę rozmawiać z człowiekiem',
       'połącz mnie z konsultantem',
@@ -273,7 +273,7 @@ describe('ChatService', () => {
     });
   });
 
-  describe('sendMessage — normal flow', () => {
+  describe('sendMessage: normal flow', () => {
     beforeEach(() => {
       mockEmbeddingService.findRelevantChunks.mockResolvedValue([
         { content: 'Strzyżenie kosztuje 80 zł', similarity: 0.85 },
@@ -326,7 +326,7 @@ describe('ChatService', () => {
   });
 
   // ── tenant.isActive gate ─────────────────────────────────────────────────────
-  describe('sendMessage — tenant isActive gate', () => {
+  describe('sendMessage: tenant isActive gate', () => {
     it('throws ForbiddenException with generic message when tenant.isActive is false', async () => {
       const inactiveBot = {
         ...mockBot,
@@ -374,7 +374,7 @@ describe('ChatService', () => {
   });
 
   // ── checkPlanLimit ───────────────────────────────────────────────────────────
-  describe('sendMessage — checkPlanLimit (STARTER 1000/month)', () => {
+  describe('sendMessage: checkPlanLimit (STARTER 1000/month)', () => {
     it('passes when count is below limit (999)', async () => {
       const prisma = buildPrismaMock({
         conversation: {
@@ -441,12 +441,12 @@ describe('ChatService', () => {
   });
 
   // ── checkBotMessageCap ───────────────────────────────────────────────────────
-  describe('sendMessage — checkBotMessageCap (10 000 msg/month)', () => {
+  describe('sendMessage: checkBotMessageCap (10 000 msg/month)', () => {
     it('throws ForbiddenException when bot monthly message count hits 10 000', async () => {
       const prisma = buildPrismaMock({
         message: {
           create: jest.fn().mockResolvedValue({}),
-          // First call is checkBotMessageCap — return 10 000 (cap exceeded)
+          // First call is checkBotMessageCap: return 10 000 (cap exceeded)
           count: jest.fn().mockResolvedValue(10_000),
         },
       });
@@ -481,7 +481,7 @@ describe('ChatService', () => {
   });
 
   // ── checkConversationMessageCap ──────────────────────────────────────────────
-  describe('sendMessage — checkConversationMessageCap (50 msg/sesję)', () => {
+  describe('sendMessage: checkConversationMessageCap (50 msg/sesję)', () => {
     it('throws ForbiddenException when user hits 50 messages in one session', async () => {
       const prisma = buildPrismaMock({
         conversation: {
@@ -494,8 +494,8 @@ describe('ChatService', () => {
           create: jest.fn().mockResolvedValue({}),
           count: jest
             .fn()
-            .mockResolvedValueOnce(0) // checkBotMessageCap — ok
-            .mockResolvedValueOnce(50), // checkConversationMessageCap — at limit
+            .mockResolvedValueOnce(0) // checkBotMessageCap: ok
+            .mockResolvedValueOnce(50), // checkConversationMessageCap: at limit
         },
       });
       const { service } = await buildService(prisma);
@@ -520,8 +520,8 @@ describe('ChatService', () => {
           create: jest.fn().mockResolvedValue({}),
           count: jest
             .fn()
-            .mockResolvedValueOnce(0) // checkBotMessageCap — ok
-            .mockResolvedValueOnce(49), // checkConversationMessageCap — just under
+            .mockResolvedValueOnce(0) // checkBotMessageCap: ok
+            .mockResolvedValueOnce(49), // checkConversationMessageCap: just under
         },
       });
       mockEmbeddingService.findRelevantChunks.mockResolvedValue([]);

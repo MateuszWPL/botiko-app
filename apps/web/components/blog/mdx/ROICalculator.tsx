@@ -47,7 +47,7 @@ const industryConfigs: Record<Industry, IndustryConfig> = {
     defaultClients: 4,
     defaultValue: 800,
     clientLabel: 'Nowych pacjentów / mies.',
-    visitLabel: 'Średnia wartość cyklu (6–8 wizyt)',
+    visitLabel: 'Średnia wartość cyklu (6-8 wizyt)',
     accent: 'text-health',
     accentBg: 'bg-health',
     accentBorder: 'border-health/30',

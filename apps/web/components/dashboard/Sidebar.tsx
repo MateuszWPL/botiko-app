@@ -168,7 +168,7 @@ export function Sidebar() {
           })}
         </nav>
 
-        {/* Setup wizard trigger — shown only if setup not done */}
+        {/* Setup wizard trigger, shown only if setup not done */}
         {!setupDone && (
           <div className="px-3 pb-3">
             <div className="relative group/tip">
@@ -216,7 +216,7 @@ export function Sidebar() {
         </div>
       </aside>
 
-      {/* Mobile top header — tylko hamburger + logo (tytuł i ikony są w DashboardTopBar) */}
+      {/* Mobile top header, tylko hamburger + logo (tytuł i ikony są w DashboardTopBar) */}
       <header className="md:hidden fixed top-0 left-0 right-0 z-40 h-14 bg-slate-950/95 backdrop-blur-md border-b border-slate-800/60 flex items-center px-4 gap-3">
         <button
           onClick={() => setMobileOpen(true)}

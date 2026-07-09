@@ -196,7 +196,7 @@ export default async function OverviewPage() {
   const remaining = Math.max(0, PLAN_LIMIT - usageCount);
 
   // Conversations handled outside typical working hours (evenings + weekends).
-  // Heuristic — shift UTC by +2h to approximate Polish local time (CEST).
+  // Heuristic, shift UTC by +2h to approximate Polish local time (CEST).
   const afterHoursConvs = thisMonthConvs.filter((c) => {
     const d = new Date(new Date(c.createdAt).getTime() + 2 * 60 * 60 * 1000);
     const day = d.getUTCDay();
@@ -226,7 +226,7 @@ export default async function OverviewPage() {
   const trialDaysLeft = billing?.trialEndsAt
     ? Math.max(0, Math.ceil((new Date(billing.trialEndsAt).getTime() - Date.now()) / 864e5))
     : 0;
-  // Derive from date — DB isActive may still be true if daily cron hasn't fired.
+  // Derive from date. DB isActive may still be true if daily cron hasn't fired.
   const trialExpired =
     !!showBillingCard &&
     !!billing?.trialEndsAt &&
@@ -287,7 +287,7 @@ export default async function OverviewPage() {
             <div>
               <p className={`text-sm font-semibold ${trialExpired ? 'text-red-900' : 'text-amber-900'}`}>
                 {trialExpired
-                  ? 'Trial wygasł — bot jest nieaktywny'
+                  ? 'Trial wygasł, bot jest nieaktywny'
                   : `Zostało ${trialDaysLeft} ${trialDaysLeft === 1 ? 'dzień' : 'dni'} trialu`}
               </p>
               <p className={`text-xs mt-0.5 ${trialExpired ? 'text-red-700' : 'text-amber-700'}`}>

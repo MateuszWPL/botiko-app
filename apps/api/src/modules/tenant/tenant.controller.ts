@@ -67,7 +67,7 @@ export class TenantController {
     await this.tenantService.updateProfile(tenantId, { websiteUrl, industry });
   }
 
-  // RODO: right to erasure — permanently deletes all tenant data
+  // RODO: right to erasure, permanently deletes all tenant data
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteAccount(

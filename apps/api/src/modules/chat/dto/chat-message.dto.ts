@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const chatMessageSchema = z.object({
   botId: z.string().cuid('Nieprawidłowy identyfikator bota'),
-  // Widget generates: s_{base36_timestamp}_{random} — alphanumeric + underscores only
+  // Widget generates: s_{base36_timestamp}_{random}, alphanumeric + underscores only
   sessionId: z
     .string()
     .min(1, 'Identyfikator sesji jest wymagany')

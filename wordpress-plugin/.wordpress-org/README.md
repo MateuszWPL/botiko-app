@@ -7,10 +7,10 @@ The `10up/action-wordpress-plugin-deploy` action (see
 
 | File | Purpose |
 |---|---|
-| `icon.svg` | Vector plugin icon (preferred by wp.org) — brand gradient + white mark |
+| `icon.svg` | Vector plugin icon (preferred by wp.org): brand gradient + white mark |
 | `icon-256x256.png` / `icon-128x128.png` | Raster icon fallbacks |
 | `banner-772x250.png` / `banner-1544x500.png` | Directory header banner (icon overlays on the right) |
-| `screenshot-1.png` … | Directory screenshots (captions live in `botiko/readme.txt` → `== Screenshots ==`). **To add.** |
+| `screenshot-1.png` ... | Directory screenshots (captions live in `botiko/readme.txt` → `== Screenshots ==`). **To add.** |
 
 ## Regenerating icon + banner
 

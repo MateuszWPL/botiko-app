@@ -29,7 +29,7 @@ import { CurrentTenant } from '../../common/decorators/current-tenant.decorator'
 export class BotController {
   constructor(private readonly botService: BotService) {}
 
-  // Public endpoint — widget fetches bot config (no auth required)
+  // Public endpoint: widget fetches bot config (no auth required)
   @Get(':id/config')
   @Throttle({ default: { limit: 30, ttl: 60000 } })
   getConfig(
@@ -39,7 +39,7 @@ export class BotController {
     return this.botService.getPublicConfig(id, origin);
   }
 
-  // Public — the official WordPress plugin redeems a one-click pairing token to
+  // Public: the official WordPress plugin redeems a one-click pairing token to
   // authorize its domain. Gated by possession of the unguessable single-use
   // token; rate-limited as defence-in-depth.
   @Post('pair')
@@ -89,7 +89,7 @@ export class BotController {
     return this.botService.update(tenantId, id, dto);
   }
 
-  // Owner-authenticated — generate a short-lived, single-use pairing token for
+  // Owner-authenticated: generate a short-lived, single-use pairing token for
   // the WordPress plugin. The raw token is returned once and shown in the panel.
   @Post(':id/pairing-token')
   @HttpCode(HttpStatus.CREATED)

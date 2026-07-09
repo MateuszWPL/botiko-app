@@ -135,7 +135,7 @@ export default function RegisterPage() {
 
           <div className="mb-8">
             <h1 className="text-2xl font-extrabold text-slate-900">Utwórz konto</h1>
-            <p className="text-slate-500 text-sm mt-1">Zacznij za darmo — 14 dni bez karty kredytowej</p>
+            <p className="text-slate-500 text-sm mt-1">Zacznij za darmo, 14 dni bez karty kredytowej</p>
           </div>
 
           <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
@@ -154,7 +154,7 @@ export default function RegisterPage() {
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all"
               />
               <p className="text-xs text-slate-400 mt-1.5">
-                Strona, na której pojawi się bot. Nie masz jej pod ręką? Zostaw puste — dodasz później w Ustawieniach.
+                Strona, na której pojawi się bot. Nie masz jej pod ręką? Zostaw puste, dodasz później w Ustawieniach.
               </p>
             </div>
 
@@ -240,7 +240,7 @@ export default function RegisterPage() {
               disabled={loading}
               className="w-full py-3.5 rounded-xl bg-brand text-white font-bold text-sm hover:bg-brand-dark disabled:opacity-60 transition-colors mt-2"
             >
-              {loading ? 'Tworzenie konta...' : 'Utwórz konto — zacznij za darmo'}
+              {loading ? 'Tworzenie konta...' : 'Utwórz konto, zacznij za darmo'}
             </button>
           </form>
 

@@ -1,4 +1,4 @@
-# Botiko — Web (Next.js 14 + Tailwind v4)
+# Botiko. Web (Next.js 14 + Tailwind v4)
 
 Frontend dashboard + landing page for Botiko platform. Features:
 - 📊 Dashboard (8 pages: overview, bots, leads, conversations, knowledge, settings, embed, billing)
@@ -152,14 +152,14 @@ useBilling()           // Fetch billing status
 
 ### Dashboard Pages (8 pages)
 
-1. **Overview** — Stats, recent activity, quick actions
-2. **Bots** — List, create, edit bots
-3. **Leads** — View, filter, export, manage leads
-4. **Conversations** — Chat history, transcripts
-5. **Knowledge** — Add/edit knowledge chunks for RAG
-6. **Settings** — Account info, password change
-7. **Embed** — Widget installation code
-8. **Billing** — Subscription, upgrade, portal
+1. **Overview**: Stats, recent activity, quick actions
+2. **Bots**: List, create, edit bots
+3. **Leads**: View, filter, export, manage leads
+4. **Conversations**: Chat history, transcripts
+5. **Knowledge**: Add/edit knowledge chunks for RAG
+6. **Settings**: Account info, password change
+7. **Embed**: Widget installation code
+8. **Billing**: Subscription, upgrade, portal
 
 ### Authentication Flow
 

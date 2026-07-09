@@ -1,4 +1,4 @@
-/** Szablon PDF: Salon Beauty — kopiuj-wklej baza wiedzy */
+/** Szablon PDF: Salon Beauty, kopiuj-wklej baza wiedzy */
 export function PdfBeautySalon({ title }: { title: string }) {
   return (
     <div style={{ minHeight: '1123px', backgroundColor: '#ffffff', color: '#1e293b' }}>
@@ -33,12 +33,12 @@ export function PdfBeautySalon({ title }: { title: string }) {
         {/* FAQ heading */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', paddingBottom: '12px', borderBottom: '2px solid #e2e8f0' }}>
           <span style={{ fontSize: '18px' }}>📚</span>
-          <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 700, color: '#0f172a' }}>2. Wpisy Bazy Wiedzy — Kopiuj-Wklej</h2>
+          <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 700, color: '#0f172a' }}>2. Wpisy Bazy Wiedzy. Kopiuj-Wklej</h2>
         </div>
         <p style={{ margin: '0 0 20px 0', fontSize: '12px', color: '#64748b' }}>Dodaj poniższe pary jako osobne wpisy w sekcji &quot;Baza Wiedzy&quot; w panelu Botiko. Zastąp [ZMIENNE] własnymi danymi.</p>
 
         {/* FAQ 1 */}
-        <FaqCard accent="#4f46e5" badge="FAQ 1" badgeTitle="Rezerwacja — zbieranie leada">
+        <FaqCard accent="#4f46e5" badge="FAQ 1" badgeTitle="Rezerwacja, zbieranie leada">
           <FaqRow label="Etykiety">Jak umówić się na wizytę? Wolny termin? Rezerwacja spotkania.</FaqRow>
           <FaqRow label="Odpowiedź bota">
             Aby umówić się na wizytę, zostaw tutaj swój <strong>numer telefonu</strong>! 📞 Nasza recepcja oddzwoni i wspólnie dobierzemy termin. Napisz też o jakiej usłudze marzysz!
@@ -50,11 +50,11 @@ export function PdfBeautySalon({ title }: { title: string }) {
           <FaqRow label="Etykiety">Ile kosztuje manicure? Ceny, koszt zabiegu, czy jest drogo.</FaqRow>
           <FaqRow label="Odpowiedź bota">
             Oto skrócony cennik 💅<br />
-            • Manicure hybrydowy – <strong>[CENA]</strong> zł<br />
-            • Przedłużanie żelem – od <strong>[CENA_MIN]</strong> do <strong>[CENA_MAX]</strong> zł<br />
-            • Zdjęcie + nowa hybryda – <strong>[CENA]</strong> zł<br />
-            • Pedicure klasyczny – <strong>[CENA]</strong> zł<br /><br />
-            <span style={{ fontSize: '11px', color: '#64748b', fontStyle: 'italic' }}>(Instrukcja: Przy pytaniach o usługi spoza listy – zbierz numer i zaoferuj wycenę telefoniczną.)</span>
+            • Manicure hybrydowy, <strong>[CENA]</strong> zł<br />
+            • Przedłużanie żelem, od <strong>[CENA_MIN]</strong> do <strong>[CENA_MAX]</strong> zł<br />
+            • Zdjęcie + nowa hybryda, <strong>[CENA]</strong> zł<br />
+            • Pedicure klasyczny, <strong>[CENA]</strong> zł<br /><br />
+            <span style={{ fontSize: '11px', color: '#64748b', fontStyle: 'italic' }}>(Instrukcja: Przy pytaniach o usługi spoza listy, zbierz numer i zaoferuj wycenę telefoniczną.)</span>
           </FaqRow>
         </FaqCard>
 
@@ -63,14 +63,14 @@ export function PdfBeautySalon({ title }: { title: string }) {
           <FaqRow label="Etykiety">Chcę odwołać wizytę, spóźnię się, zasady anulacji.</FaqRow>
           <FaqRow label="Odpowiedź bota">
             Rozumiemy! 🤍<br />
-            • <strong>Spóźnienie</strong> do <strong>[X] min</strong> – ok, tylko daj nam znać. Zostaw tu imię i godzinę wizyty.<br />
-            • <strong>Odwołanie</strong> – podaj imię, nazwisko i cel wizyty w tej wiadomości, a skreślimy Cię z grafiku i zwolnimy miejsce.
+            • <strong>Spóźnienie</strong> do <strong>[X] min</strong>, ok, tylko daj nam znać. Zostaw tu imię i godzinę wizyty.<br />
+            • <strong>Odwołanie</strong>, podaj imię, nazwisko i cel wizyty w tej wiadomości, a skreślimy Cię z grafiku i zwolnimy miejsce.
           </FaqRow>
         </FaqCard>
 
         {/* Footer */}
         <div style={{ marginTop: '32px', paddingTop: '20px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '12px', fontWeight: 600, color: '#94a3b8' }}>botiko.pl — Boty AI dla salonów</span>
+          <span style={{ fontSize: '12px', fontWeight: 600, color: '#94a3b8' }}>botiko.pl. Boty AI dla salonów</span>
           <span style={{ fontSize: '11px', color: '#cbd5e1', fontStyle: 'italic' }}>Wersja: kopiuj-wklej · Placeholder gotowy</span>
         </div>
       </div>
@@ -78,7 +78,7 @@ export function PdfBeautySalon({ title }: { title: string }) {
   );
 }
 
-/** Shared card component for FAQ entries (inline styles only — no oklch) */
+/** Shared card component for FAQ entries (inline styles only, no oklch) */
 function FaqCard({ accent, badge, badgeTitle, children }: { accent: string; badge: string; badgeTitle: string; children: React.ReactNode }) {
   return (
     <div style={{ backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px', overflow: 'hidden', marginBottom: '16px' }}>

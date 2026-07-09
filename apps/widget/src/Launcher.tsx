@@ -14,7 +14,7 @@ const BUBBLE_FADEOUT_MS  = 400;   // czas animacji fade-out
 export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: LauncherProps) {
   const [bubbleState, setBubbleState] = useState<'hidden' | 'visible' | 'fading'>('hidden');
   const [showBadge, setShowBadge] = useState(false);
-  // Reaktywne wykrywanie mobile — reaguje na resize/rotate urządzenia
+  // Reaktywne wykrywanie mobile, reaguje na resize/rotate urządzenia
   const [isMobile, setIsMobile] = useState(
     typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches,
   );
@@ -27,7 +27,7 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // Pojawiaj bańkę + badge po 3s — tylko raz przy montowaniu
+  // Pojawiaj bańkę + badge po 3s, tylko raz przy montowaniu
   useEffect(() => {
     if (isOpen) return;
     const t = setTimeout(() => {
@@ -44,7 +44,7 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
     return () => clearTimeout(t);
   }, [bubbleState]);
 
-  // Po zakończeniu fade-out — ukryj całkowicie
+  // Po zakończeniu fade-out, ukryj całkowicie
   useEffect(() => {
     if (bubbleState !== 'fading') return;
     const t = setTimeout(() => setBubbleState('hidden'), BUBBLE_FADEOUT_MS);
@@ -67,7 +67,7 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
 
   const showBubble = bubbleState !== 'hidden' && !isOpen;
 
-  // Na mobile z otwartym chatem: ukryj cały launcher — display:none zamiast return null
+  // Na mobile z otwartym chatem: ukryj cały launcher, display:none zamiast return null
   // żeby uniknąć błędów przy ponownym montowaniu komponentu
   return (
     <div
@@ -114,7 +114,7 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
 
       {/* ── FAB button (wrapper for badge positioning) ─────────────────────── */}
       <div style={{ position: 'relative' }}>
-        {/* Notification badge — pulses 3× via CSS then stays static */}
+        {/* Notification badge, pulses 3× via CSS then stays static */}
         {showBadge && !isOpen && (
           <span
             style={{
@@ -165,7 +165,7 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
             (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 16px rgba(0,0,0,0.22)';
           }}
         >
-          {/* Chat icon — fades out when open */}
+          {/* Chat icon, fades out when open */}
           <span
             style={{
               position: 'absolute',
@@ -186,7 +186,7 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
             </svg>
           </span>
 
-          {/* X icon — fades in when open */}
+          {/* X icon, fades in when open */}
           <span
             style={{
               position: 'absolute',
@@ -208,7 +208,7 @@ export function Launcher({ primaryColor, isOpen, onClick, welcomeMsg }: Launcher
         </button>
       </div>
 
-      {/* Keyframes — scoped to shadow root */}
+      {/* Keyframes, scoped to shadow root */}
       <style>{`
         @keyframes botiko-bubble-in {
           from { opacity: 0; transform: translateY(8px) scale(0.94); }

@@ -105,7 +105,7 @@ export class ConversationService {
     ]);
 
     // sessionId → decrypted lead name map (leads fetched raw, names encrypted)
-    // We store encrypted names so we pass them through — decryption happens in LeadService
+    // We store encrypted names so we pass them through: decryption happens in LeadService
     // Here we just identify which sessions have a lead by sessionId
     const leadBySession = new Map<string, string>(
       leads
@@ -176,7 +176,7 @@ export class ConversationService {
 
   /**
    * Knowledge base health for the dashboard indicator. A high fallback rate
-   * means the bot keeps hitting "I don't know" — the client's knowledge base
+   * means the bot keeps hitting "I don't know": the client's knowledge base
    * needs more content.
    */
   async getKnowledgeHealth(tenantId: string): Promise<KnowledgeHealth> {

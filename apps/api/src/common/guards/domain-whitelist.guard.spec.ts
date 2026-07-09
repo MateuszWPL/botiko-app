@@ -143,7 +143,7 @@ describe('DomainWhitelistGuard', () => {
         const guard = await buildGuard(buildPrismaMock([allowedDomain]));
         const ctx = makeContext(origin, 'bot-1');
 
-        // subdomains: guard normalises only www prefix — sub.example.pl != example.pl
+        // subdomains: guard normalises only www prefix, so sub.example.pl != example.pl
         // http vs https: URL.hostname is the same, so it's allowed. Skip that case.
         const incomingHost = new URL(origin).hostname.replace(/^www\./, '');
         const allowedHost = new URL(allowedDomain).hostname.replace(

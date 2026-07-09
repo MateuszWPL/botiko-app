@@ -79,7 +79,7 @@ const POSTS = [
     'booksy-vs-chatbot-salon-bialystok',
     `Modern beauty salon reception in Poland, receptionist smiling at a client while another client checks their phone, warm afternoon light through large windows, plants and mirrors in background, ${STYLE}`,
     `Close-up of a smartphone showing a calendar booking confirmation, woman's manicured hand holding the phone, blurred beauty salon background, warm bokeh lighting, ${STYLE}`,
-    `Two connected systems — a calendar icon and a chat bubble — joined by a dotted flow line and a checkmark, indigo and teal, minimal white background, ${STYLE_FLAT}`,
+    `Two connected systems, a calendar icon and a chat bubble, joined by a dotted flow line and a checkmark, indigo and teal, minimal white background, ${STYLE_FLAT}`,
   ],
   [
     'bot-dla-gabinetu-zdrowia-bialystok',
@@ -215,7 +215,7 @@ const POSTS = [
   ],
 ];
 
-// Hugging Face FLUX.1-schnell — darmowy, wysoka jakość
+// Hugging Face FLUX.1-schnell, darmowy, wysoka jakość
 async function generateImage(prompt, outputPath) {
   const HF_TOKEN = API_KEY; // przekazuj token HF jako argument, lub 'anonymous'
   const url = 'https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell';
@@ -239,7 +239,7 @@ async function generateImage(prompt, outputPath) {
         res.on('data', c => chunks.push(c));
         res.on('end', () => {
           if (res.statusCode === 503) {
-            reject(new Error('503 Model loading — spróbuj ponownie za chwilę'));
+            reject(new Error('503 Model loading, spróbuj ponownie za chwilę'));
             return;
           }
           if (res.statusCode !== 200) {
@@ -251,7 +251,7 @@ async function generateImage(prompt, outputPath) {
           }
           const buf = Buffer.concat(chunks);
           if (buf.length < 5000) {
-            reject(new Error('Plik za mały — prawdopodobnie błąd API'));
+            reject(new Error('Plik za mały, prawdopodobnie błąd API'));
             return;
           }
           fs.writeFileSync(outputPath, buf);
@@ -278,7 +278,7 @@ async function generateWithRetry(prompt, outputPath, filename, n, total) {
       return true;
     } catch (err) {
       if (err.message.includes('429') && attempt < MAX_RETRIES) {
-        console.log(`  429 [${n}/${total}] ${filename} — czekam 30s (próba ${attempt}/${MAX_RETRIES})`);
+        console.log(`  429 [${n}/${total}] ${filename}, czekam 30s (próba ${attempt}/${MAX_RETRIES})`);
         await sleep(RETRY_WAIT_MS);
       } else {
         console.log(`  ERR [${n}/${total}] ${filename}: ${err.message}`);
@@ -331,7 +331,7 @@ async function main() {
   console.log(`  Pominięte:    ${skipped}`);
   console.log(`  Błędy:        ${failed}`);
   console.log(`\nGrafiki zapisane w: apps/web/public/blog/`);
-  console.log(`\nNastępny krok — zaktualizuj image: w frontmatterze postów:`);
+  console.log(`\nNastępny krok, zaktualizuj image: w frontmatterze postów:`);
   console.log(`  node scripts/update-blog-image-paths.mjs`);
 }
 

@@ -95,7 +95,7 @@ model Bot {
   businessHoursStart    Int?
   businessHoursEnd      Int?
   businessDays          Int[]          @default([])
-  /// Per-day schedule: [{enabled, start, end}] × 7, index 0=Mon … 6=Sun
+  /// Per-day schedule: [{enabled, start, end}] × 7, index 0=Mon ... 6=Sun
   businessSchedule      Json?
   personality           String?
   companyName           String?
@@ -119,7 +119,7 @@ model Bot {
 /// Short-lived, single-use tokens for the WordPress "one-click pairing" flow.
 /// Generated in the dashboard (owner-authenticated), redeemed by the official
 /// WordPress plugin to authorize that site's domain. Only the SHA-256 hash of
-/// the token is stored — the raw value is shown once in the dashboard.
+/// the token is stored, the raw value is shown once in the dashboard.
 model BotPairingToken {
   id        String    @id @default(cuid())
   tokenHash String    @unique
@@ -152,11 +152,11 @@ model Lead {
   tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   botId     String
   sessionId String?
-  /// @encrypted AES-256-GCM — format {iv}:{authTag}:{ciphertext} (hex)
+  /// @encrypted AES-256-GCM, format {iv}:{authTag}:{ciphertext} (hex)
   name      String
-  /// @encrypted AES-256-GCM — format {iv}:{authTag}:{ciphertext} (hex)
+  /// @encrypted AES-256-GCM, format {iv}:{authTag}:{ciphertext} (hex)
   phone     String
-  /// @encrypted AES-256-GCM — format {iv}:{authTag}:{ciphertext} (hex)
+  /// @encrypted AES-256-GCM, format {iv}:{authTag}:{ciphertext} (hex)
   message   String?
   status    LeadStatus @default(NEW)
   createdAt DateTime   @default(now())
@@ -180,7 +180,7 @@ model Message {
   role           MsgRole
   content        String
   /// True on ASSISTANT messages served from the RAG fallback path (no relevant
-  /// knowledge found). Drives the "knowledge base health" indicator — a high
+  /// knowledge found). Drives the "knowledge base health" indicator, a high
   /// fallback rate means the client's knowledge base is too sparse.
   wasFallback    Boolean      @default(false)
   createdAt      DateTime     @default(now())

@@ -8,12 +8,12 @@ import { SITE_URL, breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 const URL = `${SITE_URL}/narzedzia/kalkulator-roi-bota`;
 
 export const metadata: Metadata = {
-  title: 'Kalkulator ROI bota — czy 99 zł/mies. się zwróci',
+  title: 'Kalkulator ROI bota, czy 99 zł/mies. się zwróci',
   description:
     'Darmowy kalkulator zwrotu z inwestycji w bota obsługi klienta. Sprawdź, ilu nowych klientów wystarczy, by Botiko za 99 zł/mies. się opłacił.',
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Kalkulator ROI bota — Botiko',
+    title: 'Kalkulator ROI bota. Botiko',
     description:
       'Policz zwrot z inwestycji w bota obsługi klienta. Za darmo, bez logowania.',
     url: URL,
@@ -28,11 +28,11 @@ const FAQS = [
   },
   {
     q: 'Ilu klientów musi domknąć bot, żeby się opłacił?',
-    a: 'Przy kliencie wartym 150–300 zł wystarczy jeden dograny klient miesięcznie, by pokryć koszt 99 zł. Każdy kolejny to już czysty zysk.',
+    a: 'Przy kliencie wartym 150-300 zł wystarczy jeden dograny klient miesięcznie, by pokryć koszt 99 zł. Każdy kolejny to już czysty zysk.',
   },
   {
     q: 'Czy bot sam pozyskuje klientów?',
-    a: 'Bot nie robi marketingu — zamienia wiadomości od osób, które już piszą do Ciebie, w leady z kontaktem. Pozyskanie ruchu (reklama, social media, polecenia) zostaje po Twojej stronie.',
+    a: 'Bot nie robi marketingu, zamienia wiadomości od osób, które już piszą do Ciebie, w leady z kontaktem. Pozyskanie ruchu (reklama, social media, polecenia) zostaje po Twojej stronie.',
   },
 ];
 
@@ -80,7 +80,7 @@ export default function RoiToolPage() {
           </h1>
           <p className="text-slate-600 leading-relaxed">
             Bot obsługi klienta kosztuje 99 zł miesięcznie. Aby się opłacił, wystarczy,
-            że domknie jednego–dwóch klientów, których inaczej byś stracił. Przesuń
+            że domknie jednego-dwóch klientów, których inaczej byś stracił. Przesuń
             suwaki i sprawdź swój zwrot z inwestycji.
           </p>
         </div>

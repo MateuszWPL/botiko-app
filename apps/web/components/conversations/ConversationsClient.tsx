@@ -50,7 +50,7 @@ export function ConversationsClient({ initialConversations }: ConversationsClien
         }
       }
     } catch {
-      // silent fail – keep current data
+      // silent fail, keep current data
     } finally {
       setLoading(false);
     }
@@ -92,7 +92,7 @@ export function ConversationsClient({ initialConversations }: ConversationsClien
 
   return (
     <div className="space-y-3">
-      {/* Toolbar — relative z-10 so dropdowns appear above the table below */}
+      {/* Toolbar, relative z-10 so dropdowns appear above the table below */}
       <div className="relative z-10 bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 shadow-sm p-3 md:p-4 space-y-3">
         <SearchBar value={search} onChange={setSearch} />
         <Filters

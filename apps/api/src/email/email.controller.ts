@@ -82,7 +82,7 @@ function unsubPage(title: string, message: string): string {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>${title} — Botiko.pl</title>
+  <title>${title} - Botiko.pl</title>
   <style>
     body{margin:0;padding:40px 16px;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;display:flex;justify-content:center;}
     .card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:40px;max-width:480px;width:100%;text-align:center;}

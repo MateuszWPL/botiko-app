@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Regulamin świadczenia usług',
-  description: 'Regulamin świadczenia usług Botiko.pl — platforma AI chatbot dla firm usługowych.',
+  description: 'Regulamin świadczenia usług Botiko.pl, platforma AI chatbot dla firm usługowych.',
   alternates: { canonical: 'https://botiko.pl/regulamin' },
   robots: { index: true, follow: true },
 };
@@ -38,7 +38,7 @@ export default function TermsPage() {
             <h2 className="text-xl font-bold text-slate-900 mb-3">§1. Postanowienia ogólne</h2>
             <ol className="text-slate-600 text-sm leading-relaxed list-decimal pl-5 space-y-2">
               <li>
-                Niniejszy Regulamin określa zasady korzystania z platformy <strong>Botiko.pl</strong> — usługi
+                Niniejszy Regulamin określa zasady korzystania z platformy <strong>Botiko.pl</strong>, usługi
                 oprogramowania jako usługi (SaaS) umożliwiającej tworzenie i osadzanie asystenta AI na stronie
                 internetowej firmy.
               </li>
@@ -50,7 +50,7 @@ export default function TermsPage() {
               </li>
               <li>
                 Korzystanie z Botiko.pl oznacza akceptację niniejszego Regulaminu. Jeśli nie akceptujesz
-                Regulaminu — nie korzystaj z usługi.
+                Regulaminu, nie korzystaj z usługi.
               </li>
             </ol>
           </section>
@@ -58,12 +58,12 @@ export default function TermsPage() {
           <section className="mb-8">
             <h2 className="text-xl font-bold text-slate-900 mb-3">§2. Definicje</h2>
             <ul className="text-slate-600 text-sm leading-relaxed list-disc pl-5 space-y-2">
-              <li><strong>Platforma</strong> — oprogramowanie SaaS dostępne pod adresem botiko.pl, umożliwiające zarządzanie botem AI i leadami.</li>
-              <li><strong>Użytkownik</strong> — osoba lub firma, która zarejestrowała konto w Botiko.pl i korzysta z usługi (właściciel firmy usługowej).</li>
-              <li><strong>Klient końcowy</strong> — osoba odwiedzająca stronę Użytkownika i rozmawiająca z botem AI.</li>
-              <li><strong>Bot</strong> — asystent AI skonfigurowany przez Użytkownika i osadzony na jego stronie internetowej za pomocą widgetu Botiko.pl.</li>
-              <li><strong>Lead</strong> — dane kontaktowe Klienta końcowego (imię, numer telefonu) pozostawione dobrowolnie w widgecie bota.</li>
-              <li><strong>Plan</strong> — wybrany pakiet subskrypcyjny określający limit funkcji i cenę miesięczną.</li>
+              <li><strong>Platforma</strong>, oprogramowanie SaaS dostępne pod adresem botiko.pl, umożliwiające zarządzanie botem AI i leadami.</li>
+              <li><strong>Użytkownik</strong>, osoba lub firma, która zarejestrowała konto w Botiko.pl i korzysta z usługi (właściciel firmy usługowej).</li>
+              <li><strong>Klient końcowy</strong>, osoba odwiedzająca stronę Użytkownika i rozmawiająca z botem AI.</li>
+              <li><strong>Bot</strong>, asystent AI skonfigurowany przez Użytkownika i osadzony na jego stronie internetowej za pomocą widgetu Botiko.pl.</li>
+              <li><strong>Lead</strong>, dane kontaktowe Klienta końcowego (imię, numer telefonu) pozostawione dobrowolnie w widgecie bota.</li>
+              <li><strong>Plan</strong>, wybrany pakiet subskrypcyjny określający limit funkcji i cenę miesięczną.</li>
             </ul>
           </section>
 
@@ -75,9 +75,9 @@ export default function TermsPage() {
                 Użytkownik jest odpowiedzialny za bezpieczeństwo swoich danych dostępowych. W przypadku
                 podejrzenia nieuprawnionego dostępu należy niezwłocznie skontaktować się z Usługodawcą.
               </li>
-              <li>Konto jest niezbywalne — nie można go odsprzedawać ani przenosić na inne podmioty bez zgody Usługodawcy.</li>
+              <li>Konto jest niezbywalne, nie można go odsprzedawać ani przenosić na inne podmioty bez zgody Usługodawcy.</li>
               <li>
-                Do rejestracji nie jest wymagane podanie danych karty płatniczej — karta jest pobierana
+                Do rejestracji nie jest wymagane podanie danych karty płatniczej, karta jest pobierana
                 dopiero po zakończeniu okresu próbnego (trial) i potwierdzeniu aktywacji subskrypcji.
               </li>
             </ol>
@@ -96,11 +96,11 @@ export default function TermsPage() {
               </li>
               <li>
                 Płatności obsługiwane są przez <strong>Stripe</strong>. Botiko.pl nie przechowuje danych kart
-                płatniczych — trafiają one wyłącznie do Stripe zgodnie z ich polityką prywatności.
+                płatniczych, trafiają one wyłącznie do Stripe zgodnie z ich polityką prywatności.
               </li>
               <li>
                 Subskrypcja odnawia się automatycznie. Użytkownik może anulować subskrypcję w dowolnym momencie
-                przez panel Botiko.pl — dostęp pozostaje aktywny do końca opłaconego okresu.
+                przez panel Botiko.pl, dostęp pozostaje aktywny do końca opłaconego okresu.
               </li>
               <li>
                 Usługodawca zastrzega sobie prawo do zmiany cennika z <strong>30-dniowym wyprzedzeniem</strong>.
@@ -118,7 +118,7 @@ export default function TermsPage() {
             <ol className="text-slate-600 text-sm leading-relaxed list-decimal pl-5 space-y-2">
               <li>
                 Bot Botiko.pl odpowiada na pytania Klientów końcowych na podstawie wiedzy dostarczonej przez
-                Użytkownika (baza wiedzy) i szablonu branżowego. Bot <strong>nie jest systemem rezerwacji</strong> —
+                Użytkownika (baza wiedzy) i szablonu branżowego. Bot <strong>nie jest systemem rezerwacji</strong>,
                 może odsyłać do zewnętrznych systemów (Booksy, Calendly itp.).
               </li>
               <li>
@@ -157,7 +157,7 @@ export default function TermsPage() {
                 Użytkownik jest administratorem danych osobowych Klientów końcowych (leadów) zebranych
                 przez bota i zobowiązany jest do przetwarzania ich zgodnie z RODO. Botiko.pl jest
                 podmiotem przetwarzającym w rozumieniu art. 28 RODO. Na wniosek możemy podpisać
-                umowę powierzenia (DPA) — pisz na kontakt@botiko.pl.
+                umowę powierzenia (DPA), pisz na kontakt@botiko.pl.
               </li>
               <li>
                 Zabronione jest używanie Botiko.pl do świadczenia usług niezgodnych z prawem,
@@ -224,8 +224,8 @@ export default function TermsPage() {
                 ścigania. O zawieszeniu Użytkownik zostanie poinformowany e-mailem.
               </li>
               <li>
-                Anulowanie subskrypcji bez usunięcia konta powoduje przejście do stanu nieaktywnego
-                — bot przestaje odpowiadać, ale dane są zachowane przez <strong>30 dni</strong>,
+                Anulowanie subskrypcji bez usunięcia konta powoduje przejście do stanu nieaktywnego,
+                bot przestaje odpowiadać, ale dane są zachowane przez <strong>30 dni</strong>,
                 co umożliwia reaktywację.
               </li>
             </ol>

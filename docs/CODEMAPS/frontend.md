@@ -1,4 +1,4 @@
-# Frontend Web App Codemap — Next.js 14 + Tailwind v4
+# Frontend Web App Codemap. Next.js 14 + Tailwind v4
 
 **Last Updated:** 2026-04-18  
 **Location:** `apps/web/`  
@@ -10,7 +10,7 @@
 ## Quick Overview
 
 Next.js 14 App Router with 8 main pages + landing/marketing. Uses:
-- **Auth:** Supabase SSR (@supabase/ssr) — email/password stored in Supabase Auth
+- **Auth:** Supabase SSR (@supabase/ssr): email/password stored in Supabase Auth
 - **Styling:** Tailwind v4 (utility-first CSS)
 - **Icons:** Lucide React (SVG icons)
 - **Charts:** Recharts (analytics visualizations)
@@ -337,9 +337,9 @@ export function useBots() {
 - Copy embed code
 
 **Components:**
-- `BotForm` — Input form (React Hook Form + Zod)
-- `BotsTable` — List with filters
-- `BotCard` — Preview card
+- `BotForm`: Input form (React Hook Form + Zod)
+- `BotsTable`: List with filters
+- `BotCard`: Preview card
 
 ### 2. Lead Management
 
@@ -354,9 +354,9 @@ export function useBots() {
 - View lead source (which bot, when, IP)
 
 **Components:**
-- `LeadsTable` — Sortable, filterable table
-- `ExportModal` — CSV export dialog
-- `LeadCard` — Detailed lead view
+- `LeadsTable`: Sortable, filterable table
+- `ExportModal`: CSV export dialog
+- `LeadCard`: Detailed lead view
 
 **Note:** First name + phone are encrypted in DB, decrypted on dashboard for display.
 
@@ -373,7 +373,7 @@ export function useBots() {
 - See embedding status (when created)
 
 **Components:**
-- `KnowledgeForm` — Add/edit form
+- `KnowledgeForm`: Add/edit form
 - Knowledge table (list all chunks)
 
 ### 4. Conversations (Chat History)
@@ -387,8 +387,8 @@ export function useBots() {
 - Analytics (messages per day)
 
 **Components:**
-- `ConversationsTable` — List
-- Message bubble components — Transcript display
+- `ConversationsTable`: List
+- Message bubble components: Transcript display
 
 ### 5. Billing
 
@@ -402,8 +402,8 @@ export function useBots() {
 - Show trial status (days remaining, etc)
 
 **Components:**
-- `BillingStatus` — Current subscription info
-- `UpgradeModal` — Plan selection
+- `BillingStatus`: Current subscription info
+- `UpgradeModal`: Plan selection
 - Stripe iframe for checkout/portal
 
 **Integration:**
@@ -447,12 +447,12 @@ export function useBots() {
 - Footer (links, privacy, terms, contact)
 
 **Components:**
-- `Navbar` — Top navigation
-- `Hero` — Banner
-- `Features` — Feature grid
-- `Pricing` — Plan cards
-- `CTA` — Call-to-action section
-- `Footer` — Footer
+- `Navbar`: Top navigation
+- `Hero`: Banner
+- `Features`: Feature grid
+- `Pricing`: Plan cards
+- `CTA`: Call-to-action section
+- `Footer`: Footer
 
 ### 9. Blog
 

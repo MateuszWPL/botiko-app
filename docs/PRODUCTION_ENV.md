@@ -1,11 +1,11 @@
-# Produkcyjne zmienne środowiskowe — Botiko.pl
+# Produkcyjne zmienne środowiskowe. Botiko.pl
 
 Instrukcja krok-po-kroku: jak założyć projekty, skąd wziąć każdą wartość i gdzie ją wkleić.  
 Hosting: **Railway** (API) · **Vercel** (Web + Widget jako statyczne)
 
 ---
 
-## 0. Przed startem — zainstaluj CLI
+## 0. Przed startem, zainstaluj CLI
 
 ```bash
 # Railway CLI
@@ -19,14 +19,14 @@ vercel login
 
 ---
 
-## 1. Railway — `apps/api`
+## 1. Railway, `apps/api`
 
 ### Założenie projektu
 
 1. Wejdź na **https://railway.app** → zaloguj się przez GitHub
 2. **New Project → Deploy from GitHub repo** → wybierz `botiko-app`
-3. Railway zapyta o katalog — wpisz `apps/api`
-4. Kliknij **Add Variables** — tu wkleisz env vars z sekcji poniżej
+3. Railway zapyta o katalog: wpisz `apps/api`
+4. Kliknij **Add Variables**: tu wkleisz env vars z sekcji poniżej
 5. Domena: **Settings → Networking → Generate Domain** → dostaniesz `*.railway.app`  
    Potem: **Settings → Networking → Custom Domain** → wpisz `api.botiko.pl`
 
@@ -42,7 +42,7 @@ railway up            # deploy
 
 ---
 
-### Zmienne środowiskowe — Railway
+### Zmienne środowiskowe. Railway
 
 Panel: **railway.app → projekt → Variables → Raw Editor** (wklej blok naraz)
 
@@ -56,11 +56,11 @@ WIDGET_URL=https://widget.botiko.pl
 PORT=3001
 ```
 
-> `NODE_ENV=production` jest krytyczne — bez tego CORS i DomainWhitelistGuard działają w trybie dev (rozluźnionym). API odmówi startu jeśli `NODE_ENV=production` i któryś URL wskazuje `localhost`.
+> `NODE_ENV=production` jest krytyczne, bez tego CORS i DomainWhitelistGuard działają w trybie dev (rozluźnionym). API odmówi startu jeśli `NODE_ENV=production` i któryś URL wskazuje `localhost`.
 
 ---
 
-#### Database — Supabase
+#### Database. Supabase
 
 Panel: **https://supabase.com/dashboard → projekt → Settings → Database**  
 Zakładka: **Connection string → URI**  
@@ -98,7 +98,7 @@ OPENAI_API_KEY=sk-proj-...
 
 ---
 
-#### Sekrety bezpieczeństwa — generuj lokalnie, NOWE dla produkcji
+#### Sekrety bezpieczeństwa, generuj lokalnie, NOWE dla produkcji
 
 ```bash
 # JWT_SECRET
@@ -113,7 +113,7 @@ JWT_SECRET=<wklej wynik pierwszego polecenia>
 ENCRYPTION_KEY=<wklej wynik drugiego polecenia>
 ```
 
-> `ENCRYPTION_KEY` jest niezmienny po deploymencie — zmiana = utrata możliwości odszyfrowania PII leadów. Zapisz go w bezpiecznym miejscu (np. 1Password).
+> `ENCRYPTION_KEY` jest niezmienny po deploymencie, zmiana = utrata możliwości odszyfrowania PII leadów. Zapisz go w bezpiecznym miejscu (np. 1Password).
 
 ---
 
@@ -126,7 +126,7 @@ RATE_LIMIT_MAX=100
 
 ---
 
-#### Email — Resend
+#### Email. Resend
 
 1. Załóż konto: **https://resend.com**
 2. **Domains → Add Domain** → wpisz `botiko.pl` → dodaj podane rekordy DNS u rejestratora (TXT + MX)
@@ -141,7 +141,7 @@ RESEND_FROM_EMAIL=powiadomienia@botiko.pl
 
 ---
 
-#### Stripe — klucze LIVE (nie test!)
+#### Stripe, klucze LIVE (nie test!)
 
 Panel: **https://dashboard.stripe.com/apikeys**  
 Przełącz na **Live mode** (toggle w lewym górnym rogu panelu Stripe).
@@ -156,7 +156,7 @@ STRIPE_PRICE_ID=price_...
 - Nazwa: `Botiko STARTER`, cena: `99 PLN / miesiąc`, rozliczenie: `recurring monthly`
 - Po zapisaniu skopiuj **Price ID** (`price_...`) z zakładki produktu
 
-Webhook — **po tym jak API jest już dostępne pod docelowym URL**:
+Webhook, **po tym jak API jest już dostępne pod docelowym URL**:
 1. **https://dashboard.stripe.com/webhooks → Add endpoint**
 2. URL: `https://api.botiko.pl/api/v1/billing/webhook`
 3. Events: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
@@ -192,7 +192,7 @@ DEV_ALLOW_LOCALHOST             ← SSRF guard (API odmówi startu jeśli ustawi
 
 ---
 
-## 2. Vercel — `apps/web`
+## 2. Vercel, `apps/web`
 
 ### Założenie projektu
 
@@ -214,7 +214,7 @@ vercel --prod   # deploy na produkcję
 
 ---
 
-### Zmienne środowiskowe — Vercel
+### Zmienne środowiskowe. Vercel
 
 Panel: **vercel.com → projekt → Settings → Environment Variables**  
 Scope: ustaw **Production** (nie Preview/Development).
@@ -243,7 +243,7 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=...
 
 ---
 
-## 3. Vercel — `apps/widget`
+## 3. Vercel, `apps/widget`
 
 ### Założenie projektu
 
@@ -252,7 +252,7 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=...
 3. Framework Preset: `Vite`
 4. Build Command: `pnpm build`
 5. Output Directory: `dist`
-6. Brak env vars — widget nie ma runtime config
+6. Brak env vars: widget nie ma runtime config
 7. Po deploymencie: **Settings → Domains** → dodaj `widget.botiko.pl`
 
 > Alternatywa: **Cloudflare Pages** (darmowy CDN, lepsza wydajność dla statycznych assetów)  
@@ -260,7 +260,7 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=...
 
 ---
 
-## 4. Supabase — konfiguracja po stronie projektu
+## 4. Supabase, konfiguracja po stronie projektu
 
 ### Auth redirect URLs
 
@@ -290,7 +290,7 @@ supabase db push --project-ref TWOJ_REF
 
 ---
 
-## 5. DNS — konfiguracja u rejestratora (np. home.pl, OVH, Cloudflare)
+## 5. DNS, konfiguracja u rejestratora (np. home.pl, OVH, Cloudflare)
 
 | Subdomena | Typ | Wartość |
 |---|---|---|
@@ -321,7 +321,7 @@ supabase db push --project-ref TWOJ_REF
 
 ---
 
-## 7. Pełna lista zmiennych — Railway (Raw Editor)
+## 7. Pełna lista zmiennych. Railway (Raw Editor)
 
 Gotowy blok do wklejenia (uzupełnij wartości):
 
@@ -348,7 +348,7 @@ STRIPE_PRICE_ID=
 CRON_SECRET=
 ```
 
-## 8. Pełna lista zmiennych — Vercel (Production)
+## 8. Pełna lista zmiennych. Vercel (Production)
 
 ```
 NEXT_PUBLIC_API_URL=https://api.botiko.pl

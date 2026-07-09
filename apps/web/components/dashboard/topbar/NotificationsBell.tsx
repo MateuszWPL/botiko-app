@@ -94,7 +94,7 @@ async function buildNotifications(): Promise<Notification[]> {
         id: 'trial:expired',
         kind: 'trial',
         title: 'Trial wygasł',
-        message: 'Bot jest nieaktywny — aktywuj plan, aby dalej obsługiwał klientów',
+        message: 'Bot jest nieaktywny, aktywuj plan, aby dalej obsługiwał klientów',
         href: '/dashboard/billing',
         ts: new Date(billing.trialEndsAt).getTime(),
         severity: 'danger',

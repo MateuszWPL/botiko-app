@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin screen — the plugin's storefront.
+ * Admin screen, the plugin's storefront.
  *
  * Registers a top-level "Botiko" menu (with the brand mark as its icon) and
  * renders a branded, card-based dashboard: connection, display rules, and a
@@ -152,8 +152,8 @@ class Botiko_Admin {
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( Botiko_Pairing::NONCE_ACTION ),
 				'i18n'    => array(
-					'connecting'   => __( 'Łączenie…', 'botiko-ai-customer-service-bot' ),
-					'checking'     => __( 'Sprawdzanie…', 'botiko-ai-customer-service-bot' ),
+					'connecting'   => __( 'Łączenie...', 'botiko-ai-customer-service-bot' ),
+					'checking'     => __( 'Sprawdzanie...', 'botiko-ai-customer-service-bot' ),
 					'genericError' => __( 'Coś poszło nie tak. Spróbuj ponownie.', 'botiko-ai-customer-service-bot' ),
 					'confirmReset' => __( 'Rozłączyć stronę z botem?', 'botiko-ai-customer-service-bot' ),
 				),
@@ -225,7 +225,7 @@ class Botiko_Admin {
 				/>
 				<div>
 					<p class="botiko-header__tagline">
-						<?php esc_html_e( 'Bot obsługi klienta 24/7 — odpowiada na pytania i zbiera kontakty, gdy Ciebie nie ma.', 'botiko-ai-customer-service-bot' ); ?>
+						<?php esc_html_e( 'Bot obsługi klienta 24/7, odpowiada na pytania i zbiera kontakty, gdy Ciebie nie ma.', 'botiko-ai-customer-service-bot' ); ?>
 					</p>
 				</div>
 			</div>
@@ -292,17 +292,17 @@ class Botiko_Admin {
 				<?php if ( ! $connected ) : ?>
 					<div class="botiko-callout">
 						<?php self::the_icon( 'alert' ); ?>
-						<span><?php esc_html_e( 'Bot ID wpisany ręcznie. Pamiętaj, aby dodać domenę tej strony w panelu Botiko → Ustawienia → Domeny — inaczej czat się pokaże, ale nie odpowie.', 'botiko-ai-customer-service-bot' ); ?></span>
+						<span><?php esc_html_e( 'Bot ID wpisany ręcznie. Pamiętaj, aby dodać domenę tej strony w panelu Botiko → Ustawienia → Domeny, inaczej czat się pokaże, ale nie odpowie.', 'botiko-ai-customer-service-bot' ); ?></span>
 					</div>
 				<?php endif; ?>
 			</div>
 
 			<div class="botiko-disconnected" <?php echo $has_bot ? 'style="display:none"' : ''; ?>>
 				<p class="botiko-lead">
-					<?php esc_html_e( 'Jeden kod połączy Twoją stronę z botem i autoryzuje tę domenę — bez edycji motywu. Wygeneruj go w panelu Botiko → Instalacja → WordPress.', 'botiko-ai-customer-service-bot' ); ?>
+					<?php esc_html_e( 'Jeden kod połączy Twoją stronę z botem i autoryzuje tę domenę, bez edycji motywu. Wygeneruj go w panelu Botiko → Instalacja → WordPress.', 'botiko-ai-customer-service-bot' ); ?>
 				</p>
 				<div class="botiko-connect-row">
-					<input type="text" id="botiko-code" class="regular-text" autocomplete="off" spellcheck="false" placeholder="botiko_pair_…" aria-label="<?php esc_attr_e( 'Kod połączenia', 'botiko-ai-customer-service-bot' ); ?>" />
+					<input type="text" id="botiko-code" class="regular-text" autocomplete="off" spellcheck="false" placeholder="botiko_pair_..." aria-label="<?php esc_attr_e( 'Kod połączenia', 'botiko-ai-customer-service-bot' ); ?>" />
 					<button type="button" class="button button-primary button-hero" id="botiko-connect">
 						<?php self::the_icon( 'plug' ); ?>
 						<?php esc_html_e( 'Połącz stronę', 'botiko-ai-customer-service-bot' ); ?>
@@ -317,7 +317,7 @@ class Botiko_Admin {
 				</p>
 
 				<details class="botiko-manual">
-					<summary><?php esc_html_e( 'Mam już Bot ID — wpiszę ręcznie', 'botiko-ai-customer-service-bot' ); ?></summary>
+					<summary><?php esc_html_e( 'Mam już Bot ID, wpiszę ręcznie', 'botiko-ai-customer-service-bot' ); ?></summary>
 					<p class="botiko-hint"><?php esc_html_e( 'Wklej Bot ID poniżej i zapisz. Domenę dodasz osobno w panelu Botiko.', 'botiko-ai-customer-service-bot' ); ?></p>
 					<p>
 						<input type="text" name="<?php echo esc_attr( Botiko_Settings::OPTION_KEY ); ?>[bot_id]" form="botiko-settings-form" class="regular-text" autocomplete="off" spellcheck="false" placeholder="<?php esc_attr_e( 'np. clx1a2b3c4d5e6f7g8h9i0', 'botiko-ai-customer-service-bot' ); ?>" />
@@ -468,7 +468,7 @@ class Botiko_Admin {
 			array(
 				'icon'  => 'lifebuoy',
 				'title' => __( 'Pomoc i kontakt', 'botiko-ai-customer-service-bot' ),
-				'sub'   => __( 'Napisz do nas — pomożemy', 'botiko-ai-customer-service-bot' ),
+				'sub'   => __( 'Napisz do nas, pomożemy', 'botiko-ai-customer-service-bot' ),
 				'url'   => 'mailto:kontakt@botiko.pl',
 			),
 		);

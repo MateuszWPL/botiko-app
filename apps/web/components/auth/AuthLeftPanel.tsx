@@ -2,8 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const BENEFITS = [
-  'Bot odpowiada za Ciebie 24/7 — nawet o 22:00',
-  'Zbiera leady automatycznie — imię + telefon',
+  'Bot odpowiada za Ciebie 24/7, nawet o 22:00',
+  'Zbiera leady automatycznie, imię + telefon',
   'Wdrożenie w 15 minut, zero programowania',
 ];
 
@@ -13,7 +13,7 @@ interface Props {
   badge?: string;
 }
 
-export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez karty' }: Props) {
+export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo, bez karty' }: Props) {
   return (
     <div
       className="relative flex flex-col gap-10 px-6 py-10 pb-28 lg:gap-0 lg:justify-between lg:px-12 lg:py-10 lg:pb-10 order-2 lg:order-1 overflow-hidden"
@@ -21,7 +21,7 @@ export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez 
         background: 'linear-gradient(160deg, #1e1b4b 0%, #312e81 50%, #4338CA 100%)',
       }}
     >
-      {/* Photo — full area, anchored right, gradient masks from left/top/bottom */}
+      {/* Photo, full area, anchored right, gradient masks from left/top/bottom */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -30,7 +30,7 @@ export function AuthLeftPanel({ headline, sub, badge = '14 dni za darmo — bez 
           backgroundPosition: 'right center',
         }}
       >
-        {/* Left-to-right fade — full width, opaque on left */}
+        {/* Left-to-right fade, full width, opaque on left */}
         <div
           className="absolute inset-0"
           style={{

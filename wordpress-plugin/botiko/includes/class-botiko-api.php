@@ -36,7 +36,7 @@ class Botiko_Api {
 	}
 
 	/**
-	 * The site's origin (scheme://host[:port]) — used as the Origin header so
+	 * The site's origin (scheme://host[:port]), used as the Origin header so
 	 * the API can report whether this domain is on the bot's allow-list.
 	 *
 	 * @return string

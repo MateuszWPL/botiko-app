@@ -40,7 +40,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Only categories with enough posts to be worth indexing. Tag pages and thin
-  // categories are intentionally excluded — they dilute crawl budget and are
+  // categories are intentionally excluded, they dilute crawl budget and are
   // marked `noindex` on the page itself.
   const categories = getIndexableCategories().map((cat) => ({
     url: `${baseUrl}/blog/kategoria/${cat.slug}`,
@@ -50,7 +50,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Programmatic branża × miasto landing pages (quality-gated in lib/local-seo).
-  // Only indexable cities (Białystok) are submitted — other cities are noindex
+  // Only indexable cities (Białystok) are submitted, other cities are noindex
   // to avoid near-duplicate/doorway pages where there is no real local presence.
   const localPages = getAllLocalParams()
     .filter(({ miasto }) => isIndexableLocalCity(miasto))

@@ -185,7 +185,7 @@ function FaqTab({
   return (
     <div className="space-y-4">
       <p className="text-sm text-slate-500">
-        Dodawaj często zadawane pytania — bot nauczy się odpowiadać dokładnie tak jak piszesz.
+        Dodawaj często zadawane pytania, bot nauczy się odpowiadać dokładnie tak jak piszesz.
       </p>
 
       <div>
@@ -204,7 +204,7 @@ function FaqTab({
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
           rows={4}
-          placeholder="Pracujemy od poniedziałku do piątku w godzinach 9:00–18:00, w soboty 10:00–15:00."
+          placeholder="Pracujemy od poniedziałku do piątku w godzinach 9:00-18:00, w soboty 10:00-15:00."
           className={`${inputClass} resize-none`}
         />
       </div>
@@ -261,14 +261,14 @@ function TextTab({
   return (
     <div className="space-y-4">
       <p className="text-sm text-slate-500">
-        Wpisz dowolną informację o firmie — usługi, cennik, opis, regulamin, aktualności.
+        Wpisz dowolną informację o firmie, usługi, cennik, opis, regulamin, aktualności.
       </p>
 
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
         rows={6}
-        placeholder="np. Usługa podstawowa — 80 zł, czas realizacji 45 min. Dostępna od poniedziałku do piątku 9:00–18:00."
+        placeholder="np. Usługa podstawowa, 80 zł, czas realizacji 45 min. Dostępna od poniedziałku do piątku 9:00-18:00."
         className={`${inputClass} resize-none`}
       />
       <div className="flex gap-3">
@@ -377,7 +377,7 @@ function PdfTab({
   return (
     <div className="space-y-4">
       <p className="text-sm text-slate-500">
-        Wgraj PDF z ofertą, cennikiem lub regulaminem — bot automatycznie go przeczyta.
+        Wgraj PDF z ofertą, cennikiem lub regulaminem, bot automatycznie go przeczyta.
         <span className="block mt-1 text-xs text-slate-400">Max 5 MB · Max 50 stron · Tylko tekst (nie skany)</span>
       </p>
 
@@ -455,7 +455,7 @@ function ChunkItem({
   const contentRef = useRef<HTMLDivElement>(null);
   const getToken = useGetToken();
 
-  // Measure after render — if content is taller than threshold, show "Rozwiń" button.
+  // Measure after render, if content is taller than threshold, show "Rozwiń" button.
   useEffect(() => {
     if (editing || !contentRef.current) return;
     const el = contentRef.current;
@@ -468,7 +468,7 @@ function ChunkItem({
     try {
       const token = await getToken();
       if (!token) {
-        toast.error('Sesja wygasła — odśwież stronę i zaloguj się ponownie');
+        toast.error('Sesja wygasła, odśwież stronę i zaloguj się ponownie');
         return;
       }
       const res = await fetch(`${API_URL}/api/v1/knowledge/${chunk.id}`, {
@@ -536,7 +536,7 @@ function ChunkItem({
             </span>
           </div>
 
-          {/* Content — parsed or raw */}
+          {/* Content, parsed or raw */}
           {editing ? (
             <textarea
               value={draft}
@@ -726,7 +726,7 @@ export function KnowledgeManager({
             <h3 className="text-sm font-bold text-slate-800">Dodaj wiedzę z tekstu</h3>
           </div>
           <p className="text-xs text-slate-500 mb-3">
-            Wklej cennik, ofertę lub pytania klientów — uporządkujemy tekst na gotowe wpisy, a Ty je zatwierdzisz.
+            Wklej cennik, ofertę lub pytania klientów, uporządkujemy tekst na gotowe wpisy, a Ty je zatwierdzisz.
           </p>
           <PasteAnythingPanel botId={botId} onComplete={() => router.refresh()} />
         </div>
@@ -839,7 +839,7 @@ export function KnowledgeManager({
             <EmptyStateClient
               icon={BookOpen}
               title="Baza wiedzy jest pusta"
-              description="Bot nie może odpowiadać na pytania bez wiedzy o Twojej firmie. Zacznij od zakładki Kontakt — dodaj telefon, adres i godziny otwarcia."
+              description="Bot nie może odpowiadać na pytania bez wiedzy o Twojej firmie. Zacznij od zakładki Kontakt, dodaj telefon, adres i godziny otwarcia."
             />
           ) : filteredChunks.length === 0 ? (
             <div className="bg-white/60 rounded-2xl border border-slate-200/60 border-dashed p-10 text-center">
@@ -984,7 +984,7 @@ function WebTab({
                 disabled={saving || !input.trim()}
                 className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white text-sm font-medium rounded-xl transition-colors cursor-pointer disabled:cursor-default"
               >
-                {saving ? 'Zapisuję…' : 'Zapisz'}
+                {saving ? 'Zapisuję...' : 'Zapisz'}
               </button>
               {editing && (
                 <button

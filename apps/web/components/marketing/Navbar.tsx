@@ -184,7 +184,7 @@ function BranzeDropdown({ scrolled }: { scrolled: boolean }) {
                 Bot zarabia na siebie już po jednej klientce
               </p>
               <p className="text-indigo-200 text-xs leading-relaxed">
-                1 wizyta = 150–300 zł.<br />Bot = 99 zł/mies.
+                1 wizyta = 150-300 zł.<br />Bot = 99 zł/mies.
               </p>
             </div>
 
@@ -193,7 +193,7 @@ function BranzeDropdown({ scrolled }: { scrolled: boolean }) {
               <p className="text-indigo-300 text-[11px] leading-relaxed italic">
                 &ldquo;W pierwszy weekend bot umówił 3 klientki, gdy spałam.&rdquo;
               </p>
-              <p className="text-indigo-400 text-[10px] mt-1.5 font-medium">— Monika, salon beauty</p>
+              <p className="text-indigo-400 text-[10px] mt-1.5 font-medium">Monika, salon beauty</p>
             </div>
 
             {/* CTA */}
@@ -458,7 +458,7 @@ export default function Navbar({ forceScrolled = false }: { forceScrolled?: bool
             onClick={() => setMenuOpen(false)}
             className="text-center py-3.5 rounded-xl bg-brand text-white font-bold shadow-md hover:bg-brand-dark transition-colors"
           >
-            Zacznij za darmo — 14 dni
+            Zacznij za darmo, 14 dni
           </Link>
         </div>
       </div>

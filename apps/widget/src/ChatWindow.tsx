@@ -24,7 +24,7 @@ interface LeadFormState {
   submitted: boolean;
   loading: boolean;
   error: string | null;
-  /** True once the bot auto-opened the form — prevents re-opening after the
+  /** True once the bot auto-opened the form, prevents re-opening after the
    * user manually dismisses it. The manual "📞" button ignores this flag. */
   autoOpened: boolean;
 }
@@ -51,7 +51,7 @@ const CHAT_TIMEOUT_MS = 30_000;
 
 // Render links inside assistant text. Handles Markdown links [text](url) AND
 // bare http(s) URLs (trailing punctuation trimmed). Map / booking links become
-// rich cards; everything else a styled chip. XSS-safe — JSX nodes only (never
+// rich cards; everything else a styled chip. XSS-safe. JSX nodes only (never
 // innerHTML) and only http(s) is matched, so javascript:/data: can't slip in.
 const LINK_RE =
   /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>()]+[^\s<>().,;!?])/g;
@@ -156,7 +156,7 @@ function linkify(text: string): (string | VNode)[] {
   if (last < text.length) out.push(text.slice(last));
   return out;
 }
-// Reveal-buffer pacing — uniform typewriter feel regardless of whether tokens
+// Reveal-buffer pacing, uniform typewriter feel regardless of whether tokens
 // arrive from OpenAI in small chunks or from a canned response as one blob.
 const REVEAL_TICK_MS = 28;
 const REVEAL_CHARS_PER_TICK = 2;
@@ -178,7 +178,7 @@ export function ChatWindow({
   suggestedQuestions,
   avatarEmoji,
 }: ChatWindowProps) {
-  // salonClosed: informational only — bot zawsze odpowiada 24/7
+  // salonClosed: informational only, bot zawsze odpowiada 24/7
   const salonClosed = isSalonClosed(businessHoursStart, businessHoursEnd, businessDays);
   const initial = loadSession(botId, welcomeMessage);
 
@@ -211,7 +211,7 @@ export function ChatWindow({
     done: boolean;
     timer: number | null;
   }>({ pending: '', done: false, timer: null });
-  // Reaktywne wykrywanie mobile — reaguje na obrót urządzenia
+  // Reaktywne wykrywanie mobile, reaguje na obrót urządzenia
   const [isMobile, setIsMobile] = useState(
     typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches,
   );
@@ -225,7 +225,7 @@ export function ChatWindow({
 
   // Mobile: dopasuj okno do visualViewport, żeby przy otwartej klawiaturze
   // belka nagłówka została na górze, a kurczył się tylko obszar wiadomości
-  // (input zostaje tuż nad klawiaturą) — zamiast przewijać całe okno w górę.
+  // (input zostaje tuż nad klawiaturą), zamiast przewijać całe okno w górę.
   const [viewport, setViewport] = useState<{ height: number; offsetTop: number } | null>(null);
   useEffect(() => {
     if (!isMobile || !isOpen || typeof window === 'undefined' || !window.visualViewport) {
@@ -257,7 +257,7 @@ export function ChatWindow({
   }, [botId, sessionId, messages, userMessageCount, lead.submitted]);
 
   // Auto-scroll to the latest message by scrolling ONLY the messages container.
-  // scrollIntoView() would scroll every scrollable ancestor incl. the document —
+  // scrollIntoView() would scroll every scrollable ancestor incl. the document,
   // on mobile with the keyboard open that made the whole screen jump on each
   // streamed token. Setting the container's scrollTop never touches the window.
   useEffect(() => {
@@ -265,7 +265,7 @@ export function ChatWindow({
     if (c) c.scrollTop = c.scrollHeight;
   }, [messages, isLoading]);
 
-  // Klawiatura zmienia rozmiar viewportu — utrzymaj ostatnią wiadomość w polu widzenia
+  // Klawiatura zmienia rozmiar viewportu, utrzymaj ostatnią wiadomość w polu widzenia
   useEffect(() => {
     const c = messagesContainerRef.current;
     if (viewport && c) c.scrollTop = c.scrollHeight;
@@ -330,7 +330,7 @@ export function ChatWindow({
 
     try {
       const controller = new AbortController();
-      // Timeout liczony do pierwszego tokenu — gdy stream już płynie, nie ucinamy go
+      // Timeout liczony do pierwszego tokenu, gdy stream już płynie, nie ucinamy go
       const timeoutId = setTimeout(() => controller.abort(), CHAT_TIMEOUT_MS);
       let res: Response;
       try {
@@ -424,7 +424,7 @@ export function ChatWindow({
         }]);
         setIsLoading(false);
       } else if (revealRef.current.pending.length === 0) {
-        // Buffer already empty when stream closed — stop the spinner now
+        // Buffer already empty when stream closed, stop the spinner now
         setIsLoading(false);
       }
       // else: reveal loop will clear isLoading when buffer drains
@@ -564,7 +564,7 @@ export function ChatWindow({
           </div>
         </div>
 
-        {/* Suggested questions toggle — mały przycisk obok X, widoczny po 1. wiadomości */}
+        {/* Suggested questions toggle, mały przycisk obok X, widoczny po 1. wiadomości */}
         {suggestedQuestions.length > 0 && userMessageCount > 0 && !isLoading && (
           <button
             onClick={() => {
@@ -709,7 +709,7 @@ export function ChatWindow({
           </div>
         ))}
 
-        {/* Typing indicator — only while waiting for first token; once streaming
+        {/* Typing indicator, only while waiting for first token; once streaming
             starts the growing message bubble is itself the "typing" cue */}
         {isLoading && messages[messages.length - 1]?.role === 'user' && (
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: '6px' }}>
@@ -742,7 +742,7 @@ export function ChatWindow({
           </div>
         )}
 
-        {/* Quick suggestions — wyrównane do prawej jak wiadomości użytkownika */}
+        {/* Quick suggestions, wyrównane do prawej jak wiadomości użytkownika */}
         {showSuggestions && !isLoading && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginTop: '4px', alignItems: 'flex-end' }}>
             {suggestedQuestions.map((s) => (
@@ -781,7 +781,7 @@ export function ChatWindow({
         <div ref={messagesEndRef} />
       </div>}
 
-      {/* ── Lead form (inline) — tylko gdy online ── */}
+      {/* ── Lead form (inline), tylko gdy online ── */}
       {online && lead.visible && !lead.submitted && (
         <div style={{
           padding: '12px',
@@ -816,7 +816,7 @@ export function ChatWindow({
           />
           {phoneTouched && lead.phone.trim() && !phoneValid && (
             <div style={{ marginTop: '4px', fontSize: '11px', color: '#dc2626' }}>
-              Podaj poprawny numer telefonu — co najmniej 9 cyfr.
+              Podaj poprawny numer telefonu, co najmniej 9 cyfr.
             </div>
           )}
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', marginTop: '8px', fontSize: '11px', color: '#64748b', cursor: 'pointer' }}>
@@ -858,7 +858,7 @@ export function ChatWindow({
         </div>
       )}
 
-      {/* ── Input area — tylko gdy online ── */}
+      {/* ── Input area, tylko gdy online ── */}
       {online && <div style={{
         padding: '10px 12px',
         borderTop: '1px solid #e2e8f0',

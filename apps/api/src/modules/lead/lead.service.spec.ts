@@ -62,7 +62,7 @@ const validDto = {
   consentGiven: true as const,
 };
 
-describe('LeadService.create — PII encryption', () => {
+describe('LeadService.create: PII encryption', () => {
   it('zapisuje name i phone w formacie iv:authTag:ciphertext (zaszyfrowane)', async () => {
     const prisma = buildPrismaMock();
     const { service } = await buildService(prisma);
@@ -133,7 +133,7 @@ describe('LeadService.create — PII encryption', () => {
   });
 });
 
-describe('LeadService.findAll — deszyfrowanie PII', () => {
+describe('LeadService.findAll: deszyfrowanie PII', () => {
   it('zwraca odszyfrowane name i phone', async () => {
     const encryption = new EncryptionService();
     const encryptedName = encryption.encrypt('Anna Nowak');

@@ -2,7 +2,7 @@ import { extractMainContent } from './content-extractor';
 
 const filler = 'x'.repeat(250); // keep text over the 200-char minimum
 
-describe('extractMainContent — phone/contact detection', () => {
+describe('extractMainContent: phone/contact detection', () => {
   it('bierze numer z linku tel: (nawet gdy jest w stopce)', () => {
     const html = `<html><body><main>${filler}</main><footer><a href="tel:+48695683971">Zadzwoń</a></footer></body></html>`;
     const page = extractMainContent(html, 'https://x.pl');
@@ -10,7 +10,7 @@ describe('extractMainContent — phone/contact detection', () => {
   });
 
   it('NIE traktuje liczby z atrybutu (timestamp/REGON) jako telefonu', () => {
-    // 259442090 lives only in a data-* attribute — the old code matched it via
+    // 259442090 lives only in a data-* attribute: the old code matched it via
     // $.html(); the fix runs the regex over visible text only.
     const html = `<html><body><main><div data-ts="1751259442090">${filler}</div></main></body></html>`;
     const page = extractMainContent(html, 'https://x.pl');

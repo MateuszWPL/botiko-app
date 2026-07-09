@@ -13,12 +13,12 @@ import {
 const URL = `${SITE_URL}/integracje/wordpress`;
 
 export const metadata: Metadata = {
-  title: 'Bot na WordPress — oficjalna wtyczka Botiko',
+  title: 'Bot na WordPress, oficjalna wtyczka Botiko',
   description:
-    'Zainstaluj bota obsługi klienta na WordPress oficjalną wtyczką Botiko z katalogu WordPress.org — bez edycji motywu i bez programisty. Łączysz stronę jednym kodem. WordPress to najpopularniejszy system stron firmowych w Polsce.',
+    'Zainstaluj bota obsługi klienta na WordPress oficjalną wtyczką Botiko z katalogu WordPress.org, bez edycji motywu i bez programisty. Łączysz stronę jednym kodem. WordPress to najpopularniejszy system stron firmowych w Polsce.',
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Bot na WordPress — oficjalna wtyczka Botiko',
+    title: 'Bot na WordPress, oficjalna wtyczka Botiko',
     description:
       'Dodaj bota do WordPress oficjalną wtyczką z katalogu WordPress.org. Instalacja i połączenie jednym kodem, bez programisty.',
     url: URL,
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Bot na WordPress — oficjalna wtyczka Botiko',
+    title: 'Bot na WordPress, oficjalna wtyczka Botiko',
     description:
       'Oficjalna wtyczka Botiko w katalogu WordPress.org. Zainstaluj i połącz stronę jednym kodem.',
   },
@@ -47,7 +47,7 @@ const STEPS = [
   },
   {
     name: 'Sprawdź bota na stronie',
-    text: 'Otwórz swoją stronę — w prawym dolnym rogu pojawi się okienko bota. Gotowe; cała instalacja zajmuje kilka minut.',
+    text: 'Otwórz swoją stronę, w prawym dolnym rogu pojawi się okienko bota. Gotowe; cała instalacja zajmuje kilka minut.',
   },
 ];
 
@@ -58,7 +58,7 @@ const FAQS = [
   },
   {
     q: 'Czy muszę edytować motyw WordPress, żeby dodać bota?',
-    a: 'Nie. Oficjalna wtyczka osadza bota bez dotykania plików motywu — łączysz stronę jednym kodem w ustawieniach wtyczki. Aktualizacja motywu nie usunie bota.',
+    a: 'Nie. Oficjalna wtyczka osadza bota bez dotykania plików motywu, łączysz stronę jednym kodem w ustawieniach wtyczki. Aktualizacja motywu nie usunie bota.',
   },
   {
     q: 'Czy Botiko działa na każdym motywie WordPress?',
@@ -66,10 +66,10 @@ const FAQS = [
   },
   {
     q: 'Czy bot spowolni moją stronę WordPress?',
-    a: 'Wpływ jest minimalny — skrypt widgetu ładuje się asynchronicznie, a sam widget jest lekki. Bot nie blokuje renderowania strony.',
+    a: 'Wpływ jest minimalny, skrypt widgetu ładuje się asynchronicznie, a sam widget jest lekki. Bot nie blokuje renderowania strony.',
   },
   {
-    q: 'Nie chcę instalować wtyczki — czy da się inaczej?',
+    q: 'Nie chcę instalować wtyczki, czy da się inaczej?',
     a: 'Tak. Ten sam kod bota możesz wkleić przez darmową wtyczkę do fragmentów kodu (np. WPCode) w sekcji Header, albo osadzić uniwersalny skrypt na dowolnej innej stronie WWW (HTML). Wtyczka Botiko jest jednak najprostszą i zalecaną drogą.',
   },
 ];
@@ -98,7 +98,7 @@ export default function WordPressIntegrationPage() {
           HOWTO_SCHEMA,
           softwareApplicationSchema(),
           faqPageSchema(FAQS),
-          // Bez pośredniego crumba „Integracje" — nie ma strony /integracje, więc
+          // Bez pośredniego crumba „Integracje", nie ma strony /integracje, więc
           // element byłby bez href, a wtedy Google odrzuca ListItem bez pola `item`
           // (błąd krytyczny w GSC dla itemListElement).
           breadcrumbListSchema([
@@ -130,12 +130,12 @@ export default function WordPressIntegrationPage() {
             Oficjalna wtyczka w katalogu WordPress.org
           </span>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-[1.1] tracking-tight mb-5">
-            Bot obsługi klienta na WordPress — oficjalna wtyczka
+            Bot obsługi klienta na WordPress, oficjalna wtyczka
           </h1>
           <p className="text-slate-300 text-lg leading-relaxed max-w-2xl">
             WordPress to najpopularniejszy system stron firmowych w Polsce, dlatego Botiko
             jest zoptymalizowane właśnie pod niego. Zainstaluj bota oficjalną wtyczką z
-            katalogu WordPress.org i połącz stronę jednym kodem — bez edycji motywu i bez
+            katalogu WordPress.org i połącz stronę jednym kodem, bez edycji motywu i bez
             programisty.
           </p>
           <a
@@ -156,7 +156,7 @@ export default function WordPressIntegrationPage() {
       <section className="py-16 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-text mb-8">
-            Jak zainstalować bota na WordPress — krok po kroku
+            Jak zainstalować bota na WordPress, krok po kroku
           </h2>
           <ol className="space-y-5">
             {STEPS.map((s, i) => (
@@ -175,7 +175,7 @@ export default function WordPressIntegrationPage() {
           <div className="mt-8 rounded-2xl bg-brand-soft border border-brand/20 p-5">
             <p className="text-sm text-slate-700 leading-relaxed">
               <strong>Wskazówka:</strong> łączysz stronę tylko raz. Bot pojawi się na całej
-              witrynie, a treści (cennik, FAQ, godziny) edytujesz później w panelu Botiko —
+              witrynie, a treści (cennik, FAQ, godziny) edytujesz później w panelu Botiko,
               bez ponownego dotykania WordPress.
             </p>
           </div>
@@ -197,7 +197,7 @@ export default function WordPressIntegrationPage() {
             <p>
               Nie chcesz instalować wtyczki? Ten sam kod bota wkleisz przez darmową wtyczkę
               do fragmentów kodu (np. WPCode) w sekcji Header. Skrypt Botiko działa też na
-              każdej innej stronie WWW (HTML) — dedykowane wsparcie kierujemy jednak przede
+              każdej innej stronie WWW (HTML), dedykowane wsparcie kierujemy jednak przede
               wszystkim do użytkowników WordPress.
             </p>
           </div>
@@ -220,7 +220,7 @@ export default function WordPressIntegrationPage() {
       <section className="py-16 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-text mb-6">
-            Najczęstsze pytania — Botiko na WordPress
+            Najczęstsze pytania. Botiko na WordPress
           </h2>
           <div className="flex flex-col gap-3">
             {FAQS.map((faq) => (

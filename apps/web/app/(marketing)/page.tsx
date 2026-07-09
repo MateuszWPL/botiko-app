@@ -10,8 +10,8 @@ import Faq from '@/components/marketing/Faq';
 import CtaBanner from '@/components/marketing/CtaBanner';
 
 export const metadata: Metadata = {
-  // `absolute` pomija szablon `%s | Botiko.pl` — brand prowadzi i nie dubluje się w <title>.
-  title: { absolute: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych' },
+  // `absolute` pomija szablon `%s | Botiko.pl`, brand prowadzi i nie dubluje się w <title>.
+  title: { absolute: 'Botiko.pl. Bot obsługi klienta 24/7 dla firm usługowych' },
   description:
     'Bot, który odpowiada na pytania klientów 24/7. Gotowe szablony branżowe, baza wiedzy i leady w panelu. Wklejasz kod na stronę i działa. 14 dni za darmo, bez umowy.',
   keywords: [
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     'Botiko',
   ],
   openGraph: {
-    title: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych',
+    title: 'Botiko.pl. Bot obsługi klienta 24/7 dla firm usługowych',
     description:
       'Klienci piszą o 22:00. Bot odpowiada za Ciebie. 99 zł/mies. 14 dni za darmo.',
     url: 'https://botiko.pl',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
         url: 'https://botiko.pl/opengraph-image.png',
         width: 1200,
         height: 630,
-        alt: 'Botiko.pl — Bot obsługi klienta 24/7',
+        alt: 'Botiko.pl. Bot obsługi klienta 24/7',
       },
     ],
     locale: 'pl_PL',
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Botiko.pl — Bot obsługi klienta 24/7 dla firm usługowych',
+    title: 'Botiko.pl. Bot obsługi klienta 24/7 dla firm usługowych',
     description:
       'Klienci piszą o 22:00. Bot odpowiada za Ciebie. 99 zł/mies. 14 dni za darmo.',
     images: ['https://botiko.pl/opengraph-image.png'],

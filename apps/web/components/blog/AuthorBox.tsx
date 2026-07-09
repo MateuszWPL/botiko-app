@@ -3,7 +3,7 @@ import { LinkedInIcon, GitHubIcon } from '@/components/icons/SocialIcons';
 import { AUTHOR } from '@/lib/author';
 
 /**
- * Box „o autorze" pod wpisem — realne autorstwo (imię, rola, doświadczenie,
+ * Box „o autorze" pod wpisem, realne autorstwo (imię, rola, doświadczenie,
  * profile). Kluczowy sygnał E-E-A-T: konkretna osoba stoi za treścią.
  */
 export default function AuthorBox() {
@@ -27,7 +27,7 @@ export default function AuthorBox() {
               href={AUTHOR.sameAs[0]}
               target="_blank"
               rel="noopener noreferrer me"
-              aria-label="LinkedIn — Mateusz Woronowicz"
+              aria-label="LinkedIn. Mateusz Woronowicz"
               className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-brand transition-colors"
             >
               <LinkedInIcon className="w-4 h-4" />
@@ -37,7 +37,7 @@ export default function AuthorBox() {
               href={AUTHOR.sameAs[1]}
               target="_blank"
               rel="noopener noreferrer me"
-              aria-label="GitHub — MateuszWPL"
+              aria-label="GitHub. MateuszWPL"
               className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-brand transition-colors"
             >
               <GitHubIcon className="w-4 h-4" />
@@ -47,7 +47,7 @@ export default function AuthorBox() {
               href={AUTHOR.sameAs[2]}
               target="_blank"
               rel="noopener noreferrer me"
-              aria-label="Strona prywatna — mateuszworonowicz.pl"
+              aria-label="Strona prywatna, mateuszworonowicz.pl"
               className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-brand transition-colors"
             >
               <Globe className="w-4 h-4" />

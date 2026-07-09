@@ -71,7 +71,7 @@ export default function Pagination({
       {range.map((item, i) =>
         item === '...' ? (
           <span key={`ellipsis-${i}`} className="w-9 h-9 flex items-center justify-center text-slate-400 text-sm">
-            …
+            ...
           </span>
         ) : (
           <Link

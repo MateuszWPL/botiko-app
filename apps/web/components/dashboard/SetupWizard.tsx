@@ -115,7 +115,7 @@ function buildKnowledgeChunks(data: WizardData): { content: string; category: st
     const parts = [item.name.trim()];
     if (item.price.trim()) parts.push(item.price.trim());
     if (item.note.trim()) parts.push(item.note.trim());
-    chunks.push({ content: parts.join(' — '), category: 'usługi' });
+    chunks.push({ content: parts.join(', '), category: 'usługi' });
   }
 
   // Dodatkowe informacje (podzielone po pustej linii)
@@ -187,7 +187,7 @@ function StepContact({ data, onChange }: { data: WizardData; onChange: (d: Parti
       </div>
 
       <p className="text-xs text-slate-400 pt-1">
-        Godziny otwarcia ustawisz w sekcji Ustawienia → dzień po dniu z godzinami od–do.
+        Godziny otwarcia ustawisz w sekcji Ustawienia → dzień po dniu z godzinami od-do.
       </p>
     </div>
   );
@@ -220,15 +220,15 @@ function StepServices({ data, onChange }: { data: WizardData; onChange: (d: Part
           rows={7}
           placeholder={
             'Najprościej: wklej tutaj cały cennik i opis ze swojej strony. Np.:\n\n' +
-            'Manicure hybrydowy — 90 zł, ok. 60 min\n' +
-            'Pedicure — 120 zł\n' +
+            'Manicure hybrydowy, 90 zł, ok. 60 min\n' +
+            'Pedicure, 120 zł\n' +
             'Przy pierwszej wizycie 10% rabatu. Rezerwacje przez Booksy lub telefon.'
           }
           className={`${inputClass} resize-none leading-relaxed`}
           autoFocus
         />
         <p className="text-xs text-slate-400 mt-1.5">
-          Nie musisz nic formatować — wklej tekst jak leci, a my rozbijemy go na osobne wpisy bota.
+          Nie musisz nic formatować, wklej tekst jak leci, a my rozbijemy go na osobne wpisy bota.
           Masz stronę WWW? Po utworzeniu bota pobierzemy z niej treść automatycznie.
         </p>
       </div>
@@ -392,7 +392,7 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
       const supabase = createClient();
       const { data: session } = await supabase.auth.getSession();
       const token = session.session?.access_token;
-      if (!token) throw new Error('Brak sesji — zaloguj się ponownie');
+      if (!token) throw new Error('Brak sesji, zaloguj się ponownie');
 
       const headers = {
         'Content-Type': 'application/json',
@@ -447,7 +447,7 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
     ? `<script src="${WIDGET_URL}/embed.js" data-bot-id="${botId}" async></script>`
     : '';
 
-  // Ready-to-send email for whoever manages the user's website — the #1 wall for
+  // Ready-to-send email for whoever manages the user's website, the #1 wall for
   // non-technical owners who don't touch their own site.
   const mailtoHref = embedCode
     ? `mailto:?subject=${encodeURIComponent(
@@ -567,7 +567,7 @@ function StepActivate({ data, onCreated }: { data: WizardData; onCreated: (botId
 
       <div>
         <p className="text-xs font-semibold text-slate-600 mb-2">
-          Kod instalacyjny — wklej przed <code className="bg-slate-100 px-1 rounded">&lt;/body&gt;</code>
+          Kod instalacyjny, wklej przed <code className="bg-slate-100 px-1 rounded">&lt;/body&gt;</code>
         </p>
         <div className="bg-slate-900 rounded-xl p-4 relative">
           <code className="text-emerald-400 text-xs break-all leading-relaxed pr-32 block">{embedCode}</code>
@@ -666,7 +666,7 @@ export function SetupWizard({ isOpen, onClose }: SetupWizardProps) {
   }, []);
 
   // Pull websiteUrl + tenant name from registration so user doesn't retype
-  // them. Only fills blank fields — keeps whatever the user has already edited.
+  // them. Only fills blank fields, keeps whatever the user has already edited.
   useEffect(() => {
     if (!isOpen) return;
     let cancelled = false;
@@ -700,7 +700,7 @@ export function SetupWizard({ isOpen, onClose }: SetupWizardProps) {
           return { ...prev, ...patch };
         });
       } catch {
-        // Non-fatal — wizard still works, user just types the domain manually
+        // Non-fatal, wizard still works, user just types the domain manually
       }
     })();
     return () => {
@@ -742,7 +742,7 @@ export function SetupWizard({ isOpen, onClose }: SetupWizardProps) {
           <div>
             <h2 className="font-bold text-slate-900 text-base">Konfiguracja bota</h2>
             <p className="text-xs text-slate-400 mt-0.5">
-              Krok {step + 1} z {STEPS.length} — {STEPS[step].description}
+              Krok {step + 1} z {STEPS.length}, {STEPS[step].description}
             </p>
           </div>
           {!botCreated && (
@@ -805,7 +805,7 @@ export function SetupWizard({ isOpen, onClose }: SetupWizardProps) {
               disabled={!canProceed}
               className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:opacity-90 disabled:opacity-50 text-white font-semibold rounded-xl text-sm transition-all hover:-translate-y-0.5 shadow-sm shadow-indigo-200 disabled:hover:translate-y-0 cursor-pointer disabled:cursor-not-allowed"
             >
-              {step === 2 ? 'Dalej — utwórz bota' : 'Dalej'}
+              {step === 2 ? 'Dalej, utwórz bota' : 'Dalej'}
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -840,7 +840,7 @@ export function SetupWizardProvider() {
 
     async function checkAndMaybeOpen() {
       if (isSetupDone()) return;
-      // Welcome modal hasn't been shown yet — it will trigger the wizard itself
+      // Welcome modal hasn't been shown yet, it will trigger the wizard itself
       if (!localStorage.getItem(WELCOME_STORAGE_KEY)) return;
 
       try {
@@ -861,7 +861,7 @@ export function SetupWizardProvider() {
           }
         }
       } catch {
-        // API unreachable — fall through to show wizard
+        // API unreachable, fall through to show wizard
       }
 
       if (!cancelled) {

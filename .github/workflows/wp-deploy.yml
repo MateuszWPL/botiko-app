@@ -5,7 +5,7 @@ name: Deploy plugin to WordPress.org
 #   SVN_USERNAME, SVN_PASSWORD  (your wordpress.org credentials)
 #
 # Release: bump Version + BOTIKO_VERSION in botiko.php and Stable tag in
-# readme.txt, then push a plain semver tag that MATCHES the version — the SVN
+# readme.txt, then push a plain semver tag that MATCHES the version, the SVN
 # tag created equals the git tag, and must equal `Stable tag`.
 #   git tag 1.0.3 && git push origin 1.0.3
 

@@ -1,4 +1,4 @@
-# Botiko — Widget (Preact + Vite)
+# Botiko. Widget (Preact + Vite)
 
 Embeddable chat widget for customer websites. Features:
 - 💬 Chat interface with AI responses
@@ -110,7 +110,7 @@ src/
 
 ## Stack
 
-- **Framework:** Preact (not React — 10KB smaller)
+- **Framework:** Preact (not React: 10KB smaller)
 - **Build Tool:** Vite
 - **Styling:** CSS-in-JS + Shadow DOM (isolated)
 - **TypeScript:** Strict mode
@@ -427,7 +427,7 @@ scp dist/embed.js user@cdn.example.com:/var/www/botiko/
 Cache-Control: public, max-age=3600
 ```
 
-(1 hour TTL — balance between fresh code and cache efficiency)
+(1 hour TTL, balance between fresh code and cache efficiency)
 
 ---
 

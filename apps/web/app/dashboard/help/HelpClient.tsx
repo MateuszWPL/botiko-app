@@ -19,7 +19,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 
 const SUPPORT_EMAIL = 'kontakt@botiko.pl';
-const SUPPORT_SUBJECT = 'Botiko — potrzebuję pomocy';
+const SUPPORT_SUBJECT = 'Botiko, potrzebuję pomocy';
 
 // ── FAQ content ──
 interface FaqItem {
@@ -34,19 +34,19 @@ const FAQ: FaqItem[] = [
   },
   {
     q: 'Czy bot działa po polsku?',
-    a: 'Tak — bot jest w pełni spolszczony. Wszystkie teksty, formularze i odpowiedzi są dostosowane do języka polskiego. Pracuje też dobrze na dialektach i skrótach.',
+    a: 'Tak, bot jest w pełni spolszczony. Wszystkie teksty, formularze i odpowiedzi są dostosowane do języka polskiego. Pracuje też dobrze na dialektach i skrótach.',
   },
   {
     q: 'Co jeśli przekroczę 1000 rozmów w miesiącu?',
-    a: 'W planie Starter masz 1000 rozmów miesięcznie. Po przekroczeniu limitu skontaktuj się z nami — zaproponujemy indywidualną wycenę, nie blokujemy bota z dnia na dzień.',
+    a: 'W planie Starter masz 1000 rozmów miesięcznie. Po przekroczeniu limitu skontaktuj się z nami, zaproponujemy indywidualną wycenę, nie blokujemy bota z dnia na dzień.',
   },
   {
     q: 'Czy mogę zintegrować z Booksy / Fresha / Calendly?',
-    a: 'Tak — dodaj link do rezerwacji w Bazie wiedzy albo w Ustawieniach bota. Gdy klient pyta o termin, bot poda link i przekieruje do Twojego narzędzia rezerwacji.',
+    a: 'Tak, dodaj link do rezerwacji w Bazie wiedzy albo w Ustawieniach bota. Gdy klient pyta o termin, bot poda link i przekieruje do Twojego narzędzia rezerwacji.',
   },
   {
     q: 'Jak eksportować leady do CSV?',
-    a: 'W zakładce Leady kliknij przycisk "Eksportuj" (po prawej stronie nad tabelą). CSV zawiera imię, telefon, wiadomość, status i datę kontaktu — gotowe do wklejenia w Excel lub CRM.',
+    a: 'W zakładce Leady kliknij przycisk "Eksportuj" (po prawej stronie nad tabelą). CSV zawiera imię, telefon, wiadomość, status i datę kontaktu, gotowe do wklejenia w Excel lub CRM.',
   },
   {
     q: 'Jak zablokować spam i niechciane wiadomości?',
@@ -58,7 +58,7 @@ const FAQ: FaqItem[] = [
   },
   {
     q: 'Kiedy zobaczę pierwsze leady?',
-    a: 'Zazwyczaj w ciągu 2-3 dni od instalacji widgetu, jeśli strona ma ruch. Bot zacznie od razu, ale leady pojawiają się wtedy gdy klienci zostawią kontakt — warto uzupełnić Bazę wiedzy aby bot lepiej odpowiadał.',
+    a: 'Zazwyczaj w ciągu 2-3 dni od instalacji widgetu, jeśli strona ma ruch. Bot zacznie od razu, ale leady pojawiają się wtedy gdy klienci zostawią kontakt, warto uzupełnić Bazę wiedzy aby bot lepiej odpowiadał.',
   },
 ];
 
@@ -82,7 +82,7 @@ const TIPS: Tip[] = [
   {
     icon: Code2,
     title: 'Zainstaluj widget na stronie',
-    body: 'Bez widgetu bot nie obsłuży klientów. Skopiuj kod i wklej go na stronę — zajmie 2 minuty.',
+    body: 'Bez widgetu bot nie obsłuży klientów. Skopiuj kod i wklej go na stronę, zajmie 2 minuty.',
     href: '/dashboard/embed',
     gradient: 'from-indigo-500 to-purple-600',
   },
@@ -96,7 +96,7 @@ const TIPS: Tip[] = [
   {
     icon: Shield,
     title: 'Ogranicz bota do swoich domen',
-    body: 'Zabezpieczenie — bot będzie działał tylko na wskazanych domenach, nikt nie ukradnie konfiguracji.',
+    body: 'Zabezpieczenie, bot będzie działał tylko na wskazanych domenach, nikt nie ukradnie konfiguracji.',
     href: '/dashboard/settings',
     gradient: 'from-slate-500 to-slate-700',
   },
@@ -181,7 +181,7 @@ export function HelpClient() {
             </h2>
             <p className="text-sm text-slate-600 max-w-lg">
               Odpowiadamy w ciągu 24 godzin w dni robocze. Im więcej kontekstu nam dasz, tym szybciej
-              rozwiążemy Twój problem — screenshoty bardzo pomagają.
+              rozwiążemy Twój problem, screenshoty bardzo pomagają.
             </p>
 
             <div className="flex flex-wrap items-center gap-2 mt-5">
@@ -292,7 +292,7 @@ export function HelpClient() {
           <div>
             <p className="text-sm font-semibold text-slate-900">Nie znalazłeś odpowiedzi?</p>
             <p className="text-xs text-slate-500 mt-0.5">
-              Napisz bezpośrednio — odpowiemy najszybciej jak się da.
+              Napisz bezpośrednio, odpowiemy najszybciej jak się da.
             </p>
           </div>
         </div>

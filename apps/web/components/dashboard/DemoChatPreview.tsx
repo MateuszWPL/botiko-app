@@ -31,7 +31,7 @@ interface DemoQuestion {
 
 /**
  * Builds demo Q&A purely from the data the user just typed in earlier steps.
- * This is an honest "test drive" — the bot answers with the client's own
+ * This is an honest "test drive", the bot answers with the client's own
  * content, no API call and no invented facts.
  */
 function buildQuestions(data: DemoData): DemoQuestion[] {
@@ -40,7 +40,7 @@ function buildQuestions(data: DemoData): DemoQuestion[] {
 
   if (namedServices.length > 0) {
     const list = namedServices
-      .map((s) => (s.price.trim() ? `${s.name.trim()} – ${s.price.trim()}` : s.name.trim()))
+      .map((s) => (s.price.trim() ? `${s.name.trim()}, ${s.price.trim()}` : s.name.trim()))
       .join(', ');
     questions.push({
       q: 'Jakie macie ceny?',
@@ -61,7 +61,7 @@ function buildQuestions(data: DemoData): DemoQuestion[] {
   if (contactLines.length > 0) {
     questions.push({
       q: 'Jak mogę się z wami skontaktować?',
-      a: `Najłatwiej tak — ${contactLines.join(', ')}. Czekamy na Ciebie!`,
+      a: `Najłatwiej tak, ${contactLines.join(', ')}. Czekamy na Ciebie!`,
     });
   }
 
@@ -128,7 +128,7 @@ export function DemoChatPreview({ data }: { data: DemoData }) {
     <div>
       <div className="flex items-center justify-between mb-2">
         <label className="text-xs font-semibold text-slate-600">Podgląd na żywo</label>
-        <span className="text-[11px] text-slate-400">Kliknij pytanie — bot odpowie Twoimi danymi</span>
+        <span className="text-[11px] text-slate-400">Kliknij pytanie, bot odpowie Twoimi danymi</span>
       </div>
 
       <div className="border border-slate-200 rounded-xl overflow-hidden">
@@ -185,7 +185,7 @@ export function DemoChatPreview({ data }: { data: DemoData }) {
             </p>
           ) : remaining.length === 0 ? (
             <p className="text-xs text-emerald-600 text-center font-medium">
-              To Twój bot w akcji — odpowiada na podstawie danych, które wpisałeś.
+              To Twój bot w akcji, odpowiada na podstawie danych, które wpisałeś.
             </p>
           ) : (
             <div className="flex flex-wrap gap-1.5">

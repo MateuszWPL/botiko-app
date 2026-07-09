@@ -67,7 +67,7 @@ export function ReviewBadge() {
       setSubmitted(true);
       setTimeout(() => setVisible(false), 2500);
     } catch {
-      // silently fail — don't block the user
+      // silently fail, don't block the user
     } finally {
       setSubmitting(false);
     }
@@ -128,7 +128,7 @@ export function ReviewBadge() {
                   <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Opcjonalny komentarz…"
+                    placeholder="Opcjonalny komentarz..."
                     maxLength={500}
                     rows={3}
                     className="mb-3 w-full resize-none rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
@@ -140,7 +140,7 @@ export function ReviewBadge() {
                   disabled={!rating || submitting}
                   className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {submitting ? 'Wysyłam…' : 'Wyślij opinię'}
+                  {submitting ? 'Wysyłam...' : 'Wyślij opinię'}
                 </button>
               </>
             )}

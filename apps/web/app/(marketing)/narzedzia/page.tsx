@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     'Bezpłatne kalkulatory dla właścicieli firm usługowych: sprawdź, ile klientów tracisz przez nieodebrane wiadomości i czy bot obsługi klienta zwróci się w Twojej firmie.',
   alternates: { canonical: 'https://botiko.pl/narzedzia' },
   openGraph: {
-    title: 'Darmowe narzędzia dla firm usługowych — Botiko',
+    title: 'Darmowe narzędzia dla firm usługowych. Botiko',
     description:
       'Kalkulator utraconych klientów i kalkulator ROI bota. Bez logowania, za darmo.',
     url: 'https://botiko.pl/narzedzia',
@@ -54,7 +54,7 @@ export default function NarzedziaPage() {
           </h1>
           <p className="text-indigo-200 text-lg leading-relaxed max-w-2xl">
             Krótkie kalkulatory, które pomogą Ci ocenić, ile kosztuje Cię brak szybkiej
-            obsługi klienta — i czy bot się opłaca. Bez logowania, za darmo.
+            obsługi klienta, i czy bot się opłaca. Bez logowania, za darmo.
           </p>
         </div>
       </section>

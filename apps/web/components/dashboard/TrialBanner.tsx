@@ -22,13 +22,13 @@ export async function TrialBanner() {
   }
 
   if (!status) return null;
-  // Active paid subscription — no banner
+  // Active paid subscription, no banner
   if (status.hasSubscription && status.isActive) return null;
   // Trial not tracked (edge case)
   if (!status.trialEndsAt && status.hasSubscription) return null;
 
   const daysLeft = status.trialEndsAt ? getDaysLeft(status.trialEndsAt) : 0;
-  // Derive expiry from the date, not from DB isActive — the daily cron may
+  // Derive expiry from the date, not from DB isActive, the daily cron may
   // not have fired yet, so isActive can still be true even after trial ended.
   const trialExpired =
     !status.hasSubscription &&
@@ -41,14 +41,14 @@ export async function TrialBanner() {
   // daysLeft can still be 0 from Math.max but trialExpired covers the real check
   if (!isExpired && daysLeft === 0) return null;
 
-  // Expired — critical red banner
+  // Expired, critical red banner
   if (isExpired) {
     return (
       <div className="bg-red-600 text-white px-4 py-2.5 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-2.5 min-w-0">
           <XCircle className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm font-medium">
-            Trial wygasł — bot nie odpowiada na wiadomości klientów.
+            Trial wygasł, bot nie odpowiada na wiadomości klientów.
           </span>
         </div>
         <Link
@@ -62,7 +62,7 @@ export async function TrialBanner() {
     );
   }
 
-  // Last day — orange urgent
+  // Last day, orange urgent
   if (daysLeft <= 1) {
     return (
       <div className="bg-orange-500 text-white px-4 py-2.5 flex items-center justify-between gap-4 flex-wrap">
@@ -84,7 +84,7 @@ export async function TrialBanner() {
     );
   }
 
-  // 2–5 days — amber warning
+  // 2-5 days, amber warning
   return (
     <div className="bg-amber-500 text-white px-4 py-2.5 flex items-center justify-between gap-4 flex-wrap">
       <div className="flex items-center gap-2.5 min-w-0">

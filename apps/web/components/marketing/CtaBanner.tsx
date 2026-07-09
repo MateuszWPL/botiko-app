@@ -27,7 +27,7 @@ export default function CtaBanner() {
                 Zacznij dzisiaj
               </p>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-5">
-                Zacznij odpowiadać klientom —
+                Zacznij odpowiadać klientom,
                 <br />
                 <span style={{ color: '#a5b4fc' }}>nawet kiedy śpisz.</span>
               </h2>
@@ -51,7 +51,7 @@ export default function CtaBanner() {
                   className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-base text-white transition-all hover:bg-white/10"
                   style={{ border: '1.5px solid rgba(255,255,255,0.3)' }}
                 >
-                  Mam pytanie — napisz do nas
+                  Mam pytanie, napisz do nas
                 </a>
               </div>
 

@@ -41,7 +41,7 @@ export class NotificationService {
     this.resend = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null;
 
     if (!this.resend) {
-      this.logger.warn('RESEND_API_KEY not set — email notifications disabled');
+      this.logger.warn('RESEND_API_KEY not set: email notifications disabled');
     }
   }
 
@@ -68,7 +68,7 @@ export class NotificationService {
         `Lead email sent to ${data.toEmail} for lead ${data.leadId}`,
       );
     } catch (err: unknown) {
-      // Non-critical — lead is already saved, just log the failure
+      // Non-critical: lead is already saved, just log the failure
       this.logger.error(`Failed to send lead email for ${data.leadId}`, err);
     }
   }
@@ -81,7 +81,7 @@ export class NotificationService {
 
     const isExpired = data.daysLeft === 0;
     const subject = isExpired
-      ? 'Twój trial Botiko.pl wygasł — aktywuj plan'
+      ? 'Twój trial Botiko.pl wygasł. Aktywuj plan'
       : `Zostało Ci ${data.daysLeft} ${data.daysLeft === 1 ? 'dzień' : 'dni'} trialu Botiko.pl`;
 
     const headerBg = isExpired
@@ -90,7 +90,7 @@ export class NotificationService {
         ? '#d97706'
         : '#6366F1';
     const ctaText = isExpired
-      ? 'Aktywuj plan — 99 zł/mies.'
+      ? 'Aktywuj plan za 99 zł/mies.'
       : 'Aktywuj subskrypcję →';
     const bodyText = isExpired
       ? `Cześć ${safeName},<br><br>Twój okres próbny Botiko.pl właśnie wygasł.<br><strong>Bot przestał odpowiadać na wiadomości klientów.</strong><br><br>Aktywuj plan Starter za 99 zł/mies. aby przywrócić działanie bota.`
@@ -120,7 +120,7 @@ export class NotificationService {
               </a>
             </div>
             <p style="margin:0;font-size:13px;color:#94a3b8;text-align:center;border-top:1px solid #f1f5f9;padding-top:20px;">
-              Botiko.pl — bot który odpowiada za Ciebie
+              Botiko.pl: bot który odpowiada za Ciebie
             </p>
           </td>
         </tr>
@@ -205,7 +205,7 @@ export class NotificationService {
     await this.resend.emails.send({
       from: `Botiko.pl <${env.RESEND_FROM_EMAIL}>`,
       to: 'kontakt@botiko.pl',
-      subject: `Nowa opinia ${data.rating}/5 — ${data.userName}`,
+      subject: `Nowa opinia ${data.rating}/5 od ${data.userName}`,
       html,
     });
   }
@@ -289,7 +289,7 @@ export class NotificationService {
         from: `Botiko.pl <${env.RESEND_FROM_EMAIL}>`,
         to: 'kontakt@botiko.pl',
         replyTo: data.email,
-        subject: `Botiko — kontakt: ${data.topic}`,
+        subject: `Kontakt Botiko: ${data.topic}`,
         html,
       });
     } catch (err: unknown) {
@@ -307,7 +307,7 @@ interface EmailVars {
 }
 
 function buildLeadEmailHtml(vars: EmailVars): string {
-  // Phone displayed as plain text — avoid XSS in email clients
+  // Phone displayed as plain text: avoid XSS in email clients
   const safeName = escapeHtml(vars.name);
   const safePhone = escapeHtml(vars.phone);
   const safeBotName = escapeHtml(vars.botName);
@@ -364,7 +364,7 @@ function buildLeadEmailHtml(vars: EmailVars): string {
             </div>
 
             <p style="margin:0;font-size:13px;color:#94a3b8;text-align:center;border-top:1px solid #f1f5f9;padding-top:20px;">
-              Botiko.pl — bot który odpowiada za Ciebie
+              Botiko.pl: bot który odpowiada za Ciebie
             </p>
           </td>
         </tr>

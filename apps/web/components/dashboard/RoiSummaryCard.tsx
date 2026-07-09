@@ -43,10 +43,10 @@ export function RoiSummaryCard({ leadsThisMonth, afterHoursConvs }: Props) {
           {hasValue ? (
             <>
               <p className="text-2xl font-bold">
-                {fmt(valueMin)}–{fmt(valueMax)} zł
+                {fmt(valueMin)}-{fmt(valueMax)} zł
               </p>
               <p className="text-xs text-indigo-200 mt-1">
-                {leadsThisMonth} {leadsThisMonth === 1 ? 'lead' : 'leadów'} × 150–300 zł na
+                {leadsThisMonth} {leadsThisMonth === 1 ? 'lead' : 'leadów'} × 150-300 zł na
                 kliencie
               </p>
             </>
@@ -69,15 +69,15 @@ export function RoiSummaryCard({ leadsThisMonth, afterHoursConvs }: Props) {
           <p className="text-2xl font-bold">{afterHoursConvs}</p>
           <p className="text-xs text-indigo-200 mt-1">
             {afterHoursConvs > 0
-              ? 'rozmów wieczorami i w weekendy — gdy normalnie nikt by nie odebrał'
-              : 'na razie brak — bot czeka na klientów wieczorami i w weekendy'}
+              ? 'rozmów wieczorami i w weekendy, gdy normalnie nikt by nie odebrał'
+              : 'na razie brak, bot czeka na klientów wieczorami i w weekendy'}
           </p>
         </div>
       </div>
 
       {hasValue && (
         <p className="text-xs text-indigo-200 mt-4">
-          Bot kosztuje {PLAN_COST} zł/mies. — wystarczy{' '}
+          Bot kosztuje {PLAN_COST} zł/mies., wystarczy{' '}
           <span className="font-semibold text-white">jeden klient</span>, żeby się zwrócił.
         </p>
       )}

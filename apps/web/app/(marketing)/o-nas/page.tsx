@@ -15,16 +15,16 @@ const JSON_LD_ABOUT = {
   mainEntity: { '@id': `${SITE_URL}/#organization` },
   about: { '@id': `${SITE_URL}/#person` },
   description:
-    'Botiko to jednoosobowy projekt z Białegostoku — bot obsługi klienta 24/7 dla polskich firm usługowych.',
+    'Botiko to jednoosobowy projekt z Białegostoku, bot obsługi klienta 24/7 dla polskich firm usługowych.',
 };
 
 export const metadata: Metadata = {
-  title: 'O nas — jednoosobowy projekt z Białegostoku',
+  title: 'O nas, jednoosobowy projekt z Białegostoku',
   description:
-    'Botiko to jednoosobowy projekt z Białegostoku. Bot obsługi klienta 24/7 dla firm usługowych w Polsce — robiony z myślą o realnych właścicielach salonów, gabinetów i restauracji.',
+    'Botiko to jednoosobowy projekt z Białegostoku. Bot obsługi klienta 24/7 dla firm usługowych w Polsce, robiony z myślą o realnych właścicielach salonów, gabinetów i restauracji.',
   alternates: { canonical: 'https://botiko.pl/o-nas' },
   openGraph: {
-    title: 'O Botiko — jednoosobowy projekt z Białegostoku',
+    title: 'O Botiko, jednoosobowy projekt z Białegostoku',
     description:
       'Botiko to bot obsługi klienta 24/7 dla firm usługowych. Poznaj podejście do produktu i filozofię pracy.',
     url: 'https://botiko.pl/o-nas',
@@ -41,7 +41,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Konkretnie, nie „magicznie"',
-    desc: 'Bot odpowiada na podstawie Twojej wiedzy (cennik, FAQ, godziny) — nie zgaduje. Jeśli czegoś nie wie, zbiera kontakt i przekazuje Tobie.',
+    desc: 'Bot odpowiada na podstawie Twojej wiedzy (cennik, FAQ, godziny), nie zgaduje. Jeśli czegoś nie wie, zbiera kontakt i przekazuje Tobie.',
   },
   {
     icon: (
@@ -59,7 +59,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Bezpiecznie i po polsku',
-    desc: 'Dane leadów szyfrowane (AES-256), serwery w UE, zgodność z RODO. Komunikacja po polsku — z wyczuciem kontekstu firm usługowych.',
+    desc: 'Dane leadów szyfrowane (AES-256), serwery w UE, zgodność z RODO. Komunikacja po polsku, z wyczuciem kontekstu firm usługowych.',
   },
   {
     icon: (
@@ -78,7 +78,7 @@ export default function AboutPage() {
     <main className="min-h-screen bg-bg">
       <JsonLd
         data={[
-          // personSchema() is emitted globally in the root layout — not repeated here.
+          // personSchema() is emitted globally in the root layout, not repeated here.
           JSON_LD_ABOUT,
           breadcrumbListSchema([
             { label: 'Botiko.pl', href: '/' },
@@ -141,12 +141,12 @@ export default function AboutPage() {
           </h2>
           <div className="space-y-5 text-slate-600 text-base leading-relaxed">
             <p>
-              Pomysł narodził się z obserwacji znajomych prowadzących firmy usługowe w Białymstoku —
+              Pomysł narodził się z obserwacji znajomych prowadzących firmy usługowe w Białymstoku:
               salon beauty, warsztat, gabinet. Te same problemy wracały co tydzień:
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>„Klientka napisała o 22:30 i zapisała się do konkurencji, bo ja już spałam.”</li>
-              <li>„Odbieram telefony podczas zabiegu — tracę na tym koncentrację i czas.”</li>
+              <li>„Odbieram telefony podczas zabiegu, tracę na tym koncentrację i czas.”</li>
               <li>„Te same pytania: cennik, godziny, parking. Codziennie 20×.”</li>
             </ul>
             <p>
@@ -155,7 +155,7 @@ export default function AboutPage() {
               pomiędzy: <strong className="text-text">konkretny, tani, uruchamiany w 15 minut</strong>.
             </p>
             <p>
-              To nie jest startup z 50-osobowym zespołem. To projekt, który robię sam — i dlatego mogę sobie pozwolić
+              To nie jest startup z 50-osobowym zespołem. To projekt, który robię sam, i dlatego mogę sobie pozwolić
               na odpowiadanie na Twoje pytania osobiście, bez „skieruj zapytanie do Customer Success Managera”.
             </p>
           </div>
@@ -180,11 +180,11 @@ export default function AboutPage() {
                 <p className="text-brand font-semibold mb-4">{AUTHOR.role}</p>
                 <p className="text-slate-600 leading-relaxed mb-4">
                   23 lata, inżynier oprogramowania i student Politechniki
-                  Białostockiej. Od 3 lat w software developmencie — z 40+
+                  Białostockiej. Od 3 lat w software developmencie, z 40+
                   zbudowanymi stronami i aplikacjami na koncie. Botiko piszę i
                   rozwijam samodzielnie: od kodu i modeli AI, po rozmowy
                   z właścicielami salonów, gabinetów, restauracji i warsztatów.
-                  Dlatego produkt jest konkretny, a nie „magiczny” — i dlatego
+                  Dlatego produkt jest konkretny, a nie „magiczny”, i dlatego
                   na Twoje pytanie odpowiadam osobiście, nie przez infolinię.
                 </p>
                 <div className="flex flex-wrap items-center gap-4">
@@ -252,7 +252,7 @@ export default function AboutPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-text mb-4">Masz pytanie? Napisz bezpośrednio</h2>
           <p className="text-slate-500 mb-8 leading-relaxed">
-            Nie ma bota na tej stronie do filtrowania zapytań. Piszesz — ja odpowiadam. Zwykle w ciągu 1 dnia roboczego.
+            Nie ma bota na tej stronie do filtrowania zapytań. Piszesz, ja odpowiadam. Zwykle w ciągu 1 dnia roboczego.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <a

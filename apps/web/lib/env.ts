@@ -1,6 +1,6 @@
 /**
  * Client-side env validation for apps/web.
- * Only NEXT_PUBLIC_* variables — these are safe to expose in the browser.
+ * Only NEXT_PUBLIC_* variables, these are safe to expose in the browser.
  * Must use literal property access (not bracket notation) so Next.js can
  * statically inline the values at build time.
  */

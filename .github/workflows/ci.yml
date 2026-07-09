@@ -73,7 +73,7 @@ jobs:
         run: npx tsc --noEmit
 
   e2e:
-    name: E2E — landing pages (Playwright)
+    name: E2E, landing pages (Playwright)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -102,7 +102,7 @@ jobs:
         run: pnpm e2e --project=chromium
         env:
           CI: true
-          # Placeholder env vars — marketing/landing pages don't call Supabase at runtime.
+          # Placeholder env vars, marketing/landing pages don't call Supabase at runtime.
           # Auth-guard tests only check redirect behaviour (no session → /login).
           NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key

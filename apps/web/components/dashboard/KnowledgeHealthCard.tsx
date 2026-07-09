@@ -94,7 +94,7 @@ export function KnowledgeHealthCard({ health }: Props) {
             </p>
             <p className="text-xs text-amber-700 mt-0.5">
               {tier === 'empty'
-                ? 'Bot nie ma z czego odpowiadać — dodaj usługi, ceny i godziny pracy.'
+                ? 'Bot nie ma z czego odpowiadać, dodaj usługi, ceny i godziny pracy.'
                 : 'Bot za często nie zna odpowiedzi i odsyła klientów do Ciebie. Uzupełnij wiedzę, żeby obsługiwał więcej pytań sam.'}
             </p>
           </div>
@@ -103,7 +103,7 @@ export function KnowledgeHealthCard({ health }: Props) {
       ) : (
         <div className="mt-3 flex items-center gap-2 text-xs text-emerald-600">
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-          <span>Baza wiedzy działa dobrze — bot radzi sobie z większością pytań.</span>
+          <span>Baza wiedzy działa dobrze, bot radzi sobie z większością pytań.</span>
         </div>
       )}
     </div>

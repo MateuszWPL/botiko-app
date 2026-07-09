@@ -30,7 +30,7 @@ function makeContext(authHeader: string | undefined): ExecutionContext {
   } as unknown as ExecutionContext;
 }
 
-describe('AuthGuard — P0: token validation', () => {
+describe('AuthGuard: P0: token validation', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -49,7 +49,7 @@ describe('AuthGuard — P0: token validation', () => {
     ).rejects.toThrow(UnauthorizedException);
   });
 
-  it('P0: anon-key nie bypassuje AuthGuard — Supabase odrzuca klucz niebędący JWT', async () => {
+  it('P0: anon-key nie bypassuje AuthGuard, Supabase odrzuca klucz niebędący JWT', async () => {
     // Anon key is an API key, not a user JWT. Supabase getUser returns error for it.
     mockGetUser.mockResolvedValue({
       data: { user: null },
@@ -101,7 +101,7 @@ describe('AuthGuard — P0: token validation', () => {
     ).resolves.toBe(true);
   });
 
-  it('używa cache — drugi identyczny token nie wywołuje Supabase API', async () => {
+  it('używa cache: drugi identyczny token nie wywołuje Supabase API', async () => {
     mockGetUser.mockResolvedValue({
       data: {
         user: {

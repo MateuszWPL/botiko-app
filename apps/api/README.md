@@ -1,4 +1,4 @@
-# Botiko — API (NestJS + Prisma)
+# Botiko. API (NestJS + Prisma)
 
 Backend REST API dla platformy Botiko. Obsługuje:
 - RAG pipeline (embeddings + OpenAI)
@@ -124,13 +124,13 @@ pnpm prisma studio
 
 ### Key Tables
 
-- `Tenant` — SaaS account
-- `User` — Team member
-- `Bot` — AI bot instance
-- `KnowledgeChunk` — Vector embeddings (pgvector)
-- `Lead` — Captured leads (PII encrypted)
-- `Conversation` → `Message` — Chat history
-- `BillingEvent` — Audit trail
+- `Tenant`: SaaS account
+- `User`: Team member
+- `Bot`: AI bot instance
+- `KnowledgeChunk`: Vector embeddings (pgvector)
+- `Lead`: Captured leads (PII encrypted)
+- `Conversation` → `Message`: Chat history
+- `BillingEvent`: Audit trail
 
 See `/docs/CODEMAPS/database.md` for full schema.
 
@@ -270,7 +270,7 @@ pnpm start                  # Runs compiled dist/
 
 ### HMR (Development)
 
-Hot Module Reloading enabled in `pnpm start:dev` — changes auto-reload.
+Hot Module Reloading enabled in `pnpm start:dev`, changes auto-reload.
 
 ### Debug Mode
 

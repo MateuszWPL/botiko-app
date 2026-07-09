@@ -12,7 +12,7 @@ export default function Breadcrumbs({
   items: BreadcrumbItem[];
   variant?: 'light' | 'dark';
 }) {
-  // Pure UI — the BreadcrumbList JSON-LD is emitted by the page itself (via
+  // Pure UI, the BreadcrumbList JSON-LD is emitted by the page itself (via
   // `breadcrumbListSchema()` in a <JsonLd> block) so we don't double-declare it.
   return (
     <nav aria-label="Breadcrumb">

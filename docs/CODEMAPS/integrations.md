@@ -8,11 +8,11 @@
 
 Botiko integrates with 5 external services:
 
-1. **OpenAI** — Chat completion, embeddings
-2. **Supabase** — Database, Auth, RLS policies
-3. **Stripe** — Billing, subscriptions, checkout
-4. **Resend** — Email notifications (trial warnings)
-5. **CDN/Hosting** — Deployment (Vercel, Railway)
+1. **OpenAI**: Chat completion, embeddings
+2. **Supabase**: Database, Auth, RLS policies
+3. **Stripe**: Billing, subscriptions, checkout
+4. **Resend**: Email notifications (trial warnings)
+5. **CDN/Hosting**: Deployment (Vercel, Railway)
 
 ---
 
@@ -220,11 +220,11 @@ CREATE POLICY "Users can insert bots for own tenant"
   WITH CHECK (tenant_id = auth.jwt() -> 'user_metadata' ->> 'tenant_id');
 ```
 
-Policies are enforced at the database level — even if NestJS forgets to filter, DB still blocks.
+Policies are enforced at the database level, even if NestJS forgets to filter, DB still blocks.
 
 ### Webhook: Stripe Events
 
-Supabase can trigger webhooks on table changes (database webhooks). For MVP, we don't use this — instead, Stripe sends webhooks directly to NestJS.
+Supabase can trigger webhooks on table changes (database webhooks). For MVP, we don't use this, instead, Stripe sends webhooks directly to NestJS.
 
 ---
 
@@ -433,9 +433,9 @@ await resend.emails.send({
 
 ### Email Addresses
 
-- `noreply@botiko.pl` — Automated alerts (trial, billing)
-- `support@botiko.pl` — Manual support
-- `hello@botiko.pl` — Contact form submissions
+- `noreply@botiko.pl`: Automated alerts (trial, billing)
+- `support@botiko.pl`: Manual support
+- `hello@botiko.pl`: Contact form submissions
 
 ---
 

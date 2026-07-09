@@ -59,7 +59,7 @@ class Botiko_Notices {
 		$url = Botiko_Admin::page_url();
 		printf(
 			'<div class="notice notice-info is-dismissible"><p>%1$s <a href="%2$s">%3$s</a></p></div>',
-			esc_html__( 'Botiko jest prawie gotowe — połącz swoją stronę z botem, aby zaczął odpowiadać klientom.', 'botiko-ai-customer-service-bot' ),
+			esc_html__( 'Botiko jest prawie gotowe, połącz swoją stronę z botem, aby zaczął odpowiadać klientom.', 'botiko-ai-customer-service-bot' ),
 			esc_url( $url ),
 			esc_html__( 'Dokończ konfigurację →', 'botiko-ai-customer-service-bot' )
 		);

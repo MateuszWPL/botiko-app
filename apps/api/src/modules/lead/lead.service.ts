@@ -66,7 +66,7 @@ export class LeadService {
 
     const id = randomUUID();
 
-    // PII encrypted at rest — RODO compliance (name, phone, message)
+    // PII encrypted at rest: RODO compliance (name, phone, message)
     await this.prisma.lead.create({
       data: {
         id,
@@ -82,7 +82,7 @@ export class LeadService {
 
     this.logger.log(`New lead: ${id} for bot: ${dto.botId}`);
 
-    // Non-blocking email notification — failure must not affect lead save response
+    // Non-blocking email notification: failure must not affect lead save response
     const ownerEmail = bot.tenant.users[0]?.email;
     if (ownerEmail) {
       this.notification

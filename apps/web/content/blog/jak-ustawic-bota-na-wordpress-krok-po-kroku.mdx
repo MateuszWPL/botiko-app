@@ -9,19 +9,19 @@ tags: ["WordPress", "poradnik", "wdrożenie", "bot wordpress"]
 author: "Mateusz Woronowicz"
 authorTitle: "Twórca Botiko"
 image: "/blog/default-hero.jpg"
-imageAlt: "Pulpit WordPress — jak ustawić bota krok po kroku"
+imageAlt: "Pulpit WordPress, jak ustawić bota krok po kroku"
 ---
 
-**Najprościej dodasz bota do WordPress oficjalną wtyczką Botiko z katalogu WordPress.org: instalujesz ją z panelu WordPress, aktywujesz i łączysz stronę jednym kodem — kilka minut, bez edycji motywu i bez programisty.** Poniżej trzy sposoby, od najprostszego do najbardziej technicznego.
+**Najprościej dodasz bota do WordPress oficjalną wtyczką Botiko z katalogu WordPress.org: instalujesz ją z panelu WordPress, aktywujesz i łączysz stronę jednym kodem, kilka minut, bez edycji motywu i bez programisty.** Poniżej trzy sposoby, od najprostszego do najbardziej technicznego.
 
 ## Sposób 1: oficjalna wtyczka Botiko z katalogu WordPress.org (zalecany)
 
-To metoda, którą polecamy każdemu — instalujesz ją prosto z panelu WordPress, a WordPress sam pilnuje aktualizacji.
+To metoda, którą polecamy każdemu, instalujesz ją prosto z panelu WordPress, a WordPress sam pilnuje aktualizacji.
 
 1. W WordPress wejdź w **Wtyczki → Dodaj nową**, wyszukaj **„Botiko"**, zainstaluj i aktywuj.
 2. W [panelu Botiko](https://botiko.pl/dashboard/embed) otwórz zakładkę **Instalacja** i kliknij **Generuj kod połączenia**.
 3. W WordPress otwórz **Ustawienia → Botiko**, wklej kod i zapisz. Wtyczka pobierze bota i autoryzuje domenę tej strony.
-4. Otwórz swoją stronę — w prawym dolnym rogu pojawi się okienko bota.
+4. Otwórz swoją stronę: w prawym dolnym rogu pojawi się okienko bota.
 
 Pełną wersję tej instrukcji znajdziesz na stronie [bot na WordPress](/integracje/wordpress).
 
@@ -32,30 +32,30 @@ Nie chcesz instalować wtyczki Botiko? Ten sam kod wkleisz przez darmową wtyczk
 1. W panelu Botiko skopiuj swój fragment kodu (jedna linijka `<script>` z identyfikatorem bota).
 2. W WordPress wejdź w **Wtyczki → Dodaj nową**, wyszukaj „WPCode", zainstaluj i aktywuj.
 3. Otwórz **WPCode → Header & Footer** i wklej kod w polu **Header**. Zapisz.
-4. Otwórz swoją stronę — w prawym dolnym rogu pojawi się okienko bota.
+4. Otwórz swoją stronę: w prawym dolnym rogu pojawi się okienko bota.
 
 ## Sposób 3: wstawienie kodu w motyw (dla zaawansowanych)
 
 Jeśli wolisz nie instalować żadnej wtyczki, możesz dodać kod bezpośrednio w motywie. **Uwaga: rób to tylko na motywie potomnym (child theme)**, inaczej aktualizacja motywu usunie zmianę.
 
-Kod bota wstawiasz przed zamykającym znacznikiem `</head>` w pliku `header.php` motywu potomnego albo przez hook `wp_head` w `functions.php`. To rozwiązanie wymaga ostrożności — błąd w `functions.php` potrafi wyłączyć stronę, dlatego dla większości firm sposób 1 jest bezpieczniejszy.
+Kod bota wstawiasz przed zamykającym znacznikiem `</head>` w pliku `header.php` motywu potomnego albo przez hook `wp_head` w `functions.php`. To rozwiązanie wymaga ostrożności, błąd w `functions.php` potrafi wyłączyć stronę, dlatego dla większości firm sposób 1 jest bezpieczniejszy.
 
 ## Czy bot spowolni stronę WordPress
 
 Nie w odczuwalny sposób. Skrypt bota ładuje się asynchronicznie i nie blokuje renderowania strony, a sam widget jest lekki. Działa na każdym motywie (Astra, Divi, Elementor, OceanWP) i z każdym builderem, bo jest niezależny od warstwy prezentacji.
 
-Więcej szczegółów (WooCommerce, Elementor, Yoast, cache, RODO) znajdziesz w obszernym [przewodniku Botiko dla WordPress](/blog/botiko-dla-wordpress-przewodnik-2026) — ten artykuł jest skróconą instrukcją „od czego zacząć".
+Więcej szczegółów (WooCommerce, Elementor, Yoast, cache, RODO) znajdziesz w obszernym [przewodniku Botiko dla WordPress](/blog/botiko-dla-wordpress-przewodnik-2026), ten artykuł jest skróconą instrukcją „od czego zacząć".
 
 ## Który sposób wybrać
 
 <ComparisonTable
-  title="3 sposoby instalacji — porównanie"
+  title="3 sposoby instalacji, porównanie"
   headers={["Sposób", "Dla kogo", "Czas", "Ryzyko"]}
   highlightColumn={0}
   rows={[
     ["1. Oficjalna wtyczka Botiko (zalecana)", "Każdy, bez programisty", "kilka min", "Brak"],
     ["2. WPCode", "Każdy, bez programisty", "~5 min", "Brak"],
-    ["3. Kod w motywie potomnym", "Zaawansowani", "10–20 min", "Błąd może wyłączyć stronę"],
+    ["3. Kod w motywie potomnym", "Zaawansowani", "10-20 min", "Błąd może wyłączyć stronę"],
   ]}
 />
 
@@ -63,37 +63,37 @@ Więcej szczegółów (WooCommerce, Elementor, Yoast, cache, RODO) znajdziesz w 
 
 Jeśli po instalacji nie widzisz okienka czatu, sprawdź po kolei:
 
-1. **Patrzysz na stronę, nie na panel.** Bot celowo nie ładuje się w `/wp-admin` — otwórz stronę w trybie incognito.
+1. **Patrzysz na stronę, nie na panel.** Bot celowo nie ładuje się w `/wp-admin`, otwórz stronę w trybie incognito.
 2. **Wtyczka Botiko: kod połączenia zapisany.** Jeśli instalowałeś przez oficjalną wtyczkę, sprawdź w **Ustawienia → Botiko**, czy kod połączenia został zapisany, a domena zautoryzowana.
 3. **WPCode: snippet aktywny i poprawny `data-bot-id`.** Jeśli instalowałeś przez WPCode, upewnij się, że snippet jest aktywny, a `data-bot-id` zgadza się z tym z panelu Botiko.
 4. **Wyczyść cache** (WP Rocket, W3 Total Cache, cache hostingu) po dodaniu bota.
-5. **Konflikt z optymalizacją JS** — jeśli wtyczka cache „odracza" lub łączy skrypty, dodaj `widget.botiko.pl` do wyjątków.
+5. **Konflikt z optymalizacją JS**: jeśli wtyczka cache „odracza" lub łączy skrypty, dodaj `widget.botiko.pl` do wyjątków.
 
 <FAQ
   items={[
     {
       q: "Jak dodać bota do WordPress bez programisty?",
-      a: "Najprościej przez oficjalną wtyczkę Botiko z katalogu WordPress.org: instalujesz ją z panelu WordPress, aktywujesz i łączysz stronę kodem z dashboardu Botiko — kilka minut, bez edycji motywu. Alternatywnie ten sam efekt osiągniesz przez darmową wtyczkę WPCode."
+      a: "Najprościej przez oficjalną wtyczkę Botiko z katalogu WordPress.org: instalujesz ją z panelu WordPress, aktywujesz i łączysz stronę kodem z dashboardu Botiko, kilka minut, bez edycji motywu. Alternatywnie ten sam efekt osiągniesz przez darmową wtyczkę WPCode."
     },
     {
       q: "Czy muszę edytować pliki motywu?",
-      a: "Nie. Ani przy oficjalnej wtyczce Botiko, ani przy WPCode nie dotykasz plików motywu — wszystko robisz w panelu WordPress. Edycja motywu to opcja dla zaawansowanych i tylko na motywie potomnym."
+      a: "Nie. Ani przy oficjalnej wtyczce Botiko, ani przy WPCode nie dotykasz plików motywu, wszystko robisz w panelu WordPress. Edycja motywu to opcja dla zaawansowanych i tylko na motywie potomnym."
     },
     {
       q: "Czy bot zniknie po aktualizacji motywu?",
-      a: "Nie. Zarówno oficjalna wtyczka Botiko, jak i WPCode działają niezależnie od motywu, więc aktualizacja ani zmiana motywu nie usuwa bota. Zniknąłby tylko, gdybyś wstawił kod bezpośrednio w motywie nadrzędnym — dlatego tej metody używaj wyłącznie na motywie potomnym."
+      a: "Nie. Zarówno oficjalna wtyczka Botiko, jak i WPCode działają niezależnie od motywu, więc aktualizacja ani zmiana motywu nie usuwa bota. Zniknąłby tylko, gdybyś wstawił kod bezpośrednio w motywie nadrzędnym, dlatego tej metody używaj wyłącznie na motywie potomnym."
     },
     {
       q: "Czy Botiko działa na WooCommerce?",
       a: "Tak. Botiko to skrypt ładowany w sekcji Header, więc działa na stronie WordPress niezależnie od tego, czy korzystasz z WooCommerce, Elementora czy klasycznego motywu."
     },
     {
-      q: "Gdzie wkleić kod — w Header czy w Footer?",
-      a: "Obie lokalizacje działają. Skrypt ładuje się asynchronicznie, więc footer jest minimalnie lepszy dla wydajności, ale różnica jest niezauważalna. W WPCode możesz użyć pola Header albo ustawić snippet na Site Wide Footer — wybierz, co wygodniejsze."
+      q: "Gdzie wkleić kod, w Header czy w Footer?",
+      a: "Obie lokalizacje działają. Skrypt ładuje się asynchronicznie, więc footer jest minimalnie lepszy dla wydajności, ale różnica jest niezauważalna. W WPCode możesz użyć pola Header albo ustawić snippet na Site Wide Footer, wybierz, co wygodniejsze."
     },
     {
       q: "Czy instalacja na WordPress jest darmowa?",
-      a: "Sama instalacja jest darmowa — zarówno oficjalna wtyczka Botiko, jak i WPCode nic nie kosztują. Płacisz tylko abonament Botiko (99 zł/mies., 14 dni za darmo) za działającego bota — nie za montaż na stronie."
+      a: "Sama instalacja jest darmowa, zarówno oficjalna wtyczka Botiko, jak i WPCode nic nie kosztują. Płacisz tylko abonament Botiko (99 zł/mies., 14 dni za darmo) za działającego bota, nie za montaż na stronie."
     }
   ]}
 />
