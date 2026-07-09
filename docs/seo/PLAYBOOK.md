@@ -1,24 +1,24 @@
-# SEO + GEO Playbook — Botiko.pl
+# SEO + GEO Playbook. Botiko.pl
 
 Stan po wdrożeniu silnika organicznego (branch `seo/gsc-fixes`). Ten dokument
 zbiera: co zostało zrobione w kodzie, co trzeba zrobić ręcznie (off-page) oraz
 backlog treści. Zaktualizuj po każdym kroku.
 
-## Sprint widoczności 2026-07-07 (audyt SEO → Faza 0–3)
+## Sprint widoczności 2026-07-07 (audyt SEO → Faza 0-3)
 
 Pełny audyt SEO dał **84/100** (technika/on-page mocne, wąskie gardło = off-page + treść pod intencję). Zmergowane do `main`:
 
-- **Faza 0 — hygiena schema/robots** (#114): jedna encja marki `#organization` (`@type: ["Organization","LocalBusiness"]`, koniec zdublowanego `#business`); `@id` w `Article.publisher` i `Service.provider`; `CollectionPage`+`BreadcrumbList` na `/blog`; `image` w `Product` na `/cennik`; jawne reguły AI-crawlerów w `robots.ts` (GPTBot/OAI-SearchBot/ClaudeBot/PerplexityBot/Google-Extended); `sameAs` (wp.org) w Organization.
-- **Faza 1A — kanibalizacja bloga** (#115): 2 realne pary → 301 (`rodo-chatbot`→`chatbot-a-rodo-dane-klientow`, `chatbot-recepcja`→`czy-bot-ai-zastapi-recepcjonistke`) z przeniesieniem unikatowej treści; reszta „par" oceniona przez `botiko-content` jako komplementarna i zachowana.
-- **Faza 1B — porównanie** (#116): `/porownanie/botiko-vs-recepcjonistka-ai` — segmentuje kategorię vs voiceboty (Smart Asystenci/Assistron/Sekretarka AI), bez twardych cen konkurenta.
-- **Faza 3 — trust/reframe** (#118): sekcje „bot nie rezerwuje = zaleta" na `/dla/salon-beauty` i `/cennik` (własny kalendarz / brak double-booking / Ty domykasz).
-- **Faza 2 — materiały off-page** (#117): gotowce w `docs/seo/offpage/` (patrz sekcja OFF-PAGE).
+- **Faza 0: hygiena schema/robots** (#114): jedna encja marki `#organization` (`@type: ["Organization","LocalBusiness"]`, koniec zdublowanego `#business`); `@id` w `Article.publisher` i `Service.provider`; `CollectionPage`+`BreadcrumbList` na `/blog`; `image` w `Product` na `/cennik`; jawne reguły AI-crawlerów w `robots.ts` (GPTBot/OAI-SearchBot/ClaudeBot/PerplexityBot/Google-Extended); `sameAs` (wp.org) w Organization.
+- **Faza 1A: kanibalizacja bloga** (#115): 2 realne pary → 301 (`rodo-chatbot`→`chatbot-a-rodo-dane-klientow`, `chatbot-recepcja`→`czy-bot-ai-zastapi-recepcjonistke`) z przeniesieniem unikatowej treści; reszta „par" oceniona przez `botiko-content` jako komplementarna i zachowana.
+- **Faza 1B: porównanie** (#116): `/porownanie/botiko-vs-recepcjonistka-ai`, segmentuje kategorię vs voiceboty (Smart Asystenci/Assistron/Sekretarka AI), bez twardych cen konkurenta.
+- **Faza 3: trust/reframe** (#118): sekcje „bot nie rezerwuje = zaleta" na `/dla/salon-beauty` i `/cennik` (własny kalendarz / brak double-booking / Ty domykasz).
+- **Faza 2: materiały off-page** (#117): gotowce w `docs/seo/offpage/` (patrz sekcja OFF-PAGE).
 
 **Pozostało (świadomie odłożone):**
-- Mobilne **LCP 5,0 s** — osobny, **mierzony** etap (przyczyna „opacity animation" wykluczona — `heroRise` OK; wymaga before/after na preview).
-- **`Review`/`AggregateRating` + referencje pilotów** — czekają na pierwsze realne opinie (nie fabrykujemy).
+- Mobilne **LCP 5,0 s**: osobny, **mierzony** etap (przyczyna „opacity animation" wykluczona, `heroRise` OK; wymaga before/after na preview).
+- **`Review`/`AggregateRating` + referencje pilotów**: czekają na pierwsze realne opinie (nie fabrykujemy).
 - Poszerzenie `pytania-nocne` poza beauty (drobny content).
-- **Wykonanie off-page po stronie foundera** — patrz sekcja niżej + `docs/seo/offpage/`.
+- **Wykonanie off-page po stronie foundera**: patrz sekcja niżej + `docs/seo/offpage/`.
 
 ---
 
@@ -26,8 +26,8 @@ Pełny audyt SEO dał **84/100** (technika/on-page mocne, wąskie gardło = off-
 
 **Technical SEO / GEO foundation**
 - Site-wide `Organization` + `WebSite`/`SearchAction` JSON-LD (`app/layout.tsx`, builder w `lib/seo.ts`).
-- `/faq` — answer-first Q&A + people-also-ask, `FAQPage` + `BreadcrumbList` schema (treść w `lib/faq.ts`).
-- `/llms.txt` — mapa encji + URL-i dla crawlerów AI (`app/llms.txt/route.ts`).
+- `/faq`: answer-first Q&A + people-also-ask, `FAQPage` + `BreadcrumbList` schema (treść w `lib/faq.ts`).
+- `/llms.txt`: mapa encji + URL-i dla crawlerów AI (`app/llms.txt/route.ts`).
 - `/o-nas` reaktywowane + `AboutPage` schema (E-E-A-T: tożsamość wydawcy).
 - `BreadcrumbList` na wszystkich `/dla/*`.
 - Sitemap odchudzony + nowe URL-e; `POSTS_PER_PAGE` 12; OG na `/kontakt`.
@@ -37,7 +37,7 @@ Pełny audyt SEO dał **84/100** (technika/on-page mocne, wąskie gardło = off-
 - Dane + quality gate w `lib/local-seo.ts` (renderuje tylko kompletne kombinacje).
 - `Service` + `FAQPage` + `BreadcrumbList` schema, linkowanie przez `CityLinks`.
 
-**Narzędzia (link-magnets)** — `/narzedzia`
+**Narzędzia (link-magnets)**: `/narzedzia`
 - Kalkulator utraconych klientów + kalkulator ROI bota, `WebApplication` schema.
 
 **Strony pieniężne**
@@ -46,39 +46,39 @@ Pełny audyt SEO dał **84/100** (technika/on-page mocne, wąskie gardło = off-
 
 ---
 
-## Do zrobienia ręcznie — OFF-PAGE (poza kodem, krytyczne)
+## Do zrobienia ręcznie. OFF-PAGE (poza kodem, krytyczne)
 
 Bez tego nie wyjdziemy poza ruch brandowy. Zero backlinków = sufit.
 
-> **Gotowe materiały do wykonania (Faza 2, #117):** `docs/seo/offpage/` — `katalogi-nap.md` (spójny blok NAP + lista katalogów PL/SaaS + kolejność), `outreach-guest-posty.md` (8 tematów + szablony maili), `youtube-demo.md` (scenariusz + opis + osadzenie), `reddit-fb.md` (subreddity/grupy FB + zasady value-first).
+> **Gotowe materiały do wykonania (Faza 2, #117):** `docs/seo/offpage/`, `katalogi-nap.md` (spójny blok NAP + lista katalogów PL/SaaS + kolejność), `outreach-guest-posty.md` (8 tematów + szablony maili), `youtube-demo.md` (scenariusz + opis + osadzenie), `reddit-fb.md` (subreddity/grupy FB + zasady value-first).
 
-- [x] **Bing Webmaster Tools** — załóż konto, zweryfikuj `botiko.pl`, zgłoś `botiko.pl/sitemap.xml`. ChatGPT Search korzysta z indeksu Bing — to warunek widoczności w ChatGPT.
-- [x] **Google Search Console** — po deployu zgłoś ponownie sitemap; monitoruj indeksację nowych URL-i (`/dla/*/*`, `/cennik`, `/faq`, `/porownanie/*`).
-- [x] **Google Business Profile** (Białystok) — wizytówka = encja lokalna, sygnał dla Map i AI.
-- [x] **Wtyczka w katalogu WordPress.org** (opublikowana 2026-07-06) — Plugin URI wskazuje na `/integracje/wordpress`, więc katalog daje dofollow backlink z DA~100 do tej strony. Monitorować w GSC → Links (katalog aktualizuje wyszukiwarkę do 72h). Strona-cel wzmocniona schematem `SoftwareApplication` (`sameAs` → wp.org).
-- [ ] **Katalogi PL** — firmowe + SaaS/oprogramowanie (np. katalogi narzędzi, opinie o software). Spójny NAP (nazwa, adres, kontakt).
-- [ ] **Reddit / grupy FB branżowe** — Perplexity mocno cytuje Reddit. Wartościowa obecność w wątkach „bot/chatbot dla salonu/firmy", grupach właścicieli salonów/gastro. Bez spamu.
-- [ ] **2–3 wpisy gościnne** na blogach beauty/gastro/automotive z linkiem do pillara branżowego.
+- [x] **Bing Webmaster Tools**: załóż konto, zweryfikuj `botiko.pl`, zgłoś `botiko.pl/sitemap.xml`. ChatGPT Search korzysta z indeksu Bing, to warunek widoczności w ChatGPT.
+- [x] **Google Search Console**: po deployu zgłoś ponownie sitemap; monitoruj indeksację nowych URL-i (`/dla/*/*`, `/cennik`, `/faq`, `/porownanie/*`).
+- [x] **Google Business Profile** (Białystok): wizytówka = encja lokalna, sygnał dla Map i AI.
+- [x] **Wtyczka w katalogu WordPress.org** (opublikowana 2026-07-06). Plugin URI wskazuje na `/integracje/wordpress`, więc katalog daje dofollow backlink z DA~100 do tej strony. Monitorować w GSC → Links (katalog aktualizuje wyszukiwarkę do 72h). Strona-cel wzmocniona schematem `SoftwareApplication` (`sameAs` → wp.org).
+- [ ] **Katalogi PL**: firmowe + SaaS/oprogramowanie (np. katalogi narzędzi, opinie o software). Spójny NAP (nazwa, adres, kontakt).
+- [ ] **Reddit / grupy FB branżowe**: Perplexity mocno cytuje Reddit. Wartościowa obecność w wątkach „bot/chatbot dla salonu/firmy", grupach właścicieli salonów/gastro. Bez spamu.
+- [ ] **2-3 wpisy gościnne** na blogach beauty/gastro/automotive z linkiem do pillara branżowego.
 - [ ] **Wzmianki encyklopedyczne** gdzie zasadne (ChatGPT mocno cytuje Wikipedię/źródła autorytatywne).
 
 ---
 
 ## Backlog treści (iteracyjnie, w kodzie)
 
-**GEO answer-first (WS2) — rewrite istniejących stron**
-- [ ] Przepisać sekcje H2 na `/dla/*` i pillar-postach tak, by zaczynały się od zwięzłej, cytowalnej odpowiedzi (1–2 zdania), potem rozwinięcie.
+**GEO answer-first (WS2), rewrite istniejących stron**
+- [ ] Przepisać sekcje H2 na `/dla/*` i pillar-postach tak, by zaczynały się od zwięzłej, cytowalnej odpowiedzi (1-2 zdania), potem rozwinięcie.
 - [ ] Wpleść konkretne, **prawdziwe** liczby/statystyki z atrybucją (bez zmyślania). AI cytuje treść bogatą w dane.
 
 **Blog clusters (WS6)**
-- [ ] Każdy pillar (beauty/health/food/auto/WordPress) → 4–6 wpisów satelitarnych linkujących do pillara i do `/dla/*` (kontekstowo).
+- [ ] Każdy pillar (beauty/health/food/auto/WordPress) → 4-6 wpisów satelitarnych linkujących do pillara i do `/dla/*` (kontekstowo).
 - [ ] Rozszerzyć `getRelatedPosts` o linkowanie cross-cluster (nie tylko ta sama kategoria).
-- [ ] Nowe tematy pod AI: „ile kosztuje chatbot dla [branża] 2026", „chatbot a RODO", „czy bot AI zastąpi recepcjonistkę", „jak ustawić bota na WordPress" — każdy z `<FAQ>` + liczbami.
+- [ ] Nowe tematy pod AI: „ile kosztuje chatbot dla [branża] 2026", „chatbot a RODO", „czy bot AI zastąpi recepcjonistkę", „jak ustawić bota na WordPress", każdy z `<FAQ>` + liczbami.
 - [ ] Konsekwentnie używać komponentu `<FAQ>` w postach (format Q&A = cytowalny przez AI).
 - [ ] Każdy nowy post: 3 grafiki w `public/blog/` (`{slug}-hero/-1/-2.jpg`).
 
 **Rozbudowa programmatic (gdy treść gotowa)**
-- [ ] Dodać kolejne miasta w `lib/local-seo.ts` — TYLKO z prawdziwymi dzielnicami i własnym FAQ (quality gate odrzuca niekompletne).
-- [x] Rozważyć więcej porównań w `lib/comparisons.ts` — dodane `botiko-vs-recepcjonistka-ai` (kategoria voicebot, nominative fair use, bez cen konkurenta). Kolejne w miarę potrzeb.
+- [ ] Dodać kolejne miasta w `lib/local-seo.ts`: TYLKO z prawdziwymi dzielnicami i własnym FAQ (quality gate odrzuca niekompletne).
+- [x] Rozważyć więcej porównań w `lib/comparisons.ts`: dodane `botiko-vs-recepcjonistka-ai` (kategoria voicebot, nominative fair use, bez cen konkurenta). Kolejne w miarę potrzeb.
 
 ---
 

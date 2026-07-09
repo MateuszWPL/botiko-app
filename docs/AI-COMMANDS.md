@@ -1,10 +1,10 @@
-# AI Tools — Quick Reference (Botiko.pl)
+# AI Tools. Quick Reference (Botiko.pl)
 
 ---
 
-## Agenci — `/agent <nazwa>`
+## Agenci, `/agent <nazwa>`
 
-Zainstalowane w `~/.claude/agents/` — tylko pod nasz stack.
+Zainstalowane w `~/.claude/agents/`, tylko pod nasz stack.
 
 ```
 /agent typescript-reviewer    # review kodu TypeScript/NestJS
@@ -22,9 +22,9 @@ Zainstalowane w `~/.claude/agents/` — tylko pod nasz stack.
 
 ---
 
-## Skille — `/nestjs-patterns` (bez prefiksu /skill)
+## Skille, `/nestjs-patterns` (bez prefiksu /skill)
 
-Zainstalowane w `~/.claude/commands/` — kontekst domenowy dla Claude.
+Zainstalowane w `~/.claude/commands/`, kontekst domenowy dla Claude.
 
 ```
 /nestjs-patterns      # wzorce NestJS: DI, guards, pipes, interceptors
@@ -45,7 +45,7 @@ Zainstalowane w `~/.claude/commands/` — kontekst domenowy dla Claude.
 
 ---
 
-## MCP Servers — konfiguracja tokenów
+## MCP Servers, konfiguracja tokenów
 
 Edytuj `~/.claude/settings.json`:
 

@@ -1,7 +1,7 @@
-# Botiko.pl — Architecture & Codemap Index
+# Botiko.pl. Architecture & Codemap Index
 
 **Last Updated:** 2026-05-14  
-**Project Status:** Phase 1A complete — **MVP live in production** (`botiko.pl`). Web → Vercel, API → Railway, Widget → Vercel. Now in Phase 2 (pilots).
+**Project Status:** Phase 1A complete, **MVP live in production** (`botiko.pl`). Web → Vercel, API → Railway, Widget → Vercel. Now in Phase 2 (pilots).
 
 ---
 
@@ -89,20 +89,20 @@ Botiko.pl is a B2B SaaS AI chatbot platform for Polish micro and small service b
 → [Read Full API Codemap](./backend.md)
 
 **Modules:**
-- `auth` — User registration, login, refresh tokens
-- `bot` — Bot CRUD, configuration, allowed domains
-- `chat` — Message processing, RAG pipeline, OpenAI integration
-- `knowledge` — Knowledge base management, embeddings
-- `lead` — Lead capture, management, encryption
-- `billing` — Stripe integration, plan enforcement
-- `tenant` — Account management, organization isolation
-- `contact` — Landing page contact form
+- `auth`: User registration, login, refresh tokens
+- `bot`: Bot CRUD, configuration, allowed domains
+- `chat`: Message processing, RAG pipeline, OpenAI integration
+- `knowledge`: Knowledge base management, embeddings
+- `lead`: Lead capture, management, encryption
+- `billing`: Stripe integration, plan enforcement
+- `tenant`: Account management, organization isolation
+- `contact`: Landing page contact form
 
 **Key Security Guards:**
-- `AuthGuard` — JWT verification (Bearer token)
-- `TenantGuard` — Multi-tenant data isolation
-- `DomainWhitelistGuard` — Widget domain validation
-- `OwnerGuard` — Tenant ownership verification
+- `AuthGuard`: JWT verification (Bearer token)
+- `TenantGuard`: Multi-tenant data isolation
+- `DomainWhitelistGuard`: Widget domain validation
+- `OwnerGuard`: Tenant ownership verification
 
 **Middleware Stack (Order Matters):**
 ```
@@ -117,10 +117,10 @@ Helmet (security headers) → CORS (open for widget) → Throttler (rate limits)
 → [Read Full Web Codemap](./frontend.md)
 
 **Key Pages:**
-- `(auth)` — Login, register, password reset
-- `(marketing)` — Landing page, blog, contact form
-- `dashboard` — Account overview, leads, conversations, knowledge, settings, embed, billing
-- `onboarding` — Bot creation wizard (industry selection, templates, first config)
+- `(auth)`: Login, register, password reset
+- `(marketing)`: Landing page, blog, contact form
+- `dashboard`: Account overview, leads, conversations, knowledge, settings, embed, billing
+- `onboarding`: Bot creation wizard (industry selection, templates, first config)
 
 **Features:**
 - Supabase Auth SSR (`@supabase/ssr`)
@@ -136,7 +136,7 @@ Helmet (security headers) → CORS (open for widget) → Throttler (rate limits)
 
 **Constraints:**
 - Hard size limit: **<12KB gzip** (enforced by Vite plugin, build fails if exceeded)
-- Framework: **Preact** (not React) — 10KB smaller
+- Framework: **Preact** (not React): 10KB smaller
 - Isolation: **Shadow DOM** (CSS + DOM isolation from host page)
 - Session persistence: **sessionStorage** per `botiko_{botId}` (privacy: cleared on tab close)
 - Timeout: **30s AbortController** (prevents infinite spinners)
@@ -149,13 +149,13 @@ Helmet (security headers) → CORS (open for widget) → Throttler (rate limits)
 → [Read Full Database Codemap](./database.md)
 
 **Core Models:**
-- `Tenant` — Account (industry, plan, billing info)
-- `User` — Team member (email, role)
-- `Bot` — AI bot instance (config, domains, personality)
-- `KnowledgeChunk` — Vector embeddings (pgvector, 1536-dim)
-- `Lead` — Contact info (PII encrypted AES-256-GCM)
-- `Conversation` — Chat session (per bot, per tenant)
-- `Message` — Individual messages (history for context window)
+- `Tenant`: Account (industry, plan, billing info)
+- `User`: Team member (email, role)
+- `Bot`: AI bot instance (config, domains, personality)
+- `KnowledgeChunk`: Vector embeddings (pgvector, 1536-dim)
+- `Lead`: Contact info (PII encrypted AES-256-GCM)
+- `Conversation`: Chat session (per bot, per tenant)
+- `Message`: Individual messages (history for context window)
 
 **Enums:**
 - `Industry`: BEAUTY, HEALTH, FOOD, AUTO, OTHER
@@ -168,10 +168,10 @@ Helmet (security headers) → CORS (open for widget) → Throttler (rate limits)
 ### 5. **External Integrations**
 → [Read Full Integrations Codemap](./integrations.md)
 
-- **OpenAI** — `gpt-4o-mini` (chat), `text-embedding-3-small` (embeddings)
-- **Supabase** — PostgreSQL + Auth + RLS policies
-- **Stripe** — Billing, checkout, webhooks
-- **Resend** — Email notifications (trial expiry warnings)
+- **OpenAI**: `gpt-4o-mini` (chat), `text-embedding-3-small` (embeddings)
+- **Supabase**: PostgreSQL + Auth + RLS policies
+- **Stripe**: Billing, checkout, webhooks
+- **Resend**: Email notifications (trial expiry warnings)
 
 ---
 
@@ -256,7 +256,7 @@ gh pr create  # Agent does this automatically
    - User → JWT stored in secure cookie
    - Every request: `@supabase/ssr` refreshes token if needed
 
-2. **Widget:** No auth — uses `botId` + domain whitelist
+2. **Widget:** No auth: uses `botId` + domain whitelist
    - Public bot config endpoint: `/api/v1/bot/{id}/config` (no Bearer token needed)
    - Chat & leads: `DomainWhitelistGuard` checks `Origin` header vs `bot.allowedDomains`
 
@@ -310,7 +310,7 @@ Decryption only happens when:
 ✅ RAG pipeline (embeddings → pgvector → GPT-4o-mini + sanitization)  
 ✅ Widget embed (<12KB, Shadow DOM, sessionStorage, GTM-safe)  
 ✅ Dashboard (10 pages + Stripe billing)  
-✅ Email system (Resend — onboarding drip, lead notifications, billing webhooks)  
+✅ Email system (Resend, onboarding drip, lead notifications, billing webhooks)  
 ✅ Landing page + blog (32 MDX posts, content runway to July 2026, date-gated auto-publish)  
 ✅ Security (CORS strategy, UUID validation, HTML escaping, error handling)  
 ✅ Deployed: Web/Widget on Vercel (auto-deploy from `main`), API on Railway  
@@ -319,7 +319,7 @@ Decryption only happens when:
 
 ## Roadmap (Not in MVP)
 
-❌ Booking system (bot odsyła to Booksy/Calendly — we don't build it)  
+❌ Booking system (bot odsyła to Booksy/Calendly, we don't build it)  
 ❌ Customer payment processing (SaaS only, no payment for customer's customers)  
 ❌ Separate domains per industry (one Botiko.pl for all)  
 ❌ Native mobile app (web PWA is responsive enough)  

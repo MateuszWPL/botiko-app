@@ -1,4 +1,4 @@
-# Widget Codemap — Preact + Vite
+# Widget Codemap. Preact + Vite
 
 **Last Updated:** 2026-04-18  
 **Location:** `apps/widget/`  
@@ -504,12 +504,12 @@ console.log(`✅ Widget: ${kbSize}KB (limit: 12KB)`);
 
 ### Size Optimization Tips
 
-1. **Use Preact** (not React) — ~8KB smaller
-2. **Tree-shake** — Remove unused code
-3. **No external deps** — All logic self-contained
-4. **Minify everything** — Vite handles this
-5. **Remove console logs** — esbuild drop option
-6. **Code split carefully** — Avoid lazy loading
+1. **Use Preact** (not React): ~8KB smaller
+2. **Tree-shake**: Remove unused code
+3. **No external deps**: All logic self-contained
+4. **Minify everything**: Vite handles this
+5. **Remove console logs**: esbuild drop option
+6. **Code split carefully**: Avoid lazy loading
 
 Current breakdown:
 - Preact: ~3KB
@@ -665,11 +665,11 @@ pnpm preview                # Serve dist/ locally
 
 ## Supported Platforms
 
-**Primary: WordPress** — installed via WPCode plugin (free, 2M+ installs). Instructions in `apps/web/app/dashboard/embed/EmbedCode.tsx`. WordPress = ~93% of Polish CMS market, primary target platform.
+**Primary: WordPress**: installed via WPCode plugin (free, 2M+ installs). Instructions in `apps/web/app/dashboard/embed/EmbedCode.tsx`. WordPress = ~93% of Polish CMS market, primary target platform.
 
-**Universal fallback: Generic HTML** — direct `<script>` tag before `</body>` on any site.
+**Universal fallback: Generic HTML**: direct `<script>` tag before `</body>` on any site.
 
-Other CMS (Shopify, Webflow, Squarespace, Wix, GTM) — the script works technically but are not officially supported and have no per-platform instructions in the dashboard. Removed from MVP scope.
+Other CMS (Shopify, Webflow, Squarespace, Wix, GTM), the script works technically but are not officially supported and have no per-platform instructions in the dashboard. Removed from MVP scope.
 
 ---
 
