@@ -6,12 +6,12 @@ import CityLinks from '@/components/marketing/CityLinks';
 import { breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Bot dla restauracji — odpowiada gościom 24/7 i zbiera leady',
+  title: 'Bot dla restauracji, odpowiada gościom 24/7 i zbiera leady',
   description:
     'Botiko dla restauracji i bistro: menu, godziny, eventy, catering. Bot odpowiada o 23:00, zbiera telefon i odsyła do Booksy lub Twojego systemu rezerwacji. 99 zł/mies., 14 dni za darmo.',
   alternates: { canonical: 'https://botiko.pl/dla/restauracja' },
   openGraph: {
-    title: 'Bot dla restauracji — odpowiada gościom 24/7',
+    title: 'Bot dla restauracji, odpowiada gościom 24/7',
     description:
       'Goście piszą wieczorem. Bot odpowiada, zbiera kontakt i odsyła do Booksy lub Twojego systemu rezerwacji. 99 zł/mies.',
     url: 'https://botiko.pl/dla/restauracja',
@@ -36,14 +36,14 @@ const JSON_LD_SERVICE = {
 const FAQS = [
   {
     q: 'Czy bot działa z moim systemem rezerwacji (Restaumatic, OpenTable)?',
-    a: 'Bot nie integruje się bezpośrednio z systemami rezerwacji — zbiera dane kontaktowe i preferencje gościa, a następnie odsyła do Booksy, Restaumatic lub Twojego numeru telefonu. Ty potwierdzasz i zarządzasz stolikami.',
+    a: 'Bot nie integruje się bezpośrednio z systemami rezerwacji, zbiera dane kontaktowe i preferencje gościa, a następnie odsyła do Booksy, Restaumatic lub Twojego numeru telefonu. Ty potwierdzasz i zarządzasz stolikami.',
   },
   {
     q: 'Czy bot może odpowiadać na pytania o alergeny i diety specjalne?',
-    a: 'Tak, jeśli wpiszesz tę informację do bazy wiedzy. Bot może opisać składniki i alergeny konkretnych dań, dostępność opcji wegańskich czy bezglutenowych — na podstawie dokładnie tego, co mu podasz.',
+    a: 'Tak, jeśli wpiszesz tę informację do bazy wiedzy. Bot może opisać składniki i alergeny konkretnych dań, dostępność opcji wegańskich czy bezglutenowych, na podstawie dokładnie tego, co mu podasz.',
   },
   {
-    q: 'Menu się często zmienia — czy muszę za każdym razem aktualizować bota?',
+    q: 'Menu się często zmienia, czy muszę za każdym razem aktualizować bota?',
     a: 'Menu sezonowe i specjały dnia możesz aktualizować kiedy chcesz w panelu. Dla menu, które zmienia się codziennie, bot najlepiej sprawdza się jako informacja o ofercie stałej, natomiast dla dnia polecasz konkretną stronę lub fanpage.',
   },
   {
@@ -52,14 +52,14 @@ const FAQS = [
   },
   {
     q: 'Czy widget pasuje do wyglądu mojej strony restauracji?',
-    a: 'W ustawieniach wybierasz kolor główny, nazwę bota i avatar. Widget może być ciepły (burgundy, czerń, złoto) albo jasny — dopasowany do Twojego brandu. Minimalistyczny w rogu strony, widoczny, gdy potrzebny.',
+    a: 'W ustawieniach wybierasz kolor główny, nazwę bota i avatar. Widget może być ciepły (burgundy, czerń, złoto) albo jasny, dopasowany do Twojego brandu. Minimalistyczny w rogu strony, widoczny, gdy potrzebny.',
   },
 ];
 
 const PAIN_POINTS = [
   {
     title: 'Goście pytają o stolik o 23:00',
-    text: 'Rodzinna kolacja, urodziny, romantyczna randka — rezerwacje planuje się wieczorem, gdy jesteś zajęta obsługą lub już w domu. Bot odpowiada natychmiast i zbiera kontakt.',
+    text: 'Rodzinna kolacja, urodziny, romantyczna randka, rezerwacje planuje się wieczorem, gdy jesteś zajęta obsługą lub już w domu. Bot odpowiada natychmiast i zbiera kontakt.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
@@ -77,7 +77,7 @@ const PAIN_POINTS = [
   },
   {
     title: '„Macie opcje wegetariańskie?"',
-    text: '„Czy jest bezglutenowe?", „Czy obsługujecie alergie?", „Co jest w sosie carbonara?" — te pytania pytają wszyscy i każdy chce odpowiedzi przed przyjściem. Bot odpowiada za kelnerów.',
+    text: '„Czy jest bezglutenowe?", „Czy obsługujecie alergie?", „Co jest w sosie carbonara?", te pytania pytają wszyscy i każdy chce odpowiedzi przed przyjściem. Bot odpowiada za kelnerów.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -86,7 +86,7 @@ const PAIN_POINTS = [
   },
   {
     title: 'Eventy i catering giną w mailach',
-    text: 'Zapytania o przyjęcie urodzinowe dla 30 osób, catering firmowy albo Wigilię dla firmy — trafiają na ogólnego maila i giną. Bot pyta o szczegóły i zbiera brief zanim zadzwonisz.',
+    text: 'Zapytania o przyjęcie urodzinowe dla 30 osób, catering firmowy albo Wigilię dla firmy, trafiają na ogólnego maila i giną. Bot pyta o szczegóły i zbiera brief zanim zadzwonisz.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -98,7 +98,7 @@ const PAIN_POINTS = [
   },
   {
     title: 'Zmiany menu tracą się w mediach społecznościowych',
-    text: '„Czy sezonowe risotto wróciło?", „Mamy dziś degustację?" — goście szukają aktualnych informacji. Bot wie, co mu powiesz — aktualizujesz bazę wiedzy i odpowiedzi się zmieniają.',
+    text: '„Czy sezonowe risotto wróciło?", „Mamy dziś degustację?", goście szukają aktualnych informacji. Bot wie, co mu powiesz, aktualizujesz bazę wiedzy i odpowiedzi się zmieniają.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -111,7 +111,7 @@ const PAIN_POINTS = [
   },
   {
     title: 'Google Maps piszą zapytania, nie tylko opinie',
-    text: 'Goście piszą przez Facebook, Instagram, stronę i Google jednocześnie. Bot na stronie www przechwytuje tych, którzy trafiają przez wyszukiwarkę — największy ruch.',
+    text: 'Goście piszą przez Facebook, Instagram, stronę i Google jednocześnie. Bot na stronie www przechwytuje tych, którzy trafiają przez wyszukiwarkę, największy ruch.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <circle cx="11" cy="11" r="8" />
@@ -122,28 +122,28 @@ const PAIN_POINTS = [
 ] as const;
 
 const FEATURES = [
-  'Opisuje dania — składniki, alergeny, opcje wegetariańskie i wegańskie',
+  'Opisuje dania, składniki, alergeny, opcje wegetariańskie i wegańskie',
   'Zna godziny otwarcia, lokalizację, parking i dojazd komunikacją',
-  'Zbiera imię, telefon i preferencje gościa — odsyła do Booksy lub Twojego systemu rezerwacji',
+  'Zbiera imię, telefon i preferencje gościa, odsyła do Booksy lub Twojego systemu rezerwacji',
   'Odpowiada na pytania o eventy, urodziny, komunie i catering firmowy',
   'Informuje o aktualnych promocjach, menu dnia i specjałach sezonu',
   'Opisuje politykę wobec alergenów i diety bezglutenowej',
   'Poleca zestawy obiadowe i menu degustacyjne przy okazji zapytania',
-  'Widget w kolorystyce restauracji — elegancki, ciepły lub minimalistyczny',
+  'Widget w kolorystyce restauracji, elegancki, ciepły lub minimalistyczny',
 ] as const;
 
 const SAMPLE_QUESTIONS = [
   {
     q: 'Czy macie opcję bezglutenową? Moja córka ma celiakię.',
-    a: 'Tak, przygotowujemy dania bezglutenowe — mamy oznaczenia przy każdym daniu w menu. Makarony i pizza dostępne w wersji bezglutenowej (+5 zł). Kucharz jest poinformowany o krzyżowym zanieczyszczeniu. Chcesz zarezerwować stolik? Zostaw numer — oddzwonimy i poinformujemy kucharkę o alergiach, albo od razu zarezerwuj przez Booksy.',
+    a: 'Tak, przygotowujemy dania bezglutenowe, mamy oznaczenia przy każdym daniu w menu. Makarony i pizza dostępne w wersji bezglutenowej (+5 zł). Kucharz jest poinformowany o krzyżowym zanieczyszczeniu. Chcesz zarezerwować stolik? Zostaw numer, oddzwonimy i poinformujemy kucharkę o alergiach, albo od razu zarezerwuj przez Booksy.',
   },
   {
     q: 'Chcemy zorganizować urodziny dla 25 osób w sobotę. Czy to możliwe?',
-    a: 'Jak najbardziej! Sala prywatna mieści do 35 osób. Na eventy oferujemy menu bankietowe od 89 zł/os. (3 dania) lub 129 zł/os. (5 dań z winem). Dostępne też: torty na zamówienie, dekoracje, DJ. Zostaw imię i telefon — menedżer zadzwoni jutro rano z wolnymi terminami i szczegółami.',
+    a: 'Jak najbardziej! Sala prywatna mieści do 35 osób. Na eventy oferujemy menu bankietowe od 89 zł/os. (3 dania) lub 129 zł/os. (5 dań z winem). Dostępne też: torty na zamówienie, dekoracje, DJ. Zostaw imię i telefon, menedżer zadzwoni jutro rano z wolnymi terminami i szczegółami.',
   },
   {
     q: 'Jakie są godziny otwarcia w niedzielę? I czy jest parking?',
-    a: 'W niedzielę pracujemy 12:00–21:00 (kuchnia do 20:30). Parking bezpłatny na 20 miejsc przy wejściu od ul. Kwiatowej. Jeśli parking zajęty — płatny parking miejski 50 m dalej. Planujesz przyjść w niedzielę? Zostaw numer albo zarezerwuj stolik przez Booksy.',
+    a: 'W niedzielę pracujemy 12:00-21:00 (kuchnia do 20:30). Parking bezpłatny na 20 miejsc przy wejściu od ul. Kwiatowej. Jeśli parking zajęty, płatny parking miejski 50 m dalej. Planujesz przyjść w niedzielę? Zostaw numer albo zarezerwuj stolik przez Booksy.',
   },
 ];
 
@@ -157,7 +157,7 @@ const ROI_ROWS = [
 const TRUST_POINTS = [
   {
     title: 'Twoje menu, nie internetowe ogólniki',
-    text: 'Bot wie tylko tyle, ile mu powiesz. Aktualizujesz menu sezonowe, zmieniasz godziny na święta, dodajesz promocję — bot reaguje od razu.',
+    text: 'Bot wie tylko tyle, ile mu powiesz. Aktualizujesz menu sezonowe, zmieniasz godziny na święta, dodajesz promocję, bot reaguje od razu.',
     svg: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -167,7 +167,7 @@ const TRUST_POINTS = [
   },
   {
     title: 'Wstępna rezerwacja, nie booking system',
-    text: 'Bot zbiera preferencje i kontakt, po czym odsyła do Booksy, Restaumatic, OpenTable lub Twojego numeru telefonu. Ty masz kontrolę nad stolikami — bot nie blokuje miejsc.',
+    text: 'Bot zbiera preferencje i kontakt, po czym odsyła do Booksy, Restaumatic, OpenTable lub Twojego numeru telefonu. Ty masz kontrolę nad stolikami, bot nie blokuje miejsc.',
     svg: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -179,7 +179,7 @@ const TRUST_POINTS = [
   },
   {
     title: 'Duże zapytania eventowe nie wpadają w pustkę',
-    text: 'Organizator przyjęcia, który pisze o 22:00, dostaje odpowiedź w 10 sekund i zostawia kontakt. Rano masz brief i numer — zamiast milczenia przez trzy dni.',
+    text: 'Organizator przyjęcia, który pisze o 22:00, dostaje odpowiedź w 10 sekund i zostawia kontakt. Rano masz brief i numer, zamiast milczenia przez trzy dni.',
     svg: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
@@ -292,7 +292,7 @@ export default function RestaurantLandingPage() {
           </h1>
 
           <p className="text-orange-100 text-lg leading-relaxed max-w-xl mb-8">
-            Botiko zna Twoje menu, godziny i politykę alergenów. Odpowiada gościom kiedy serwis pędzi albo lokal jest zamknięty —
+            Botiko zna Twoje menu, godziny i politykę alergenów. Odpowiada gościom kiedy serwis pędzi albo lokal jest zamknięty
             i <strong className="text-white">zbiera kontakt, odsyłając do Booksy lub Twojego systemu</strong>.
           </p>
 
@@ -388,7 +388,7 @@ export default function RestaurantLandingPage() {
               Jak bot odpowiada gościom
             </h2>
             <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
-              Bot odpowiada na podstawie Twojego menu, oferty i FAQ — nie ogólnych informacji z sieci.
+              Bot odpowiada na podstawie Twojego menu, oferty i FAQ, nie ogólnych informacji z sieci.
             </p>
           </div>
 
@@ -429,7 +429,7 @@ export default function RestaurantLandingPage() {
                 Co robi bot
               </p>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-text leading-tight mb-5">
-                Recepcja, hostessa i informacja turystyczna —{' '}
+                Recepcja, hostessa i informacja turystyczna{' '}
                 <span style={{ color: '#c2410c' }}>w jednym narzędziu</span>
               </h2>
               <p className="text-slate-500 leading-relaxed mb-6">
@@ -451,7 +451,7 @@ export default function RestaurantLandingPage() {
                 <div>
                   <p className="font-semibold text-slate-800 text-sm">Bot nie rezerwuje stolika za Ciebie</p>
                   <p className="text-slate-500 text-xs mt-0.5 leading-relaxed">
-                    Zbiera preferencje i kontakt, a potwierdzenie wysyłasz Ty — bo to Ty wiesz, które stoliki są wolne.
+                    Zbiera preferencje i kontakt, a potwierdzenie wysyłasz Ty, bo to Ty wiesz, które stoliki są wolne.
                   </p>
                 </div>
               </div>
@@ -487,7 +487,7 @@ export default function RestaurantLandingPage() {
               Jak to działa
             </p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text">
-              Od rejestracji do działającego bota — w jeden dzień
+              Od rejestracji do działającego bota, w jeden dzień
             </h2>
           </div>
 
@@ -502,7 +502,7 @@ export default function RestaurantLandingPage() {
                 {
                   step: '01',
                   title: 'Rejestracja i wybór branży',
-                  text: 'Zakładasz konto, wybierasz „Restauracja / bistro" — dostajesz gotowy szablon z typowymi pytaniami dla gastronomii: alergeny, rezerwacje, eventy.',
+                  text: 'Zakładasz konto, wybierasz „Restauracja / bistro", dostajesz gotowy szablon z typowymi pytaniami dla gastronomii: alergeny, rezerwacje, eventy.',
                 },
                 {
                   step: '02',
@@ -512,7 +512,7 @@ export default function RestaurantLandingPage() {
                 {
                   step: '03',
                   title: 'Wstawiasz widget na stronę',
-                  text: 'Natywna instalacja na WordPress (5 minut przez wtyczkę WPCode) lub jeden tag HTML na dowolną inną stronę. Widget pojawia się w rogu — pasuje kolorystycznie do Twojej restauracji.',
+                  text: 'Natywna instalacja na WordPress (5 minut przez wtyczkę WPCode) lub jeden tag HTML na dowolną inną stronę. Widget pojawia się w rogu, pasuje kolorystycznie do Twojej restauracji.',
                 },
                 {
                   step: '04',
@@ -579,7 +579,7 @@ export default function RestaurantLandingPage() {
           </div>
 
           <p className="mt-5 text-center text-xs text-slate-400">
-            * Szacunki orientacyjne. Bot zamienia pytania gości w leady — stolik potwierdzasz Ty. Event urodzinowy dla 25 os. to 2000–4000 zł przychodu.
+            * Szacunki orientacyjne. Bot zamienia pytania gości w leady, stolik potwierdzasz Ty. Event urodzinowy dla 25 os. to 2000-4000 zł przychodu.
           </p>
         </div>
       </section>
@@ -741,7 +741,7 @@ export default function RestaurantLandingPage() {
 
             <div className="relative">
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight mb-4">
-                Zacznij dziś — bot działa już jutro rano
+                Zacznij dziś, bot działa już jutro rano
               </h2>
               <p className="text-orange-100 text-base mb-8 max-w-xl mx-auto">
                 14 dni za darmo. Bez karty kredytowej. Bez umowy. Konfiguracja menu i FAQ w ~15 minut.

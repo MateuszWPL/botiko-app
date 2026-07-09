@@ -104,8 +104,8 @@ export default function ForgotPasswordPage() {
 
       <AuthLeftPanel
         headline="Zdarza się"
-        sub="Wyślemy Ci link — nowe hasło ustawisz w kilka sekund."
-        badge="14 dni za darmo — bez karty"
+        sub="Wyślemy Ci link, nowe hasło ustawisz w kilka sekund."
+        badge="14 dni za darmo, bez karty"
       />
     </main>
   );

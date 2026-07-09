@@ -8,12 +8,12 @@ import { SITE_URL, breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 const URL = `${SITE_URL}/narzedzia/kalkulator-utraconych-klientow`;
 
 export const metadata: Metadata = {
-  title: 'Kalkulator utraconych klientów — ile tracisz przez brak odpowiedzi',
+  title: 'Kalkulator utraconych klientów, ile tracisz przez brak odpowiedzi',
   description:
     'Darmowy kalkulator: oblicz, ile pieniędzy miesięcznie i rocznie tracisz, gdy nie odpisujesz na wiadomości klientów na czas. Bez logowania.',
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Kalkulator utraconych klientów — Botiko',
+    title: 'Kalkulator utraconych klientów. Botiko',
     description:
       'Oblicz stratę z nieodebranych wiadomości klientów. Za darmo, bez logowania.',
     url: URL,
@@ -32,7 +32,7 @@ const FAQS = [
   },
   {
     q: 'Jak zmniejszyć tę stratę?',
-    a: 'Bot obsługi klienta odpowiada natychmiast 24/7 i zbiera kontakt, nawet gdy pracujesz lub śpisz. Botiko kosztuje 99 zł miesięcznie — zwykle ułamek straty pokazywanej przez ten kalkulator.',
+    a: 'Bot obsługi klienta odpowiada natychmiast 24/7 i zbiera kontakt, nawet gdy pracujesz lub śpisz. Botiko kosztuje 99 zł miesięcznie, zwykle ułamek straty pokazywanej przez ten kalkulator.',
   },
 ];
 
@@ -82,7 +82,7 @@ export default function LostClientsToolPage() {
             Wiele firm usługowych traci klientów nie przez ceny, lecz przez brak
             szybkiej odpowiedzi. Klient pisze wieczorem, nie dostaje odpowiedzi i
             rezerwuje gdzie indziej. Ten kalkulator szacuje, ile Cię to kosztuje
-            miesięcznie i rocznie — wpisz swoje dane poniżej.
+            miesięcznie i rocznie, wpisz swoje dane poniżej.
           </p>
         </div>
       </section>
@@ -93,7 +93,7 @@ export default function LostClientsToolPage() {
         </div>
       </section>
 
-      {/* How it works (text for SEO/GEO — content the calculator's JS can't expose) */}
+      {/* How it works (text for SEO/GEO, content the calculator's JS can't expose) */}
       <section className="py-12 bg-bg">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <h2 className="text-2xl font-extrabold text-text mb-5">Jak działa ten kalkulator</h2>
@@ -105,7 +105,7 @@ export default function LostClientsToolPage() {
             </p>
             <p>
               Przykład: 10 zapytań tygodniowo, 20% gotowych kupić, klient wart 200 zł →
-              około 8–9 utraconych klientów i ~1 700 zł miesięcznie. Bot obsługi klienta
+              około 8-9 utraconych klientów i ~1 700 zł miesięcznie. Bot obsługi klienta
               za 99 zł/mies. odpowiada od razu i zbiera kontakt, więc te wiadomości nie
               przepadają.
             </p>

@@ -13,11 +13,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Botiko.pl — Bot obsługi klienta 24/7',
+    default: 'Botiko.pl. Bot obsługi klienta 24/7',
     template: '%s | Botiko.pl',
   },
   description:
-    'Botiko to bot obsługi klienta, który odpowiada na pytania 24/7, zbiera leady i odsyła do rezerwacji. Dla firm usługowych w Polsce — z gotowymi szablonami branżowymi.',
+    'Botiko to bot obsługi klienta, który odpowiada na pytania 24/7, zbiera leady i odsyła do rezerwacji. Dla firm usługowych w Polsce, z gotowymi szablonami branżowymi.',
   keywords: [
     'bot obsługi klienta',
     'bot na stronę internetową',
@@ -44,21 +44,21 @@ export const metadata: Metadata = {
     locale: 'pl_PL',
     url: '/',
     siteName: 'Botiko.pl',
-    title: 'Botiko.pl — Bot obsługi klienta 24/7',
+    title: 'Botiko.pl. Bot obsługi klienta 24/7',
     description:
-      'Klienci piszą po godzinach. Bot odpowiada za Ciebie. 1 klient = 150–300 zł. Bot = 99 zł/mies.',
+      'Klienci piszą po godzinach. Bot odpowiada za Ciebie. 1 klient = 150-300 zł. Bot = 99 zł/mies.',
     images: [
       {
         url: '/opengraph-image.png',
         width: 1200,
         height: 630,
-        alt: 'Botiko.pl — Bot obsługi klienta 24/7',
+        alt: 'Botiko.pl. Bot obsługi klienta 24/7',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Botiko.pl — Bot obsługi klienta 24/7',
+    title: 'Botiko.pl. Bot obsługi klienta 24/7',
     description:
       'Klienci piszą o 22:00. Bot odpowiada za Ciebie.',
     images: ['/opengraph-image.png'],

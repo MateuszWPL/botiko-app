@@ -2,7 +2,7 @@ import { FAQ, type FAQItem } from '@/components/blog/mdx/FAQ';
 
 /**
  * Buyer-intent FAQ block for the industry landing pages (/dla/*).
- * Renders the shared accordion with `withSchema={false}` — the page itself
+ * Renders the shared accordion with `withSchema={false}`, the page itself
  * emits the FAQPage JSON-LD via `faqPageSchema()` so structured data isn't
  * double-declared (single source of truth, like the city pages).
  */

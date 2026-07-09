@@ -1,6 +1,6 @@
 import ScrollReveal from './ScrollReveal';
 
-// Dzwonek powiadomień — "Tracisz klientów o 22:00" (cisza, brak odpowiedzi)
+// Dzwonek powiadomień, "Tracisz klientów o 22:00" (cisza, brak odpowiedzi)
 const BellMissed = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -9,7 +9,7 @@ const BellMissed = () => (
   </svg>
 );
 
-// Telefon dzwoniący z łukami — "Odbierasz zamiast pracować"
+// Telefon dzwoniący z łukami, "Odbierasz zamiast pracować"
 const PhoneRinging = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94" />
@@ -17,7 +17,7 @@ const PhoneRinging = () => (
   </svg>
 );
 
-// Zegar — "Konkurencja jest online 24/7" (user: zegarek jest ok)
+// Zegar, "Konkurencja jest online 24/7" (user: zegarek jest ok)
 const ClockIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
@@ -30,7 +30,7 @@ const PAINS = [
     Icon: BellMissed,
     title: 'Tracisz klientów o 22:00',
     description:
-      'Klient pisze przez Twoją stronę o 22:14 — bez odpowiedzi do rana. Wybiera konkurencję, która odpowiedziała w 30 sekund.',
+      'Klient pisze przez Twoją stronę o 22:14, bez odpowiedzi do rana. Wybiera konkurencję, która odpowiedziała w 30 sekund.',
     stat: 'Minuty',
     statLabel: 'tyle wystarczy, żeby klient poszedł do konkurencji',
     color: '#EC4899',
@@ -52,9 +52,9 @@ const PAINS = [
     Icon: ClockIcon,
     title: 'Konkurencja jest online 24/7',
     description:
-      'Sąsiedni salon, warsztat czy restauracja ma bota na stronie. Klient pisze o 23:00 — ta firma dostaje rezerwację, Ty nie.',
+      'Sąsiedni salon, warsztat czy restauracja ma bota na stronie. Klient pisze o 23:00, ta firma dostaje rezerwację, Ty nie.',
     stat: '1 klient',
-    statLabel: '= 150–300 zł. Bot kosztuje 99 zł/mies.',
+    statLabel: '= 150-300 zł. Bot kosztuje 99 zł/mies.',
     color: '#F97316',
     bg: '#FFF7ED',
     border: '#FED7AA',

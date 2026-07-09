@@ -31,7 +31,7 @@ export async function generateMetadata({
 
   const { industry, city } = page;
   const url = `${SITE_URL}/dla/${industry.slug}/${city.slug}`;
-  const title = `Bot dla ${industry.labelGenitive} ${city.name} — odpowiada klientom 24/7`;
+  const title = `Bot dla ${industry.labelGenitive} ${city.name}, odpowiada klientom 24/7`;
   const description = `Botiko dla ${industry.labelGenitive} ${city.inLocative}: odpowiada na pytania klientów 24/7, zbiera kontakt i odsyła do rezerwacji. 99 zł/mies., 14 dni za darmo.`;
 
   return {
@@ -153,7 +153,7 @@ export default function LocalLandingPage({ params }: { params: Params }) {
               Jak bot odpowiada klientom {city.inLocative}
             </h2>
             <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
-              Bot odpowiada na podstawie Twojego cennika i wiedzy — nie zgaduje.
+              Bot odpowiada na podstawie Twojego cennika i wiedzy, nie zgaduje.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-5">
@@ -250,7 +250,7 @@ export default function LocalLandingPage({ params }: { params: Params }) {
       <section className="py-16 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-text mb-6">
-            Najczęstsze pytania — {industry.label} {city.inLocative}
+            Najczęstsze pytania, {industry.label} {city.inLocative}
           </h2>
           <div className="flex flex-col gap-3">
             {faqs.map((faq) => (

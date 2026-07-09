@@ -46,11 +46,11 @@ const INDUSTRIES = [
     color: '#EC4899',
     bg: '#FDF2F8',
     headline: 'Bot dla salonu urody',
-    description: 'Manicure, stylizacja rzęs, brwi — bot odpowiada na pytania o usługi i ceny, zbiera leady nawet o 23:00.',
+    description: 'Manicure, stylizacja rzęs, brwi, bot odpowiada na pytania o usługi i ceny, zbiera leady nawet o 23:00.',
     features: ['Odpowiada na pytania o cennik i czas zabiegu', 'Zbiera dane klientki (imię, telefon, email)', 'Podpowiada gdzie zapisać się online (link do Booksy / Twojego systemu)', 'Obsługuje pytania o promocje i pakiety', 'Przypomina o godzinach otwarcia salonu'],
     sample: [
       { role: 'user', text: 'Ile kosztuje manicure hybrydowy?' },
-      { role: 'bot', text: 'Manicure hybrydowy to 90 zł. Czas ok. 75 min. Chcesz się zapisać? Podaj imię i numer — rano sprawdzimy wolne godziny i oddzwonimy z propozycją.' },
+      { role: 'bot', text: 'Manicure hybrydowy to 90 zł. Czas ok. 75 min. Chcesz się zapisać? Podaj imię i numer, rano sprawdzimy wolne godziny i oddzwonimy z propozycją.' },
     ],
   },
   {
@@ -61,11 +61,11 @@ const INDUSTRIES = [
     color: '#06B6D4',
     bg: '#ECFEFF',
     headline: 'Bot dla gabinetu medycznego',
-    description: 'Fizjoterapia, kosmetologia, stomatologia — bot odpowiada na pytania o zabiegi, zbiera dane pacjentów.',
+    description: 'Fizjoterapia, kosmetologia, stomatologia, bot odpowiada na pytania o zabiegi, zbiera dane pacjentów.',
     features: ['Odpowiada na pytania o zabiegi i ceny', 'Wyjaśnia wymagania przed wizytą', 'Zbiera dane pacjenta (imię, telefon, opis problemu)', 'Podsyła link do rejestracji online, jeśli masz', 'Informuje o specjalistach i godzinach pracy'],
     sample: [
       { role: 'user', text: 'Czy przyjmujecie bez skierowania na fizjo?' },
-      { role: 'bot', text: 'Tak, bez skierowania. Pierwsza wizyta 60 min / 150 zł. Zostaw imię, telefon i krótki opis problemu — terapeuta oddzwoni po zabiegu z wolnym terminem.' },
+      { role: 'bot', text: 'Tak, bez skierowania. Pierwsza wizyta 60 min / 150 zł. Zostaw imię, telefon i krótki opis problemu, terapeuta oddzwoni po zabiegu z wolnym terminem.' },
     ],
   },
   {
@@ -76,11 +76,11 @@ const INDUSTRIES = [
     color: '#F97316',
     bg: '#FFF7ED',
     headline: 'Bot dla restauracji',
-    description: 'Menu, godziny, pytania o alergie — bot obsługuje gości nawet gdy jesteś w kuchni.',
+    description: 'Menu, godziny, pytania o alergie, bot obsługuje gości nawet gdy jesteś w kuchni.',
     features: ['Informuje o menu i specjalnościach dnia', 'Zbiera zapytania o rezerwacje (imię, liczba osób, godzina) do potwierdzenia przez obsługę', 'Odpowiada na pytania o alergie i składniki', 'Informuje o godzinach i lokalizacji', 'Podsyła link do systemu rezerwacji online, jeśli masz'],
     sample: [
       { role: 'user', text: 'Czy przyjmujecie rezerwacje na jutro wieczór dla 6 osób?' },
-      { role: 'bot', text: 'Zostaw imię, numer telefonu i preferowaną godzinę — obsługa oddzwoni z potwierdzeniem, jak tylko skończy się szczyt serwisu.' },
+      { role: 'bot', text: 'Zostaw imię, numer telefonu i preferowaną godzinę, obsługa oddzwoni z potwierdzeniem, jak tylko skończy się szczyt serwisu.' },
     ],
   },
   {
@@ -91,11 +91,11 @@ const INDUSTRIES = [
     color: '#64748B',
     bg: '#F8FAFC',
     headline: 'Bot dla warsztatu',
-    description: 'Wyceny, usługi, terminy — bot odpowiada i zbiera leady gdy Ty naprawiasz auto.',
+    description: 'Wyceny, usługi, terminy, bot odpowiada i zbiera leady gdy Ty naprawiasz auto.',
     features: ['Odpowiada na pytania o usługi i ceny', 'Zbiera dane pojazdu i właściciela (marka, rocznik, problem)', 'Informuje o przybliżonym czasie naprawy', 'Obsługuje pytania o gwarancje i promocje', 'Zna godziny pracy warsztatu'],
     sample: [
       { role: 'user', text: 'Ile kosztuje wymiana oleju i kiedy możecie przyjąć?' },
-      { role: 'bot', text: 'Wymiana oleju: 120–180 zł, czas ~45 min. Pracujemy pn.–pt. 8:00–17:00. Zostaw imię, telefon i markę pojazdu — rano oddzwonimy z wolnym terminem.' },
+      { role: 'bot', text: 'Wymiana oleju: 120-180 zł, czas ~45 min. Pracujemy pn.-pt. 8:00-17:00. Zostaw imię, telefon i markę pojazdu, rano oddzwonimy z wolnym terminem.' },
     ],
   },
   {
@@ -106,11 +106,11 @@ const INDUSTRIES = [
     color: '#6366F1',
     bg: '#EEF2FF',
     headline: 'Bot dla każdej firmy usługowej',
-    description: 'Szkoła tańca, studio jogi, fotograf — tworzysz szablon w 15 minut wgrywając własne FAQ.',
+    description: 'Szkoła tańca, studio jogi, fotograf, tworzysz szablon w 15 minut wgrywając własne FAQ.',
     features: ['W pełni konfigurowalny szablon', 'Wgrywasz własne FAQ i cennik', 'Dostosowujesz styl komunikacji', 'Zbiera leady (imię, email, telefon)', 'Wsparcie przy konfiguracji gratis'],
     sample: [
       { role: 'user', text: 'Czy prowadzicie zajęcia dla początkujących?' },
-      { role: 'bot', text: 'Tak! Mamy kurs dla zupełnych początkujących 🌟 Zajęcia pn. i śr. o 18:00. Zainteresowany? Wpisz imię i numer — wyślemy szczegóły!' },
+      { role: 'bot', text: 'Tak! Mamy kurs dla zupełnych początkujących 🌟 Zajęcia pn. i śr. o 18:00. Zainteresowany? Wpisz imię i numer, wyślemy szczegóły!' },
     ],
   },
 ];
@@ -138,7 +138,7 @@ export default function Industries() {
             <span className="gradient-text">Twojej branży</span>
           </h2>
           <p className="mt-4 text-lg text-slate-500 max-w-2xl mx-auto">
-            Wybierz branżę — bot dostaje gotową wiedzę i styl komunikacji.
+            Wybierz branżę, bot dostaje gotową wiedzę i styl komunikacji.
           </p>
         </ScrollReveal>
 
@@ -169,7 +169,7 @@ export default function Industries() {
           })}
         </ScrollReveal>
 
-        {/* Content panel with fade transition — inline transition so opacity+color change together */}
+        {/* Content panel with fade transition, inline transition so opacity+color change together */}
         <div
           className="rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
           style={{
@@ -180,7 +180,7 @@ export default function Industries() {
           }}
         >
           <div className="grid lg:grid-cols-2">
-            {/* Left — info */}
+            {/* Left, info */}
             <div className="p-8 lg:p-12">
               <div
                 className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
@@ -233,7 +233,7 @@ export default function Industries() {
               </div>
             </div>
 
-            {/* Right — chat preview */}
+            {/* Right, chat preview */}
             <div className="p-8 lg:p-12 flex items-center">
               <div className="w-full bg-white rounded-2xl shadow-md overflow-hidden border border-slate-100">
                 <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-100">

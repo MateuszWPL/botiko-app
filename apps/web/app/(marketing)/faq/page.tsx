@@ -6,14 +6,14 @@ import { ALL_FAQS, FAQ_GROUPS, HOME_FAQS } from '@/lib/faq';
 import { faqPageSchema, breadcrumbListSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'FAQ — najczęstsze pytania o bocie obsługi klienta',
+  title: 'FAQ, najczęstsze pytania o bocie obsługi klienta',
   description:
     'Odpowiedzi na najczęstsze pytania o Botiko: ile kosztuje bot, jak działa na WordPress, czy zastąpi recepcjonistkę, co z RODO i jak szybko go uruchomisz.',
   alternates: { canonical: 'https://botiko.pl/faq' },
   openGraph: {
-    title: 'FAQ — najczęstsze pytania o Botiko',
+    title: 'FAQ, najczęstsze pytania o Botiko',
     description:
-      'Cena, wdrożenie, RODO, WordPress — wszystko co musisz wiedzieć przed uruchomieniem bota obsługi klienta.',
+      'Cena, wdrożenie, RODO, WordPress, wszystko co musisz wiedzieć przed uruchomieniem bota obsługi klienta.',
     url: 'https://botiko.pl/faq',
     type: 'website',
   },
@@ -55,7 +55,7 @@ export default function FaqPage() {
             Najczęstsze pytania o Botiko
           </h1>
           <p className="text-indigo-200 text-lg leading-relaxed max-w-2xl">
-            Cena, wdrożenie, bezpieczeństwo danych i WordPress — krótkie, konkretne
+            Cena, wdrożenie, bezpieczeństwo danych i WordPress, krótkie, konkretne
             odpowiedzi. Nie znalazłeś swojego pytania?{' '}
             <a href="mailto:kontakt@botiko.pl" className="text-white underline hover:no-underline">
               Napisz do nas

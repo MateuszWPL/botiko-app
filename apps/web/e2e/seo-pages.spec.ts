@@ -20,7 +20,7 @@ const PAGES_WITH_H1 = [
   '/dla/warsztat-mechaniczny/krakow',
 ];
 
-test.describe('SEO/GEO pages — render', () => {
+test.describe('SEO/GEO pages, render', () => {
   for (const path of PAGES_WITH_H1) {
     test(`${path} renderuje się (200) z H1`, async ({ page }) => {
       const res = await page.goto(path);
@@ -34,7 +34,7 @@ test.describe('SEO/GEO pages — render', () => {
   }
 });
 
-test.describe('SEO/GEO — structured data + tools', () => {
+test.describe('SEO/GEO, structured data + tools', () => {
   test('/faq zawiera FAQPage JSON-LD', async ({ page }) => {
     await page.goto('/faq');
     const ld = page.locator('script[type="application/ld+json"]');
@@ -60,7 +60,7 @@ test.describe('SEO/GEO — structured data + tools', () => {
     await expect(slider).toBeVisible();
     await slider.focus();
     await page.keyboard.press('ArrowRight');
-    // No assertion on exact value — just that interaction doesn't crash the page.
+    // No assertion on exact value, just that interaction doesn't crash the page.
     await expect(page.locator('body')).not.toContainText('TypeError');
   });
 });

@@ -288,7 +288,7 @@ function TabProfil({
         </div>
       </SectionCard>
 
-      <SectionCard title="Godziny otwarcia" subtitle="Informacyjne — bot odpowiada 24/7, ale informuje klientów o godzinach.">
+      <SectionCard title="Godziny otwarcia" subtitle="Informacyjne, bot odpowiada 24/7, ale informuje klientów o godzinach.">
         <div className="space-y-3">
           {form.schedule.map((day, idx) => {
             const isAllDay = day.enabled && day.end >= 24;
@@ -424,7 +424,7 @@ function TabWyglad({
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) {
-      toast.error('Plik za duży — maks. 2 MB');
+      toast.error('Plik za duży, maks. 2 MB');
       return;
     }
     setUploading(true);
@@ -452,7 +452,7 @@ function TabWyglad({
 
   return (
     <div className="flex gap-6">
-      {/* Left column — settings */}
+      {/* Left column, settings */}
       <div className="flex-1 space-y-4 min-w-0">
         <SectionCard title="Kolor akcentu">
           <div className="flex items-center gap-2 flex-wrap">
@@ -631,7 +631,7 @@ function TabWyglad({
         </SectionCard>
       </div>
 
-      {/* Right column — live preview */}
+      {/* Right column, live preview */}
       <div className="hidden xl:flex flex-col items-center gap-3 pt-1 flex-shrink-0">
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide">Podgląd na żywo</p>
         <WidgetPreview
@@ -695,7 +695,7 @@ function TabDomeny({
 
   return (
     <div className="max-w-2xl space-y-4">
-      <SectionCard title="Dozwolone domeny" subtitle="Widget działa tylko na tych domenach — zabezpieczenie przed kradzieżą bota przez konkurencję.">
+      <SectionCard title="Dozwolone domeny" subtitle="Widget działa tylko na tych domenach, zabezpieczenie przed kradzieżą bota przez konkurencję.">
         {form.allowedDomains.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-1">
             {form.allowedDomains.map((d, i) => (
@@ -735,7 +735,7 @@ function TabDomeny({
         <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl">
           <TriangleAlert className="w-4 h-4 text-amber-500 flex-shrink-0" />
           <p className="text-xs text-amber-700">
-            <strong>Pamiętaj o obu wariantach</strong> — jeśli dodasz <code>salonkasi.pl</code>, dodaj też <code>www.salonkasi.pl</code>.
+            <strong>Pamiętaj o obu wariantach</strong>, jeśli dodasz <code>salonkasi.pl</code>, dodaj też <code>www.salonkasi.pl</code>.
           </p>
         </div>
       </SectionCard>
@@ -814,7 +814,7 @@ function TabKonto({
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            placeholder={accountLoaded ? 'Wpisz swoje imię…' : 'Ładowanie…'}
+            placeholder={accountLoaded ? 'Wpisz swoje imię...' : 'Ładowanie...'}
             disabled={!accountLoaded}
             maxLength={50}
             className={inputClass}
@@ -933,7 +933,7 @@ function TabKonto({
         </div>
         <p className="flex items-center gap-1.5 text-xs text-amber-600">
           <Lightbulb className="w-3.5 h-3.5 flex-shrink-0" />
-          Zmiana branży przełącza szablon promptu i domyślne sugerowane pytania — Twoja baza wiedzy zostaje nietknięta.
+          Zmiana branży przełącza szablon promptu i domyślne sugerowane pytania. Twoja baza wiedzy zostaje nietknięta.
         </p>
       </SectionCard>
     </div>
@@ -983,7 +983,7 @@ export function SettingsForm({ bot }: { bot: BotData }) {
   const [activeTab, setActiveTab] = useState<TabId>('konto');
   const [saving, setSaving] = useState(false);
 
-  // Imię użytkownika żyje w Supabase Auth (nie w bocie) — ładowane osobno,
+  // Imię użytkownika żyje w Supabase Auth (nie w bocie), ładowane osobno,
   // ale zapisywane wspólnym przyciskiem razem z polami bota i branżą.
   const [firstName, setFirstName] = useState('');
   const [initialFirstName, setInitialFirstName] = useState('');
@@ -1018,7 +1018,7 @@ export function SettingsForm({ bot }: { bot: BotData }) {
     const supabase = createClient();
     const token = await getAccessToken();
     if (!token) {
-      toast.error('Sesja wygasła — odśwież stronę i zaloguj się ponownie');
+      toast.error('Sesja wygasła, odśwież stronę i zaloguj się ponownie');
       setSaving(false);
       return;
     }
@@ -1058,7 +1058,7 @@ export function SettingsForm({ bot }: { bot: BotData }) {
 
       if (!res.ok) throw new Error('Save failed');
 
-      // Branża żyje na tenancie — osobny endpoint, patchowany tylko gdy zmieniona.
+      // Branża żyje na tenancie, osobny endpoint, patchowany tylko gdy zmieniona.
       if (form.industry && form.industry !== initial.industry) {
         const tenantRes = await fetch(`${API_URL}/api/v1/tenant/me`, {
           method: 'PATCH',
@@ -1071,7 +1071,7 @@ export function SettingsForm({ bot }: { bot: BotData }) {
         if (!tenantRes.ok) throw new Error('Save failed');
       }
 
-      // Imię użytkownika — Supabase Auth, patchowane tylko gdy zmienione.
+      // Imię użytkownika. Supabase Auth, patchowane tylko gdy zmienione.
       if (firstName.trim() !== initialFirstName) {
         const { error } = await supabase.auth.updateUser({
           data: { full_name: firstName.trim() },
@@ -1129,7 +1129,7 @@ export function SettingsForm({ bot }: { bot: BotData }) {
         {activeTab === 'domeny' && <TabDomeny form={form} setForm={setForm} />}
       </div>
 
-      {/* Footer actions — wspólny zapis dla wszystkich zakładek */}
+      {/* Footer actions, wspólny zapis dla wszystkich zakładek */}
       <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
         <button
           onClick={handleCancel}
@@ -1144,7 +1144,7 @@ export function SettingsForm({ bot }: { bot: BotData }) {
           className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white font-medium rounded-xl text-sm transition-all shadow-sm shadow-indigo-200 cursor-pointer disabled:cursor-default"
         >
           {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-          {saving ? 'Zapisywanie…' : 'Zapisz zmiany'}
+          {saving ? 'Zapisywanie...' : 'Zapisz zmiany'}
         </button>
       </div>
     </div>

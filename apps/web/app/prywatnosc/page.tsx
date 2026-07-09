@@ -45,19 +45,19 @@ export default function PrywatnoScPage() {
               W ramach korzystania z platformy Botiko.pl przetwarzamy następujące dane:
             </p>
             <ul className="text-slate-600 text-sm leading-relaxed list-disc pl-5 space-y-1">
-              <li><strong>Dane rejestracyjne:</strong> adres e-mail, nazwa firmy, wybrana branża — niezbędne do założenia i obsługi konta.</li>
-              <li><strong>Dane kontaktowe klientów końcowych (leady):</strong> imię i numer telefonu — zbierane przez widget bota, gdy użytkownik dobrowolnie je poda po wyrażeniu zgody RODO. Dane te są szyfrowane (AES-256) przed zapisem w bazie danych.</li>
-              <li><strong>Historia rozmów:</strong> treść wiadomości przesłanych przez widget bota — służy do wyświetlania historii w panelu właściciela i poprawy jakości odpowiedzi.</li>
-              <li><strong>Dane płatnicze:</strong> płatności obsługuje Stripe — Botiko.pl nie przechowuje danych kart płatniczych. Stripe przetwarza dane zgodnie z własną polityką prywatności.</li>
-              <li><strong>Dane techniczne:</strong> adres IP, logi dostępu — w celach bezpieczeństwa i diagnostycznych.</li>
+              <li><strong>Dane rejestracyjne:</strong> adres e-mail, nazwa firmy, wybrana branża, niezbędne do założenia i obsługi konta.</li>
+              <li><strong>Dane kontaktowe klientów końcowych (leady):</strong> imię i numer telefonu, zbierane przez widget bota, gdy użytkownik dobrowolnie je poda po wyrażeniu zgody RODO. Dane te są szyfrowane (AES-256) przed zapisem w bazie danych.</li>
+              <li><strong>Historia rozmów:</strong> treść wiadomości przesłanych przez widget bota, służy do wyświetlania historii w panelu właściciela i poprawy jakości odpowiedzi.</li>
+              <li><strong>Dane płatnicze:</strong> płatności obsługuje Stripe. Botiko.pl nie przechowuje danych kart płatniczych. Stripe przetwarza dane zgodnie z własną polityką prywatności.</li>
+              <li><strong>Dane techniczne:</strong> adres IP, logi dostępu, w celach bezpieczeństwa i diagnostycznych.</li>
             </ul>
           </section>
 
           <section className="mb-8">
             <h2 className="text-xl font-bold text-slate-900 mb-3">3. Podstawa prawna i cel przetwarzania</h2>
             <ul className="text-slate-600 text-sm leading-relaxed list-disc pl-5 space-y-2">
-              <li><strong>Wykonanie umowy (art. 6 ust. 1 lit. b RODO):</strong> dane rejestracyjne i płatnicze — przetwarzane w celu świadczenia usługi Botiko.pl.</li>
-              <li><strong>Zgoda (art. 6 ust. 1 lit. a RODO):</strong> dane kontaktowe klientów końcowych (imię, telefon) — zbierane wyłącznie po wyrażeniu wyraźnej zgody przez użytkownika widgetu. Zgoda jest dobrowolna i może być wycofana w każdej chwili.</li>
+              <li><strong>Wykonanie umowy (art. 6 ust. 1 lit. b RODO):</strong> dane rejestracyjne i płatnicze, przetwarzane w celu świadczenia usługi Botiko.pl.</li>
+              <li><strong>Zgoda (art. 6 ust. 1 lit. a RODO):</strong> dane kontaktowe klientów końcowych (imię, telefon), zbierane wyłącznie po wyrażeniu wyraźnej zgody przez użytkownika widgetu. Zgoda jest dobrowolna i może być wycofana w każdej chwili.</li>
               <li><strong>Uzasadniony interes administratora (art. 6 ust. 1 lit. f RODO):</strong> logi techniczne, bezpieczeństwo systemu, zapobieganie nadużyciom.</li>
             </ul>
           </section>
@@ -68,10 +68,10 @@ export default function PrywatnoScPage() {
               Twoje dane możemy przekazywać wyłącznie zaufanym podwykonawcom technicznym w celu świadczenia usługi:
             </p>
             <ul className="text-slate-600 text-sm leading-relaxed list-disc pl-5 space-y-1">
-              <li><strong>Supabase Inc.</strong> (infrastruktura bazy danych) — serwery w regionie EU (Frankfurt). Więcej: supabase.com/privacy</li>
-              <li><strong>Stripe Inc.</strong> (płatności) — przetwarza dane kart i faktur. Więcej: stripe.com/privacy</li>
-              <li><strong>Resend Inc.</strong> (wysyłka powiadomień e-mail) — tylko adres e-mail właściciela konta.</li>
-              <li><strong>OpenAI Inc.</strong> (przetwarzanie języka naturalnego) — treść wiadomości jest przekazywana do OpenAI w celu generowania odpowiedzi. OpenAI nie trenuje modeli na Twoich danych na podstawie domyślnej umowy API.</li>
+              <li><strong>Supabase Inc.</strong> (infrastruktura bazy danych), serwery w regionie EU (Frankfurt). Więcej: supabase.com/privacy</li>
+              <li><strong>Stripe Inc.</strong> (płatności), przetwarza dane kart i faktur. Więcej: stripe.com/privacy</li>
+              <li><strong>Resend Inc.</strong> (wysyłka powiadomień e-mail), tylko adres e-mail właściciela konta.</li>
+              <li><strong>OpenAI Inc.</strong> (przetwarzanie języka naturalnego), treść wiadomości jest przekazywana do OpenAI w celu generowania odpowiedzi. OpenAI nie trenuje modeli na Twoich danych na podstawie domyślnej umowy API.</li>
             </ul>
             <p className="text-slate-600 text-sm leading-relaxed mt-3">
               Botiko.pl nie sprzedaje danych osobowych i nie udostępnia ich reklamodawcom.
@@ -81,10 +81,10 @@ export default function PrywatnoScPage() {
           <section className="mb-8">
             <h2 className="text-xl font-bold text-slate-900 mb-3">5. Okres przechowywania danych</h2>
             <ul className="text-slate-600 text-sm leading-relaxed list-disc pl-5 space-y-1">
-              <li>Dane konta — przez czas trwania subskrypcji + 30 dni po jej zakończeniu (umożliwia reaktywację).</li>
-              <li>Dane leadów — do momentu usunięcia przez właściciela konta lub przez 2 lata od daty zebrania.</li>
-              <li>Historia rozmów — 1 rok od daty rozmowy.</li>
-              <li>Logi techniczne — do 90 dni.</li>
+              <li>Dane konta, przez czas trwania subskrypcji + 30 dni po jej zakończeniu (umożliwia reaktywację).</li>
+              <li>Dane leadów, do momentu usunięcia przez właściciela konta lub przez 2 lata od daty zebrania.</li>
+              <li>Historia rozmów, 1 rok od daty rozmowy.</li>
+              <li>Logi techniczne, do 90 dni.</li>
             </ul>
           </section>
 
@@ -100,7 +100,7 @@ export default function PrywatnoScPage() {
               <li>Prawo ograniczenia przetwarzania.</li>
               <li>Prawo przenoszenia danych.</li>
               <li>Prawo sprzeciwu wobec przetwarzania opartego na uzasadnionym interesie.</li>
-              <li>Prawo wycofania zgody — w każdej chwili, bez wpływu na zgodność przetwarzania sprzed wycofania.</li>
+              <li>Prawo wycofania zgody, w każdej chwili, bez wpływu na zgodność przetwarzania sprzed wycofania.</li>
             </ul>
             <p className="text-slate-600 text-sm leading-relaxed mt-3">
               Aby skorzystać z praw, napisz na:{' '}
@@ -124,7 +124,7 @@ export default function PrywatnoScPage() {
               Botiko.pl używa cookies niezbędnych do działania sesji użytkownika (autentykacja) oraz technicznych.
               Nie używamy cookies analitycznych ani reklamowych w obecnej wersji produktu.
               Widget embeddowany na stronach klientów Botiko.pl może przechowywać dane sesji rozmowy w sessionStorage
-              przeglądarki użytkownika — dane te są usuwane po zamknięciu karty.
+              przeglądarki użytkownika, dane te są usuwane po zamknięciu karty.
             </p>
           </section>
 
@@ -132,7 +132,7 @@ export default function PrywatnoScPage() {
             <h2 className="text-xl font-bold text-slate-900 mb-3">9. Umowa powierzenia przetwarzania danych (DPA)</h2>
             <p className="text-slate-600 text-sm leading-relaxed">
               Jeśli Twoja firma przetwarza dane osobowe przy użyciu Botiko.pl (np. leady od klientów) i jesteś zobowiązany
-              do posiadania umowy powierzenia przetwarzania z podwykonawcami — możemy podpisać DPA.
+              do posiadania umowy powierzenia przetwarzania z podwykonawcami, możemy podpisać DPA.
               Napisz na:{' '}
               <a href="mailto:kontakt@botiko.pl" className="text-brand hover:underline">kontakt@botiko.pl</a>.
             </p>

@@ -102,7 +102,7 @@ export default function DownloadPdf({
         Bezpłatny szablon · Format A4 · Gotowy do wklejenia w panelu Botiko
       </p>
 
-      {/* Ukryty szablon PDF — pozycja stała poza ekranem */}
+      {/* Ukryty szablon PDF, pozycja stała poza ekranem */}
       <div
         style={{
           position: 'fixed',

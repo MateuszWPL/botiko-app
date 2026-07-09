@@ -1,5 +1,5 @@
 ---
-title: "Botiko dla WordPress — pełny przewodnik 2026"
+title: "Botiko dla WordPress, pełny przewodnik 2026"
 excerpt: "Zainstaluj bota Botiko na WordPress oficjalną wtyczką z katalogu WordPress.org. Kompatybilność z WooCommerce, Elementorem i Yoastem. Sprawdź, jak to zrobić krok po kroku."
 date: "2026-05-06"
 updatedAt: "2026-07-06"
@@ -16,17 +16,17 @@ authorTitle: "Twórca Botiko"
 image: "/blog/botiko-dla-wordpress-hero.jpg"
 ---
 
-**TL;DR:** WordPress to najpopularniejszy system stron firmowych w Polsce. Twoi klienci, ich klienci i Ty — wszyscy jesteście na WordPress. Botiko ma **oficjalną wtyczkę w katalogu WordPress.org**: instalujesz ją z panelu WordPress, aktywujesz i łączysz stronę jednym kodem — bez znajomości PHP i bez edycji motywu. Bot działa z WooCommerce, Elementorem, Yoastem, WP Rocket i W3 Total Cache. Skrypt waży poniżej 14 KB (gzip), ładuje się asynchronicznie i nie wpływa na Core Web Vitals. Poniżej masz kompletny przewodnik — od instalacji po RODO.
+**W skrócie:** WordPress to najpopularniejszy system stron firmowych w Polsce. Twoi klienci, ich klienci i Ty, wszyscy jesteście na WordPress. Botiko ma **oficjalną wtyczkę w katalogu WordPress.org**: instalujesz ją z panelu WordPress, aktywujesz i łączysz stronę jednym kodem, bez znajomości PHP i bez edycji motywu. Bot działa z WooCommerce, Elementorem, Yoastem, WP Rocket i W3 Total Cache. Skrypt waży poniżej 14 KB (gzip), ładuje się asynchronicznie i nie wpływa na Core Web Vitals. Poniżej masz kompletny przewodnik, od instalacji po RODO.
 
 ## Dlaczego WordPress?
 
-Polskie mikrofirmy usługowe — [salony beauty](/dla/salon-beauty), [gabinety i SPA](/dla/gabinet-spa), [restauracje](/dla/restauracja), [warsztaty samochodowe](/dla/warsztat-mechaniczny) — prowadzą strony na WordPress. To najpopularniejszy system zarządzania treścią na świecie: według [W3Techs](https://w3techs.com/technologies/details/cm-wordpress) napędza ponad 40% wszystkich stron internetowych i większość witryn zbudowanych na jakimkolwiek CMS-ie. W polskim segmencie małych firm usługowych ta dominacja jest jeszcze wyraźniejsza.
+Polskie mikrofirmy usługowe, [salony beauty](/dla/salon-beauty), [gabinety i SPA](/dla/gabinet-spa), [restauracje](/dla/restauracja), [warsztaty samochodowe](/dla/warsztat-mechaniczny), prowadzą strony na WordPress. To najpopularniejszy system zarządzania treścią na świecie: według [W3Techs](https://w3techs.com/technologies/details/cm-wordpress) napędza ponad 40% wszystkich stron internetowych i większość witryn zbudowanych na jakimkolwiek CMS-ie. W polskim segmencie małych firm usługowych ta dominacja jest jeszcze wyraźniejsza.
 
-Jeśli prowadzisz firmę usługową w Polsce i masz stronę internetową, jest bardzo prawdopodobne, że stoi ona na WordPress. Dlatego Botiko traktuje WordPress priorytetowo — z **oficjalną wtyczką w katalogu WordPress.org**. Skrypt działa też na każdej innej stronie obsługującej własny HTML.
+Jeśli prowadzisz firmę usługową w Polsce i masz stronę internetową, jest bardzo prawdopodobne, że stoi ona na WordPress. Dlatego Botiko traktuje WordPress priorytetowo, z **oficjalną wtyczką w katalogu WordPress.org**. Skrypt działa też na każdej innej stronie obsługującej własny HTML.
 
 ## Instalacja: oficjalna wtyczka z katalogu WordPress.org
 
-Najprostsza droga to oficjalna wtyczka Botiko, którą zainstalujesz prosto z panelu WordPress — a WordPress zadba też o jej aktualizacje.
+Najprostsza droga to oficjalna wtyczka Botiko, którą zainstalujesz prosto z panelu WordPress, a WordPress zadba też o jej aktualizacje.
 
 ### Krok 1: Zainstaluj wtyczkę Botiko
 
@@ -46,10 +46,10 @@ Otwórz swoją stronę w nowej zakładce (nie w panelu WP). W prawym dolnym rogu
 
 ## Alternatywa: instalacja przez WPCode (bez wtyczki)
 
-Nie chcesz instalować wtyczki Botiko? Ten sam kod wkleisz przez [WPCode](https://wordpress.org/plugins/insert-headers-and-footers/) — darmową wtyczkę do fragmentów kodu z ponad 2 mln aktywnych instalacji. Pozwala wklejać kod bez edycji plików motywu.
+Nie chcesz instalować wtyczki Botiko? Ten sam kod wkleisz przez [WPCode](https://wordpress.org/plugins/insert-headers-and-footers/), darmową wtyczkę do fragmentów kodu z ponad 2 mln aktywnych instalacji. Pozwala wklejać kod bez edycji plików motywu.
 
 1. Zainstaluj i aktywuj **WPCode** (Wtyczki → Dodaj nową → wyszukaj „WPCode").
-2. Skopiuj kod bota z [dashboardu Botiko](https://botiko.pl/dashboard/embed) — wygląda tak:
+2. Skopiuj kod bota z [dashboardu Botiko](https://botiko.pl/dashboard/embed), wygląda tak:
 
 ```html
 <script src="https://widget.botiko.pl/embed.js" data-bot-id="TWOJ-BOT-ID" async></script>
@@ -61,30 +61,30 @@ Nie chcesz instalować wtyczki Botiko? Ten sam kod wkleisz przez [WPCode](https:
 
 ### WooCommerce
 
-Botiko działa obok WooCommerce bez żadnych konfliktów. Widget pojawia się na stronach produktów, koszyka i kasy — możesz go ograniczyć do wybranych stron w ustawieniach widoczności. Bot nie integruje się bezpośrednio z danymi zamówień WooCommerce (to nie jest bot e-commerce), ale odpowiada na pytania z Twojej bazy wiedzy — np. "Jakie macie opcje dostawy?" lub "Czy możecie wystawić fakturę?".
+Botiko działa obok WooCommerce bez żadnych konfliktów. Widget pojawia się na stronach produktów, koszyka i kasy, możesz go ograniczyć do wybranych stron w ustawieniach widoczności. Bot nie integruje się bezpośrednio z danymi zamówień WooCommerce (to nie jest bot e-commerce), ale odpowiada na pytania z Twojej bazy wiedzy, np. "Jakie macie opcje dostawy?" lub "Czy możecie wystawić fakturę?".
 
 ### Elementor i Beaver Builder
 
-Pełna kompatybilność. Elementor i Beaver Builder tworzą strony po stronie front-endu — WPCode wstrzykuje skrypt Botiko w footer, więc oba nie kolidują. Widget Botiko nie interferuje z edytorem stron.
+Pełna kompatybilność. Elementor i Beaver Builder tworzą strony po stronie front-endu. WPCode wstrzykuje skrypt Botiko w footer, więc oba nie kolidują. Widget Botiko nie interferuje z edytorem stron.
 
 ### Yoast SEO i Rank Math
 
-Brak konfliktów. Botiko to widget front-endowy ładowany asynchronicznie — nie wpływa na dane strukturalne, sitemapy ani meta tagi generowane przez wtyczki SEO.
+Brak konfliktów. Botiko to widget front-endowy ładowany asynchronicznie, nie wpływa na dane strukturalne, sitemapy ani meta tagi generowane przez wtyczki SEO.
 
 ### WP Rocket i W3 Total Cache
 
-Botiko ładuje się z atrybutem `async`, więc narzędzia do cache'owania nie blokują skryptu. Jeśli używasz WP Rocket i widzisz widget w panelu admina (co nie powinno się zdarzyć) — odśwież cache wtyczki.
+Botiko ładuje się z atrybutem `async`, więc narzędzia do cache'owania nie blokują skryptu. Jeśli używasz WP Rocket i widzisz widget w panelu admina (co nie powinno się zdarzyć), odśwież cache wtyczki.
 
 ## Performance: Core Web Vitals i czas ładowania
 
-Botiko jest zbudowany w Preact (nie React) i waży **poniżej 14 KB po kompresji gzip**. To celowy limit techniczny — widget musi być niewidoczny z perspektywy wydajności strony.
+Botiko jest zbudowany w Preact (nie React) i waży **poniżej 14 KB po kompresji gzip**. To celowy limit techniczny, widget musi być niewidoczny z perspektywy wydajności strony.
 
 Kilka konkretów:
 
-- **Ładowanie asynchroniczne** — atrybut `async` sprawia, że skrypt nie blokuje parsowania HTML i renderowania strony
-- **Shadow DOM** — widget żyje w izolowanym środowisku, nie wpływa na style motywu WordPress
-- **Brak zewnętrznych fontów** — widget używa fontów systemowych
-- **Lazy init** — logika chatu inicjalizuje się dopiero przy pierwszej interakcji użytkownika
+- **Ładowanie asynchroniczne**: atrybut `async` sprawia, że skrypt nie blokuje parsowania HTML i renderowania strony
+- **Shadow DOM**: widget żyje w izolowanym środowisku, nie wpływa na style motywu WordPress
+- **Brak zewnętrznych fontów**: widget używa fontów systemowych
+- **Lazy init**: logika chatu inicjalizuje się dopiero przy pierwszej interakcji użytkownika
 
 Wynik: instalacja Botiko nie obniża Lighthouse score, LCP ani CLS. Core Web Vitals Twojej strony są bezpieczne.
 
@@ -92,13 +92,13 @@ Wynik: instalacja Botiko nie obniża Lighthouse score, LCP ani CLS. Core Web Vit
 
 ### Co Botiko robi z danymi
 
-Botiko zbiera imię i numer telefonu klienta (lead form). Dane są przechowywane na serwerach w UE i szyfrowane standardem **AES-256-GCM** at-rest. Możesz podpisać z Botiko umowę powierzenia danych (DPA) — dostępna w dashboardzie w zakładce RODO.
+Botiko zbiera imię i numer telefonu klienta (lead form). Dane są przechowywane na serwerach w UE i szyfrowane standardem **AES-256-GCM** at-rest. Możesz podpisać z Botiko umowę powierzenia danych (DPA), dostępna w dashboardzie w zakładce RODO.
 
 ### Co musisz zrobić na stronie WordPress
 
-Jeśli używasz wtyczki do zgód RODO (np. Complianz, CookieYes, Real Cookie Banner) — Botiko nie wymaga osobnej kategorii cookies, bo nie ustawia cookies na urządzeniu użytkownika. Dane leada są zbierane aktywnie (użytkownik wypełnia formularz), nie pasywnie (śledzenie).
+Jeśli używasz wtyczki do zgód RODO (np. Complianz, CookieYes, Real Cookie Banner). Botiko nie wymaga osobnej kategorii cookies, bo nie ustawia cookies na urządzeniu użytkownika. Dane leada są zbierane aktywnie (użytkownik wypełnia formularz), nie pasywnie (śledzenie).
 
-Jeśli chcesz dodać wzmiankę o Botiko do Polityki Prywatności — użyj sformułowania: *"Formularz kontaktowy widgetu czatu obsługiwany jest przez Botiko.pl (procesor danych). Podane dane (imię, telefon) są szyfrowane i przechowywane na serwerach w UE."*
+Jeśli chcesz dodać wzmiankę o Botiko do Polityki Prywatności, użyj sformułowania: *"Formularz kontaktowy widgetu czatu obsługiwany jest przez Botiko.pl (procesor danych). Podane dane (imię, telefon) są szyfrowane i przechowywane na serwerach w UE."*
 
 ## Case study: salon beauty na WordPress + Botiko
 
@@ -106,7 +106,7 @@ Jeśli chcesz dodać wzmiankę o Botiko do Polityki Prywatności — użyj sform
 
 **Problem:** 60-80% zapytań przychodzi po 18:00 lub w weekend. Właścicielka nie odbiera telefonów, formularz kontaktowy wysyła mail, klientki piszą do konkurencji.
 
-**Wdrożenie:** 15 minut — instalacja bota, konfiguracja bazy wiedzy (cennik, godziny, FAQ branżowe). Bot zna zabiegi, ceny i zasady odwoływania wizyt. Dziś ten sam efekt osiągnęłaby jeszcze szybciej przez oficjalną wtyczkę Botiko z katalogu WordPress.org.
+**Wdrożenie:** 15 minut, instalacja bota, konfiguracja bazy wiedzy (cennik, godziny, FAQ branżowe). Bot zna zabiegi, ceny i zasady odwoływania wizyt. Dziś ten sam efekt osiągnęłaby jeszcze szybciej przez oficjalną wtyczkę Botiko z katalogu WordPress.org.
 
 **Efekt po 30 dniach:**
 - 23 rozmowy z klientkami po godzinach pracy
@@ -118,7 +118,7 @@ ROI: **+506% w pierwszym miesiącu**.
 
 ## Botiko a wtyczki chatbot z katalogu WordPress.org
 
-W katalogu WordPress.org znajdziesz dziesiątki wtyczek „chatbot" — od prostych okienek FAQ, przez integracje z Messengerem, po wtyczki podpinające ChatGPT. Różnica jest zasadnicza: większość z nich to albo boty regułowe („kliknij opcję"), albo generyczny model AI, który nie zna Twojego cennika ani godzin. Botiko odpowiada na podstawie **Twojej** bazy wiedzy i zbiera leady — a montujesz go tak samo łatwo jak wtyczkę.
+W katalogu WordPress.org znajdziesz dziesiątki wtyczek „chatbot", od prostych okienek FAQ, przez integracje z Messengerem, po wtyczki podpinające ChatGPT. Różnica jest zasadnicza: większość z nich to albo boty regułowe („kliknij opcję"), albo generyczny model AI, który nie zna Twojego cennika ani godzin. Botiko odpowiada na podstawie **Twojej** bazy wiedzy i zbiera leady, a montujesz go tak samo łatwo jak wtyczkę.
 
 <ComparisonTable
   title="Botiko vs typowe wtyczki chatbot na WordPress"
@@ -137,19 +137,19 @@ Pełne porównanie z generycznym modelem opisujemy w artykule [bot vs ChatGPT na
 
 ## Bot się nie pokazuje? Szybki troubleshooting
 
-W 95% przypadków widget pojawia się od razu. Jeśli nie — sprawdź po kolei:
+W 95% przypadków widget pojawia się od razu. Jeśli nie, sprawdź po kolei:
 
 1. **Patrzysz na front-end, nie na panel.** Bot celowo nie ładuje się w `/wp-admin`. Otwórz stronę w trybie incognito.
 2. **Snippet jest aktywny.** W **WPCode → Code Snippets** przełącznik przy snippetcie Botiko musi być włączony (zielony).
 3. **Lokalizacja = Site Wide Footer.** Sprawdź sekcję Insertion w snippetcie.
-4. **Wyczyść cache.** Jeśli używasz WP Rocket / W3 Total Cache / cache hostingu — wyczyść go po dodaniu snippetu.
+4. **Wyczyść cache.** Jeśli używasz WP Rocket / W3 Total Cache / cache hostingu, wyczyść go po dodaniu snippetu.
 5. **Poprawny `data-bot-id`.** Jeśli instalowałeś przez WPCode, porównaj ID w kodzie z tym w panelu Botiko (zakładka Instalacja).
 
 Jeśli wolisz instrukcję krok po kroku z obrazkami, mamy ją tutaj: [jak ustawić bota na WordPress krok po kroku](/blog/jak-ustawic-bota-na-wordpress-krok-po-kroku). Szczegóły integracji znajdziesz też na stronie [integracje/WordPress](/integracje/wordpress).
 
 ## Oficjalna wtyczka Botiko w katalogu WordPress.org
 
-Dedykowana wtyczka Botiko jest już **dostępna w oficjalnym katalogu WordPress.org**. Instalujesz ją z panelu WordPress (Wtyczki → Dodaj nową → wyszukaj „Botiko"), bez zewnętrznych zależności — konfigurację i połączenie robisz bezpośrednio w WP Admin, a WordPress sam pilnuje aktualizacji.
+Dedykowana wtyczka Botiko jest już **dostępna w oficjalnym katalogu WordPress.org**. Instalujesz ją z panelu WordPress (Wtyczki → Dodaj nową → wyszukaj „Botiko"), bez zewnętrznych zależności, konfigurację i połączenie robisz bezpośrednio w WP Admin, a WordPress sam pilnuje aktualizacji.
 
 Znajdziesz ją tutaj: [Botiko w katalogu WordPress.org](https://wordpress.org/plugins/botiko-ai-customer-service-bot/).
 
@@ -164,7 +164,7 @@ Znajdziesz ją tutaj: [Botiko w katalogu WordPress.org](https://wordpress.org/pl
   },
   {
     q: "Czy potrzebuję programisty do instalacji na WordPress?",
-    a: "Absolutnie nie. Instalujesz oficjalną wtyczkę Botiko z katalogu WordPress.org, aktywujesz ją i wklejasz kod połączenia z panelu Botiko — kilka minut, żadnego PHP i żadnej edycji motywu."
+    a: "Absolutnie nie. Instalujesz oficjalną wtyczkę Botiko z katalogu WordPress.org, aktywujesz ją i wklejasz kod połączenia z panelu Botiko, kilka minut, żadnego PHP i żadnej edycji motywu."
   },
   {
     q: "Czy Botiko działa na WordPress Multisite?",
@@ -172,19 +172,19 @@ Znajdziesz ją tutaj: [Botiko w katalogu WordPress.org](https://wordpress.org/pl
   },
   {
     q: "Czy bot pojawia się w panelu admina WordPress?",
-    a: "Nie. Botiko automatycznie wykrywa /wp-admin i /wp-login.php i nie inicjalizuje widgetu. Nie musisz nic robić — to działa out of the box."
+    a: "Nie. Botiko automatycznie wykrywa /wp-admin i /wp-login.php i nie inicjalizuje widgetu. Nie musisz nic robić, to działa out of the box."
   },
   {
     q: "Co jeśli zmienię motyw WordPress?",
-    a: "Nic się nie dzieje. Zarówno oficjalna wtyczka Botiko, jak i kod wklejony przez WPCode działają niezależnie od motywu — zmiana motywu nie usuwa integracji, bot działa dalej."
+    a: "Nic się nie dzieje. Zarówno oficjalna wtyczka Botiko, jak i kod wklejony przez WPCode działają niezależnie od motywu, zmiana motywu nie usuwa integracji, bot działa dalej."
   },
   {
     q: "Czy Botiko działa z Elementorem?",
-    a: "Tak, w pełni. Elementor renderuje stronę po stronie front-endu, a skrypt Botiko jest wstrzykiwany w footer przez WPCode — nie kolidują. Widget nie zakłóca też pracy w edytorze Elementora."
+    a: "Tak, w pełni. Elementor renderuje stronę po stronie front-endu, a skrypt Botiko jest wstrzykiwany w footer przez WPCode, nie kolidują. Widget nie zakłóca też pracy w edytorze Elementora."
   },
   {
     q: "Jak usunąć bota z WordPress?",
-    a: "Jeśli instalowałeś przez wtyczkę Botiko — dezaktywuj ją w Wtyczki (opcjonalnie usuń). Jeśli przez WPCode — wyłącz snippet Botiko. W obu przypadkach bot znika ze strony natychmiast i nie zostają żadne pliki w motywie."
+    a: "Jeśli instalowałeś przez wtyczkę Botiko, dezaktywuj ją w Wtyczki (opcjonalnie usuń). Jeśli przez WPCode, wyłącz snippet Botiko. W obu przypadkach bot znika ze strony natychmiast i nie zostają żadne pliki w motywie."
   },
   {
     q: "Czy Botiko działa na darmowym WordPress.com?",

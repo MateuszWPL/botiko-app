@@ -10,12 +10,12 @@ const BOOKING_REFRAME = [
   {
     Icon: CalendarCheck,
     title: 'Zostajesz przy swoim kalendarzu',
-    text: 'Dalej używasz Booksy, Calendly albo Google Kalendarza. Bez migracji i bez uzależnienia od jednego dostawcy — bot tylko kieruje do tego, co już masz.',
+    text: 'Dalej używasz Booksy, Calendly albo Google Kalendarza. Bez migracji i bez uzależnienia od jednego dostawcy, bot tylko kieruje do tego, co już masz.',
   },
   {
     Icon: ShieldCheck,
     title: 'Bez ryzyka podwójnej rezerwacji',
-    text: 'Bot nie ma dostępu do Twojego grafiku, więc nie zapisze dwóch klientów na tę samą godzinę. Terminami sterujesz Ty — tam, gdzie zawsze.',
+    text: 'Bot nie ma dostępu do Twojego grafiku, więc nie zapisze dwóch klientów na tę samą godzinę. Terminami sterujesz Ty, tam, gdzie zawsze.',
   },
   {
     Icon: PhoneCall,
@@ -26,7 +26,7 @@ const BOOKING_REFRAME = [
 
 // Opcjonalna usługa done-for-you (jednorazowa), poza planem 99 zł. Rozwiązuje
 // główny killer konwersji: właściciel nie skonfiguruje bota sam. Nie zmienia
-// planu — plan zostaje jeden (99 zł/mies.).
+// planu, plan zostaje jeden (99 zł/mies.).
 const SETUP_INCLUDES = [
   'Import wiedzy z Twojej strony i cennika',
   'Ustawienie bota pod Twoją branżę i markę',
@@ -37,12 +37,12 @@ const SETUP_INCLUDES = [
 const URL = `${SITE_URL}/cennik`;
 
 export const metadata: Metadata = {
-  title: 'Cennik — ile kosztuje bot obsługi klienta',
+  title: 'Cennik, ile kosztuje bot obsługi klienta',
   description:
     'Botiko kosztuje 99 zł miesięcznie w jednym planie: bot 24/7, do 1000 rozmów, zbieranie leadów, baza wiedzy. 14 dni za darmo bez karty, bez umowy.',
   alternates: { canonical: URL },
   openGraph: {
-    title: 'Cennik Botiko — 99 zł/mies., bez umowy',
+    title: 'Cennik Botiko, 99 zł/mies., bez umowy',
     description:
       'Jeden plan: 99 zł miesięcznie, 14 dni za darmo bez karty. Bez ukrytych kosztów.',
     url: URL,
@@ -66,28 +66,28 @@ const FAQS = [
   },
   {
     q: 'Czy są dodatkowe opłaty za wdrożenie?',
-    a: 'Nie ma obowiązkowej opłaty wdrożeniowej — bota konfigurujesz samodzielnie w ~15 minut. Jeśli wolisz, możemy skonfigurować go za Ciebie w ramach opcjonalnej usługi „Start za Ciebie" (199 zł jednorazowo). Sam plan dalej kosztuje 99 zł miesięcznie.',
+    a: 'Nie ma obowiązkowej opłaty wdrożeniowej, bota konfigurujesz samodzielnie w ~15 minut. Jeśli wolisz, możemy skonfigurować go za Ciebie w ramach opcjonalnej usługi „Start za Ciebie" (199 zł jednorazowo). Sam plan dalej kosztuje 99 zł miesięcznie.',
   },
   {
     q: 'Na czym polega usługa „Start za Ciebie" za 199 zł?',
-    a: 'To jednorazowa, opcjonalna usługa done-for-you: importujemy wiedzę z Twojej strony i cennika, ustawiamy bota pod Twoją branżę, instalujemy go na stronie i testujemy na realnych pytaniach. Dostajesz gotowego bota do zaakceptowania. Nie zmienia ceny abonamentu (99 zł/mies.) — napisz na kontakt@botiko.pl, jeśli chcesz z niej skorzystać.',
+    a: 'To jednorazowa, opcjonalna usługa done-for-you: importujemy wiedzę z Twojej strony i cennika, ustawiamy bota pod Twoją branżę, instalujemy go na stronie i testujemy na realnych pytaniach. Dostajesz gotowego bota do zaakceptowania. Nie zmienia ceny abonamentu (99 zł/mies.), napisz na kontakt@botiko.pl, jeśli chcesz z niej skorzystać.',
   },
   {
     q: 'Co się stanie, jeśli przekroczę 1000 rozmów miesięcznie?',
-    a: 'Limit 1000 rozmów miesięcznie z naddatkiem pokrywa potrzeby mikro i małych firm usługowych. Jeśli Twój ruch jest większy, napisz na kontakt@botiko.pl — dobierzemy rozwiązanie.',
+    a: 'Limit 1000 rozmów miesięcznie z naddatkiem pokrywa potrzeby mikro i małych firm usługowych. Jeśli Twój ruch jest większy, napisz na kontakt@botiko.pl, dobierzemy rozwiązanie.',
   },
 ];
 
-// Botiko to usługa (SaaS), nie produkt sklepowy — dlatego @type: 'Service', nie
+// Botiko to usługa (SaaS), nie produkt sklepowy, dlatego @type: 'Service', nie
 // 'Product'. Product + Offer sprawia, że Google klasyfikuje stronę jako merchant
 // listing / product snippet i wymaga pól sklepowych (image, review,
-// aggregateRating, dane wysyłki), których usługa subskrypcyjna nie ma — to
+// aggregateRating, dane wysyłki), których usługa subskrypcyjna nie ma, to
 // generowało błędy w GSC. Service + Offer niesie cenę bez tych wymagań i jest
 // spójne ze stronami /dla/*.
 const OFFER_SCHEMA = {
   '@context': 'https://schema.org',
   '@type': 'Service',
-  name: 'Botiko — bot obsługi klienta',
+  name: 'Botiko, bot obsługi klienta',
   description:
     'Bot obsługi klienta 24/7 dla polskich firm usługowych: odpowiada na pytania, zbiera leady, odsyła do rezerwacji.',
   provider: { '@id': `${SITE_URL}/#organization` },
@@ -130,7 +130,7 @@ export default function CennikPage() {
             99 zł miesięcznie. Jeden plan, wszystko w środku.
           </h1>
           <p className="text-indigo-200 text-lg leading-relaxed max-w-2xl">
-            Bez droższych progów, bez opłaty wdrożeniowej, bez umowy. 14 dni za darmo —
+            Bez droższych progów, bez opłaty wdrożeniowej, bez umowy. 14 dni za darmo,
             bez karty kredytowej. Poniżej sprawdzisz, czy bot się u Ciebie zwróci.
           </p>
         </div>
@@ -139,7 +139,7 @@ export default function CennikPage() {
       {/* Plan + ROI calculator (reused component) */}
       <Pricing />
 
-      {/* Opcjonalny setup done-for-you — 199 zł jednorazowo (poza planem) */}
+      {/* Opcjonalny setup done-for-you, 199 zł jednorazowo (poza planem) */}
       <section className="py-16 bg-white border-t border-slate-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="rounded-3xl border border-slate-200 bg-bg p-8 sm:p-10 flex flex-col md:flex-row md:items-center gap-8">
@@ -153,8 +153,8 @@ export default function CennikPage() {
                 </h2>
               </div>
               <p className="text-slate-500 leading-relaxed mb-5 max-w-xl">
-                Skonfigurujemy bota za Ciebie — od importu wiedzy po instalację na stronie.
-                Dostajesz gotowego bota do zaakceptowania. Opcjonalnie, poza planem — sam
+                Skonfigurujemy bota za Ciebie, od importu wiedzy po instalację na stronie.
+                Dostajesz gotowego bota do zaakceptowania. Opcjonalnie, poza planem, sam
                 plan dalej kosztuje 99 zł miesięcznie.
               </p>
               <ul className="flex flex-col gap-2.5">
@@ -188,7 +188,7 @@ export default function CennikPage() {
         </div>
       </section>
 
-      {/* Co Botiko robi, a czego nie — reframe braku rezerwacji jako zaleta */}
+      {/* Co Botiko robi, a czego nie, reframe braku rezerwacji jako zaleta */}
       <section className="py-16 bg-bg border-t border-slate-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
@@ -197,7 +197,7 @@ export default function CennikPage() {
             </h2>
             <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
               Bot odpowiada na pytania i zbiera kontakt, a rezerwację zostawia Tobie i Twojemu systemowi
-              (Booksy, Calendly). To celowe — i korzystne:
+              (Booksy, Calendly). To celowe, i korzystne:
             </p>
           </div>
 

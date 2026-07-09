@@ -78,7 +78,7 @@ export function LeadSidebar({ lead, onClose, onStatusChange }: LeadSidebarProps)
   const [conversation, setConversation] = useState<ConversationDetail | null>(null);
   const [convLoading, setConvLoading] = useState(false);
   const [status, setStatus] = useState(lead?.status ?? 'NEW');
-  // Slide animation state — panel is always mounted when lead is set
+  // Slide animation state, panel is always mounted when lead is set
   const [isVisible, setIsVisible] = useState(false);
   // Keep last lead in memory so content stays during close animation
   const [displayLead, setDisplayLead] = useState<Lead | null>(lead);
@@ -223,7 +223,7 @@ export function LeadSidebar({ lead, onClose, onStatusChange }: LeadSidebarProps)
             </p>
 
             {!displayLead.sessionId ? (
-              <p className="text-sm text-slate-400 italic">Lead dodany ręcznie — brak rozmowy z botem</p>
+              <p className="text-sm text-slate-400 italic">Lead dodany ręcznie, brak rozmowy z botem</p>
             ) : convLoading ? (
               <p className="text-sm text-slate-400">Ładowanie rozmowy...</p>
             ) : !conversation || conversation.messages.length === 0 ? (

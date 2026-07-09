@@ -8,12 +8,12 @@ import IndustryFaqSection from '@/components/marketing/IndustryFaqSection';
 import { breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Bot dla salonu beauty — odpowiada klientkom 24/7 i zbiera leady',
+  title: 'Bot dla salonu beauty, odpowiada klientkom 24/7 i zbiera leady',
   description:
     'Botiko dla salonów urody: manicure, stylizacja rzęs, brwi, kosmetologia. Bot odpowiada o 22:00, zbiera numer i odsyła do Booksy. 99 zł/mies., 14 dni za darmo.',
   alternates: { canonical: 'https://botiko.pl/dla/salon-beauty' },
   openGraph: {
-    title: 'Bot dla salonu beauty — odpowiada klientkom 24/7',
+    title: 'Bot dla salonu beauty, odpowiada klientkom 24/7',
     description:
       'Klientki piszą o 22:00. Bot odpowiada, zbiera telefon i odsyła do rezerwacji. 99 zł/mies.',
     url: 'https://botiko.pl/dla/salon-beauty',
@@ -38,15 +38,15 @@ const JSON_LD_SERVICE = {
 const FAQS = [
   {
     q: 'Czy bot umawia wizyty i zapisuje na manicure?',
-    a: 'Bot nie rezerwuje terminu samodzielnie — odpowiada na pytania o usługi i ceny, zbiera imię i numer telefonu, a następnie odsyła klientkę do Twojego systemu rezerwacji (np. Booksy) albo zostawia Ci lead do oddzwonienia. Kalendarzem zarządzasz Ty, bot przejmuje pytania i pierwszy kontakt — także o 22:00.',
+    a: 'Bot nie rezerwuje terminu samodzielnie, odpowiada na pytania o usługi i ceny, zbiera imię i numer telefonu, a następnie odsyła klientkę do Twojego systemu rezerwacji (np. Booksy) albo zostawia Ci lead do oddzwonienia. Kalendarzem zarządzasz Ty, bot przejmuje pytania i pierwszy kontakt, także o 22:00.',
   },
   {
     q: 'Skąd bot wie, ile kosztuje manicure hybrydowy czy stylizacja rzęs?',
-    a: 'Z Twojej bazy wiedzy. Podczas konfiguracji wpisujesz cennik, godziny i opisy usług — bot odpowiada wyłącznie na tej podstawie i nie zgaduje. Jeśli czegoś nie wie, prosi o kontakt zamiast wymyślać.',
+    a: 'Z Twojej bazy wiedzy. Podczas konfiguracji wpisujesz cennik, godziny i opisy usług, bot odpowiada wyłącznie na tej podstawie i nie zgaduje. Jeśli czegoś nie wie, prosi o kontakt zamiast wymyślać.',
   },
   {
     q: 'Czy bot działa na WordPress?',
-    a: 'Tak. Botiko jest natywnie zoptymalizowane pod WordPress — instalacja przez wtyczkę zajmuje ok. 5 minut. Działa też na każdej innej stronie WWW: wklejasz jeden fragment kodu i bot startuje.',
+    a: 'Tak. Botiko jest natywnie zoptymalizowane pod WordPress, instalacja przez wtyczkę zajmuje ok. 5 minut. Działa też na każdej innej stronie WWW: wklejasz jeden fragment kodu i bot startuje.',
   },
   {
     q: 'Czy bot integruje się z Booksy?',
@@ -73,12 +73,12 @@ const PAIN_POINTS = [
   {
     Icon: PhoneOff,
     title: 'Zabieg = nie odbierasz',
-    text: 'Podczas manicure hybrydowego, henny brwi czy makijażu nie możesz przerwać. Telefon dzwoni 3× — klientka myśli, że salon zamknięty.',
+    text: 'Podczas manicure hybrydowego, henny brwi czy makijażu nie możesz przerwać. Telefon dzwoni 3×, klientka myśli, że salon zamknięty.',
   },
   {
     Icon: RefreshCw,
     title: 'Te same pytania co dzień',
-    text: '„Ile kosztuje hybryda?", „Macie wolne w sobotę?", „Jak trafić?" — codziennie odpowiadasz 20× na te same rzeczy.',
+    text: '„Ile kosztuje hybryda?", „Macie wolne w sobotę?", „Jak trafić?", codziennie odpowiadasz 20× na te same rzeczy.',
   },
 ] as const;
 
@@ -86,41 +86,41 @@ const BOOKING_REFRAME = [
   {
     Icon: CalendarCheck,
     title: 'Zostajesz przy swoim kalendarzu',
-    text: 'Dalej używasz Booksy albo Google Kalendarza. Zero migracji, zero uczenia się nowego systemu i zero uzależnienia od jednego dostawcy — bot tylko kieruje do tego, co już masz.',
+    text: 'Dalej używasz Booksy albo Google Kalendarza. Zero migracji, zero uczenia się nowego systemu i zero uzależnienia od jednego dostawcy, bot tylko kieruje do tego, co już masz.',
   },
   {
     Icon: ShieldCheck,
     title: 'Zero podwójnych rezerwacji',
-    text: 'Bot nie ma dostępu do Twojego grafiku, więc nie zapisze dwóch klientek na tę samą godzinę. Terminami zarządzasz Ty — tam, gdzie zawsze.',
+    text: 'Bot nie ma dostępu do Twojego grafiku, więc nie zapisze dwóch klientek na tę samą godzinę. Terminami zarządzasz Ty, tam, gdzie zawsze.',
   },
   {
     Icon: PhoneCall,
     title: 'Ty domykasz na swoich warunkach',
-    text: 'Bot podgrzewa klientkę — odpowiada o 22:00 i zbiera numer. Ty oddzwaniasz rano i proponujesz termin, który pasuje Tobie i grafikowi salonu.',
+    text: 'Bot podgrzewa klientkę, odpowiada o 22:00 i zbiera numer. Ty oddzwaniasz rano i proponujesz termin, który pasuje Tobie i grafikowi salonu.',
   },
 ] as const;
 
 const FEATURES = [
   'Odpowiada na pytania o cennik (hybryda, żel, manicure japoński, pedicure)',
   'Zna czas trwania zabiegów i godziny otwarcia salonu',
-  'Zbiera imię + telefon klientki — oddzwaniasz rano z wolnym terminem',
+  'Zbiera imię + telefon klientki, oddzwaniasz rano z wolnym terminem',
   'Wyjaśnia różnice między usługami (np. henna pudrowa vs laminacja brwi)',
   'Informuje o promocjach i pakietach, które sama wprowadzasz',
-  'Kolorowy widget dopasowany do Twojej marki — różowy, pastelowy, jakikolwiek',
+  'Kolorowy widget dopasowany do Twojej marki, różowy, pastelowy, jakikolwiek',
 ];
 
 const SAMPLE_QUESTIONS = [
   {
     q: 'Ile kosztuje manicure hybrydowy?',
-    a: 'Manicure hybrydowy to 90 zł (czas ok. 75 min). W pakiecie z pedicure — 160 zł. Chcesz się zapisać? Zostaw imię i telefon — rano sprawdzę kalendarz i oddzwonię z wolnymi godzinami.',
+    a: 'Manicure hybrydowy to 90 zł (czas ok. 75 min). W pakiecie z pedicure, 160 zł. Chcesz się zapisać? Zostaw imię i telefon, rano sprawdzę kalendarz i oddzwonię z wolnymi godzinami.',
   },
   {
     q: 'Macie wolny termin na rzęsy w sobotę?',
-    a: 'W soboty pracujemy 9:00–17:00. Oferujemy stylizację 1:1, efekt naturalny i objętość (ceny 150–250 zł). Zostaw numer — właścicielka sprawdzi wolne okienko i oddzwoni z propozycją.',
+    a: 'W soboty pracujemy 9:00-17:00. Oferujemy stylizację 1:1, efekt naturalny i objętość (ceny 150-250 zł). Zostaw numer, właścicielka sprawdzi wolne okienko i oddzwoni z propozycją.',
   },
   {
     q: 'Jaka jest różnica między henną pudrową a klasyczną?',
-    a: 'Henna pudrowa trzyma 4–6 tygodni (efekt jak permanent, ale bez kłucia) i kosztuje 120 zł. Klasyczna trzyma ~2 tygodnie, 40 zł. Jeśli masz rzadkie brwi, polecamy pudrową.',
+    a: 'Henna pudrowa trzyma 4-6 tygodni (efekt jak permanent, ale bez kłucia) i kosztuje 120 zł. Klasyczna trzyma ~2 tygodnie, 40 zł. Jeśli masz rzadkie brwi, polecamy pudrową.',
   },
 ];
 
@@ -235,7 +235,7 @@ export default function BeautyLandingPage() {
           </h1>
 
           <p className="text-pink-100 text-lg leading-relaxed max-w-xl mb-8">
-            Botiko zna Twój cennik, godziny i usługi. Odpowiada klientkom kiedy śpisz, robisz zabieg albo odbierasz dziecko ze szkoły —
+            Botiko zna Twój cennik, godziny i usługi. Odpowiada klientkom kiedy śpisz, robisz zabieg albo odbierasz dziecko ze szkoły
             i <strong className="text-white">zbiera numer telefonu do oddzwonienia</strong>.
           </p>
 
@@ -322,7 +322,7 @@ export default function BeautyLandingPage() {
             </p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text">Jak bot odpowiada klientkom</h2>
             <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
-              To nie „chat AI w ogóle” — Botiko odpowiada na podstawie Twojego cennika i wiedzy.
+              To nie „chat AI w ogóle”. Botiko odpowiada na podstawie Twojego cennika i wiedzy.
             </p>
           </div>
 
@@ -394,7 +394,7 @@ export default function BeautyLandingPage() {
         </div>
       </section>
 
-      {/* Booking reframe — zamienia „nie rezerwuje" w zaletę (obiekcja z SXO) */}
+      {/* Booking reframe, zamienia „nie rezerwuje" w zaletę (obiekcja z SXO) */}
       <section className="py-20 bg-white border-t border-slate-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
@@ -402,7 +402,7 @@ export default function BeautyLandingPage() {
               Ważne
             </p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text">
-              Bot nie umawia wizyt za Ciebie — i to zaleta
+              Bot nie umawia wizyt za Ciebie, i to zaleta
             </h2>
             <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
               Botiko odpowiada na pytania i zbiera numer, a rezerwację zostawia Tobie i Twojemu systemowi
@@ -469,13 +469,13 @@ export default function BeautyLandingPage() {
           </div>
 
           <p className="mt-5 text-center text-xs text-slate-400">
-            * Szacunki orientacyjne. Bot nie robi marketingu — zamienia wiadomości od klientek w leady, które Ty zamykasz telefonem.
+            * Szacunki orientacyjne. Bot nie robi marketingu, zamienia wiadomości od klientek w leady, które Ty zamykasz telefonem.
           </p>
         </div>
       </section>
 
       {/* FAQ */}
-      <IndustryFaqSection items={FAQS} heading="Najczęstsze pytania — bot dla salonu beauty" />
+      <IndustryFaqSection items={FAQS} heading="Najczęstsze pytania, bot dla salonu beauty" />
 
       {/* CTA */}
       <section className="py-20 bg-bg">
@@ -490,7 +490,7 @@ export default function BeautyLandingPage() {
             />
             <div className="relative">
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight mb-4">
-                Zacznij dziś — bot działa już jutro rano
+                Zacznij dziś, bot działa już jutro rano
               </h2>
               <p className="text-pink-100 text-base mb-8 max-w-xl mx-auto">
                 14 dni za darmo. Bez karty kredytowej. Bez umowy. Konfiguracja cennika i FAQ w ~15 minut. Działa natywnie na WordPress i każdej innej stronie WWW.

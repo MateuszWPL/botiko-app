@@ -141,7 +141,7 @@ const PLATFORMS: PlatformDef[] = [
         title: 'Wklej kod widgetu',
         body: 'W polu edytora wklej poniższy kod. W sekcji "Insertion" ustaw lokalizację na Site Wide Footer, następnie aktywuj snippet i zapisz.',
         code: { snippet: code, lang: 'html' },
-        note: 'Bot automatycznie nie wyświetla się w panelu admina WordPress (/wp-admin) — wykrywanie działa po naszej stronie i nie wymaga dodatkowej konfiguracji.',
+        note: 'Bot automatycznie nie wyświetla się w panelu admina WordPress (/wp-admin), wykrywanie działa po naszej stronie i nie wymaga dodatkowej konfiguracji.',
       },
       {
         title: 'Odśwież stronę i sprawdź',
@@ -173,11 +173,11 @@ const PLATFORMS: PlatformDef[] = [
 
 const FAQ: { q: string; a: string }[] = [
   {
-    q: 'Bot nie pojawia się na stronie — co sprawdzić?',
-    a: 'Sprawdź kolejno: (1) Upewnij się że skrypt jest wklejony przed </body>, a nie w <head>. (2) Otwórz konsolę przeglądarki (F12 → Console) i sprawdź czy jest błąd "[Botiko] Missing data-bot-id". (3) Upewnij się że strona jest opublikowana — widget nie działa w trybach podglądu edytora. (4) Sprawdź czy bot jest aktywny w ustawieniach Dashboardu.',
+    q: 'Bot nie pojawia się na stronie, co sprawdzić?',
+    a: 'Sprawdź kolejno: (1) Upewnij się że skrypt jest wklejony przed </body>, a nie w <head>. (2) Otwórz konsolę przeglądarki (F12 → Console) i sprawdź czy jest błąd "[Botiko] Missing data-bot-id". (3) Upewnij się że strona jest opublikowana, widget nie działa w trybach podglądu edytora. (4) Sprawdź czy bot jest aktywny w ustawieniach Dashboardu.',
   },
   {
-    q: 'Bot pojawia się w panelu WordPress Admin — jak to wyłączyć?',
+    q: 'Bot pojawia się w panelu WordPress Admin, jak to wyłączyć?',
     a: 'Nie musisz nic robić. Widget automatycznie wykrywa panel administracyjny (/wp-admin, /wp-login.php) i nie inicjalizuje się. Jeśli jednak nadal widzisz widget w adminie, odśwież pamięć podręczną wtyczki do cache\'owania (np. W3 Total Cache, WP Rocket).',
   },
   {
@@ -186,7 +186,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Chcę żeby bot pojawiał się tylko na wybranych podstronach.',
-    a: 'Możesz to osiągnąć przez warunkowe ładowanie skryptu — wklej kod tylko do szablonów wybranych podstron. Na WordPress wystarczy skonfigurować reguły widoczności w WPCode (opcja "Location" → wybierz konkretne strony lub typy wpisów).',
+    a: 'Możesz to osiągnąć przez warunkowe ładowanie skryptu, wklej kod tylko do szablonów wybranych podstron. Na WordPress wystarczy skonfigurować reguły widoczności w WPCode (opcja "Location" → wybierz konkretne strony lub typy wpisów).',
   },
   {
     q: 'Jak otworzyć bota po kliknięciu własnego przycisku CTA?',
@@ -194,7 +194,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Bot działa wolno lub nie odpowiada przez dłuższy czas.',
-    a: 'Pierwsze zapytanie może trwać 2-4 sekundy (model AI przetwarza kontekst). Jeśli oczekiwanie przekracza 30 sekund, bot wyświetli komunikat o timeout. Sprawdź czy Twój plan Botiko jest aktywny w zakładce Billing — wygasły plan blokuje odpowiedzi.',
+    a: 'Pierwsze zapytanie może trwać 2-4 sekundy (model AI przetwarza kontekst). Jeśli oczekiwanie przekracza 30 sekund, bot wyświetli komunikat o timeout. Sprawdź czy Twój plan Botiko jest aktywny w zakładce Billing, wygasły plan blokuje odpowiedzi.',
   },
 ];
 
@@ -231,7 +231,7 @@ function DomainRow({ check, onRecheck }: { check: DomainCheck; onRecheck: () => 
 
   const label = {
     idle:         <span className="text-slate-400 text-xs">Nie sprawdzono</span>,
-    checking:     <span className="text-slate-500 text-xs">Sprawdzanie…</span>,
+    checking:     <span className="text-slate-500 text-xs">Sprawdzanie...</span>,
     detected:     (
       <span className="inline-flex items-center gap-1 text-emerald-600 font-medium text-xs">
         <CheckCircle2 className="w-3.5 h-3.5" />
@@ -342,7 +342,7 @@ function WidgetDetector({ botId, domains }: { botId: string; domains: string[] }
             disabled={anyChecking}
             className="text-xs font-medium text-indigo-500 hover:text-indigo-700 disabled:opacity-50 cursor-pointer hover:bg-indigo-50 px-2.5 py-1 rounded-lg transition-colors"
           >
-            {anyChecking ? 'Sprawdzam…' : 'Odśwież status'}
+            {anyChecking ? 'Sprawdzam...' : 'Odśwież status'}
           </button>
         </div>
       </div>
@@ -495,7 +495,7 @@ function PluginPairing({ botId }: { botId: string }) {
           Zalecane
         </span>
         <h3 className="text-sm font-bold text-slate-800">
-          Oficjalna wtyczka Botiko — połącz jednym kodem
+          Oficjalna wtyczka Botiko, połącz jednym kodem
         </h3>
       </div>
       <p className="text-sm text-slate-600 leading-relaxed mb-3">
@@ -596,7 +596,7 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
         domains={currentBot?.allowedDomains ?? []}
       />
 
-      {/* Bot selector — tylko gdy > 1 */}
+      {/* Bot selector, tylko gdy > 1 */}
       {bots.length > 1 && (
         <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-3 flex items-center gap-3">
           <span className="text-xs text-amber-700 font-medium flex-shrink-0">Bot:</span>
@@ -684,7 +684,7 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
               </svg>
             </div>
             <span className="text-sm font-semibold text-slate-800">Instrukcja instalacji</span>
-            <span className="text-xs text-slate-400 ml-1">— natywnie na WordPress lub kod na dowolnej stronie</span>
+            <span className="text-xs text-slate-400 ml-1">natywnie na WordPress lub kod na dowolnej stronie</span>
           </div>
         </div>
 
@@ -804,7 +804,7 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
         </div>
         <ol className="space-y-3">
           {[
-            'Otwórz swoją stronę w nowej zakładce — nie w trybie podglądu edytora.',
+            'Otwórz swoją stronę w nowej zakładce, nie w trybie podglądu edytora.',
             'W prawym dolnym rogu ekranu powinien pojawić się przycisk czatu.',
             'Kliknij przycisk i wyślij testową wiadomość (np. "Cześć").',
             'Bot powinien odpowiedzieć w ciągu kilku sekund.',
@@ -831,7 +831,7 @@ export function EmbedCode({ bots }: { bots: Bot[] }) {
           </span>
         </div>
         <p className="text-sm text-slate-600 mt-2 mb-0 leading-relaxed">
-          Możesz sterować widgetem programowo — przydatne gdy chcesz otworzyć czat po kliknięciu
+          Możesz sterować widgetem programowo, przydatne gdy chcesz otworzyć czat po kliknięciu
           własnego przycisku CTA.
         </p>
         <CodeBlock

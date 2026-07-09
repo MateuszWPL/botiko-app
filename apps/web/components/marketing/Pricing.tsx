@@ -7,14 +7,14 @@ import Link from 'next/link';
 const FEATURES = [
   { text: '1 bot AI odpowiadający 24/7 na Twojej stronie', strong: true },
   { text: 'Do 1 000 rozmów z klientami miesięcznie', strong: false },
-  { text: 'Gotowy szablon branżowy — beauty, health, food, auto', strong: false },
+  { text: 'Gotowy szablon branżowy, beauty, health, food, auto', strong: false },
   { text: 'Własna baza wiedzy: cennik, FAQ, godziny pracy', strong: false },
   { text: 'Automatyczne zbieranie leadów (imię + telefon)', strong: true },
   { text: 'Email powiadomienie o każdym nowym leadzie', strong: false },
   { text: 'Dashboard z historią rozmów i leadów', strong: false },
   { text: 'Oficjalna wtyczka w katalogu WordPress.org', strong: false },
   { text: 'Kolorowy widget dopasowany do Twojej marki', strong: false },
-  { text: 'Wsparcie e-mail — odpowiadamy w 24h', strong: false },
+  { text: 'Wsparcie e-mail, odpowiadamy w 24h', strong: false },
 ];
 
 // Presets auto-cycle co 4s żeby zademonstrować różne scenariusze
@@ -39,16 +39,16 @@ const CheckIcon = () => (
 export default function Pricing() {
   const planCost = 99;
 
-  // targetRef — gdzie chcemy dojść (zmienia auto-cycle lub user)
+  // targetRef, gdzie chcemy dojść (zmienia auto-cycle lub user)
   const targetRef = useRef({ clients: PRESETS[0].clients, avg: PRESETS[0].avg });
 
-  // anim — płynne float wartości interpolowane do target
+  // anim, płynne float wartości interpolowane do target
   const [anim, setAnim] = useState({ clients: PRESETS[0].clients, avg: PRESETS[0].avg });
 
   const pauseUntilRef = useRef(0);
   const presetIdxRef = useRef(0);
 
-  // RAF lerp loop — działa przez cały czas, zatrzymuje się gdy prev === target
+  // RAF lerp loop, działa przez cały czas, zatrzymuje się gdy prev === target
   useEffect(() => {
     let raf: number;
     const tick = () => {
@@ -86,7 +86,7 @@ export default function Pricing() {
 
   const handleClientsChange = (v: number) => {
     targetRef.current = { ...targetRef.current, clients: v };
-    setAnim(prev => ({ ...prev, clients: v })); // snap — brak opóźnienia przy dragowaniu
+    setAnim(prev => ({ ...prev, clients: v })); // snap, brak opóźnienia przy dragowaniu
     pauseAutoPlay();
   };
 
@@ -113,7 +113,7 @@ export default function Pricing() {
             <span className="gradient-text">Wszystko w środku.</span>
           </h2>
           <p className="mt-4 text-lg text-slate-500">
-            Jeden plan bez ukrytych kosztów. 14 dni za darmo — bez karty kredytowej.
+            Jeden plan bez ukrytych kosztów. 14 dni za darmo, bez karty kredytowej.
           </p>
         </ScrollReveal>
 
@@ -121,7 +121,7 @@ export default function Pricing() {
         <ScrollReveal>
           <div className="grid lg:grid-cols-2 gap-8 items-start">
 
-            {/* LEFT — Plan card */}
+            {/* LEFT. Plan card */}
             <div
               className="relative rounded-3xl overflow-hidden shadow-2xl shadow-brand/25 h-full"
               style={{ background: 'linear-gradient(135deg, #4338CA 0%, #6366F1 100%)' }}
@@ -161,7 +161,7 @@ export default function Pricing() {
                   href="/rejestracja"
                   className="block text-center py-4 rounded-full bg-white text-brand font-bold text-base shadow-xl hover:bg-brand-soft hover:-translate-y-0.5 transition-all"
                 >
-                  Sprawdź Botiko przez 14 dni — bez karty
+                  Sprawdź Botiko przez 14 dni, bez karty
                 </Link>
                 <p className="text-center text-indigo-300 text-xs mt-3">
                   Konfiguracja w 15 minut · Bez umowy · Anulujesz kiedy chcesz
@@ -189,7 +189,7 @@ export default function Pricing() {
               </div>
             </div>
 
-            {/* RIGHT — ROI Calculator */}
+            {/* RIGHT. ROI Calculator */}
             <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm h-full flex flex-col">
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-2">

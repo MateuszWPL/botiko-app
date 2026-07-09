@@ -176,7 +176,7 @@ export default function BillingClient({ status, fetchError }: Props) {
         </div>
       )}
 
-      {/* Trial expired — never subscribed */}
+      {/* Trial expired, never subscribed */}
       {!status.hasSubscription && trialExpired && (
         <div className="flex items-start gap-3 rounded-2xl border border-red-200/60 bg-red-50 p-4">
           <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
@@ -221,7 +221,7 @@ export default function BillingClient({ status, fetchError }: Props) {
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-60 transition-all hover:-translate-y-0.5 shadow-sm shadow-indigo-200 disabled:hover:translate-y-0 cursor-pointer"
           >
             {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-            {isPending ? 'Przekierowywanie…' : 'Rozpocznij subskrypcję — 99 zł/mies.'}
+            {isPending ? 'Przekierowywanie...' : 'Rozpocznij subskrypcję, 99 zł/mies.'}
           </button>
         ) : (
           <button
@@ -230,7 +230,7 @@ export default function BillingClient({ status, fetchError }: Props) {
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-60 transition-all hover:-translate-y-0.5 shadow-sm shadow-indigo-200 disabled:hover:translate-y-0 cursor-pointer"
           >
             {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-            {isPending ? 'Przekierowywanie…' : 'Zarządzaj subskrypcją'}
+            {isPending ? 'Przekierowywanie...' : 'Zarządzaj subskrypcją'}
           </button>
         )}
       </div>
@@ -244,7 +244,7 @@ export default function BillingClient({ status, fetchError }: Props) {
           height={25}
           className="h-5 w-auto"
         />
-        <span className="basis-full sm:basis-auto">— Botiko nie przechowuje danych karty.</span>
+        <span className="basis-full sm:basis-auto">Botiko nie przechowuje danych karty.</span>
       </div>
 
       <BillingFaq />
@@ -255,15 +255,15 @@ export default function BillingClient({ status, fetchError }: Props) {
 const BILLING_FAQ: { q: string; a: string }[] = [
   {
     q: 'Ile kosztuje Botiko i kiedy pobierana jest opłata?',
-    a: 'Jeden plan — 99 zł miesięcznie. Pierwsza opłata pobierana jest z Twojej karty dopiero po zakończeniu 14-dniowego okresu próbnego, a potem automatycznie co miesiąc. Żadnych ukrytych kosztów ani rocznych umów.',
+    a: 'Jeden plan, 99 zł miesięcznie. Pierwsza opłata pobierana jest z Twojej karty dopiero po zakończeniu 14-dniowego okresu próbnego, a potem automatycznie co miesiąc. Żadnych ukrytych kosztów ani rocznych umów.',
   },
   {
     q: 'Jak działa 14-dniowy okres próbny?',
-    a: 'Przez 14 dni masz pełny dostęp do Botiko za darmo. Karta jest wymagana dopiero przy rozpoczęciu subskrypcji. Jeśli nie wykupisz planu, po zakończeniu trialu bot po prostu przestaje odpowiadać — nic nie zostaje pobrane.',
+    a: 'Przez 14 dni masz pełny dostęp do Botiko za darmo. Karta jest wymagana dopiero przy rozpoczęciu subskrypcji. Jeśli nie wykupisz planu, po zakończeniu trialu bot po prostu przestaje odpowiadać, nic nie zostaje pobrane.',
   },
   {
     q: 'Jak anulować subskrypcję?',
-    a: 'W dowolnym momencie kliknij „Zarządzaj subskrypcją" — przejdziesz do bezpiecznego panelu Stripe, gdzie jednym kliknięciem anulujesz plan. Bot działa do końca opłaconego okresu, bez żadnych zobowiązań na przyszłość.',
+    a: 'W dowolnym momencie kliknij „Zarządzaj subskrypcją", przejdziesz do bezpiecznego panelu Stripe, gdzie jednym kliknięciem anulujesz plan. Bot działa do końca opłaconego okresu, bez żadnych zobowiązań na przyszłość.',
   },
   {
     q: 'Czy dostanę fakturę?',
@@ -275,7 +275,7 @@ const BILLING_FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Czy płatność jest bezpieczna?',
-    a: 'Tak. Wszystkie płatności obsługuje Stripe — światowy standard płatności online (certyfikat PCI DSS). Botiko nigdy nie widzi ani nie przechowuje danych Twojej karty.',
+    a: 'Tak. Wszystkie płatności obsługuje Stripe, światowy standard płatności online (certyfikat PCI DSS). Botiko nigdy nie widzi ani nie przechowuje danych Twojej karty.',
   },
   {
     q: 'Co się stanie, gdy subskrypcja wygaśnie?',

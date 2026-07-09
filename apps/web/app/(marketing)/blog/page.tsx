@@ -23,7 +23,7 @@ const BLOG_JSON_LD = [
     '@type': 'CollectionPage',
     '@id': 'https://botiko.pl/blog#collection',
     url: 'https://botiko.pl/blog',
-    name: 'Blog — AI dla polskich firm usługowych',
+    name: 'Blog. AI dla polskich firm usługowych',
     description:
       'Artykuły o automatyzacji obsługi klienta, chatbotach AI i rozwoju małych firm usługowych w Polsce.',
     inLanguage: 'pl-PL',
@@ -40,18 +40,18 @@ type SearchParams = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  // Listy paginowane (?strona=N) konsolidujemy do /blog — każdy wpis ma własny
+  // Listy paginowane (?strona=N) konsolidujemy do /blog, każdy wpis ma własny
   // URL w sitemapie, więc canonical do strony bazowej nie sieroci treści,
   // a usuwa duplikaty „alternatywna strona z canonical" w GSC.
   const canonical = 'https://botiko.pl/blog';
 
   return {
-    title: 'Blog — AI dla polskich firm usługowych',
+    title: 'Blog. AI dla polskich firm usługowych',
     description:
       'Artykuły o automatyzacji obsługi klienta, chatbotach AI i rozwoju małych firm usługowych w Polsce. Poradniki, analizy, case studies.',
     alternates: { canonical },
     openGraph: {
-      title: 'Blog Botiko — AI dla małych firm usługowych',
+      title: 'Blog Botiko. AI dla małych firm usługowych',
       description:
         'Praktyczne artykuły o chatbotach AI, automatyzacji i pozyskiwaniu klientów dla salonów beauty, gabinetów i warsztatów.',
       url: canonical,
@@ -129,7 +129,7 @@ export default async function BlogPage({
           </h1>
           <p className="text-indigo-100 text-lg max-w-2xl mx-auto">
             Praktyczne porady o automatyzacji obsługi klienta, chatbotach i
-            pozyskiwaniu klientów. Bez teorii — tylko to, co działa.
+            pozyskiwaniu klientów. Bez teorii, tylko to, co działa.
           </p>
         </div>
       </div>
@@ -149,7 +149,7 @@ export default async function BlogPage({
               </Suspense>
             </div>
 
-            {/* Featured post — only on page 1 with no filter */}
+            {/* Featured post, only on page 1 with no filter */}
             {featuredPost && !activeCategory && page === 1 && (
               <div className="mb-10">
                 <PostCard post={featuredPost} featured />

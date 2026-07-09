@@ -6,7 +6,7 @@ import type { FaqEntry } from '@/lib/seo';
  *
  * Answers are written answer-first (the direct answer in the opening sentence)
  * because that is the format generative engines quote. Keep them factual and
- * specific — vague marketing copy does not get cited.
+ * specific, vague marketing copy does not get cited.
  */
 
 export type FaqGroup = {
@@ -17,15 +17,15 @@ export type FaqGroup = {
 export const HOME_FAQS: FaqEntry[] = [
   {
     q: 'Czy muszę umieć programować?',
-    a: 'Nie, Botiko nie wymaga żadnej wiedzy technicznej. Konfigurujesz bota przez prosty panel — wklejasz cennik, godziny pracy i FAQ. Na koniec dostajesz jeden fragment kodu HTML, który wklejasz na stronę.',
+    a: 'Nie, Botiko nie wymaga żadnej wiedzy technicznej. Konfigurujesz bota przez prosty panel, wklejasz cennik, godziny pracy i FAQ. Na koniec dostajesz jeden fragment kodu HTML, który wklejasz na stronę.',
   },
   {
     q: 'Czy Botiko działa na WordPress?',
-    a: 'Tak — Botiko ma oficjalną wtyczkę w katalogu WordPress.org. Instalujesz ją z panelu WordPress (Wtyczki → Dodaj nową → wyszukaj „Botiko”), aktywujesz i łączysz stronę jednym kodem — bez edycji motywu ani pomocy programisty. Skrypt działa również na każdej innej stronie WWW.',
+    a: 'Tak. Botiko ma oficjalną wtyczkę w katalogu WordPress.org. Instalujesz ją z panelu WordPress (Wtyczki → Dodaj nową → wyszukaj „Botiko”), aktywujesz i łączysz stronę jednym kodem, bez edycji motywu ani pomocy programisty. Skrypt działa również na każdej innej stronie WWW.',
   },
   {
     q: 'Jak długo trwa wdrożenie?',
-    a: 'W wielu przypadkach bota da się uruchomić w 15–20 minut: wybierasz branżę, uzupełniasz dane o firmie, wklejasz cennik/FAQ i gotowe. Nie potrzebujesz agencji ani programisty.',
+    a: 'W wielu przypadkach bota da się uruchomić w 15-20 minut: wybierasz branżę, uzupełniasz dane o firmie, wklejasz cennik/FAQ i gotowe. Nie potrzebujesz agencji ani programisty.',
   },
   {
     q: 'Co z RODO? Czy dane klientów są bezpieczne?',
@@ -33,32 +33,32 @@ export const HOME_FAQS: FaqEntry[] = [
   },
   {
     q: 'Czy mogę zmieniać treści bota po wdrożeniu?',
-    a: 'Tak, w każdej chwili. Panel pozwala edytować cennik, FAQ, godziny pracy i styl komunikacji. Zmiany wchodzą w życie natychmiast — bez żadnego ponownego wdrożenia.',
+    a: 'Tak, w każdej chwili. Panel pozwala edytować cennik, FAQ, godziny pracy i styl komunikacji. Zmiany wchodzą w życie natychmiast, bez żadnego ponownego wdrożenia.',
   },
   {
     q: 'Czy bot zastąpi mnie lub moich pracowników?',
-    a: 'Nie — bot uzupełnia Twoją pracę, nie zastępuje jej. Odpowiada na powtarzające się pytania, zbiera dane od klientów i odsyła do rezerwacji. Ty dostajesz gotowego leada zamiast tracić czas na telefony.',
+    a: 'Nie, bot uzupełnia Twoją pracę, nie zastępuje jej. Odpowiada na powtarzające się pytania, zbiera dane od klientów i odsyła do rezerwacji. Ty dostajesz gotowego leada zamiast tracić czas na telefony.',
   },
   {
     q: 'Co jeśli bot nie zna odpowiedzi?',
-    a: 'Bot informuje klienta, że przekaże pytanie do Ciebie, i zapisuje dane kontaktowe (imię, telefon). Dostajesz powiadomienie — klient jest już „podgrzany” i czeka na Twój kontakt.',
+    a: 'Bot informuje klienta, że przekaże pytanie do Ciebie, i zapisuje dane kontaktowe (imię, telefon). Dostajesz powiadomienie, klient jest już „podgrzany” i czeka na Twój kontakt.',
   },
   {
     q: 'Czy mogę zrezygnować w każdej chwili?',
-    a: 'Tak. Brak umowy długoterminowej — subskrypcja jest miesięczna i możesz anulować kiedy chcesz. Opłata za bieżący miesiąc nie jest zwracana, ale dostęp pozostaje aktywny do końca okresu rozliczeniowego.',
+    a: 'Tak. Brak umowy długoterminowej, subskrypcja jest miesięczna i możesz anulować kiedy chcesz. Opłata za bieżący miesiąc nie jest zwracana, ale dostęp pozostaje aktywny do końca okresu rozliczeniowego.',
   },
   {
     q: 'Czy bot działa na Facebooku i Instagramie?',
-    a: 'Aktualnie widget embeddujemy na stronie WWW klienta. Integracja z Meta Messengerem i Instagram Direct jest w roadmapie — daj znać, że jesteś zainteresowany przez kontakt@botiko.pl.',
+    a: 'Aktualnie widget embeddujemy na stronie WWW klienta. Integracja z Meta Messengerem i Instagram Direct jest w roadmapie, daj znać, że jesteś zainteresowany przez kontakt@botiko.pl.',
   },
   {
     q: 'Ile kosztuje Botiko i czy jest umowa?',
-    a: 'Botiko kosztuje 99 zł miesięcznie. Pierwsze 14 dni są bezpłatne — bez karty kredytowej. Brak umowy długoterminowej, możesz anulować w dowolnym momencie z poziomu panelu.',
+    a: 'Botiko kosztuje 99 zł miesięcznie. Pierwsze 14 dni są bezpłatne, bez karty kredytowej. Brak umowy długoterminowej, możesz anulować w dowolnym momencie z poziomu panelu.',
   },
 ];
 
 /**
- * Extra questions sourced from "people also ask" intent — they target searches
+ * Extra questions sourced from "people also ask" intent, they target searches
  * and AI prompts we don't cover on the homepage. Grouped on the /faq page.
  */
 export const FAQ_GROUPS: FaqGroup[] = [
@@ -97,7 +97,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         q: 'Jak zainstalować bota na stronie WordPress?',
-        a: 'Zainstaluj oficjalną wtyczkę Botiko z katalogu WordPress.org (Wtyczki → Dodaj nową → wyszukaj „Botiko”), aktywuj ją i połącz stronę jednym kodem z panelu Botiko — bez edycji motywu. Nie chcesz wtyczki? Ten sam kod wkleisz też przez darmową wtyczkę WPCode w sekcji „Header”.',
+        a: 'Zainstaluj oficjalną wtyczkę Botiko z katalogu WordPress.org (Wtyczki → Dodaj nową → wyszukaj „Botiko”), aktywuj ją i połącz stronę jednym kodem z panelu Botiko, bez edycji motywu. Nie chcesz wtyczki? Ten sam kod wkleisz też przez darmową wtyczkę WPCode w sekcji „Header”.',
       },
       {
         q: 'Czy bot zastąpi recepcjonistkę?',
@@ -111,7 +111,7 @@ export const FAQ_GROUPS: FaqGroup[] = [
   },
 ];
 
-/** Flat list of every FAQ (homepage + extra) — used for the FAQPage schema. */
+/** Flat list of every FAQ (homepage + extra), used for the FAQPage schema. */
 export const ALL_FAQS: FaqEntry[] = [
   ...HOME_FAQS,
   ...FAQ_GROUPS.flatMap((g) => g.items),

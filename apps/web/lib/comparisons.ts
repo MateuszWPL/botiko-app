@@ -6,7 +6,7 @@ import type { FaqEntry } from '@/lib/seo';
  * Data for /porownanie/[slug] pages. Comparisons stay fair and factual.
  * Most contrast Botiko with *approaches* (manual replies, generic AI). We also
  * include named-competitor pages (e.g. Botiko vs Tidio) where search intent
- * demands it ("tidio alternatywa") — kept to nominative fair use: verifiable,
+ * demands it ("tidio alternatywa"), kept to nominative fair use: verifiable,
  * non-disparaging, and WITHOUT hard competitor pricing (it changes; link to the
  * source instead). High commercial intent and good fodder for AI answers.
  */
@@ -31,7 +31,7 @@ export const COMPARISONS: Comparison[] = [
   {
     slug: 'bot-vs-reczne-odpowiadanie',
     title: 'Bot vs ręczne odpowiadanie na wiadomości',
-    metaTitle: 'Bot obsługi klienta vs ręczne odpowiadanie — co się opłaca?',
+    metaTitle: 'Bot obsługi klienta vs ręczne odpowiadanie, co się opłaca?',
     metaDescription:
       'Porównanie: bot obsługi klienta 24/7 kontra ręczne odpisywanie na wiadomości. Czas reakcji, koszt, dostępność po godzinach i wpływ na utracone leady.',
     h1: 'Bot obsługi klienta a ręczne odpowiadanie na wiadomości',
@@ -49,7 +49,7 @@ export const COMPARISONS: Comparison[] = [
       { feature: 'Osobisty, ludzki ton rozmowy', a: 'Częściowo', b: true },
     ],
     verdict:
-      'Bot nie zastępuje Ciebie w trudnych rozmowach — przejmuje powtarzalne pytania i nieodebrane wiadomości po godzinach, których ręcznie i tak byś nie obsłużył. Najlepiej działa jako pierwsza linia, która zbiera leady, a Ty domykasz je telefonem.',
+      'Bot nie zastępuje Ciebie w trudnych rozmowach, przejmuje powtarzalne pytania i nieodebrane wiadomości po godzinach, których ręcznie i tak byś nie obsłużył. Najlepiej działa jako pierwsza linia, która zbiera leady, a Ty domykasz je telefonem.',
     faqs: [
       {
         q: 'Czy bot całkowicie zastąpi ręczne odpowiadanie?',
@@ -64,12 +64,12 @@ export const COMPARISONS: Comparison[] = [
   {
     slug: 'bot-vs-chatgpt-na-stronie',
     title: 'Botiko vs ogólny ChatGPT na stronie',
-    metaTitle: 'Botiko vs ogólny chatbot ChatGPT na stronie — różnice',
+    metaTitle: 'Botiko vs ogólny chatbot ChatGPT na stronie, różnice',
     metaDescription:
       'Porównanie bota Botiko z ogólnym chatbotem opartym o ChatGPT wklejonym na stronę: znajomość cennika, zbieranie leadów, szablony branżowe i ryzyko zmyślania.',
     h1: 'Botiko a ogólny chatbot ChatGPT na stronie',
     intro:
-      'Ogólny model językowy wklejony na stronę potrafi rozmawiać, ale nie zna Twojego cennika ani terminów — i bywa, że zmyśla. Botiko odpowiada wyłącznie na podstawie wiedzy Twojej firmy i jest nastawione na zbieranie leadów. Oto różnice.',
+      'Ogólny model językowy wklejony na stronę potrafi rozmawiać, ale nie zna Twojego cennika ani terminów, i bywa, że zmyśla. Botiko odpowiada wyłącznie na podstawie wiedzy Twojej firmy i jest nastawione na zbieranie leadów. Oto różnice.',
     optionA: 'Bot Botiko',
     optionB: 'Ogólny ChatGPT na stronie',
     rows: [
@@ -82,7 +82,7 @@ export const COMPARISONS: Comparison[] = [
       { feature: 'Konfiguracja bez programisty', a: true, b: false },
     ],
     verdict:
-      'Ogólny ChatGPT to świetny model do rozmowy, ale sam z siebie nie zna Twojej firmy i nie zbiera leadów. Botiko jest zbudowane pod konkretny cel: odpowiadać z Twojej wiedzy i zamieniać wiadomości w kontakty — bez budowania integracji od zera.',
+      'Ogólny ChatGPT to świetny model do rozmowy, ale sam z siebie nie zna Twojej firmy i nie zbiera leadów. Botiko jest zbudowane pod konkretny cel: odpowiadać z Twojej wiedzy i zamieniać wiadomości w kontakty, bez budowania integracji od zera.',
     faqs: [
       {
         q: 'Czy Botiko używa ChatGPT?',
@@ -90,19 +90,19 @@ export const COMPARISONS: Comparison[] = [
       },
       {
         q: 'Czy mogę po prostu wkleić ChatGPT na stronę za darmo?',
-        a: 'Technicznie tak, ale stracisz znajomość cennika, zbieranie leadów, szablony branżowe i dashboard — i zwykle potrzebujesz programisty. Botiko daje to gotowe za 99 zł miesięcznie.',
+        a: 'Technicznie tak, ale stracisz znajomość cennika, zbieranie leadów, szablony branżowe i dashboard, i zwykle potrzebujesz programisty. Botiko daje to gotowe za 99 zł miesięcznie.',
       },
     ],
   },
   {
     slug: 'botiko-vs-tidio',
-    title: 'Botiko vs Tidio — alternatywa dla firmy usługowej',
-    metaTitle: 'Botiko vs Tidio — polska alternatywa dla firmy usługowej',
+    title: 'Botiko vs Tidio, alternatywa dla firmy usługowej',
+    metaTitle: 'Botiko vs Tidio, polska alternatywa dla firmy usługowej',
     metaDescription:
       'Szukasz alternatywy dla Tidio? Porównanie dla mikrofirmy usługowej: rynek docelowy, model cenowy, szablony branżowe, język i rezerwacje. Kiedy lepszy jest Tidio, a kiedy Botiko.',
-    h1: 'Botiko a Tidio — co wybrać dla małej firmy usługowej',
+    h1: 'Botiko a Tidio, co wybrać dla małej firmy usługowej',
     intro:
-      'Tidio to dojrzałe, wielokanałowe narzędzie do live chatu i chatbotów, popularne zwłaszcza w e-commerce. Botiko jest węższe: zrobione pod polską mikrofirmę usługową — salon, gabinet, restaurację, warsztat. Poniżej uczciwe porównanie, żeby wybrać świadomie. Ceny Tidio zmieniają się i zależą od planu — aktualne sprawdzisz na tidio.com.',
+      'Tidio to dojrzałe, wielokanałowe narzędzie do live chatu i chatbotów, popularne zwłaszcza w e-commerce. Botiko jest węższe: zrobione pod polską mikrofirmę usługową, salon, gabinet, restaurację, warsztat. Poniżej uczciwe porównanie, żeby wybrać świadomie. Ceny Tidio zmieniają się i zależą od planu, aktualne sprawdzisz na tidio.com.',
     optionA: 'Botiko',
     optionB: 'Tidio',
     rows: [
@@ -116,31 +116,31 @@ export const COMPARISONS: Comparison[] = [
       { feature: 'Wsparcie i komunikacja po polsku', a: true, b: 'Globalny dostawca, produkt anglojęzyczny first' },
     ],
     verdict:
-      'Jeśli prowadzisz sklep internetowy i potrzebujesz obsługi na wielu kanałach oraz rozbudowanych przepływów automatyzacji — Tidio jest do tego stworzone i będzie mocniejsze. Botiko wybierz, gdy jesteś mikrofirmą usługową i zależy Ci na bocie po polsku, który odpowiada z Twojego cennika, ma gotowy szablon branżowy, odsyła do rezerwacji i kosztuje przewidywalne 99 zł miesięcznie z AI w cenie.',
+      'Jeśli prowadzisz sklep internetowy i potrzebujesz obsługi na wielu kanałach oraz rozbudowanych przepływów automatyzacji. Tidio jest do tego stworzone i będzie mocniejsze. Botiko wybierz, gdy jesteś mikrofirmą usługową i zależy Ci na bocie po polsku, który odpowiada z Twojego cennika, ma gotowy szablon branżowy, odsyła do rezerwacji i kosztuje przewidywalne 99 zł miesięcznie z AI w cenie.',
     faqs: [
       {
         q: 'Czy Botiko jest tańsze od Tidio?',
-        a: 'Botiko ma jeden płaski plan 99 zł miesięcznie (PLN) z AI w cenie. Tidio działa w modelu freemium z płatnymi tierami liczonymi w USD, gdzie funkcje AI bywają dodatkowo płatne, a koszt rośnie wraz z ruchem i liczbą operatorów. Co wyjdzie taniej, zależy od Twojego użycia — porównaj aktualny cennik Tidio na tidio.com z płaskim 99 zł.',
+        a: 'Botiko ma jeden płaski plan 99 zł miesięcznie (PLN) z AI w cenie. Tidio działa w modelu freemium z płatnymi tierami liczonymi w USD, gdzie funkcje AI bywają dodatkowo płatne, a koszt rośnie wraz z ruchem i liczbą operatorów. Co wyjdzie taniej, zależy od Twojego użycia, porównaj aktualny cennik Tidio na tidio.com z płaskim 99 zł.',
       },
       {
         q: 'Kiedy lepszym wyborem jest Tidio?',
-        a: 'Gdy prowadzisz e-commerce, potrzebujesz obsługi na wielu kanałach (Messenger, Instagram, WhatsApp) i rozbudowanych automatyzacji. Tidio jest dojrzałe i bogate w funkcje — w tych scenariuszach wygrywa.',
+        a: 'Gdy prowadzisz e-commerce, potrzebujesz obsługi na wielu kanałach (Messenger, Instagram, WhatsApp) i rozbudowanych automatyzacji. Tidio jest dojrzałe i bogate w funkcje, w tych scenariuszach wygrywa.',
       },
       {
         q: 'Czy łatwo przejść z Tidio na Botiko?',
-        a: 'Tak. Konfiguracja Botiko to ok. 15 minut: wpisujesz cennik i FAQ, wklejasz kod lub instalujesz wtyczkę na WordPress. Nie migrujesz danych — bot startuje od Twojej bazy wiedzy.',
+        a: 'Tak. Konfiguracja Botiko to ok. 15 minut: wpisujesz cennik i FAQ, wklejasz kod lub instalujesz wtyczkę na WordPress. Nie migrujesz danych, bot startuje od Twojej bazy wiedzy.',
       },
     ],
   },
   {
     slug: 'botiko-vs-recepcjonistka-ai',
     title: 'Botiko vs recepcjonistka AI (voicebot)',
-    metaTitle: 'Botiko vs recepcjonistka AI (voicebot) — co wybrać?',
+    metaTitle: 'Botiko vs recepcjonistka AI (voicebot), co wybrać?',
     metaDescription:
       'Recepcjonistka AI (voicebot) odbiera telefony i umawia wizyty. Botiko to tekstowy bot na stronie, który odpowiada z Twojego cennika, zbiera leady i odsyła do rezerwacji. Zobacz, kiedy który się sprawdza.',
-    h1: 'Botiko a recepcjonistka AI (voicebot) — co wybrać dla firmy usługowej',
+    h1: 'Botiko a recepcjonistka AI (voicebot), co wybrać dla firmy usługowej',
     intro:
-      'To dwie różne kategorie narzędzi, choć trafiają na te same zapytania. Recepcjonistka AI (voicebot telefoniczny — np. Smart Asystenci, Assistron, Sekretarka AI) odbiera połączenia głosowe i umawia wizyty w kalendarzu. Botiko to tekstowy bot na Twojej stronie WWW: odpowiada z Twojego cennika i FAQ, zbiera leady i odsyła do rezerwacji (Booksy/Calendly). Poniżej uczciwe porównanie — zakres i ceny voicebotów zależą od dostawcy, więc sprawdź je u źródła.',
+      'To dwie różne kategorie narzędzi, choć trafiają na te same zapytania. Recepcjonistka AI (voicebot telefoniczny, np. Smart Asystenci, Assistron, Sekretarka AI) odbiera połączenia głosowe i umawia wizyty w kalendarzu. Botiko to tekstowy bot na Twojej stronie WWW: odpowiada z Twojego cennika i FAQ, zbiera leady i odsyła do rezerwacji (Booksy/Calendly). Poniżej uczciwe porównanie, zakres i ceny voicebotów zależą od dostawcy, więc sprawdź je u źródła.',
     optionA: 'Botiko',
     optionB: 'Recepcjonistka AI (voicebot)',
     rows: [
@@ -151,14 +151,14 @@ export const COMPARISONS: Comparison[] = [
       { feature: 'Odpowiada z Twojego cennika i FAQ', a: true, b: 'W zakresie skonfigurowanym' },
       { feature: 'Zbiera leady (imię + telefon) z rozmowy na stronie', a: true, b: 'Raczej z rozmowy telefonicznej' },
       { feature: 'Instalacja na stronie / WordPress', a: 'Natywnie, przez wtyczkę lub kod', b: 'Zwykle numer telefonu / integracja telefoniczna' },
-      { feature: 'Model cenowy', a: 'Jeden płaski plan 99 zł/mies', b: 'Zwykle wyższy próg (usługa głosowa) — sprawdź u dostawcy' },
+      { feature: 'Model cenowy', a: 'Jeden płaski plan 99 zł/mies', b: 'Zwykle wyższy próg (usługa głosowa), sprawdź u dostawcy' },
     ],
     verdict:
-      'Jeśli tracisz klientów głównie na nieodebranych telefonach i zależy Ci, żeby coś realnie umawiało wizyty głosowo — właściwą kategorią jest recepcjonistka AI (voicebot). Botiko wybierz, gdy klienci piszą na stronie i po godzinach, a Ty chcesz taniego bota, który odpowiada z Twojego cennika, zbiera leady i odsyła do Twojej rezerwacji (Booksy/Calendly) — za przewidywalne 99 zł miesięcznie. To nie musi być „albo–albo": voicebot może odbierać telefon, a Botiko obsługiwać czat na stronie.',
+      'Jeśli tracisz klientów głównie na nieodebranych telefonach i zależy Ci, żeby coś realnie umawiało wizyty głosowo, właściwą kategorią jest recepcjonistka AI (voicebot). Botiko wybierz, gdy klienci piszą na stronie i po godzinach, a Ty chcesz taniego bota, który odpowiada z Twojego cennika, zbiera leady i odsyła do Twojej rezerwacji (Booksy/Calendly), za przewidywalne 99 zł miesięcznie. To nie musi być „albo-albo": voicebot może odbierać telefon, a Botiko obsługiwać czat na stronie.',
     faqs: [
       {
         q: 'Czym różni się Botiko od recepcjonistki AI?',
-        a: 'Recepcjonistka AI to zwykle voicebot telefoniczny — odbiera połączenia głosowe i umawia wizyty w kalendarzu. Botiko to tekstowy bot na stronie WWW: odpowiada na pisane pytania z Twojego cennika i FAQ, zbiera leady i odsyła do rezerwacji. Inny kanał, inne zadanie.',
+        a: 'Recepcjonistka AI to zwykle voicebot telefoniczny, odbiera połączenia głosowe i umawia wizyty w kalendarzu. Botiko to tekstowy bot na stronie WWW: odpowiada na pisane pytania z Twojego cennika i FAQ, zbiera leady i odsyła do rezerwacji. Inny kanał, inne zadanie.',
       },
       {
         q: 'Czy Botiko odbiera telefony?',
@@ -166,11 +166,11 @@ export const COMPARISONS: Comparison[] = [
       },
       {
         q: 'Czy Botiko samo umawia wizyty jak recepcjonistka AI?',
-        a: 'Nie — Botiko celowo nie zarządza kalendarzem. Odsyła klienta do Twojego systemu rezerwacji (Booksy, Calendly) albo zbiera imię i telefon do oddzwonienia. Voicebot recepcyjny zwykle umawia bezpośrednio; Botiko zostawia rezerwację po Twojej stronie.',
+        a: 'Nie. Botiko celowo nie zarządza kalendarzem. Odsyła klienta do Twojego systemu rezerwacji (Booksy, Calendly) albo zbiera imię i telefon do oddzwonienia. Voicebot recepcyjny zwykle umawia bezpośrednio; Botiko zostawia rezerwację po Twojej stronie.',
       },
       {
-        q: 'Co jest tańsze — Botiko czy recepcjonistka AI?',
-        a: 'Botiko ma jeden płaski plan 99 zł miesięcznie. Voiceboty telefoniczne to zwykle wyższy próg cenowy, bo obsługa głosowa jest droższa — dokładne stawki i zakres sprawdzisz u konkretnego dostawcy. To dwa różne narzędzia, więc porównuj je przez pryzmat tego, co realnie potrzebujesz: czat na stronie czy odbieranie telefonu.',
+        q: 'Co jest tańsze. Botiko czy recepcjonistka AI?',
+        a: 'Botiko ma jeden płaski plan 99 zł miesięcznie. Voiceboty telefoniczne to zwykle wyższy próg cenowy, bo obsługa głosowa jest droższa, dokładne stawki i zakres sprawdzisz u konkretnego dostawcy. To dwa różne narzędzia, więc porównuj je przez pryzmat tego, co realnie potrzebujesz: czat na stronie czy odbieranie telefonu.',
       },
       {
         q: 'Czy mogę używać obu naraz?',

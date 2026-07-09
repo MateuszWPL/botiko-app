@@ -14,7 +14,7 @@ const FEATURES = [
       </svg>
     ),
     title: 'Odpowiada 24/7',
-    desc: 'Niedziela 23:00, poniedziałek 6:00 — zawsze gotowy. Nawet kiedy śpisz.',
+    desc: 'Niedziela 23:00, poniedziałek 6:00, zawsze gotowy. Nawet kiedy śpisz.',
   },
   {
     icon: (
@@ -23,7 +23,7 @@ const FEATURES = [
       </svg>
     ),
     title: 'Zbiera leady automatycznie',
-    desc: 'Imię, telefon, pytanie — wszystko trafia do panelu. Ty dzwonisz do gotowego leada.',
+    desc: 'Imię, telefon, pytanie, wszystko trafia do panelu. Ty dzwonisz do gotowego leada.',
   },
   {
     icon: (
@@ -32,7 +32,7 @@ const FEATURES = [
       </svg>
     ),
     title: 'Zna Twój cennik na pamięć',
-    desc: 'Wklejasz cennik, godziny, FAQ — bot odpowiada precyzyjnie, nie jak generyczny ChatGPT.',
+    desc: 'Wklejasz cennik, godziny, FAQ, bot odpowiada precyzyjnie, nie jak generyczny ChatGPT.',
   },
   {
     icon: (
@@ -97,10 +97,10 @@ function MockupReveal() {
               animation: inView ? 'botiko-glow-pulse 5s ease-in-out infinite' : 'none',
             }}
           />
-          {/* Product mockup — Botiko dashboard on desktop, tablet & phone */}
+          {/* Product mockup. Botiko dashboard on desktop, tablet & phone */}
           <Image
             src="/botiko-mockup.webp"
-            alt="Panel Botiko na komputerze, tablecie i telefonie — przegląd konwersacji, leadów i zdrowia bazy wiedzy"
+            alt="Panel Botiko na komputerze, tablecie i telefonie, przegląd konwersacji, leadów i zdrowia bazy wiedzy"
             width={1545}
             height={862}
             sizes="(max-width: 1024px) 100vw, 50vw"
@@ -132,7 +132,7 @@ export default function Demo() {
         {/* Left / Right hero row */}
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-20">
 
-          {/* Left — text */}
+          {/* Left, text */}
           <ScrollReveal>
             <p className="text-sm font-semibold text-brand uppercase tracking-widest mb-3">Demo na żywo</p>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text leading-tight">
@@ -140,7 +140,7 @@ export default function Demo() {
               <span className="gradient-text">działa w praktyce</span>
             </h2>
             <p className="mt-4 text-lg text-slate-500 max-w-lg">
-              Kliknij ikonkę czatu w prawym dolnym rogu strony i porozmawiaj z prawdziwym botem Botiko — dokładnie takim, który możesz mieć na swojej stronie.
+              Kliknij ikonkę czatu w prawym dolnym rogu strony i porozmawiaj z prawdziwym botem Botiko, dokładnie takim, który możesz mieć na swojej stronie.
             </p>
             {DEMO_BOT_ID && (
               <button
@@ -155,7 +155,7 @@ export default function Demo() {
             )}
           </ScrollReveal>
 
-          {/* Right — product mockup slides in */}
+          {/* Right, product mockup slides in */}
           <MockupReveal />
         </div>
 

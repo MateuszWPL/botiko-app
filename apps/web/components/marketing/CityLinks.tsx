@@ -4,7 +4,7 @@ import { getCitiesForIndustry, getIndustry } from '@/lib/local-seo';
 /**
  * Internal-linking block for the industry landing pages: links to the
  * city-specific variants (/dla/[branza]/[miasto]). Surfaces the programmatic
- * pages to crawlers and users. Server component — reads server-only data.
+ * pages to crawlers and users. Server component, reads server-only data.
  */
 export default function CityLinks({ industrySlug }: { industrySlug: string }) {
   const industry = getIndustry(industrySlug);
@@ -26,7 +26,7 @@ export default function CityLinks({ industrySlug }: { industrySlug: string }) {
           Botiko dla {industry.labelGenitive} w Twoim mieście
         </h2>
         <p className="text-slate-500 mb-8 max-w-xl mx-auto">
-          Wybierz miasto — strona z lokalnymi przykładami rozmów i odpowiedziami na
+          Wybierz miasto, strona z lokalnymi przykładami rozmów i odpowiedziami na
           najczęstsze pytania klientów z Twojej okolicy.
         </p>
         <div className="flex flex-wrap justify-center gap-2">

@@ -62,7 +62,7 @@ export function OverviewCharts({ conversationsByDay, leadsByStatus }: Props) {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-      {/* Bar chart — conversations per day */}
+      {/* Bar chart, conversations per day */}
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 p-6 shadow-sm">
         <div className="mb-5">
           <h3 className="text-sm font-semibold text-slate-800">Aktywność (ostatnie 7 dni)</h3>
@@ -97,7 +97,7 @@ export function OverviewCharts({ conversationsByDay, leadsByStatus }: Props) {
         )}
       </div>
 
-      {/* Pie chart — leads by status */}
+      {/* Pie chart, leads by status */}
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/60 p-6 shadow-sm">
         <div className="mb-5">
           <h3 className="text-sm font-semibold text-slate-800">Leady wg statusu</h3>

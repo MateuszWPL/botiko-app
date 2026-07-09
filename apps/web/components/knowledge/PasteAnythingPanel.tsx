@@ -12,8 +12,8 @@ type State = 'idle' | 'classifying' | 'preview' | 'saving' | 'done' | 'error';
 const MIN_CHARS = 30;
 
 const ERROR_MESSAGES: Record<string, string> = {
-  LLM_INVALID_JSON: 'Nie udało się rozpoznać treści — spróbuj wkleić ją inaczej lub dodaj ręcznie.',
-  INVALID_SCHEMA: 'Nie udało się poukładać danych — spróbuj ponownie lub dodaj ręcznie.',
+  LLM_INVALID_JSON: 'Nie udało się rozpoznać treści, spróbuj wkleić ją inaczej lub dodaj ręcznie.',
+  INVALID_SCHEMA: 'Nie udało się poukładać danych, spróbuj ponownie lub dodaj ręcznie.',
 };
 
 /** Polish plural for "wpis" (entry): 1 wpis / 2-4 wpisy / 5+ wpisów. */
@@ -103,7 +103,7 @@ export function PasteAnythingPanel({ botId, onComplete }: Props) {
     return (
       <div className="flex items-center gap-2 py-3 px-4 bg-slate-100 rounded-xl">
         <Loader2 className="w-4 h-4 text-slate-600 animate-spin" />
-        <span className="text-sm text-slate-600">Analizuję treść i układam wpisy…</span>
+        <span className="text-sm text-slate-600">Analizuję treść i układam wpisy...</span>
       </div>
     );
   }
@@ -116,7 +116,7 @@ export function PasteAnythingPanel({ botId, onComplete }: Props) {
             Nie rozpoznaliśmy struktury (cennik, FAQ, kontakt)
           </p>
           <p className="text-xs text-amber-700 mb-3">
-            Możesz zapisać wklejony tekst jako zwykły wpis — bot i tak z niego skorzysta — albo wkleić inną treść.
+            Możesz zapisać wklejony tekst jako zwykły wpis, bot i tak z niego skorzysta, albo wkleić inną treść.
           </p>
           <div className="flex flex-wrap gap-2">
             <button
@@ -194,7 +194,7 @@ export function PasteAnythingPanel({ botId, onComplete }: Props) {
       <textarea
         value={text}
         onChange={(e) => setText(e.currentTarget.value)}
-        placeholder="Wklej tekst o firmie — cennik, ofertę, opis usług lub najczęstsze pytania. Uporządkujemy go automatycznie na gotowe wpisy, a Ty zatwierdzisz."
+        placeholder="Wklej tekst o firmie, cennik, ofertę, opis usług lub najczęstsze pytania. Uporządkujemy go automatycznie na gotowe wpisy, a Ty zatwierdzisz."
         rows={6}
         maxLength={90_000}
         className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand/30 resize-y"

@@ -10,7 +10,7 @@ import type { FaqEntry } from '@/lib/seo';
  * substance (pain points, features, ROI, sample chats) with genuinely
  * city-specific copy (real districts, locative grammar, city+industry FAQ), so
  * no two URLs are near-duplicates. Do not add a city without real districts and
- * its own FAQ answers — a templated stub is worse than no page.
+ * its own FAQ answers, a templated stub is worse than no page.
  *
  * No fabricated statistics: local colour comes from verifiable facts (district
  * names, booking norms), never invented precise numbers.
@@ -18,11 +18,11 @@ import type { FaqEntry } from '@/lib/seo';
 
 export type City = {
   slug: string;
-  /** Mianownik — "Białystok" */
+  /** Mianownik, "Białystok" */
   name: string;
-  /** Po przyimku "w/we" — "w Białymstoku" (includes the preposition) */
+  /** Po przyimku "w/we", "w Białymstoku" (includes the preposition) */
   inLocative: string;
-  /** Przymiotnik — "białostocki" (forma męska, do odmiany w tekście) */
+  /** Przymiotnik, "białostocki" (forma męska, do odmiany w tekście) */
   adjectiveMasc: string;
   /** Real districts, used in intro + sample chats to ground the copy locally. */
   districts: string[];
@@ -34,11 +34,11 @@ export type IndustryFaq = (city: City) => FaqEntry[];
 
 export type Industry = {
   slug: string;
-  /** Lowercase noun for inline copy — "salon beauty" */
+  /** Lowercase noun for inline copy, "salon beauty" */
   label: string;
-  /** Dopełniacz — "Bot dla {salonu beauty}" */
+  /** Dopełniacz, "Bot dla {salonu beauty}" */
   labelGenitive: string;
-  /** Capitalised for headings/breadcrumbs — "Salon beauty" */
+  /** Capitalised for headings/breadcrumbs, "Salon beauty" */
   labelTitle: string;
   accent: string;
   gradient: string;
@@ -120,27 +120,27 @@ export const INDUSTRIES: Industry[] = [
     gradient: 'linear-gradient(135deg, #831843 0%, #9d174d 30%, #be185d 70%, #EC4899 100%)',
     serviceType: 'Customer service automation for beauty salons',
     intro: (c) =>
-      `Prowadzisz salon beauty ${c.inLocative}? Botiko odpowiada Twoim klientkom 24/7 — także wtedy, gdy robisz zabieg albo już skończyłaś pracę. Bot zna Twój cennik (hybryda, rzęsy, brwi, kosmetologia), godziny i lokalizację, a numer telefonu klientki zapisuje do oddzwonienia. Działa dla salonów na osiedlach ${c.districts.slice(0, 3).join(', ')} i w całym mieście.`,
+      `Prowadzisz salon beauty ${c.inLocative}? Botiko odpowiada Twoim klientkom 24/7, także wtedy, gdy robisz zabieg albo już skończyłaś pracę. Bot zna Twój cennik (hybryda, rzęsy, brwi, kosmetologia), godziny i lokalizację, a numer telefonu klientki zapisuje do oddzwonienia. Działa dla salonów na osiedlach ${c.districts.slice(0, 3).join(', ')} i w całym mieście.`,
     painLocal: (c) =>
-      `${c.name} to ${c.sceneNote}. Wiadomości o manicure i rzęsy spływają najczęściej wieczorem — gdy już nie odpisujesz, klientka zapisuje się gdzie indziej.`,
+      `${c.name} to ${c.sceneNote}. Wiadomości o manicure i rzęsy spływają najczęściej wieczorem, gdy już nie odpisujesz, klientka zapisuje się gdzie indziej.`,
     sampleChats: [
       {
         q: 'Ile kosztuje manicure hybrydowy?',
-        a: 'Manicure hybrydowy to 90 zł (ok. 75 min). W pakiecie z pedicure — 160 zł. Zostaw imię i telefon, a rano sprawdzę kalendarz i oddzwonię z wolnymi terminami.',
+        a: 'Manicure hybrydowy to 90 zł (ok. 75 min). W pakiecie z pedicure, 160 zł. Zostaw imię i telefon, a rano sprawdzę kalendarz i oddzwonię z wolnymi terminami.',
       },
       {
         q: 'Macie wolny termin na rzęsy w sobotę?',
-        a: 'W soboty pracujemy 9:00–17:00 (stylizacja 1:1, naturalna, objętość — 150–250 zł). Zostaw numer, a właścicielka oddzwoni z wolnym okienkiem.',
+        a: 'W soboty pracujemy 9:00-17:00 (stylizacja 1:1, naturalna, objętość, 150-250 zł). Zostaw numer, a właścicielka oddzwoni z wolnym okienkiem.',
       },
       {
         q: 'Gdzie dokładnie jest salon i czy jest parking?',
-        a: 'Salon znajduje się w {city}. Podam dokładny adres i wskazówki dojazdu — napisz, z której części miasta jedziesz, a podpowiem najbliższy parking.',
+        a: 'Salon znajduje się w {city}. Podam dokładny adres i wskazówki dojazdu, napisz, z której części miasta jedziesz, a podpowiem najbliższy parking.',
       },
     ],
     features: [
       'Odpowiada na pytania o cennik: hybryda, żel, manicure japoński, pedicure',
       'Zna czas trwania zabiegów i godziny otwarcia salonu',
-      'Zbiera imię i telefon klientki — oddzwaniasz z wolnym terminem',
+      'Zbiera imię i telefon klientki, oddzwaniasz z wolnym terminem',
       'Wyjaśnia różnice między usługami (np. henna pudrowa vs laminacja brwi)',
       'Informuje o promocjach i pakietach, które sama wprowadzasz',
       'Odsyła do rezerwacji w Booksy bez przejmowania kalendarza',
@@ -161,7 +161,7 @@ export const INDUSTRIES: Industry[] = [
       },
       {
         q: `Jak szybko uruchomię bota w moim ${c.adjectiveMasc}m salonie?`,
-        a: 'Zwykle 15–20 minut: wybierasz branżę beauty, wklejasz cennik i godziny, a kod osadzasz na stronie (np. przez wtyczkę WPCode na WordPress). Bez programisty.',
+        a: 'Zwykle 15-20 minut: wybierasz branżę beauty, wklejasz cennik i godziny, a kod osadzasz na stronie (np. przez wtyczkę WPCode na WordPress). Bez programisty.',
       },
     ],
   },
@@ -176,11 +176,11 @@ export const INDUSTRIES: Industry[] = [
     intro: (c) =>
       `Masz gabinet, SPA lub studio wellness ${c.inLocative}? Botiko odpowiada na pytania o masaże, zabiegi na twarz i aromaterapię 24/7, a kontakt do klienta zapisuje, gdy jesteś przy zabiegu. Zna Twój cennik i grafik, więc nie musisz przerywać pracy, by odpisać. Obsługuje klientów z ${c.districts.slice(0, 3).join(', ')} i całego miasta.`,
     painLocal: (c) =>
-      `${c.name} to ${c.sceneNote}. Przy masażu czy zabiegu nie odbierzesz telefonu — a właśnie wtedy najczęściej pytają o wolny termin.`,
+      `${c.name} to ${c.sceneNote}. Przy masażu czy zabiegu nie odbierzesz telefonu, a właśnie wtedy najczęściej pytają o wolny termin.`,
     sampleChats: [
       {
         q: 'Ile trwa i kosztuje masaż relaksacyjny całego ciała?',
-        a: 'Masaż relaksacyjny całego ciała to 60 min i 160 zł. Mamy też wersję 90 min (220 zł). Zostaw numer — oddzwonimy z wolnym terminem, gdy skończymy bieżący zabieg.',
+        a: 'Masaż relaksacyjny całego ciała to 60 min i 160 zł. Mamy też wersję 90 min (220 zł). Zostaw numer, oddzwonimy z wolnym terminem, gdy skończymy bieżący zabieg.',
       },
       {
         q: 'Czy macie pakiety dla par?',
@@ -188,13 +188,13 @@ export const INDUSTRIES: Industry[] = [
       },
       {
         q: 'Jak trafić do gabinetu i czy jest parking?',
-        a: 'Gabinet mieści się w {city}. Podam dokładny adres i wskazówki — napisz, z której okolicy jedziesz, a podpowiem dojazd i parking.',
+        a: 'Gabinet mieści się w {city}. Podam dokładny adres i wskazówki, napisz, z której okolicy jedziesz, a podpowiem dojazd i parking.',
       },
     ],
     features: [
       'Odpowiada na pytania o rodzaje masaży i zabiegów oraz ich czas',
       'Zna cennik i pakiety (np. SPA dla par, karnety)',
-      'Zbiera kontakt, gdy jesteś przy kliencie — oddzwaniasz po zabiegu',
+      'Zbiera kontakt, gdy jesteś przy kliencie, oddzwaniasz po zabiegu',
       'Doradza wybór zabiegu na podstawie potrzeb klienta',
       'Informuje o przeciwwskazaniach i przygotowaniu do wizyty',
       'Odsyła do rezerwacji w Booksy lub Calendly',
@@ -228,21 +228,21 @@ export const INDUSTRIES: Industry[] = [
     gradient: 'linear-gradient(135deg, #7c2d12 0%, #c2410c 40%, #F97316 100%)',
     serviceType: 'Customer service automation for restaurants',
     intro: (c) =>
-      `Prowadzisz restaurację, bistro lub kawiarnię ${c.inLocative}? Botiko odpowiada gościom na pytania o menu, alergeny, godziny i organizację imprez 24/7 — także w środku serwisu, gdy obsługa nie ma czasu na telefon. Zna Twoją kartę i zasady rezerwacji, a kontakt do gościa zapisuje. Obsługuje gości z ${c.districts.slice(0, 3).join(', ')} i okolic.`,
+      `Prowadzisz restaurację, bistro lub kawiarnię ${c.inLocative}? Botiko odpowiada gościom na pytania o menu, alergeny, godziny i organizację imprez 24/7, także w środku serwisu, gdy obsługa nie ma czasu na telefon. Zna Twoją kartę i zasady rezerwacji, a kontakt do gościa zapisuje. Obsługuje gości z ${c.districts.slice(0, 3).join(', ')} i okolic.`,
     painLocal: (c) =>
-      `${c.name} to ${c.sceneNote}. Wieczorem, w szczycie serwisu, telefon dzwoni z pytaniem o wolny stolik — a kelnerzy są na sali.`,
+      `${c.name} to ${c.sceneNote}. Wieczorem, w szczycie serwisu, telefon dzwoni z pytaniem o wolny stolik, a kelnerzy są na sali.`,
     sampleChats: [
       {
         q: 'Macie wolny stolik na 4 osoby w piątek wieczorem?',
-        a: 'W piątki bywa pełno, dlatego rezerwujemy z wyprzedzeniem. Zostaw imię i telefon oraz preferowaną godzinę — oddzwonimy i potwierdzimy stolik.',
+        a: 'W piątki bywa pełno, dlatego rezerwujemy z wyprzedzeniem. Zostaw imię i telefon oraz preferowaną godzinę, oddzwonimy i potwierdzimy stolik.',
       },
       {
         q: 'Czy macie dania bezglutenowe i wegańskie?',
-        a: 'Tak, w karcie mamy oznaczone dania wegańskie i bezglutenowe. Jeśli masz konkretną alergię, napisz jaką — sprawdzę, które pozycje są bezpieczne.',
+        a: 'Tak, w karcie mamy oznaczone dania wegańskie i bezglutenowe. Jeśli masz konkretną alergię, napisz jaką, sprawdzę, które pozycje są bezpieczne.',
       },
       {
         q: 'Organizujecie urodziny dla grupy?',
-        a: 'Tak, przyjmujemy imprezy okolicznościowe w {city}. Zostaw kontakt i liczbę osób — oddzwonimy z propozycją menu i dostępnością sali.',
+        a: 'Tak, przyjmujemy imprezy okolicznościowe w {city}. Zostaw kontakt i liczbę osób, oddzwonimy z propozycją menu i dostępnością sali.',
       },
     ],
     features: [
@@ -261,7 +261,7 @@ export const INDUSTRIES: Industry[] = [
     faq: (c) => [
       {
         q: `Czy bot dla restauracji ${c.inLocative} przyjmie rezerwację stolika?`,
-        a: 'Bot zbiera dane do rezerwacji (imię, telefon, liczba osób, godzina) i przekazuje je Tobie do potwierdzenia. Nie zarządza salą za Ciebie — zostawia decyzję obsłudze, ale gość nie zostaje bez odpowiedzi.',
+        a: 'Bot zbiera dane do rezerwacji (imię, telefon, liczba osób, godzina) i przekazuje je Tobie do potwierdzenia. Nie zarządza salą za Ciebie, zostawia decyzję obsłudze, ale gość nie zostaje bez odpowiedzi.',
       },
       {
         q: `Ile kosztuje bot dla restauracji ${c.inLocative}?`,
@@ -282,21 +282,21 @@ export const INDUSTRIES: Industry[] = [
     gradient: 'linear-gradient(135deg, #1e293b 0%, #334155 45%, #64748B 100%)',
     serviceType: 'Customer service automation for auto repair shops',
     intro: (c) =>
-      `Masz warsztat samochodowy lub wulkanizację ${c.inLocative}? Botiko odpowiada klientom na pytania o przeglądy, naprawy i wymianę opon 24/7 — także wtedy, gdy jesteś pod samochodem i nie odbierzesz telefonu. Zbiera markę, model i opis usterki, żebyś oddzwonił z gotową wyceną. Obsługuje kierowców z ${c.districts.slice(0, 3).join(', ')} i całego miasta.`,
+      `Masz warsztat samochodowy lub wulkanizację ${c.inLocative}? Botiko odpowiada klientom na pytania o przeglądy, naprawy i wymianę opon 24/7, także wtedy, gdy jesteś pod samochodem i nie odbierzesz telefonu. Zbiera markę, model i opis usterki, żebyś oddzwonił z gotową wyceną. Obsługuje kierowców z ${c.districts.slice(0, 3).join(', ')} i całego miasta.`,
     painLocal: (c) =>
-      `${c.name} to ${c.sceneNote}. Gdy pracujesz pod autem, nie odbierzesz telefonu — a klient z usterką dzwoni do następnego warsztatu z listy.`,
+      `${c.name} to ${c.sceneNote}. Gdy pracujesz pod autem, nie odbierzesz telefonu, a klient z usterką dzwoni do następnego warsztatu z listy.`,
     sampleChats: [
       {
         q: 'Ile kosztuje wymiana oleju i filtra?',
-        a: 'Wymiana oleju z filtrem to zwykle 150–250 zł plus koszt oleju (zależnie od modelu). Podaj markę i rok auta, a oddzwonimy z dokładną wyceną i wolnym terminem.',
+        a: 'Wymiana oleju z filtrem to zwykle 150-250 zł plus koszt oleju (zależnie od modelu). Podaj markę i rok auta, a oddzwonimy z dokładną wyceną i wolnym terminem.',
       },
       {
         q: 'Robicie sezonową wymianę opon? Ile to trwa?',
-        a: 'Tak, wymiana opon to ok. 30–45 minut. W sezonie bywa kolejka — zostaw numer i rozmiar opon, a zapiszemy Cię na konkretną godzinę.',
+        a: 'Tak, wymiana opon to ok. 30-45 minut. W sezonie bywa kolejka, zostaw numer i rozmiar opon, a zapiszemy Cię na konkretną godzinę.',
       },
       {
         q: 'Mam stukanie na zawieszeniu, przyjmiecie na diagnostykę?',
-        a: 'Tak, przyjmujemy auta na diagnostykę w {city}. Napisz markę, model i kiedy słychać stukanie — oddzwonimy i umówimy dogodny termin oględzin.',
+        a: 'Tak, przyjmujemy auta na diagnostykę w {city}. Napisz markę, model i kiedy słychać stukanie, oddzwonimy i umówimy dogodny termin oględzin.',
       },
     ],
     features: [
@@ -315,7 +315,7 @@ export const INDUSTRIES: Industry[] = [
     faq: (c) => [
       {
         q: `Czy bot dla warsztatu ${c.inLocative} poda wycenę naprawy?`,
-        a: 'Bot poda orientacyjne ceny z Twojego cennika i zbierze dane (marka, model, usterka), żebyś oddzwonił z dokładną wyceną. Nie wycenia napraw samodzielnie — dane ma gotowe, gdy wyjdziesz spod auta.',
+        a: 'Bot poda orientacyjne ceny z Twojego cennika i zbierze dane (marka, model, usterka), żebyś oddzwonił z dokładną wyceną. Nie wycenia napraw samodzielnie, dane ma gotowe, gdy wyjdziesz spod auta.',
       },
       {
         q: `Ile kosztuje bot dla warsztatu ${c.inLocative}?`,
@@ -323,7 +323,7 @@ export const INDUSTRIES: Industry[] = [
       },
       {
         q: `Czy bot obsłuży kierowców z całego ${c.name}?`,
-        a: `Tak. Bot odpowiada na stronie warsztatu niezależnie od dzielnicy — od ${c.districts[0]} po ${c.districts[1]} i okolice. Może też podać dojazd do warsztatu.`,
+        a: `Tak. Bot odpowiada na stronie warsztatu niezależnie od dzielnicy, od ${c.districts[0]} po ${c.districts[1]} i okolice. Może też podać dojazd do warsztatu.`,
       },
     ],
   },
@@ -361,14 +361,14 @@ export function getLocalPage(industrySlug: string, citySlug: string): LocalPage 
   return { industry, city, sampleChats, faqs: industry.faq(city) };
 }
 
-/** Every valid (industry, city) combination — for generateStaticParams + sitemap. */
+/** Every valid (industry, city) combination, for generateStaticParams + sitemap. */
 export function getAllLocalParams(): { branza: string; miasto: string }[] {
   return INDUSTRIES.flatMap((industry) =>
     CITIES.map((city) => ({ branza: industry.slug, miasto: city.slug })),
   );
 }
 
-/** Cities offered for a given industry — for the "Botiko w Twoim mieście" links. */
+/** Cities offered for a given industry, for the "Botiko w Twoim mieście" links. */
 export function getCitiesForIndustry(industrySlug: string): City[] {
   return getIndustry(industrySlug) ? CITIES : [];
 }
@@ -376,7 +376,7 @@ export function getCitiesForIndustry(industrySlug: string): City[] {
 /**
  * Botiko has a genuine local presence only in Białystok (founder location).
  * The other-city landing pages stay reachable for direct/ad traffic, but are
- * marked `noindex` and kept out of the sitemap — their copy is ~93% shared
+ * marked `noindex` and kept out of the sitemap, their copy is ~93% shared
  * across cities, so asking Google to rank them invites near-duplicate/doorway
  * penalties for cities where there is no real local presence.
  */

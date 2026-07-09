@@ -176,7 +176,7 @@ export function getIndexableCategories(): Array<{
   );
 }
 
-/** Date of the newest post in a category — used for sitemap `lastmod`. */
+/** Date of the newest post in a category, used for sitemap `lastmod`. */
 export function getCategoryLastModified(categorySlug: string): Date | undefined {
   const posts = getPostsByCategory(categorySlug); // sorted newest-first
   const newest = posts[0];

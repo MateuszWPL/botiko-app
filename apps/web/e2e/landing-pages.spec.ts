@@ -17,7 +17,7 @@ async function withConsoleErrors(
   return errors;
 }
 
-// ── Landing pages — basic render ─────────────────────────────────────────────
+// ── Landing pages, basic render ─────────────────────────────────────────────
 
 const LANDING_PAGES = [
   { path: '/dla/salon-beauty',        label: 'salon beauty' },
@@ -27,7 +27,7 @@ const LANDING_PAGES = [
   { path: '/dla/inna',               label: 'inna branża' },
 ];
 
-test.describe('Landing pages — render', () => {
+test.describe('Landing pages, render', () => {
   for (const { path, label } of LANDING_PAGES) {
     test(`${label} renders with 200 status and no console errors`, async ({ page }) => {
       let status = 0;
@@ -71,7 +71,7 @@ test.describe('Landing pages — render', () => {
 
 // ── Navbar "Dla branży" dropdown links ───────────────────────────────────────
 
-test.describe('Navbar — dropdown "Dla branży"', () => {
+test.describe('Navbar, dropdown "Dla branży"', () => {
   const NAV_LINKS = [
     '/dla/salon-beauty',
     '/dla/gabinet-spa',
@@ -109,7 +109,7 @@ test.describe('/rejestracja redirect', () => {
   });
 });
 
-// ── /prywatnosc — RODO policy page ───────────────────────────────────────────
+// ── /prywatnosc. RODO policy page ───────────────────────────────────────────
 
 test.describe('/prywatnosc', () => {
   test('renderuje się poprawnie (200)', async ({ page }) => {
@@ -148,16 +148,16 @@ test.describe('Blog routes', () => {
   });
 
   test('/blog/tag/chatbot renderuje stronę tagu (200)', async ({ page }) => {
-    // "chatbot" appears in many articles — this tag page should exist
+    // "chatbot" appears in many articles, this tag page should exist
     const res = await page.goto('/blog/tag/chatbot');
-    // 200 or redirect to /blog — both are acceptable
+    // 200 or redirect to /blog, both are acceptable
     expect([200, 301, 302]).toContain(res?.status());
   });
 });
 
 // ── Dashboard auth guard ──────────────────────────────────────────────────────
 
-test.describe('Dashboard — auth guard', () => {
+test.describe('Dashboard, auth guard', () => {
   const PROTECTED_PATHS = [
     '/dashboard',
     '/dashboard/leads',
@@ -176,9 +176,9 @@ test.describe('Dashboard — auth guard', () => {
   }
 });
 
-// ── Contact form — API error fallback ────────────────────────────────────────
+// ── Contact form. API error fallback ────────────────────────────────────────
 
-test.describe('Formularz kontaktowy — fallback', () => {
+test.describe('Formularz kontaktowy, fallback', () => {
   test('przy błędzie API wyświetla fallback (mailto lub komunikat), nie crash', async ({
     page,
   }) => {
@@ -207,7 +207,7 @@ test.describe('Formularz kontaktowy — fallback', () => {
     const submitBtn = page.locator('button[type="submit"]').first();
     if (await submitBtn.isVisible()) {
       await submitBtn.click();
-      // Page must not crash — either shows error message or fallback
+      // Page must not crash, either shows error message or fallback
       await expect(page.locator('body')).not.toContainText('undefined');
       await expect(page.locator('body')).not.toContainText('TypeError');
     }

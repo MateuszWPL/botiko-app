@@ -6,12 +6,12 @@ import CityLinks from '@/components/marketing/CityLinks';
 import { breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Bot dla gabinetu SPA — odpowiada klientom 24/7 i zbiera leady',
+  title: 'Bot dla gabinetu SPA, odpowiada klientom 24/7 i zbiera leady',
   description:
     'Botiko dla gabinetów SPA i wellness: masaż, zabiegi na twarz, aromaterapia. Bot odpowiada o 22:00, zbiera telefon i odsyła do Booksy lub Calendly. 99 zł/mies., 14 dni za darmo.',
   alternates: { canonical: 'https://botiko.pl/dla/gabinet-spa' },
   openGraph: {
-    title: 'Bot dla gabinetu SPA — odpowiada klientom 24/7',
+    title: 'Bot dla gabinetu SPA, odpowiada klientom 24/7',
     description:
       'Klienci piszą o 22:00. Bot odpowiada, zbiera telefon i odsyła do Booksy lub Calendly. 99 zł/mies.',
     url: 'https://botiko.pl/dla/gabinet-spa',
@@ -36,11 +36,11 @@ const JSON_LD_SERVICE = {
 const FAQS = [
   {
     q: 'Czy bot działa z moim systemem rezerwacji (Booksy, Calendly)?',
-    a: 'Bot nie łączy się bezpośrednio z systemem rezerwacji — zbiera dane kontaktowe klienta i odsyła go do Booksy, Calendly lub Twojego numeru telefonu. Ty decydujesz, gdzie przyjmujesz zapisy i masz pełną kontrolę nad kalendarzem.',
+    a: 'Bot nie łączy się bezpośrednio z systemem rezerwacji, zbiera dane kontaktowe klienta i odsyła go do Booksy, Calendly lub Twojego numeru telefonu. Ty decydujesz, gdzie przyjmujesz zapisy i masz pełną kontrolę nad kalendarzem.',
   },
   {
     q: 'Co jeśli klient zapyta o coś, czego bot nie wie?',
-    a: 'Bot grzecznie informuje, że nie ma tej informacji i proponuje pozostawienie kontaktu. Nic nie wymyśla — jeśli nie ma danych w bazie wiedzy, nie odpowie na temat.',
+    a: 'Bot grzecznie informuje, że nie ma tej informacji i proponuje pozostawienie kontaktu. Nic nie wymyśla, jeśli nie ma danych w bazie wiedzy, nie odpowie na temat.',
   },
   {
     q: 'Czy muszę mieć swoją stronę www?',
@@ -48,18 +48,18 @@ const FAQS = [
   },
   {
     q: 'Ile czasu zajmuje konfiguracja?',
-    a: 'Rejestracja i pierwsza wersja bota — około 15–20 minut. Wklejasz cennik, opisy zabiegów i FAQ. Bot działa od razu. Możesz uzupełniać bazę wiedzy stopniowo.',
+    a: 'Rejestracja i pierwsza wersja bota, około 15-20 minut. Wklejasz cennik, opisy zabiegów i FAQ. Bot działa od razu. Możesz uzupełniać bazę wiedzy stopniowo.',
   },
   {
     q: 'Czy mogę zmienić wygląd widgetu pod moją markę?',
-    a: 'Tak. W ustawieniach wybierasz kolor główny, nazwę bota i avatar. Widget może być stonowany (biały, pastelowy) lub wyraźny — dopasowany do Twojego stylu.',
+    a: 'Tak. W ustawieniach wybierasz kolor główny, nazwę bota i avatar. Widget może być stonowany (biały, pastelowy) lub wyraźny, dopasowany do Twojego stylu.',
   },
 ];
 
 const PAIN_POINTS = [
   {
     title: 'Klienci piszą późnym wieczorem',
-    text: 'Relaksacyjny masaż na weekend, zabieg na twarz przed urodzinami — pytania spływają po 20:00. Ty kończysz ostatni zabieg zmęczona. Bot odpowiada w ciągu sekund.',
+    text: 'Relaksacyjny masaż na weekend, zabieg na twarz przed urodzinami, pytania spływają po 20:00. Ty kończysz ostatni zabieg zmęczona. Bot odpowiada w ciągu sekund.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
@@ -79,7 +79,7 @@ const PAIN_POINTS = [
   },
   {
     title: 'Klienci nie wiedzą czego wybrać',
-    text: '„Jaka różnica między masażem gorącymi kamieniami a klasycznym?", „Co pomaga na ból pleców?" — każdy klient oczekuje doradztwa. Bot dostarcza go 24h na dobę.',
+    text: '„Jaka różnica między masażem gorącymi kamieniami a klasycznym?", „Co pomaga na ból pleców?", każdy klient oczekuje doradztwa. Bot dostarcza go 24h na dobę.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <circle cx="12" cy="12" r="10" />
@@ -111,7 +111,7 @@ const PAIN_POINTS = [
   },
   {
     title: 'Pytania o przeciwwskazania spowalniają rezerwację',
-    text: '„Czy masaż jest ok przy ciąży?", „Mam alergię na olejki — co polecacie?" — te pytania blokują decyzję. Bot odpowiada na typowe FAQ i kieruje do specjalisty gdy trzeba.',
+    text: '„Czy masaż jest ok przy ciąży?", „Mam alergię na olejki, co polecacie?", te pytania blokują decyzję. Bot odpowiada na typowe FAQ i kieruje do specjalisty gdy trzeba.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
@@ -122,28 +122,28 @@ const PAIN_POINTS = [
 ] as const;
 
 const FEATURES = [
-  'Opisuje każdy zabieg — czas trwania, efekty, przygotowanie i przeciwwskazania',
+  'Opisuje każdy zabieg, czas trwania, efekty, przygotowanie i przeciwwskazania',
   'Zna cały cennik: masaże, zabiegi na twarz, peelingi, zabiegi ciała, pary',
   'Poleca odpowiedni zabieg zależnie od potrzeby (relaks, ból pleców, odnowa)',
   'Promuje pakiety i vouchery prezentowe w odpowiednim momencie rozmowy',
-  'Zbiera imię i telefon — odsyła do Booksy lub Calendly, Ty potwierdzasz termin',
+  'Zbiera imię i telefon, odsyła do Booksy lub Calendly, Ty potwierdzasz termin',
   'Informuje o godzinach otwarcia, lokalizacji i sposobie dojazdu / parkowania',
   'Odpowiada na FAQ o przeciwwskazaniach (ciąża, alergie, schorzenia)',
-  'Widget w kolorystyce Twojego SPA — spokojny, elegancki, niedyskretny',
+  'Widget w kolorystyce Twojego SPA, spokojny, elegancki, niedyskretny',
 ] as const;
 
 const SAMPLE_QUESTIONS = [
   {
     q: 'Jaka różnica między masażem klasycznym a gorącymi kamieniami?',
-    a: 'Masaż klasyczny (90 min, 220 zł) rozluźnia napięte mięśnie rękami — świetny na codzienny stres. Gorące kamienie (75 min, 260 zł) działają głębiej: ciepło bazaltowych kamieni rozpuszcza napięcia, które trudno osiągnąć dłońmi. Przy bólach pleców i karku polecam kamienie. Chcesz się umówić? Zostaw numer albo zarezerwuj od razu przez Booksy — link na górze strony.',
+    a: 'Masaż klasyczny (90 min, 220 zł) rozluźnia napięte mięśnie rękami, świetny na codzienny stres. Gorące kamienie (75 min, 260 zł) działają głębiej: ciepło bazaltowych kamieni rozpuszcza napięcia, które trudno osiągnąć dłońmi. Przy bólach pleców i karku polecam kamienie. Chcesz się umówić? Zostaw numer albo zarezerwuj od razu przez Booksy, link na górze strony.',
   },
   {
     q: 'Czy macie coś specjalnego dla pary na rocznicę?',
-    a: 'Tak! Pakiet dla dwojga „Chwila tylko dla Was" to 2× masaż relaksacyjny w jednym gabinecie (90 min), lampka prosecco i olejki aromaterapeutyczne do wyboru — 480 zł za parę. Dostępny też jako voucher prezentowy (przesyłamy PDF). Chcesz zarezerwować? Zostaw kontakt — oddzwonimy, albo zarezerwuj bezpośrednio przez Booksy.',
+    a: 'Tak! Pakiet dla dwojga „Chwila tylko dla Was" to 2× masaż relaksacyjny w jednym gabinecie (90 min), lampka prosecco i olejki aromaterapeutyczne do wyboru, 480 zł za parę. Dostępny też jako voucher prezentowy (przesyłamy PDF). Chcesz zarezerwować? Zostaw kontakt, oddzwonimy, albo zarezerwuj bezpośrednio przez Booksy.',
   },
   {
     q: 'Czy mogę przyjść na masaż będąc w ciąży?',
-    a: 'Oferujemy masaż prenatalny specjalnie dla przyszłych mam (od 2. trymestru). Wykonują go terapeuci z certyfikatem — 80 min, 210 zł. Masaż klasyczny i gorące kamienie w ciąży są przeciwwskazane. Zostaw numer — terapeuta oddzwoni i odpowie na dodatkowe pytania, a termin umówisz przez Booksy.',
+    a: 'Oferujemy masaż prenatalny specjalnie dla przyszłych mam (od 2. trymestru). Wykonują go terapeuci z certyfikatem, 80 min, 210 zł. Masaż klasyczny i gorące kamienie w ciąży są przeciwwskazane. Zostaw numer, terapeuta oddzwoni i odpowie na dodatkowe pytania, a termin umówisz przez Booksy.',
   },
 ];
 
@@ -157,15 +157,15 @@ const ROI_ROWS = [
 const TRUST_POINTS = [
   {
     title: 'Twoja wiedza, nie ogólnik',
-    text: 'Bot odpowiada tylko na podstawie informacji, które mu podasz — cennik, zabiegi, FAQ. Żadnych wymyślonych cen ani mylących ogólników z internetu.',
+    text: 'Bot odpowiada tylko na podstawie informacji, które mu podasz, cennik, zabiegi, FAQ. Żadnych wymyślonych cen ani mylących ogólników z internetu.',
   },
   {
     title: 'Nigdy nie rezerwuje za Ciebie',
-    text: 'Bot celowo nie wchodzi w rolę systemu rezerwacji. Zbiera lead i odsyła do Booksy, Calendly lub numer telefonu — Ty masz kontrolę nad kalendarzem.',
+    text: 'Bot celowo nie wchodzi w rolę systemu rezerwacji. Zbiera lead i odsyła do Booksy, Calendly lub numer telefonu. Ty masz kontrolę nad kalendarzem.',
   },
   {
     title: 'Klient zawsze może porozmawiać z człowiekiem',
-    text: 'Gdy pytanie wykracza poza wiedzę bota albo klient chce porozmawiać z terapeutą — bot przekierowuje i zbiera dane kontaktowe do oddzwonienia.',
+    text: 'Gdy pytanie wykracza poza wiedzę bota albo klient chce porozmawiać z terapeutą, bot przekierowuje i zbiera dane kontaktowe do oddzwonienia.',
   },
 ];
 
@@ -273,7 +273,7 @@ export default function SpaLandingPage() {
           </h1>
 
           <p className="text-cyan-100 text-lg leading-relaxed max-w-xl mb-8">
-            Botiko zna Twój cennik, zabiegi i FAQ. Odpowiada klientom kiedy prowadzisz sesję, odpoczywacie albo śpisz —
+            Botiko zna Twój cennik, zabiegi i FAQ. Odpowiada klientom kiedy prowadzisz sesję, odpoczywacie albo śpisz
             i <strong className="text-white">zbiera kontakt do oddzwonienia następnego dnia rano</strong>.
           </p>
 
@@ -374,7 +374,7 @@ export default function SpaLandingPage() {
               Jak bot odpowiada klientom SPA
             </h2>
             <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
-              Bot odpowiada na podstawie Twojego cennika i oferty — nie generycznych informacji z sieci.
+              Bot odpowiada na podstawie Twojego cennika i oferty, nie generycznych informacji z sieci.
             </p>
           </div>
 
@@ -420,12 +420,12 @@ export default function SpaLandingPage() {
                 Co robi bot
               </p>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-text leading-tight mb-5">
-                Wszystko, czego SPA potrzebuje od recepcji —{' '}
+                Wszystko, czego SPA potrzebuje od recepcji{' '}
                 <span style={{ color: '#0369a1' }}>bez etatu</span>
               </h2>
               <p className="text-slate-500 leading-relaxed mb-6">
                 Zamiast zatrudniać recepcjonistkę na wieczory i weekendy, konfigurujesz bota raz.
-                Zna Twój cennik, zabiegi i styl komunikacji — i odpowiada tak, jak Ty byś chciała.
+                Zna Twój cennik, zabiegi i styl komunikacji, i odpowiada tak, jak Ty byś chciała.
               </p>
               <div
                 className="rounded-2xl p-5 flex items-start gap-4"
@@ -478,7 +478,7 @@ export default function SpaLandingPage() {
               Jak to działa
             </p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text">
-              Od rejestracji do działającego bota — w jeden dzień
+              Od rejestracji do działającego bota, w jeden dzień
             </h2>
           </div>
 
@@ -495,7 +495,7 @@ export default function SpaLandingPage() {
                 {
                   step: '01',
                   title: 'Rejestracja i wybór branży',
-                  text: 'Zakładasz konto, wybierasz „SPA / wellness" — dostajasz gotowy szablon z typowymi pytaniami i odpowiedziami dla branży.',
+                  text: 'Zakładasz konto, wybierasz „SPA / wellness", dostajasz gotowy szablon z typowymi pytaniami i odpowiedziami dla branży.',
                 },
                 {
                   step: '02',
@@ -505,12 +505,12 @@ export default function SpaLandingPage() {
                 {
                   step: '03',
                   title: 'Wstawiasz widget na stronę',
-                  text: 'Kopiujesz jeden tag HTML i wklejasz na swoją stronę — natywnie na WordPress (przez wtyczkę WPCode) lub każdą inną stronę WWW. Widget pojawia się w rogu strony.',
+                  text: 'Kopiujesz jeden tag HTML i wklejasz na swoją stronę, natywnie na WordPress (przez wtyczkę WPCode) lub każdą inną stronę WWW. Widget pojawia się w rogu strony.',
                 },
                 {
                   step: '04',
                   title: 'Bot pracuje, Ty odbierasz leady',
-                  text: 'Od tej chwili bot odpowiada na pytania 24/7. Zebrane kontakty lądują w dashboardzie — rano masz listę osób do oddzwonienia.',
+                  text: 'Od tej chwili bot odpowiada na pytania 24/7. Zebrane kontakty lądują w dashboardzie, rano masz listę osób do oddzwonienia.',
                 },
               ].map((s) => (
                 <li key={s.step} className="flex gap-6 sm:gap-10 items-start">
@@ -575,7 +575,7 @@ export default function SpaLandingPage() {
           </div>
 
           <p className="mt-5 text-center text-xs text-slate-400">
-            * Szacunki orientacyjne. Bot nie robi marketingu — zamienia pytania klientów w leady, które Ty zamykasz telefonicznie.
+            * Szacunki orientacyjne. Bot nie robi marketingu, zamienia pytania klientów w leady, które Ty zamykasz telefonicznie.
           </p>
         </div>
       </section>
@@ -752,7 +752,7 @@ export default function SpaLandingPage() {
 
             <div className="relative">
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight mb-4">
-                Zacznij dziś — bot działa już jutro rano
+                Zacznij dziś, bot działa już jutro rano
               </h2>
               <p className="text-cyan-100 text-base mb-8 max-w-xl mx-auto">
                 14 dni za darmo. Bez karty kredytowej. Bez umowy. Konfiguracja cennika i FAQ w ~15 minut.

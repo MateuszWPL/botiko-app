@@ -6,12 +6,12 @@ import CityLinks from '@/components/marketing/CityLinks';
 import { breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Bot dla warsztatu samochodowego — odpowiada klientom 24/7 i zbiera leady',
+  title: 'Bot dla warsztatu samochodowego, odpowiada klientom 24/7 i zbiera leady',
   description:
     'Botiko dla warsztatów mechanicznych i wulkanizacji: przeglądy, naprawy, wymiana opon. Bot odpowiada o 21:00, zbiera telefon i odsyła do Booksy lub kalendarza. 99 zł/mies., 14 dni za darmo.',
   alternates: { canonical: 'https://botiko.pl/dla/warsztat-mechaniczny' },
   openGraph: {
-    title: 'Bot dla warsztatu mechanicznego — odpowiada klientom 24/7',
+    title: 'Bot dla warsztatu mechanicznego, odpowiada klientom 24/7',
     description:
       'Klienci piszą wieczorem. Bot odpowiada, zbiera kontakt i odsyła do Booksy lub Twojego kalendarza. 99 zł/mies.',
     url: 'https://botiko.pl/dla/warsztat-mechaniczny',
@@ -36,7 +36,7 @@ const JSON_LD_SERVICE = {
 const FAQS = [
   {
     q: 'Czy bot działa z moim systemem kalendarza (Booksy, Google Calendar)?',
-    a: 'Bot nie integruje się bezpośrednio z kalendarzem — zbiera dane klienta i odsyła do Booksy lub Twojego linku rezerwacyjnego. Ty potwierdzasz termin i planujesz stanowisko. Masz pełną kontrolę nad harmonogramem.',
+    a: 'Bot nie integruje się bezpośrednio z kalendarzem, zbiera dane klienta i odsyła do Booksy lub Twojego linku rezerwacyjnego. Ty potwierdzasz termin i planujesz stanowisko. Masz pełną kontrolę nad harmonogramem.',
   },
   {
     q: 'Czy bot może podawać ceny napraw?',
@@ -44,22 +44,22 @@ const FAQS = [
   },
   {
     q: 'Co gdy klient opisuje usterkę, której bot nie rozpoznaje?',
-    a: 'Bot zbiera opis objawów i kontakt, po czym odpisuje, że mechanik oddzwoni z oceną. Nic nie wymyśla — jeśli coś wykracza poza bazę wiedzy, grzecznie odsyła do rozmowy z człowiekiem.',
+    a: 'Bot zbiera opis objawów i kontakt, po czym odpisuje, że mechanik oddzwoni z oceną. Nic nie wymyśla, jeśli coś wykracza poza bazę wiedzy, grzecznie odsyła do rozmowy z człowiekiem.',
   },
   {
     q: 'Czy bot obsłuży sezon wymiany opon kiedy telefon dzwoni non stop?',
-    a: 'To jeden z głównych przypadków użycia. Bot obsługuje dziesiątki zapytań jednocześnie, zbiera kontakty i preferencje (rozmiar opon, termin) — Ty oddzwaniasz z potwierdzeniem. Bez chaosu telefonicznego w październiku i kwietniu.',
+    a: 'To jeden z głównych przypadków użycia. Bot obsługuje dziesiątki zapytań jednocześnie, zbiera kontakty i preferencje (rozmiar opon, termin). Ty oddzwaniasz z potwierdzeniem. Bez chaosu telefonicznego w październiku i kwietniu.',
   },
   {
     q: 'Czy muszę mieć stronę www, żeby używać Botiko?',
-    a: 'Nie. Widget możesz wstawić na profil Linktree, stronę na Canva, wizytówkę Google lub każdą inną stronę obsługującą własny HTML. Wystarczy jeden tag skryptu — działa też z WordPress i Webflow.',
+    a: 'Nie. Widget możesz wstawić na profil Linktree, stronę na Canva, wizytówkę Google lub każdą inną stronę obsługującą własny HTML. Wystarczy jeden tag skryptu, działa też z WordPress i Webflow.',
   },
 ];
 
 const PAIN_POINTS = [
   {
     title: 'Klient dzwoni gdy jesteś pod autem',
-    text: 'Ręce w oleju, głowa pod maską — telefon dzwoni trzeci raz. Klient, który nie dostaje odpowiedzi w ciągu dnia, wpisuje w Google „inny warsztat" i jedzie do konkurencji.',
+    text: 'Ręce w oleju, głowa pod maską, telefon dzwoni trzeci raz. Klient, który nie dostaje odpowiedzi w ciągu dnia, wpisuje w Google „inny warsztat" i jedzie do konkurencji.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
@@ -67,8 +67,8 @@ const PAIN_POINTS = [
     ),
   },
   {
-    title: 'Pytania o cenę — zanim w ogóle przyjadą',
-    text: '„Ile kosztuje wymiana klocków?", „Co z przeglądem po 3 latach?", „Czy macie diagnostykę komputerową?" — klient porównuje warsztaty jeszcze w domu. Bot daje mu odpowiedź jako pierwszy.',
+    title: 'Pytania o cenę, zanim w ogóle przyjadą',
+    text: '„Ile kosztuje wymiana klocków?", „Co z przeglądem po 3 latach?", „Czy macie diagnostykę komputerową?", klient porównuje warsztaty jeszcze w domu. Bot daje mu odpowiedź jako pierwszy.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <line x1="12" y1="1" x2="12" y2="23" />
@@ -77,7 +77,7 @@ const PAIN_POINTS = [
     ),
   },
   {
-    title: 'Sezon wymiany opon — telefon urywa się',
+    title: 'Sezon wymiany opon, telefon urywa się',
     text: 'Kwiecień i październik to dwa tygodnie chaosu. Setki połączeń, kolejka na hali, a każdy pyta o to samo. Bot odpowiada na wszystkie pytania o wymianę opon jednocześnie, bez zajmowania stanowiska.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -88,7 +88,7 @@ const PAIN_POINTS = [
   },
   {
     title: 'Klient nie wie, co naprawdę potrzebuje',
-    text: '„Skrzypi przy hamowaniu", „Coś stuka z przodu przy zakrętach" — klient opisuje objaw, nie usterkę. Bot zadaje pytania, zbiera opis i kontakt, żebyś wiedział czego się spodziewać zanim samochód wjedzie na stanowisko.',
+    text: '„Skrzypi przy hamowaniu", „Coś stuka z przodu przy zakrętach", klient opisuje objaw, nie usterkę. Bot zadaje pytania, zbiera opis i kontakt, żebyś wiedział czego się spodziewać zanim samochód wjedzie na stanowisko.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <circle cx="11" cy="11" r="8" />
@@ -98,7 +98,7 @@ const PAIN_POINTS = [
   },
   {
     title: 'Wieczorowe pytania giną do rana',
-    text: 'Klient pisze o 20:00 po pracy — „czy macie jutro wolne?". Warsztat zamknięty, nikt nie odpowiada. Rano już jedzie do mechanika, który wziął wczoraj o 20:00.',
+    text: 'Klient pisze o 20:00 po pracy, „czy macie jutro wolne?". Warsztat zamknięty, nikt nie odpowiada. Rano już jedzie do mechanika, który wziął wczoraj o 20:00.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
@@ -107,7 +107,7 @@ const PAIN_POINTS = [
   },
   {
     title: 'Stali klienci pytają o przypomnienia',
-    text: '„Kiedy mam następny przegląd?", „Czy już czas na wymianę oleju?" — bot informuje o zalecanych interwałach serwisowych i zachęca do kontaktu, zanim klient sam o tym pomyśli.',
+    text: '„Kiedy mam następny przegląd?", „Czy już czas na wymianę oleju?", bot informuje o zalecanych interwałach serwisowych i zachęca do kontaktu, zanim klient sam o tym pomyśli.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -119,27 +119,27 @@ const PAIN_POINTS = [
 
 const FEATURES = [
   'Opisuje usługi i orientacyjne ceny: przeglądy, hamulce, zawieszenie, klimatyzacja',
-  'Zbiera opis usterki przed wizytą — mechanik wie czego się spodziewać',
-  'Zbiera imię i telefon — odsyła do Booksy lub Twojego kalendarza online',
+  'Zbiera opis usterki przed wizytą, mechanik wie czego się spodziewać',
+  'Zbiera imię i telefon, odsyła do Booksy lub Twojego kalendarza online',
   'Odpowiada na pytania o terminy, dostępność i czas naprawy',
-  'Informuje o wymianie opon sezonowych — zbiera zapisy w szczycie sezonu',
+  'Informuje o wymianie opon sezonowych, zbiera zapisy w szczycie sezonu',
   'Zna markę i rocznik pojazdów obsługiwanych przez warsztat',
   'Odpowiada na pytania o przeglądy rejestracyjne i diagnostykę',
-  'Widget w kolorystyce warsztatu — solidny, rzeczowy, bez zbędnych ozdobników',
+  'Widget w kolorystyce warsztatu, solidny, rzeczowy, bez zbędnych ozdobników',
 ] as const;
 
 const SAMPLE_QUESTIONS = [
   {
     q: 'Ile kosztuje wymiana klocków hamulcowych? Mam Golfa VII 2015.',
-    a: 'Przy Golfie VII wymiana klocków przód to ok. 250–320 zł robocizna + koszt klocków (70–180 zł zależnie od marki). Tarcze przód, jeśli będą wymagały wymiany — osobno ok. 150–250 zł/szt. Diagnozę robimy przy wizycie. Chcesz wjechać? Zostaw numer albo zarezerwuj termin przez Booksy.',
+    a: 'Przy Golfie VII wymiana klocków przód to ok. 250-320 zł robocizna + koszt klocków (70-180 zł zależnie od marki). Tarcze przód, jeśli będą wymagały wymiany, osobno ok. 150-250 zł/szt. Diagnozę robimy przy wizycie. Chcesz wjechać? Zostaw numer albo zarezerwuj termin przez Booksy.',
   },
   {
     q: 'Czy macie wolne w tym tygodniu na wymianę opon? 205/55 R16.',
-    a: 'Wymiana 4 opon na gotowych felgach to ok. 80 zł (20 zł/szt.). Przechowujemy też opony — 120 zł/sezon. Wolnych terminów nie znam na bieżąco — zostaw numer, zadzwonimy z dostępnymi okienkami, albo zarezerwuj przez Booksy.',
+    a: 'Wymiana 4 opon na gotowych felgach to ok. 80 zł (20 zł/szt.). Przechowujemy też opony, 120 zł/sezon. Wolnych terminów nie znam na bieżąco, zostaw numer, zadzwonimy z dostępnymi okienkami, albo zarezerwuj przez Booksy.',
   },
   {
     q: 'Coś stuka z przodu przy skręcaniu. Co to może być?',
-    a: 'Stuk przy skręcaniu najczęściej wskazuje na zużyty przegub kulowy, łożysko piasty lub drążek kierowniczy. Żeby ocenić dokładnie, potrzebna jest diagnostyka na stanowisku (bezpłatna przy naprawie u nas). Zostaw numer i krótki opis — mechanik oddzwoni i zapyta o szczegóły przed wizytą.',
+    a: 'Stuk przy skręcaniu najczęściej wskazuje na zużyty przegub kulowy, łożysko piasty lub drążek kierowniczy. Żeby ocenić dokładnie, potrzebna jest diagnostyka na stanowisku (bezpłatna przy naprawie u nas). Zostaw numer i krótki opis, mechanik oddzwoni i zapyta o szczegóły przed wizytą.',
   },
 ];
 
@@ -153,7 +153,7 @@ const ROI_ROWS = [
 const TRUST_POINTS = [
   {
     title: 'Opis usterki zanim auto wjedzie',
-    text: 'Bot pyta klienta o markę, rok, przebieg i objawy. Rano masz kartkę z opisem zamiast rozmowy od zera — mechanik może od razu zaplanować stanowisko i części.',
+    text: 'Bot pyta klienta o markę, rok, przebieg i objawy. Rano masz kartkę z opisem zamiast rozmowy od zera, mechanik może od razu zaplanować stanowisko i części.',
     svg: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -165,7 +165,7 @@ const TRUST_POINTS = [
   },
   {
     title: 'Działa w szczycie sezonu opon',
-    text: 'Kwiecień i październik to nie czas na odbieranie telefonów. Bot obsługuje dziesiątki zapytań jednocześnie, zbiera kontakty i rozkłada zapisy w kalendarzu — Ty oddzwaniasz z potwierdzeniem.',
+    text: 'Kwiecień i październik to nie czas na odbieranie telefonów. Bot obsługuje dziesiątki zapytań jednocześnie, zbiera kontakty i rozkłada zapisy w kalendarzu. Ty oddzwaniasz z potwierdzeniem.',
     svg: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <circle cx="12" cy="12" r="10" />
@@ -288,7 +288,7 @@ export default function MechanicLandingPage() {
 
           <p className="text-slate-300 text-lg leading-relaxed max-w-xl mb-8">
             Botiko zna Twój cennik usług, obsługiwane marki i godziny otwarcia. Odpowiada klientom
-            kiedy pracujesz na stanowisku albo warsztat jest zamknięty —
+            kiedy pracujesz na stanowisku albo warsztat jest zamknięty
             i <strong className="text-white">zbiera kontakt z opisem usterki do oddzwonienia rano</strong>.
           </p>
 
@@ -384,7 +384,7 @@ export default function MechanicLandingPage() {
               Jak bot odpowiada klientom warsztatu
             </h2>
             <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
-              Bot mówi wprost — orientacyjne ceny, opis usługi i jedno zdanie: zostaw numer albo zarezerwuj przez Booksy.
+              Bot mówi wprost, orientacyjne ceny, opis usługi i jedno zdanie: zostaw numer albo zarezerwuj przez Booksy.
             </p>
           </div>
 
@@ -425,11 +425,11 @@ export default function MechanicLandingPage() {
                 Co robi bot
               </p>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-text leading-tight mb-5">
-                Recepcja warsztatu —{' '}
+                Recepcja warsztatu{' '}
                 <span style={{ color: '#334155' }}>bez odrywania mechanika od roboty</span>
               </h2>
               <p className="text-slate-500 leading-relaxed mb-6">
-                Klient dostaje odpowiedź w 10 sekund. Ty dostajesz rano lead z opisem usterki, marką auta i numerem do oddzwonienia — zamiast 12 nieodebranych połączeń.
+                Klient dostaje odpowiedź w 10 sekund. Ty dostajesz rano lead z opisem usterki, marką auta i numerem do oddzwonienia, zamiast 12 nieodebranych połączeń.
               </p>
               <div
                 className="rounded-2xl p-5 flex items-start gap-4"
@@ -446,7 +446,7 @@ export default function MechanicLandingPage() {
                 <div>
                   <p className="font-semibold text-slate-800 text-sm">Bot nie daje wiążących kosztorysów</p>
                   <p className="text-slate-500 text-xs mt-0.5 leading-relaxed">
-                    Podaje orientacyjne widełki i zaznacza, że dokładna cena jest możliwa po obejrzeniu auta. Klient wie, czego się spodziewać — bez niepotrzebnych zobowiązań z Twojej strony.
+                    Podaje orientacyjne widełki i zaznacza, że dokładna cena jest możliwa po obejrzeniu auta. Klient wie, czego się spodziewać, bez niepotrzebnych zobowiązań z Twojej strony.
                   </p>
                 </div>
               </div>
@@ -482,7 +482,7 @@ export default function MechanicLandingPage() {
               Jak to działa
             </p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text">
-              Od rejestracji do działającego bota — w jeden dzień
+              Od rejestracji do działającego bota, w jeden dzień
             </h2>
           </div>
 
@@ -497,12 +497,12 @@ export default function MechanicLandingPage() {
                 {
                   step: '01',
                   title: 'Rejestracja i wybór branży',
-                  text: 'Zakładasz konto, wybierasz „Warsztat samochodowy" — dostajesz gotowy szablon z typowymi pytaniami dla mechaniki: ceny usług, obsługiwane marki, diagnostyka, opony.',
+                  text: 'Zakładasz konto, wybierasz „Warsztat samochodowy", dostajesz gotowy szablon z typowymi pytaniami dla mechaniki: ceny usług, obsługiwane marki, diagnostyka, opony.',
                 },
                 {
                   step: '02',
                   title: 'Wklejasz cennik i opis usług',
-                  text: 'Opisujesz usługi, orientacyjne ceny i godziny. ~15 minut. Bot odpowiada wyłącznie na podstawie tych danych — żadnych cen z internetu ani wymyślonych kosztorysów.',
+                  text: 'Opisujesz usługi, orientacyjne ceny i godziny. ~15 minut. Bot odpowiada wyłącznie na podstawie tych danych, żadnych cen z internetu ani wymyślonych kosztorysów.',
                 },
                 {
                   step: '03',
@@ -512,7 +512,7 @@ export default function MechanicLandingPage() {
                 {
                   step: '04',
                   title: 'Leady lądują w dashboardzie',
-                  text: 'Bot zbiera imię, telefon, markę auta i opis problemu. Rano masz gotową listę z briefem — oddzwaniasz do konkretnych osób z konkretnymi informacjami.',
+                  text: 'Bot zbiera imię, telefon, markę auta i opis problemu. Rano masz gotową listę z briefem, oddzwaniasz do konkretnych osób z konkretnymi informacjami.',
                 },
               ].map((s) => (
                 <li key={s.step} className="flex gap-6 sm:gap-10 items-start">
@@ -574,7 +574,7 @@ export default function MechanicLandingPage() {
           </div>
 
           <p className="mt-5 text-center text-xs text-slate-400">
-            * Szacunki orientacyjne. Bot zbiera leady — Ty oddzwaniasz i zamykasz zlecenie. Duże naprawy (skrzynia, silnik) to 3 000–10 000 zł przychodu z jednego klienta.
+            * Szacunki orientacyjne. Bot zbiera leady. Ty oddzwaniasz i zamykasz zlecenie. Duże naprawy (skrzynia, silnik) to 3 000-10 000 zł przychodu z jednego klienta.
           </p>
         </div>
       </section>
@@ -736,7 +736,7 @@ export default function MechanicLandingPage() {
 
             <div className="relative">
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight mb-4">
-                Zacznij dziś — bot działa już jutro rano
+                Zacznij dziś, bot działa już jutro rano
               </h2>
               <p className="text-slate-300 text-base mb-8 max-w-xl mx-auto">
                 14 dni za darmo. Bez karty kredytowej. Bez umowy. Konfiguracja cennika i FAQ w ~15 minut.

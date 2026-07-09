@@ -14,15 +14,15 @@ featured: false
 
 Bot obsługi klienta rzadko zawodzi przez „złe AI”. Zawodzi przez **złe przygotowanie przed startem**. Widziałem to wielokrotnie: właściciel wkleja kod, publikuje bota i dziwi się, że klient dostał sprzeczną odpowiedź albo bezsensowne „umówię wizytę”, której bot nie umie zrealizować.
 
-Ten artykuł nie jest checklistą wdrożenia — tę znajdziesz w [poradniku o chatbocie na stronę www dla małej firmy](/blog/chatbot-na-strone-www-mala-firma). Tutaj pokazuję **antywzorce**: pięć konkretnych błędów, które psują reputację firmy, oraz to, jak je naprawić, zanim klient je zobaczy.
+Ten artykuł nie jest checklistą wdrożenia, tę znajdziesz w [poradniku o chatbocie na stronę www dla małej firmy](/blog/chatbot-na-strone-www-mala-firma). Tutaj pokazuję **antywzorce**: pięć konkretnych błędów, które psują reputację firmy, oraz to, jak je naprawić, zanim klient je zobaczy.
 
 <Callout type="info" title="W skrócie">
 
-- **Błąd 1:** pusta lub ogólna baza wiedzy — bot „nie wie” i zmyśla albo milczy.
+- **Błąd 1:** pusta lub ogólna baza wiedzy: bot „nie wie” i zmyśla albo milczy.
 - **Błąd 2:** brak przekazania do człowieka, gdy bot nie zna odpowiedzi.
 - **Błąd 3:** bot obiecuje rezerwację zamiast odesłać do Booksy/Calendly.
-- **Błąd 4:** nieaktualny cennik i godziny — bot i strona mówią co innego.
-- **Błąd 5:** publikacja bez testów — nie napisałeś do bota jak klient.
+- **Błąd 4:** nieaktualny cennik i godziny: bot i strona mówią co innego.
+- **Błąd 5:** publikacja bez testów: nie napisałeś do bota jak klient.
 
 </Callout>
 
@@ -30,7 +30,7 @@ Każdy z tych błędów da się usunąć w kilkanaście minut. Trudność polega
 
 ## Błąd 1: pusta lub zbyt ogólna baza wiedzy
 
-**Najczęstszy błąd to publikacja bota z niemal pustą bazą wiedzy.** Bot odpowiada wyłącznie z treści, którą mu dasz — cennika, godzin, FAQ, zasad dojazdu. Bez tego nie ma czym odpowiadać. Klient pyta o cenę, a bot odsyła do kontaktu przy każdym pytaniu.
+**Najczęstszy błąd to publikacja bota z niemal pustą bazą wiedzy.** Bot odpowiada wyłącznie z treści, którą mu dasz, cennika, godzin, FAQ, zasad dojazdu. Bez tego nie ma czym odpowiadać. Klient pyta o cenę, a bot odsyła do kontaktu przy każdym pytaniu.
 
 ### Jak wygląda ten błąd
 
@@ -46,13 +46,13 @@ Jak to działa technicznie, tłumaczymy w [przewodniku po automatyzacji obsługi
 
 ### Jak to naprawić
 
-Przed publikacją wypisz **20 najczęstszych pytań** z ostatnich 30 dni. Przejrzyj Messengera, maile i SMS-y. To Twoja pierwsza baza wiedzy. Do każdego pytania dopisz krótką, konkretną odpowiedź — z realną ceną lub widełkami.
+Przed publikacją wypisz **20 najczęstszych pytań** z ostatnich 30 dni. Przejrzyj Messengera, maile i SMS-y. To Twoja pierwsza baza wiedzy. Do każdego pytania dopisz krótką, konkretną odpowiedź, z realną ceną lub widełkami.
 
 Dodaj godziny pracy, adres, zasady dojazdu i link do rezerwacji. Potem dokładaj FAQ co tydzień, na podstawie rozmów, które bot już odbył.
 
 <Callout type="warning">
 
-Bot bez bazy wiedzy nie jest „głupi” — jest **niedokończony**. Publikacja pustego bota to jak otwarcie salonu bez cennika na ścianie. Klient wchodzi, pyta, nie dostaje odpowiedzi i wychodzi.
+Bot bez bazy wiedzy nie jest „głupi”, jest **niedokończony**. Publikacja pustego bota to jak otwarcie salonu bez cennika na ścianie. Klient wchodzi, pyta, nie dostaje odpowiedzi i wychodzi.
 
 </Callout>
 
@@ -62,7 +62,7 @@ Bot bez bazy wiedzy nie jest „głupi” — jest **niedokończony**. Publikacj
 
 ### Jak wygląda ten błąd
 
-Klient pyta o coś nietypowego — reklamację, sprawę medyczną, indywidualną wycenę. Bot nie ma tego w bazie. Zamiast poprosić o telefon i przekazać sprawę, odpowiada ogólnikiem albo powtarza to samo w kółko.
+Klient pyta o coś nietypowego, reklamację, sprawę medyczną, indywidualną wycenę. Bot nie ma tego w bazie. Zamiast poprosić o telefon i przekazać sprawę, odpowiada ogólnikiem albo powtarza to samo w kółko.
 
 W efekcie rozmowa się zapętla. Klient pisze „chcę rozmawiać z człowiekiem”, a bot dalej recytuje FAQ.
 
@@ -74,7 +74,7 @@ Klient, który nie może dobić się do człowieka, zapamiętuje frustrację. I 
 
 ### Jak to naprawić
 
-Ustaw jasną regułę: gdy bot nie zna odpowiedzi lub temat jest poważny, **pokazuje formularz kontaktowy**. Zbiera imię, telefon i temat, a Ty oddzwaniasz. W Botiko bot robi to automatycznie — przy braku dopasowania w bazie proponuje zostawienie kontaktu.
+Ustaw jasną regułę: gdy bot nie zna odpowiedzi lub temat jest poważny, **pokazuje formularz kontaktowy**. Zbiera imię, telefon i temat, a Ty oddzwaniasz. W Botiko bot robi to automatycznie, przy braku dopasowania w bazie proponuje zostawienie kontaktu.
 
 Nie każ botu udawać, że wie wszystko. Klient bardziej ceni uczciwe „przekażę to właścicielowi” niż wymyśloną odpowiedź. To jest fundament zaufania.
 
@@ -82,7 +82,7 @@ Z rozmów z właścicielami firm usługowych widać jeden wzorzec. Ci, którzy t
 
 ## Błąd 3: bot obiecuje rezerwację, której nie zrobi
 
-**Trzeci błąd to pozwolenie botu na obietnicę „umówię wizytę”.** Bot nie rezerwuje terminów. Nie zarządza Twoim kalendarzem. Jego zadanie to odpowiedzieć na pytanie i **odesłać do systemu rezerwacji** — Booksy, Calendly lub tego, którego używasz. Obietnica rezerwacji, której nie ma, to prosta droga do konfliktu.
+**Trzeci błąd to pozwolenie botu na obietnicę „umówię wizytę”.** Bot nie rezerwuje terminów. Nie zarządza Twoim kalendarzem. Jego zadanie to odpowiedzieć na pytanie i **odesłać do systemu rezerwacji**. Booksy, Calendly lub tego, którego używasz. Obietnica rezerwacji, której nie ma, to prosta droga do konfliktu.
 
 ### Jak wygląda ten błąd
 
@@ -100,7 +100,7 @@ Gorsze niż brak odpowiedzi jest **błędna obietnica**. Klient wolałby usłysz
 
 Ustaw botu jedną, jednoznaczną ścieżkę: „Aby zarezerwować termin, kliknij tutaj” + link do Booksy lub Calendly. Bot ma **kierować do rezerwacji**, nigdy jej nie potwierdzać. W szablonach Botiko ta zasada jest wpisana na stałe, ale w bazie wiedzy nie dopisuj zdań typu „umawiamy wizyty w czacie”.
 
-To nie jest ograniczenie — to celowa granica. Bot, który nie udaje systemu rezerwacji, jest **bezpieczniejszy dla Twojej reputacji** niż bot próbujący robić wszystko. Jasny podział ról chroni Cię przed pomyłkami w kalendarzu.
+To nie jest ograniczenie, to celowa granica. Bot, który nie udaje systemu rezerwacji, jest **bezpieczniejszy dla Twojej reputacji** niż bot próbujący robić wszystko. Jasny podział ról chroni Cię przed pomyłkami w kalendarzu.
 
 <Callout type="warning">
 
@@ -122,7 +122,7 @@ Ten sam problem dotyczy godzin. Zmieniasz otwarcie na wakacje, a bot informuje k
 
 Sprzeczne dane to najszybszy sposób na utratę wiarygodności. Klient widzi jedną cenę u bota, drugą na stronie i **przestaje ufać obu**. Część klientów przyjdzie z oczekiwaniem starej ceny, co skończy się niezręczną rozmową przy kasie.
 
-W usługach, gdzie ceny zależą od sezonu — wymiana opon, zabiegi, menu w restauracji — ten błąd wraca co kilka miesięcy.
+W usługach, gdzie ceny zależą od sezonu, wymiana opon, zabiegi, menu w restauracji, ten błąd wraca co kilka miesięcy.
 
 ### Jak to naprawić
 
@@ -130,11 +130,11 @@ Wpisz aktualizację bota do rutyny zmiany ceny. Zmieniasz cennik? W tym samym mo
 
 Wyznacz **jedną osobę** odpowiedzialną za cotygodniowy przegląd treści bota. Sprawdza, czy ceny, godziny i promocje w bazie zgadzają się ze stroną. Dokładny rytm tego przeglądu opisujemy w [poradniku o wdrożeniu bota na stronę](/blog/chatbot-na-strone-www-mala-firma).
 
-Traktuj bazę wiedzy jak cennik na ścianie, nie jak dokument „ustaw i zapomnij”. Nikt nie zostawia w salonie cennika sprzed roku. Z botem obowiązuje ta sama zasada — treść żyje razem z firmą.
+Traktuj bazę wiedzy jak cennik na ścianie, nie jak dokument „ustaw i zapomnij”. Nikt nie zostawia w salonie cennika sprzed roku. Z botem obowiązuje ta sama zasada, treść żyje razem z firmą.
 
 ## Błąd 5: publikacja bez jednego testu
 
-**Piąty błąd to publikacja bota, do którego sam nigdy nie napisałeś.** To brzmi banalnie, a zdarza się najczęściej. Właściciel konfiguruje bota, wkleja kod i od razu go publikuje. Nie zadał ani jednego pytania jako klient. Pierwszym testerem zostaje prawdziwy klient — w najgorszym możliwym momencie.
+**Piąty błąd to publikacja bota, do którego sam nigdy nie napisałeś.** To brzmi banalnie, a zdarza się najczęściej. Właściciel konfiguruje bota, wkleja kod i od razu go publikuje. Nie zadał ani jednego pytania jako klient. Pierwszym testerem zostaje prawdziwy klient, w najgorszym możliwym momencie.
 
 ### Jak wygląda ten błąd
 
@@ -144,7 +144,7 @@ Odkrywasz to dopiero, gdy klient napisze „bot mi nie pomógł” albo zostawi 
 
 ### Dlaczego to szkodzi
 
-Publikacja bez testu przenosi wszystkie błędy z tej listy wprost na klienta. Pusta baza, brak przekazania do człowieka, obietnica rezerwacji, stara cena — każdy z nich wychodzi na jaw dopiero w rozmowie. Test przed startem wyłapuje je wszystkie za darmo.
+Publikacja bez testu przenosi wszystkie błędy z tej listy wprost na klienta. Pusta baza, brak przekazania do człowieka, obietnica rezerwacji, stara cena, każdy z nich wychodzi na jaw dopiero w rozmowie. Test przed startem wyłapuje je wszystkie za darmo.
 
 Pierwsze wrażenie masz jedno. Zły bot na starcie zniechęca klienta, który już nie wróci.
 
@@ -164,7 +164,7 @@ Test zajmuje kwadrans. Uruchom bota najpierw na 14-dniowym okresie próbnym, prz
 
 <InfoBox type="tip">
 
-Poproś jedną osobę spoza firmy, żeby napisała do bota. Ktoś, kto nie zna oferty, zada pytania inaczej niż Ty. Właśnie tak pytają prawdziwi klienci — i właśnie tam bot się potyka.
+Poproś jedną osobę spoza firmy, żeby napisała do bota. Ktoś, kto nie zna oferty, zada pytania inaczej niż Ty. Właśnie tak pytają prawdziwi klienci, i właśnie tam bot się potyka.
 
 </InfoBox>
 
@@ -185,11 +185,11 @@ Jeśli zbierasz przez bota dane klientów, warto od razu ogarnąć stronę forma
   },
   {
     q: "Co bot robi, gdy nie zna odpowiedzi na pytanie?",
-    a: "Dobrze skonfigurowany bot nie zmyśla. Przy braku dopasowania w bazie wiedzy Botiko proponuje zostawienie kontaktu — imię i telefon — i przekazuje sprawę Tobie. Ty oddzwaniasz i domykasz temat. Bot jest pierwszą linią, człowiek finalizuje."
+    a: "Dobrze skonfigurowany bot nie zmyśla. Przy braku dopasowania w bazie wiedzy Botiko proponuje zostawienie kontaktu, imię i telefon, i przekazuje sprawę Tobie. Ty oddzwaniasz i domykasz temat. Bot jest pierwszą linią, człowiek finalizuje."
   },
   {
     q: "Czy bot może sam zarezerwować wizytę klientowi?",
-    a: "Nie. Bot nie zarządza kalendarzem i nie rezerwuje terminów. Jego rola to odpowiedzieć na pytanie i odesłać do Twojego systemu — Booksy, Calendly lub innego. Jeśli bot obiecuje termin, masz błąd w bazie wiedzy do poprawienia."
+    a: "Nie. Bot nie zarządza kalendarzem i nie rezerwuje terminów. Jego rola to odpowiedzieć na pytanie i odesłać do Twojego systemu. Booksy, Calendly lub innego. Jeśli bot obiecuje termin, masz błąd w bazie wiedzy do poprawienia."
   },
   {
     q: "Jak często muszę aktualizować bazę wiedzy bota?",
@@ -211,7 +211,7 @@ Jeśli zbierasz przez bota dane klientów, warto od razu ogarnąć stronę forma
 
 ## Podsumowanie
 
-Bot obsługi klienta zawodzi nie przez technologię, tylko przez pięć powtarzalnych błędów przygotowania. Pusta baza wiedzy, brak przekazania do człowieka, obietnica rezerwacji, nieaktualny cennik i publikacja bez testu. Każdy z nich uderza w to samo — zaufanie klienta do Twojej firmy.
+Bot obsługi klienta zawodzi nie przez technologię, tylko przez pięć powtarzalnych błędów przygotowania. Pusta baza wiedzy, brak przekazania do człowieka, obietnica rezerwacji, nieaktualny cennik i publikacja bez testu. Każdy z nich uderza w to samo, zaufanie klienta do Twojej firmy.
 
 Naprawa jest tania i szybka. Przygotuj bazę, ustaw wyjście do człowieka, pilnuj jednej ścieżki do Booksy lub Calendly, aktualizuj treść razem ze stroną i przetestuj bota, zanim zobaczy go klient. Piętnaście minut na starcie oszczędza tygodnie naprawiania reputacji.
 
@@ -226,4 +226,4 @@ Jeśli chcesz zobaczyć pełny plan wdrożenia krok po kroku, zajrzyj do [poradn
 
 ---
 
-Materiał edukacyjny — nie zastępuje porady prawnej ani technicznej. Masz pytania o wdrożenie? [Napisz do nas](mailto:kontakt@botiko.pl). [Cennik](/cennik) · [Chatbot a RODO](/blog/chatbot-a-rodo-dane-klientow) · [Automatyzacja obsługi klienta](/blog/pillar-automatyzacja-obslugi)
+Materiał edukacyjny, nie zastępuje porady prawnej ani technicznej. Masz pytania o wdrożenie? [Napisz do nas](mailto:kontakt@botiko.pl). [Cennik](/cennik) · [Chatbot a RODO](/blog/chatbot-a-rodo-dane-klientow) · [Automatyzacja obsługi klienta](/blog/pillar-automatyzacja-obslugi)

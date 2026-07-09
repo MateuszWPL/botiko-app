@@ -19,7 +19,7 @@ export default function ImageGallery({
 
   if (!images || images.length === 0) return null;
 
-  // Single image — just show it
+  // Single image, just show it
   if (images.length === 1) {
     return (
       <figure className="my-8">

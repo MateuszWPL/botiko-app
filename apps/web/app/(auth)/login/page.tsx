@@ -147,7 +147,7 @@ export default function LoginPage() {
       <AuthLeftPanel
         headline="Witaj z powrotem"
         sub="Zaloguj się i sprawdź co dziś przyniósł Twój bot."
-        badge="14 dni za darmo — bez karty kredytowej"
+        badge="14 dni za darmo, bez karty kredytowej"
       />
     </main>
   );

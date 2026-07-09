@@ -1,6 +1,6 @@
 ---
-title: "Pacjent pisze o 22:00 — jak fizjoterapeuta w Białymstoku obsługuje pierwsze konsultacje przez bota"
-excerpt: "Jak fizjoterapeuta może obsłużyć pierwsze konsultacje przez bota — przykładowy scenariusz: wieczorne zapytania pacjentów, leady NFZ i komercyjne, szacunkowy zwrot z 99 zł/mies."
+title: "Pacjent pisze o 22:00, jak fizjoterapeuta w Białymstoku obsługuje pierwsze konsultacje przez bota"
+excerpt: "Jak fizjoterapeuta może obsłużyć pierwsze konsultacje przez bota, przykładowy scenariusz: wieczorne zapytania pacjentów, leady NFZ i komercyjne, szacunkowy zwrot z 99 zł/mies."
 date: "2026-07-07"
 category: "Branża: zdrowie"
 categorySlug: "zdrowie"
@@ -12,18 +12,18 @@ tags:
 author: "Mateusz Woronowicz"
 authorTitle: "Twórca Botiko"
 image: "/blog/fizjoterapeuta-bialystok-bot-pierwsze-konsultacje-hero.jpg"
-# UWAGA: szkic. Cały „case z Antoniuka" (liczby przed/po, ROI) to fabrykacja —
+# UWAGA: szkic. Cały „case z Antoniuka" (liczby przed/po, ROI) to fabrykacja,
 # przed publikacją (draft: false) przepisz na jawnie przykładowy scenariusz albo
 # zastąp realnymi danymi z pilotów. Patrz: content-trust sweep.
 draft: true
 ---
 
-# Pacjent pisze o 22:00 — jak fizjoterapeuta w Białymstoku obsługuje pierwsze konsultacje przez bota
+# Pacjent pisze o 22:00, jak fizjoterapeuta w Białymstoku obsługuje pierwsze konsultacje przez bota
 
-**TL;DR:** Fizjoterapeuta z Antoniuka (gabinet 1-osobowy, 8 lat działalności) testował bota Botiko od 1 maja. Po 2 miesiącach: **+20 nowych pacjentów**, w tym 4 NFZ, 16 komercyjnych. Czas reakcji na wieczorne zapytania — z 12-18 godzin do 2 sekund. Konwersja "pierwsze pytanie → wizyta" wzrosła z 35% do 62%. ROI bota: 30x w pierwszym miesiącu.
+**W skrócie:** Fizjoterapeuta z Antoniuka (gabinet 1-osobowy, 8 lat działalności) testował bota Botiko od 1 maja. Po 2 miesiącach: **+20 nowych pacjentów**, w tym 4 NFZ, 16 komercyjnych. Czas reakcji na wieczorne zapytania, z 12-18 godzin do 2 sekund. Konwersja "pierwsze pytanie → wizyta" wzrosła z 35% do 62%. ROI bota: 30x w pierwszym miesiącu.
 
 <Callout type="info">
-  To jeden konkretny case. Pełen przewodnik dla wszystkich segmentów medycznych (fizjo, stomato, psycho, logopedia, dietetyka): [pillar — Bot dla gabinetu zdrowia w Białymstoku](/blog/bot-dla-gabinetu-zdrowia-bialystok).
+  To jeden konkretny case. Pełen przewodnik dla wszystkich segmentów medycznych (fizjo, stomato, psycho, logopedia, dietetyka): [pillar. Bot dla gabinetu zdrowia w Białymstoku](/blog/bot-dla-gabinetu-zdrowia-bialystok).
 </Callout>
 
 ## Stan przed botem (kwiecień 2026)
@@ -39,18 +39,18 @@ Gabinet fizjoterapii prowadzony przez jednego specjalistę, na ulicy w okolicach
 
 **Konwersja "pierwsze zapytanie → realizacja wizyty":** 35%
 
-To znaczy: z 30 pierwszych zapytań tygodniowo (telefon + Messenger + email) **w wizyty zamieniało się ~10**. Reszta — 20 zapytań tygodniowo — odpadała na etapie braku odpowiedzi w rozsądnym czasie.
+To znaczy: z 30 pierwszych zapytań tygodniowo (telefon + Messenger + email) **w wizyty zamieniało się ~10**. Reszta, 20 zapytań tygodniowo, odpadała na etapie braku odpowiedzi w rozsądnym czasie.
 
 **Przy średniej wartości cyklu pacjenta (8 wizyt × 100 zł = 800 zł)**, 20 zapytań × stratność = ~4-6 cykli traconych miesięcznie = **3 200-4 800 zł obrotu** schodzącego do konkurencji.
 
-## Wdrożenie bota — 1 maja 2026
+## Wdrożenie bota, 1 maja 2026
 
 Czas wdrożenia: **45 minut**:
-- 15 min — wpisanie cennika, godzin, lokalizacji w bazę wiedzy
-- 10 min — opis specjalizacji (skoliozy, terapia manualna, rehabilitacja po operacjach kręgosłupa)
-- 8 min — wpisanie zasad NFZ (kolejka 6 mies.), kart benefitowych (MultiSport, Medicover)
-- 5 min — wklejenie kodu na stronę WWW (WordPress)
-- 7 min — wklejenie klauzuli RODO w politykę prywatności
+- 15 min: wpisanie cennika, godzin, lokalizacji w bazę wiedzy
+- 10 min: opis specjalizacji (skoliozy, terapia manualna, rehabilitacja po operacjach kręgosłupa)
+- 8 min: wpisanie zasad NFZ (kolejka 6 mies.), kart benefitowych (MultiSport, Medicover)
+- 5 min: wklejenie kodu na stronę WWW (WordPress)
+- 7 min: wklejenie klauzuli RODO w politykę prywatności
 
 Pierwsze realne rozmowy bota zaczęły wpływać tego samego wieczoru.
 
@@ -62,7 +62,7 @@ Pierwsze realne rozmowy bota zaczęły wpływać tego samego wieczoru.
 - Messenger: 12 wiadomości tygodniowo (większość pacjentów stałych, nowi idą przez bota)
 - Email z formularza: 4 wiadomości tygodniowo
 - Bot na stronie: **89 rozmów miesięcznie**, w tym 47 leadów zebranych
-- Booksy: 64 rezerwacje miesięcznie (bez zmian — to są stali pacjenci)
+- Booksy: 64 rezerwacje miesięcznie (bez zmian: to są stali pacjenci)
 
 **Konwersja "pierwsze zapytanie → wizyta":** 62% (z 35%).
 
@@ -79,32 +79,32 @@ Cztery typowe rozmowy z analizy:
 
 > **Pacjent (czwartek 21:14):** Pracuję z domu od 2 lat. Boli mnie dolny odcinek kręgosłupa i bark prawy. Można coś z tym zrobić bez operacji?
 >
-> **Bot:** Cześć! Bóle kręgosłupa od pracy biurowej i wymuszonych pozycji to jeden z najczęstszych problemów w naszym gabinecie — zajmujemy się tym konkretnie metodą terapii manualnej + edukacja ergonomiczna.
+> **Bot:** Cześć! Bóle kręgosłupa od pracy biurowej i wymuszonych pozycji to jeden z najczęstszych problemów w naszym gabinecie, zajmujemy się tym konkretnie metodą terapii manualnej + edukacja ergonomiczna.
 >
 > Plan u nas:
-> 1. **Konsultacja diagnostyczna** (60 min, 150 zł) — wywiad, ocena postawy, badanie funkcjonalne, plan terapii
+> 1. **Konsultacja diagnostyczna** (60 min, 150 zł), wywiad, ocena postawy, badanie funkcjonalne, plan terapii
 > 2. **6-10 wizyt terapeutycznych** (45 min, 100 zł każda)
 > 3. **Edukacja ergonomiczna stanowiska pracy** wliczona w plan
 >
-> Operacja kręgosłupa to zwykle ostateczność — w 90% przypadków bólów posturalnych wystarczy fizjoterapia. Pierwsza konsultacja powie konkretnie czy Twój przypadek to jest "normalna" przeciążona praca biurowa, czy coś poważniejszego.
+> Operacja kręgosłupa to zwykle ostateczność, w 90% przypadków bólów posturalnych wystarczy fizjoterapia. Pierwsza konsultacja powie konkretnie czy Twój przypadek to jest "normalna" przeciążona praca biurowa, czy coś poważniejszego.
 >
 > Akceptujemy: MultiSport, Medicover Benefits.
 > Wolny termin: przyszły wtorek 14:00 lub czwartek 16:00.
 >
-> Zostaw imię i numer — zadzwonimy jutro między 9-11 i potwierdzimy konkretny termin.
+> Zostaw imię i numer, zadzwonimy jutro między 9-11 i potwierdzimy konkretny termin.
 
 **Co bot ogarnął:**
 1. Powiedział "to częsty problem" → normalizuje sytuację
-2. **Nie zdiagnozował** — nie powiedział "to brzmi jak rwa kulszowa"
+2. **Nie zdiagnozował**: nie powiedział "to brzmi jak rwa kulszowa"
 3. Wyjaśnił proces (konsultacja → cykl → edukacja)
 4. Uspokoił o operacji ("90% przypadków wystarczy fizjoterapia")
 5. Zebrał lead z kontekstem
 
 ### Rozmowa 2: Mama szukająca fizjo dla niemowlęcia
 
-> **Pacjentka (sobota 9:30):** Dzień dobry, mamy 4-miesięczne dziecko, pediatra zalecił rehabilitację — asymetria ułożeniowa. Robicie pediatrię?
+> **Pacjentka (sobota 9:30):** Dzień dobry, mamy 4-miesięczne dziecko, pediatra zalecił rehabilitację, asymetria ułożeniowa. Robicie pediatrię?
 >
-> **Bot:** Tak, prowadzimy fizjoterapię niemowląt — to jedna z naszych specjalizacji. Asymetrie ułożeniowe są bardzo dobrze odpowiadalne na leczenie w pierwszym roku życia, im wcześniej tym lepiej.
+> **Bot:** Tak, prowadzimy fizjoterapię niemowląt, to jedna z naszych specjalizacji. Asymetrie ułożeniowe są bardzo dobrze odpowiadalne na leczenie w pierwszym roku życia, im wcześniej tym lepiej.
 >
 > U nas pracujemy w terapii NDT-Bobath (najbardziej uznany standard dla niemowląt).
 >
@@ -113,15 +113,15 @@ Cztery typowe rozmowy z analizy:
 > - Wizyta terapeutyczna 45 min: 130 zł
 > - Cykl typowo: 8-12 spotkań w ciągu 2-3 miesięcy
 >
-> **NFZ:** mamy kontrakt, ale kolejka pediatryczna 4-5 miesięcy. Przy asymetrii ułożeniowej **rekomendujemy NIE czekać** — pierwszy rok jest kluczowy, każdy miesiąc opóźnienia trudniejszy do naprawienia.
+> **NFZ:** mamy kontrakt, ale kolejka pediatryczna 4-5 miesięcy. Przy asymetrii ułożeniowej **rekomendujemy NIE czekać**, pierwszy rok jest kluczowy, każdy miesiąc opóźnienia trudniejszy do naprawienia.
 >
-> **Termin:** mamy specjalne sloty dla niemowląt rano — najszybciej pojutrze 9:00 lub 10:00.
+> **Termin:** mamy specjalne sloty dla niemowląt rano, najszybciej pojutrze 9:00 lub 10:00.
 >
 > Zostaw imię i numer mamy + imię i wiek dokładnie dziecka. Oddzwonimy w godzinę.
 
 **Co bot ogarnął:**
 1. Pokazał specjalizację (NDT-Bobath)
-2. Honest comparison NFZ vs prywatnie — z konkretnym zaleceniem (nie czekać przy asymetrii)
+2. Honest comparison NFZ vs prywatnie: z konkretnym zaleceniem (nie czekać przy asymetrii)
 3. Specjalne sloty rano dla niemowląt → buduje wrażenie profesjonalizmu
 4. Zebrał szczegółowy kontekst (wiek dziecka)
 
@@ -129,14 +129,14 @@ Cztery typowe rozmowy z analizy:
 
 > **Pacjent (poniedziałek 19:50):** Cześć. Skręciłem kostkę 5 dni temu, pojechałem na SOR, RTG czyste, ale nadal puchnie i boli przy chodzeniu. Mogę przyjść? Biegam zawodowo, mam zawody za 6 tygodni.
 >
-> **Bot:** Cześć! Po skręceniu kostki z czystym RTG ale przedłużającym się obrzękiem — fizjoterapia jest dokładnie tym co potrzeba. 5 dni to dobry moment by zacząć (po pierwszych 48-72h od urazu standardowo).
+> **Bot:** Cześć! Po skręceniu kostki z czystym RTG ale przedłużającym się obrzękiem, fizjoterapia jest dokładnie tym co potrzeba. 5 dni to dobry moment by zacząć (po pierwszych 48-72h od urazu standardowo).
 >
 > **U nas dla biegacza po skręceniu:**
-> - Konsultacja diagnostyczna (60 min, 150 zł) — ocena ruchomości, stabilności, plan
-> - Cykl rehabilitacji sportowej 6-10 wizyt (45 min, 100 zł) — typowo 3-4 tygodnie intensywnie
+> - Konsultacja diagnostyczna (60 min, 150 zł), ocena ruchomości, stabilności, plan
+> - Cykl rehabilitacji sportowej 6-10 wizyt (45 min, 100 zł), typowo 3-4 tygodnie intensywnie
 > - Re-evaluation przed powrotem do biegania (45 min, 100 zł)
 >
-> Przy 6-tygodniowym oknie do zawodów — **pełna ścieżka mieści się**, ale nie ma czasu zwlekać. Pierwsza wizyta najlepiej w tym tygodniu.
+> Przy 6-tygodniowym oknie do zawodów, **pełna ścieżka mieści się**, ale nie ma czasu zwlekać. Pierwsza wizyta najlepiej w tym tygodniu.
 >
 > **Najszybszy termin:** jutro 16:00 (pojedynczy slot kontuzyjny) lub czwartek rano.
 >
@@ -149,16 +149,16 @@ Cztery typowe rozmowy z analizy:
 4. Praktyczne wskazówki do wizyty (lód, ruch w bólu)
 5. Pytanie o dystans → kontekst dla terapeuty
 
-### Rozmowa 4: Karta MultiSport — pytanie szczegółowe
+### Rozmowa 4: Karta MultiSport, pytanie szczegółowe
 
 > **Pacjent:** Mam MultiSport, ile mogę u Was zrobić wizyt z karty?
 >
 > **Bot:** Akceptujemy MultiSport. Z karty u nas:
-> - **Konsultacja fizjoterapeutyczna 60 min** — 1 punkt MultiSport
-> - **Wizyta terapeutyczna 45 min** — 1 punkt
-> - **Masaż leczniczy 45 min** — 1 punkt
+> - **Konsultacja fizjoterapeutyczna 60 min**, 1 punkt MultiSport
+> - **Wizyta terapeutyczna 45 min**, 1 punkt
+> - **Masaż leczniczy 45 min**, 1 punkt
 >
-> Limit MultiSport to 8 punktów / mies. — sprawdź na koncie ile zostało.
+> Limit MultiSport to 8 punktów / mies., sprawdź na koncie ile zostało.
 >
 > **Co NIE jest pokrywane:**
 > - USG diagnostyczne (90 zł, dopłata)
@@ -168,9 +168,9 @@ Cztery typowe rozmowy z analizy:
 >
 > Chcesz się umówić? Zostaw imię i numer.
 
-**Co bot ogarnął:** rozróżnił **co karta pokrywa a czego nie** — najczęstsza wpadka pacjenta z kartą i źródło frustracji. Jasna informacja w bocie eliminuje ten problem.
+**Co bot ogarnął:** rozróżnił **co karta pokrywa a czego nie**, najczęstsza wpadka pacjenta z kartą i źródło frustracji. Jasna informacja w bocie eliminuje ten problem.
 
-## Liczby case'u — fizjoterapeuta z Antoniuka
+## Liczby case'u, fizjoterapeuta z Antoniuka
 
 **2 miesiące z botem:**
 
@@ -205,11 +205,11 @@ Bot odpowiada na wszystkie 5 typów pytań w 2 sekundy. Specjalista pracuje przy
 
 **W ciągu dnia:** zero ingerencji w bota. Pracuje przy pacjentach.
 
-**Wieczorem (5 min, opcjonalnie):** szybki przegląd rozmów z dnia. Jeśli bot odpowiedział nieoptymalnie na coś — dopisuje informację do bazy wiedzy. Po 2 tygodniach takich update'ów bot odpowiada profesjonalnie na 95% pytań.
+**Wieczorem (5 min, opcjonalnie):** szybki przegląd rozmów z dnia. Jeśli bot odpowiedział nieoptymalnie na coś, dopisuje informację do bazy wiedzy. Po 2 tygodniach takich update'ów bot odpowiada profesjonalnie na 95% pytań.
 
 **Raz w miesiącu (15 min):** update cennika jeśli się zmienił, dodanie nowych specjalizacji, sezonowe oferty.
 
-**Łącznie tygodniowo:** ~70 minut pracy z botem. W zamian — 5 nowych pacjentów / tydzień zamiast 1.
+**Łącznie tygodniowo:** ~70 minut pracy z botem. W zamian, 5 nowych pacjentów / tydzień zamiast 1.
 
 ## FAQ
 
@@ -217,23 +217,23 @@ Bot odpowiada na wszystkie 5 typów pytań w 2 sekundy. Specjalista pracuje przy
   items={[
     {
       q: "Czy bot rozumie specjalistyczne pojęcia fizjoterapeutyczne (NDT-Bobath, McKenzie, FITS)?",
-      a: "Tak — GPT-4o mini ma ogólną wiedzę medyczną. Plus: w bazie wiedzy Twojego gabinetu wpisujesz specjalizacje (np. 'Pracujemy w nurcie NDT-Bobath dla niemowląt, FITS dla skolioz, terapia manualna dla bólów kręgosłupa') — bot powtarza dokładnie Twoje sformułowania. Pacjent pyta 'macie NDT?' — bot mówi 'tak, to nasza specjalizacja dla niemowląt'."
+      a: "Tak. GPT-4o mini ma ogólną wiedzę medyczną. Plus: w bazie wiedzy Twojego gabinetu wpisujesz specjalizacje (np. 'Pracujemy w nurcie NDT-Bobath dla niemowląt, FITS dla skolioz, terapia manualna dla bólów kręgosłupa'), bot powtarza dokładnie Twoje sformułowania. Pacjent pyta 'macie NDT?', bot mówi 'tak, to nasza specjalizacja dla niemowląt'."
     },
     {
       q: "Mam 1-osobowy gabinet, czy to się opłaca?",
-      a: "Wręcz najbardziej. Solo specjalista najmniej ma czasu na obsługę telefonów. 5 dodatkowych pacjentów miesięcznie × 800 zł cykl = 4 000 zł obrotu netto. Bot: 99 zł. ROI 40x. W większych gabinetach z recepcją bot robi mniejszą różnicę (recepcja częściowo robi to samo) — dla solo bot jest game changer."
+      a: "Wręcz najbardziej. Solo specjalista najmniej ma czasu na obsługę telefonów. 5 dodatkowych pacjentów miesięcznie × 800 zł cykl = 4 000 zł obrotu netto. Bot: 99 zł. ROI 40x. W większych gabinetach z recepcją bot robi mniejszą różnicę (recepcja częściowo robi to samo), dla solo bot jest game changer."
     },
     {
       q: "Co jeśli pacjent pyta o coś specjalistycznego czego bot nie wie?",
-      a: "Bot mówi: 'tej konkretnej kwestii nie znam — zostaw numer, terapeuta zadzwoni i odpowie konkretnie'. Eskalacja, nie zmyślanie. W dashboardzie widzisz 'pytania bez odpowiedzi' — co tydzień przeglądasz, dopisujesz do bazy wiedzy. Po miesiącu lista pustych odpowiedzi spada do poniżej 5%."
+      a: "Bot mówi: 'tej konkretnej kwestii nie znam, zostaw numer, terapeuta zadzwoni i odpowie konkretnie'. Eskalacja, nie zmyślanie. W dashboardzie widzisz 'pytania bez odpowiedzi', co tydzień przeglądasz, dopisujesz do bazy wiedzy. Po miesiącu lista pustych odpowiedzi spada do poniżej 5%."
     },
     {
       q: "Czy bot zniechęca pacjentów stałych pisaniem do mnie zamiast do bota?",
-      a: "Pacjenci stali zwykle dalej piszą tym samym kanałem co dotychczas (Messenger, SMS) — bo Cię znają. Bot łapie głównie nowych. Co więcej: niektórzy pacjenci stali zaczynają używać bota do prostych pytań (kiedy wolne? ile kosztuje X?) zamiast Cię męczyć — to dodatkowy bonus."
+      a: "Pacjenci stali zwykle dalej piszą tym samym kanałem co dotychczas (Messenger, SMS), bo Cię znają. Bot łapie głównie nowych. Co więcej: niektórzy pacjenci stali zaczynają używać bota do prostych pytań (kiedy wolne? ile kosztuje X?) zamiast Cię męczyć, to dodatkowy bonus."
     },
     {
       q: "Czy bot zwiększy liczbę 'no show' (pacjentów którzy nie przychodzą na umówioną wizytę)?",
-      a: "Wprost przeciwnie. Pacjenci umówieni przez bota mają niższy no-show rate (~7%) niż umówieni telefonicznie (~12%) — bo dostają precyzyjne SMS potwierdzenia + przypomnienie 24h przed. Plus: lead od bota zawiera już kontekst ('ból kręgosłupa, praca biurowa') — terapeuta dzwoni nie 'na zimno' ale z tematem, co buduje commitment pacjenta."
+      a: "Wprost przeciwnie. Pacjenci umówieni przez bota mają niższy no-show rate (~7%) niż umówieni telefonicznie (~12%), bo dostają precyzyjne SMS potwierdzenia + przypomnienie 24h przed. Plus: lead od bota zawiera już kontekst ('ból kręgosłupa, praca biurowa'), terapeuta dzwoni nie 'na zimno' ale z tematem, co buduje commitment pacjenta."
     }
   ]}
 />
@@ -247,7 +247,7 @@ Case'u z Antoniuka: +20 nowych pacjentów w 2 mies., +16 000 zł obrotu, ROI 80x
 Wdrożenie 45 minut. Konfiguracja zgodna z RODO (szyfrowanie, serwery EU). Klauzula RODO gotowa do polityki prywatności.
 
 <CTABlock
-  title="Uruchom bota w swoim gabinecie fizjo — 14 dni za darmo"
+  title="Uruchom bota w swoim gabinecie fizjo, 14 dni za darmo"
   description="Konfiguracja 45 minut. Bez umowy. Wsparcie po polsku."
   cta="Wypróbuj"
   href="/dla/gabinet-spa"
@@ -256,5 +256,5 @@ Wdrożenie 45 minut. Konfiguracja zgodna z RODO (szyfrowanie, serwery EU). Klauz
 ---
 
 **Powiązane wpisy:**
-- [Bot dla gabinetu fizjoterapii, stomatologii, psychologii w Białymstoku — pillar](/blog/bot-dla-gabinetu-zdrowia-bialystok)
-- [RODO a chatbot w gabinecie medycznym — kompletny checklist](/blog/rodo-chatbot-gabinet-checklist)
+- [Bot dla gabinetu fizjoterapii, stomatologii, psychologii w Białymstoku, pillar](/blog/bot-dla-gabinetu-zdrowia-bialystok)
+- [RODO a chatbot w gabinecie medycznym: kompletny checklist](/blog/rodo-chatbot-gabinet-checklist)

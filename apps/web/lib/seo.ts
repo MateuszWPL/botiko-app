@@ -15,11 +15,11 @@ export const MONTHLY_PRICE_PLN = '99';
 /** @id of the founder Person entity (defined in full by lib/author.ts on /o-nas). */
 export const FOUNDER_PERSON_ID = `${SITE_URL}/#person`;
 
-/** Official WordPress plugin — slug + canonical listing in the wp.org directory. */
+/** Official WordPress plugin, slug + canonical listing in the wp.org directory. */
 export const WORDPRESS_PLUGIN_SLUG = 'botiko-ai-customer-service-bot';
 export const WORDPRESS_PLUGIN_URL = `https://wordpress.org/plugins/${WORDPRESS_PLUGIN_SLUG}/`;
 
-/** Absolute URL helper — accepts a leading-slash path or a full URL. */
+/** Absolute URL helper, accepts a leading-slash path or a full URL. */
 export function absoluteUrl(path: string): string {
   if (path.startsWith('http')) return path;
   return `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`;
@@ -30,7 +30,7 @@ export function absoluteUrl(path: string): string {
  *
  * Emitted site-wide from the root layout. Typed as both Organization AND
  * LocalBusiness so there is exactly ONE "Botiko.pl" node (`#organization`) for
- * Google/LLMs to resolve — the homepage no longer emits a separate
+ * Google/LLMs to resolve, the homepage no longer emits a separate
  * `#business` LocalBusiness (that caused two competing entities). LocalBusiness
  * facts (address, priceRange, image) live here so every page carries the local
  * signal and stays consistent.
@@ -46,7 +46,7 @@ export function organizationSchema() {
     image: `${SITE_URL}/opengraph-image.png`,
     email: CONTACT_EMAIL,
     description:
-      'Bot obsługi klienta 24/7 dla firm usługowych — salony, gabinety, restauracje, warsztaty.',
+      'Bot obsługi klienta 24/7 dla firm usługowych, salony, gabinety, restauracje, warsztaty.',
     priceRange: `${MONTHLY_PRICE_PLN} PLN`,
     founder: { '@id': FOUNDER_PERSON_ID },
     foundingLocation: {
@@ -70,7 +70,7 @@ export function organizationSchema() {
       areaServed: 'PL',
       availableLanguage: ['Polish'],
     },
-    // Brand-owned external listing — the official plugin in the wordpress.org
+    // Brand-owned external listing, the official plugin in the wordpress.org
     // directory. Add social profiles here as they come online.
     sameAs: [WORDPRESS_PLUGIN_URL],
   };
@@ -101,7 +101,7 @@ export type BreadcrumbEntry = { label: string; href?: string };
 
 /**
  * BreadcrumbList for any page. Every ListItem gets `item` (an absolute URL)
- * EXCEPT the last one — Google allows omitting `item` only on the final crumb
+ * EXCEPT the last one. Google allows omitting `item` only on the final crumb
  * (the current page). Therefore every NON-last entry MUST pass `href`; a middle
  * crumb without `href` produces a ListItem missing `item`, which Google rejects
  * as a critical error ("Missing field 'item' in itemListElement").
@@ -131,7 +131,7 @@ export function softwareApplicationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'Botiko — wtyczka WordPress',
+    name: 'Botiko, wtyczka WordPress',
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'WordPress',
     url: `${SITE_URL}/integracje/wordpress`,
@@ -147,13 +147,13 @@ export function softwareApplicationSchema() {
       description: '14 dni za darmo, bez karty kredytowej',
     },
     description:
-      'Oficjalna wtyczka Botiko do WordPress — osadza bota obsługi klienta bez edycji motywu i łączy stronę jednym kodem. Bot odpowiada na pytania 24/7 i zbiera leady.',
+      'Oficjalna wtyczka Botiko do WordPress, osadza bota obsługi klienta bez edycji motywu i łączy stronę jednym kodem. Bot odpowiada na pytania 24/7 i zbiera leady.',
   };
 }
 
 export type FaqEntry = { q: string; a: string };
 
-/** FAQPage schema — primary lever for AI citations (Q&A is highly quotable). */
+/** FAQPage schema, primary lever for AI citations (Q&A is highly quotable). */
 export function faqPageSchema(faqs: FaqEntry[]) {
   return {
     '@context': 'https://schema.org',

@@ -4,12 +4,12 @@ import JsonLd from '@/components/seo/JsonLd';
 import { breadcrumbListSchema, faqPageSchema } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Bot dla Twojej firmy usługowej — odpowiada klientom 24/7 i zbiera leady',
+  title: 'Bot dla Twojej firmy usługowej, odpowiada klientom 24/7 i zbiera leady',
   description:
     'Botiko dla każdej firmy usługowej: fryzjer, fizjoterapeuta, trener, fotograf, studio, kancelaria. Bot odpowiada na pytania i zbiera kontakty 24/7. 99 zł/mies., 14 dni za darmo.',
   alternates: { canonical: 'https://botiko.pl/dla/inna' },
   openGraph: {
-    title: 'Bot dla Twojej firmy usługowej — odpowiada klientom 24/7',
+    title: 'Bot dla Twojej firmy usługowej, odpowiada klientom 24/7',
     description:
       'Klienci piszą wieczorem. Bot odpowiada, zbiera kontakt i odsyła do Booksy lub Twojego systemu. 99 zł/mies.',
     url: 'https://botiko.pl/dla/inna',
@@ -33,8 +33,8 @@ const JSON_LD_SERVICE = {
 
 const FAQS = [
   {
-    q: 'Moja branża nie jest na liście — czy Botiko zadziała?',
-    a: 'Tak. Bot nie jest ograniczony do konkretnych branż — działa na bazie wiedzy, którą mu podasz. Jeśli możesz opisać swoją ofertę słowami (usługi, ceny, FAQ), bot będzie odpowiadał na te pytania. Sprawdza się wszędzie tam, gdzie klienci pytają o to samo wiele razy.',
+    q: 'Moja branża nie jest na liście, czy Botiko zadziała?',
+    a: 'Tak. Bot nie jest ograniczony do konkretnych branż, działa na bazie wiedzy, którą mu podasz. Jeśli możesz opisać swoją ofertę słowami (usługi, ceny, FAQ), bot będzie odpowiadał na te pytania. Sprawdza się wszędzie tam, gdzie klienci pytają o to samo wiele razy.',
   },
   {
     q: 'Czy muszę mieć stronę www?',
@@ -42,15 +42,15 @@ const FAQS = [
   },
   {
     q: 'Czy bot działa z Booksy, Calendly albo moim własnym systemem?',
-    a: 'Bot nie integruje się bezpośrednio — zbiera dane kontaktowe klienta i odsyła do Booksy, Calendly lub Twojego linku rezerwacyjnego. Ty masz pełną kontrolę nad kalendarzem i potwierdzasz spotkania samodzielnie.',
+    a: 'Bot nie integruje się bezpośrednio, zbiera dane kontaktowe klienta i odsyła do Booksy, Calendly lub Twojego linku rezerwacyjnego. Ty masz pełną kontrolę nad kalendarzem i potwierdzasz spotkania samodzielnie.',
   },
   {
     q: 'Ile czasu zajmuje konfiguracja?',
-    a: 'Rejestracja i podstawowa konfiguracja — ok. 15–20 minut. Wklejasz opis usług, ceny i FAQ. Bot działa od razu. Możesz uzupełniać bazę wiedzy w dowolnym momencie, gdy coś się zmienia.',
+    a: 'Rejestracja i podstawowa konfiguracja, ok. 15-20 minut. Wklejasz opis usług, ceny i FAQ. Bot działa od razu. Możesz uzupełniać bazę wiedzy w dowolnym momencie, gdy coś się zmienia.',
   },
   {
     q: 'Co gdy klient zapyta o coś, o czym bot nie wie?',
-    a: 'Bot grzecznie informuje, że nie ma tej odpowiedzi i proponuje pozostawienie kontaktu do oddzwonienia. Nic nie wymyśla — odpowiada tylko na podstawie Twojej bazy wiedzy.',
+    a: 'Bot grzecznie informuje, że nie ma tej odpowiedzi i proponuje pozostawienie kontaktu do oddzwonienia. Nic nie wymyśla, odpowiada tylko na podstawie Twojej bazy wiedzy.',
   },
 ];
 
@@ -153,7 +153,7 @@ const USE_CASES = [
 const PAIN_POINTS = [
   {
     title: 'Klient pisze, gdy nie możesz odebrać',
-    text: 'Prowadzisz sesję, trening, zabieg albo jesteś na spotkaniu z innym klientem. Bot odpowiada w 10 sekund — Ty oddzwaniasz kiedy jesteś wolny.',
+    text: 'Prowadzisz sesję, trening, zabieg albo jesteś na spotkaniu z innym klientem. Bot odpowiada w 10 sekund. Ty oddzwaniasz kiedy jesteś wolny.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
@@ -162,7 +162,7 @@ const PAIN_POINTS = [
   },
   {
     title: 'Zapytania wieczorami i w weekendy',
-    text: 'Większość decyzji o zakupie usługi zapada po 18:00 i w soboty. Bot jest dostępny dokładnie wtedy, gdy Ty nie pracujesz — i zbiera kontakty do listy na poniedziałek.',
+    text: 'Większość decyzji o zakupie usługi zapada po 18:00 i w soboty. Bot jest dostępny dokładnie wtedy, gdy Ty nie pracujesz, i zbiera kontakty do listy na poniedziałek.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
@@ -170,8 +170,8 @@ const PAIN_POINTS = [
     ),
   },
   {
-    title: 'Te same pytania — bez końca',
-    text: '„Ile kosztuje?", „Jak długo trwa?", „Macie wolne w piątek?" — każdy nowy klient pyta od podstaw. Bot odpowiada za Ciebie, bez zmęczenia.',
+    title: 'Te same pytania, bez końca',
+    text: '„Ile kosztuje?", „Jak długo trwa?", „Macie wolne w piątek?", każdy nowy klient pyta od podstaw. Bot odpowiada za Ciebie, bez zmęczenia.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -180,7 +180,7 @@ const PAIN_POINTS = [
   },
   {
     title: 'Klient odchodzi bo nikt nie odpowiedział',
-    text: 'W serwisach lokalnych i Google Maps klient ma otwartych 3 karty jednocześnie. Wygrywa ta firma, która odpowie pierwsza — nie ta, która jest najlepsza.',
+    text: 'W serwisach lokalnych i Google Maps klient ma otwartych 3 karty jednocześnie. Wygrywa ta firma, która odpowie pierwsza, nie ta, która jest najlepsza.',
     svg: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -194,7 +194,7 @@ const PAIN_POINTS = [
 
 const FEATURES = [
   'Odpowiada na pytania o ceny, czas trwania i zakres usług',
-  'Zbiera imię i telefon — odsyła do Booksy, Calendly lub Twojego systemu',
+  'Zbiera imię i telefon, odsyła do Booksy, Calendly lub Twojego systemu',
   'Opisuje Twoją ofertę na podstawie bazy wiedzy, którą sam tworzysz',
   'Działa na stronie www, Wix, WordPress, Squarespace, Webflow i Canva',
   'Obsługuje zapytania o promocje, vouchery i pakiety',
@@ -202,7 +202,7 @@ const FEATURES = [
 ] as const;
 
 const ROI_ROWS = [
-  { clients: 1, revenue: 200, note: 'Jedna usługa ~ 1–2 h pracy' },
+  { clients: 1, revenue: 200, note: 'Jedna usługa ~ 1-2 h pracy' },
   { clients: 2, revenue: 400, note: 'Dwa zlecenia z wieczornych pytań' },
   { clients: 5, revenue: 900, note: 'Aktywna strona + Google Maps' },
 ] as const;
@@ -211,12 +211,12 @@ const STEPS = [
   {
     step: '01',
     title: 'Rejestracja i wybór „Inna branża"',
-    text: 'Zakładasz konto i wybierasz szablon ogólny. Dostajesz bazę z pytaniami i odpowiedziami pasującymi do większości firm usługowych — edytujesz pod siebie.',
+    text: 'Zakładasz konto i wybierasz szablon ogólny. Dostajesz bazę z pytaniami i odpowiedziami pasującymi do większości firm usługowych, edytujesz pod siebie.',
   },
   {
     step: '02',
     title: 'Wklejasz swoją ofertę i FAQ',
-    text: 'Opisujesz usługi, ceny i zasady działania. ~15 minut. Bot będzie odpowiadał wyłącznie na podstawie tego, co mu podasz — zero wymyślonych informacji.',
+    text: 'Opisujesz usługi, ceny i zasady działania. ~15 minut. Bot będzie odpowiadał wyłącznie na podstawie tego, co mu podasz, zero wymyślonych informacji.',
   },
   {
     step: '03',
@@ -226,7 +226,7 @@ const STEPS = [
   {
     step: '04',
     title: 'Zbierasz leady, oddzwaniasz',
-    text: 'Kontakty z rozmów lądują w dashboardzie. Rano masz listę osób zainteresowanych Twoją usługą — oddzwaniasz i zamykasz zlecenia.',
+    text: 'Kontakty z rozmów lądują w dashboardzie. Rano masz listę osób zainteresowanych Twoją usługą, oddzwaniasz i zamykasz zlecenia.',
   },
 ] as const;
 
@@ -313,7 +313,7 @@ export default function InnaLandingPage() {
               </h1>
 
               <p className="text-violet-200 text-lg leading-relaxed mb-8">
-                Botiko działa dla każdej małej firmy usługowej. Konfigurujesz go pod swoją ofertę w 15 minut —
+                Botiko działa dla każdej małej firmy usługowej. Konfigurujesz go pod swoją ofertę w 15 minut
                 i <strong className="text-white">zbiera kontakty 24/7, gdy jesteś zajęty pracą z klientem</strong>.
               </p>
 
@@ -395,7 +395,7 @@ export default function InnaLandingPage() {
               Znasz to?
             </p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text">
-              Niezależnie od branży — problemy są te same
+              Niezależnie od branży, problemy są te same
             </h2>
             <p className="mt-3 text-slate-500 max-w-xl mx-auto">
               Każda mała firma usługowa traci klientów z tego samego powodu: brak odpowiedzi wtedy, gdy klient pyta.
@@ -435,7 +435,7 @@ export default function InnaLandingPage() {
               Botiko działa w każdej branży usługowej
             </h2>
             <p className="mt-3 text-slate-500 max-w-xl mx-auto">
-              Tworzysz własną bazę wiedzy — bot odpowiada tak, jakbyś to Ty pisał. Branża nie ma znaczenia.
+              Tworzysz własną bazę wiedzy, bot odpowiada tak, jakbyś to Ty pisał. Branża nie ma znaczenia.
             </p>
           </div>
 
@@ -458,7 +458,7 @@ export default function InnaLandingPage() {
           </div>
 
           <p className="mt-6 text-center text-sm text-slate-400">
-            i wiele innych — jeśli masz ofertę usługową i stronę www, Botiko zadziała.
+            i wiele innych, jeśli masz ofertę usługową i stronę www, Botiko zadziała.
           </p>
         </div>
       </section>
@@ -472,7 +472,7 @@ export default function InnaLandingPage() {
                 Co robi bot
               </p>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-text leading-tight mb-5">
-                Twój cennik + FAQ + Booksy —{' '}
+                Twój cennik + FAQ + Booksy{' '}
                 <span style={{ color: '#6d28d9' }}>w jednym widgecie</span>
               </h2>
               <p className="text-slate-500 leading-relaxed mb-6">
@@ -494,7 +494,7 @@ export default function InnaLandingPage() {
                 <div>
                   <p className="font-semibold text-slate-800 text-sm">Bot mówi tylko to, co mu powiesz</p>
                   <p className="text-slate-500 text-xs mt-0.5 leading-relaxed">
-                    Żadnych ogólnych informacji z internetu. Odpowiada wyłącznie na podstawie Twojej bazy wiedzy — ceny, warunki, oferta są zawsze zgodne z prawdą.
+                    Żadnych ogólnych informacji z internetu. Odpowiada wyłącznie na podstawie Twojej bazy wiedzy, ceny, warunki, oferta są zawsze zgodne z prawdą.
                   </p>
                 </div>
               </div>
@@ -530,7 +530,7 @@ export default function InnaLandingPage() {
               Jak to działa
             </p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-text">
-              Od rejestracji do działającego bota — w jeden dzień
+              Od rejestracji do działającego bota, w jeden dzień
             </h2>
           </div>
 
@@ -601,7 +601,7 @@ export default function InnaLandingPage() {
           </div>
 
           <p className="mt-5 text-center text-xs text-slate-400">
-            * Szacunki orientacyjne — wartość zlecenia zależy od branży. Bot zbiera leady, Ty zamieniasz je w klientów.
+            * Szacunki orientacyjne, wartość zlecenia zależy od branży. Bot zbiera leady, Ty zamieniasz je w klientów.
           </p>
         </div>
       </section>
@@ -647,7 +647,7 @@ export default function InnaLandingPage() {
 
             <div className="relative">
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight mb-4">
-                Zacznij dziś — bot działa już jutro rano
+                Zacznij dziś, bot działa już jutro rano
               </h2>
               <p className="text-violet-200 text-base mb-8 max-w-xl mx-auto">
                 14 dni za darmo. Bez karty kredytowej. Bez umowy. Konfiguracja oferty i FAQ w ~15 minut.
