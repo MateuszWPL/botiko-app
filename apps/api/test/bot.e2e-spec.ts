@@ -31,18 +31,18 @@ describe('Bot (e2e)', () => {
   // ─── GET /api/v1/bot ─────────────────────────────────────────────────────
 
   describe('GET /api/v1/bot', () => {
-    it('401 — no auth token', () => {
+    it('401, no auth token', () => {
       return request(app.getHttpServer()).get('/api/v1/bot').expect(401);
     });
 
-    it('401 — invalid token', () => {
+    it('401, invalid token', () => {
       return request(app.getHttpServer())
         .get('/api/v1/bot')
         .set('Authorization', 'Bearer invalid.token.here')
         .expect(401);
     });
 
-    it('200 — returns array of bots for tenant', () => {
+    it('200, returns array of bots for tenant', () => {
       return request(app.getHttpServer())
         .get('/api/v1/bot')
         .set('Authorization', `Bearer ${accessToken}`)
@@ -56,14 +56,14 @@ describe('Bot (e2e)', () => {
   // ─── POST /api/v1/bot ────────────────────────────────────────────────────
 
   describe('POST /api/v1/bot', () => {
-    it('401 — no auth token', () => {
+    it('401, no auth token', () => {
       return request(app.getHttpServer())
         .post('/api/v1/bot')
         .send({ name: 'Bot', welcomeMsg: 'Hej!' })
         .expect(401);
     });
 
-    it('400 — name too short', () => {
+    it('400, name too short', () => {
       return request(app.getHttpServer())
         .post('/api/v1/bot')
         .set('Authorization', `Bearer ${accessToken}`)
@@ -71,7 +71,7 @@ describe('Bot (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — welcomeMsg too short', () => {
+    it('400, welcomeMsg too short', () => {
       return request(app.getHttpServer())
         .post('/api/v1/bot')
         .set('Authorization', `Bearer ${accessToken}`)
@@ -79,7 +79,7 @@ describe('Bot (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — invalid hex color', () => {
+    it('400, invalid hex color', () => {
       return request(app.getHttpServer())
         .post('/api/v1/bot')
         .set('Authorization', `Bearer ${accessToken}`)
@@ -91,7 +91,7 @@ describe('Bot (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — allowedDomains contains invalid URL', () => {
+    it('400, allowedDomains contains invalid URL', () => {
       return request(app.getHttpServer())
         .post('/api/v1/bot')
         .set('Authorization', `Bearer ${accessToken}`)
@@ -103,7 +103,7 @@ describe('Bot (e2e)', () => {
         .expect(400);
     });
 
-    it('201 — creates bot with valid payload', async () => {
+    it('201, creates bot with valid payload', async () => {
       const res = await request(app.getHttpServer())
         .post('/api/v1/bot')
         .set('Authorization', `Bearer ${accessToken}`)
@@ -134,20 +134,20 @@ describe('Bot (e2e)', () => {
   let botId: string;
 
   describe('GET /api/v1/bot/:id', () => {
-    it('401 — no token', () => {
+    it('401, no token', () => {
       return request(app.getHttpServer())
         .get('/api/v1/bot/nonexistent-id')
         .expect(401);
     });
 
-    it('404 — bot of another tenant', () => {
+    it('404, bot of another tenant', () => {
       return request(app.getHttpServer())
         .get('/api/v1/bot/00000000-0000-0000-0000-000000000000')
         .set('Authorization', `Bearer ${accessToken}`)
         .expect(404);
     });
 
-    it('200 — returns bot detail', async () => {
+    it('200, returns bot detail', async () => {
       if (!botId) return;
 
       const res = await request(app.getHttpServer())
@@ -165,7 +165,7 @@ describe('Bot (e2e)', () => {
   // ─── PATCH /api/v1/bot/:id ───────────────────────────────────────────────
 
   describe('PATCH /api/v1/bot/:id', () => {
-    it('200 — updates bot fields', async () => {
+    it('200, updates bot fields', async () => {
       if (!botId) return;
 
       const res = await request(app.getHttpServer())
@@ -181,13 +181,13 @@ describe('Bot (e2e)', () => {
   // ─── GET /api/v1/bot/:id/config (public) ─────────────────────────────────
 
   describe('GET /api/v1/bot/:id/config', () => {
-    it('404 — unknown bot id', () => {
+    it('404, unknown bot id', () => {
       return request(app.getHttpServer())
         .get('/api/v1/bot/00000000-0000-0000-0000-000000000000/config')
         .expect(404);
     });
 
-    it('200 — returns public config without auth', async () => {
+    it('200, returns public config without auth', async () => {
       if (!botId) return;
 
       const res = await request(app.getHttpServer())

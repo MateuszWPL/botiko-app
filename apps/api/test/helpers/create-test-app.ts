@@ -5,7 +5,7 @@ import { AppModule } from '../../src/app.module';
 import { GlobalExceptionFilter } from '../../src/common/filters/http-exception.filter';
 import { AI_SERVICE } from '../../src/modules/ai/ai.service.interface';
 
-/** Fake 1536-dim embedding — passes assertValidEmbedding, pgvector returns no results (similarity < 0.3). */
+/** Fake 1536-dim embedding, passes assertValidEmbedding, pgvector returns no results (similarity < 0.3). */
 const MOCK_EMBEDDING = Array<number>(1536).fill(0.01);
 
 export const mockAiService = {

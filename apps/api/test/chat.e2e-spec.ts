@@ -38,7 +38,7 @@ describe('Chat (e2e)', () => {
 
     botId = (botRes.body as BotCreatedResponse).id;
 
-    // Activate tenant — chat checks tenant.isActive (default: false)
+    // Activate tenant, chat checks tenant.isActive (default: false)
     const prisma = app.get(PrismaService);
     const user = await prisma.user.findFirst({
       where: { email: { contains: 'e2e-' } },
@@ -68,14 +68,14 @@ describe('Chat (e2e)', () => {
   describe('POST /api/v1/chat', () => {
     // DomainWhitelistGuard runs before ZodValidationPipe in NestJS middleware order.
     // Missing/invalid botId → guard throws 403 before validation can run.
-    it('403 — missing botId (guard runs first)', () => {
+    it('403, missing botId (guard runs first)', () => {
       return request(app.getHttpServer())
         .post('/api/v1/chat')
         .send({ sessionId: 'sess_001', message: 'Hej' })
         .expect(403);
     });
 
-    it('403 — unknown botId blocked by domain guard', () => {
+    it('403, unknown botId blocked by domain guard', () => {
       return request(app.getHttpServer())
         .post('/api/v1/chat')
         .send({
@@ -87,21 +87,21 @@ describe('Chat (e2e)', () => {
     });
 
     // Validation errors require a real bot (guard must pass first)
-    it('400 — missing sessionId (guard passes, validation fails)', () => {
+    it('400, missing sessionId (guard passes, validation fails)', () => {
       return request(app.getHttpServer())
         .post('/api/v1/chat')
         .send({ botId, message: 'Hej' })
         .expect(400);
     });
 
-    it('400 — empty message', () => {
+    it('400, empty message', () => {
       return request(app.getHttpServer())
         .post('/api/v1/chat')
         .send({ botId, sessionId: 'sess_001', message: '' })
         .expect(400);
     });
 
-    it('400 — sessionId with invalid characters', () => {
+    it('400, sessionId with invalid characters', () => {
       return request(app.getHttpServer())
         .post('/api/v1/chat')
         .send({
@@ -112,7 +112,7 @@ describe('Chat (e2e)', () => {
         .expect(400);
     });
 
-    it('200 — escalation keyword triggers lead form (no AI call)', async () => {
+    it('200, escalation keyword triggers lead form (no AI call)', async () => {
       const res = await request(app.getHttpServer())
         .post('/api/v1/chat')
         .send({
@@ -131,7 +131,7 @@ describe('Chat (e2e)', () => {
       expect(mockAiService.chat).not.toHaveBeenCalled();
     });
 
-    it('200 — no knowledge chunks returns fallback response', async () => {
+    it('200, no knowledge chunks returns fallback response', async () => {
       // AI mock returns a fake embedding; pgvector returns no matching chunks (empty bot)
       const res = await request(app.getHttpServer())
         .post('/api/v1/chat')
@@ -152,7 +152,7 @@ describe('Chat (e2e)', () => {
       expect(mockAiService.chat).not.toHaveBeenCalled();
     });
 
-    it('200 — with knowledge chunk uses AI and returns response', async () => {
+    it('200, with knowledge chunk uses AI and returns response', async () => {
       // Add a knowledge chunk so there is context for the AI to use
       await request(app.getHttpServer())
         .post(`/api/v1/knowledge/${botId}`)

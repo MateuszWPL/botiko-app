@@ -55,10 +55,10 @@ describe('Lead (e2e)', () => {
     await app.close();
   });
 
-  // ─── POST /api/v1/leads (public — widget) ────────────────────────────────
+  // ─── POST /api/v1/leads (public, widget) ────────────────────────────────
 
   describe('POST /api/v1/leads', () => {
-    it('400 — missing consent', () => {
+    it('400, missing consent', () => {
       return request(app.getHttpServer())
         .post('/api/v1/leads')
         .send({
@@ -69,7 +69,7 @@ describe('Lead (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — consent: false rejected', () => {
+    it('400, consent: false rejected', () => {
       return request(app.getHttpServer())
         .post('/api/v1/leads')
         .send({
@@ -81,7 +81,7 @@ describe('Lead (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — name too short', () => {
+    it('400, name too short', () => {
       return request(app.getHttpServer())
         .post('/api/v1/leads')
         .send({
@@ -93,7 +93,7 @@ describe('Lead (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — invalid phone format', () => {
+    it('400, invalid phone format', () => {
       return request(app.getHttpServer())
         .post('/api/v1/leads')
         .send({
@@ -105,7 +105,7 @@ describe('Lead (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — phone too short', () => {
+    it('400, phone too short', () => {
       return request(app.getHttpServer())
         .post('/api/v1/leads')
         .send({
@@ -117,7 +117,7 @@ describe('Lead (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — message exceeds 1000 chars', () => {
+    it('400, message exceeds 1000 chars', () => {
       return request(app.getHttpServer())
         .post('/api/v1/leads')
         .send({
@@ -130,7 +130,7 @@ describe('Lead (e2e)', () => {
         .expect(400);
     });
 
-    it('403 — unknown botId', () => {
+    it('403, unknown botId', () => {
       return request(app.getHttpServer())
         .post('/api/v1/leads')
         .send({
@@ -142,7 +142,7 @@ describe('Lead (e2e)', () => {
         .expect(403);
     });
 
-    it('201 — creates lead and returns id', async () => {
+    it('201, creates lead and returns id', async () => {
       const res = await request(app.getHttpServer())
         .post('/api/v1/leads')
         .send({
@@ -159,7 +159,7 @@ describe('Lead (e2e)', () => {
       leadId = body.id;
     });
 
-    it('201 — lead without optional message', () => {
+    it('201, lead without optional message', () => {
       return request(app.getHttpServer())
         .post('/api/v1/leads')
         .send({
@@ -180,11 +180,11 @@ describe('Lead (e2e)', () => {
   let leadId: string;
 
   describe('GET /api/v1/leads', () => {
-    it('401 — no token', () => {
+    it('401, no token', () => {
       return request(app.getHttpServer()).get('/api/v1/leads').expect(401);
     });
 
-    it('200 — returns leads with decrypted PII', async () => {
+    it('200, returns leads with decrypted PII', async () => {
       const res = await request(app.getHttpServer())
         .get('/api/v1/leads')
         .set('Authorization', `Bearer ${accessToken}`)
@@ -206,14 +206,14 @@ describe('Lead (e2e)', () => {
   // ─── PATCH /api/v1/leads/:id/status (protected) ──────────────────────────
 
   describe('PATCH /api/v1/leads/:id/status', () => {
-    it('401 — no token', () => {
+    it('401, no token', () => {
       return request(app.getHttpServer())
         .patch('/api/v1/leads/some-id/status')
         .send({ status: 'CONTACTED' })
         .expect(401);
     });
 
-    it('400 — invalid status value', async () => {
+    it('400, invalid status value', async () => {
       if (!leadId) return;
 
       return request(app.getHttpServer())
@@ -223,7 +223,7 @@ describe('Lead (e2e)', () => {
         .expect(400);
     });
 
-    it('200 — updates lead status', async () => {
+    it('200, updates lead status', async () => {
       if (!leadId) return;
 
       const res = await request(app.getHttpServer())

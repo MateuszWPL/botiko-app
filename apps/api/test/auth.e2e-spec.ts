@@ -18,12 +18,12 @@ describe('Auth (e2e)', () => {
   // ─── POST /api/v1/auth/register ──────────────────────────────────────────
 
   describe('POST /api/v1/auth/register', () => {
-    it('201 — valid payload creates account', async () => {
+    it('201, valid payload creates account', async () => {
       const { cleanup } = await setupTestUser(app);
       await cleanup();
     });
 
-    it('400 — invalid email', () => {
+    it('400, invalid email', () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/register')
         .send({
@@ -35,7 +35,7 @@ describe('Auth (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — password too short', () => {
+    it('400, password too short', () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/register')
         .send({
@@ -47,7 +47,7 @@ describe('Auth (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — password without uppercase letter', () => {
+    it('400, password without uppercase letter', () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/register')
         .send({
@@ -59,7 +59,7 @@ describe('Auth (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — password without digit', () => {
+    it('400, password without digit', () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/register')
         .send({
@@ -71,7 +71,7 @@ describe('Auth (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — invalid website URL', () => {
+    it('400, invalid website URL', () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/register')
         .send({
@@ -83,7 +83,7 @@ describe('Auth (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — website URL without TLD', () => {
+    it('400, website URL without TLD', () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/register')
         .send({
@@ -95,7 +95,7 @@ describe('Auth (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — invalid industry enum', () => {
+    it('400, invalid industry enum', () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/register')
         .send({
@@ -107,14 +107,14 @@ describe('Auth (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — missing required fields', () => {
+    it('400, missing required fields', () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/register')
         .send({})
         .expect(400);
     });
 
-    it('409 — duplicate email returns conflict', async () => {
+    it('409, duplicate email returns conflict', async () => {
       const { email, cleanup } = await setupTestUser(app);
 
       try {
@@ -136,21 +136,21 @@ describe('Auth (e2e)', () => {
   // ─── POST /api/v1/auth/login ─────────────────────────────────────────────
 
   describe('POST /api/v1/auth/login', () => {
-    it('400 — missing email and password', () => {
+    it('400, missing email and password', () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/login')
         .send({})
         .expect(400);
     });
 
-    it('400 — invalid email format', () => {
+    it('400, invalid email format', () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/login')
         .send({ email: 'bad-email', password: 'TestPass123!' })
         .expect(400);
     });
 
-    it('401 — wrong password returns unauthorized', async () => {
+    it('401, wrong password returns unauthorized', async () => {
       const { email, cleanup } = await setupTestUser(app);
 
       try {
@@ -163,7 +163,7 @@ describe('Auth (e2e)', () => {
       }
     });
 
-    it('200 — correct credentials return tokens', async () => {
+    it('200, correct credentials return tokens', async () => {
       const { accessToken, cleanup } = await setupTestUser(app);
 
       try {
@@ -179,13 +179,13 @@ describe('Auth (e2e)', () => {
   // ─── POST /api/v1/auth/logout ────────────────────────────────────────────
 
   describe('POST /api/v1/auth/logout', () => {
-    it('401 — no token returns unauthorized', () => {
+    it('401, no token returns unauthorized', () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/logout')
         .expect(401);
     });
 
-    it('204 — valid token logs out', async () => {
+    it('204, valid token logs out', async () => {
       const { accessToken, cleanup } = await setupTestUser(app);
 
       try {

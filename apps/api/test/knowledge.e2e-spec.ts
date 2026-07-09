@@ -50,13 +50,13 @@ describe('Knowledge (e2e)', () => {
   // ─── GET /api/v1/knowledge/:botId ────────────────────────────────────────
 
   describe('GET /api/v1/knowledge/:botId', () => {
-    it('401 — no token', () => {
+    it('401, no token', () => {
       return request(app.getHttpServer())
         .get(`/api/v1/knowledge/${botId}`)
         .expect(401);
     });
 
-    it('200 — returns empty array for new bot', () => {
+    it('200, returns empty array for new bot', () => {
       return request(app.getHttpServer())
         .get(`/api/v1/knowledge/${botId}`)
         .set('Authorization', `Bearer ${accessToken}`)
@@ -74,14 +74,14 @@ describe('Knowledge (e2e)', () => {
   let chunkId: string;
 
   describe('POST /api/v1/knowledge/:botId', () => {
-    it('401 — no token', () => {
+    it('401, no token', () => {
       return request(app.getHttpServer())
         .post(`/api/v1/knowledge/${botId}`)
         .send({ content: 'Treść wpisu do bazy wiedzy.' })
         .expect(401);
     });
 
-    it('400 — content too short (< 10 chars)', () => {
+    it('400, content too short (< 10 chars)', () => {
       return request(app.getHttpServer())
         .post(`/api/v1/knowledge/${botId}`)
         .set('Authorization', `Bearer ${accessToken}`)
@@ -89,7 +89,7 @@ describe('Knowledge (e2e)', () => {
         .expect(400);
     });
 
-    it('400 — content exceeds 4000 chars', () => {
+    it('400, content exceeds 4000 chars', () => {
       return request(app.getHttpServer())
         .post(`/api/v1/knowledge/${botId}`)
         .set('Authorization', `Bearer ${accessToken}`)
@@ -97,7 +97,7 @@ describe('Knowledge (e2e)', () => {
         .expect(400);
     });
 
-    it('404 — bot from another tenant', () => {
+    it('404, bot from another tenant', () => {
       return request(app.getHttpServer())
         .post('/api/v1/knowledge/00000000-0000-0000-0000-000000000000')
         .set('Authorization', `Bearer ${accessToken}`)
@@ -105,7 +105,7 @@ describe('Knowledge (e2e)', () => {
         .expect(404);
     });
 
-    it('201 — adds chunk and returns id', async () => {
+    it('201, adds chunk and returns id', async () => {
       const res = await request(app.getHttpServer())
         .post(`/api/v1/knowledge/${botId}`)
         .set('Authorization', `Bearer ${accessToken}`)
@@ -121,7 +121,7 @@ describe('Knowledge (e2e)', () => {
       chunkId = body.id;
     });
 
-    it('201 — adds chunk without category', () => {
+    it('201, adds chunk without category', () => {
       return request(app.getHttpServer())
         .post(`/api/v1/knowledge/${botId}`)
         .set('Authorization', `Bearer ${accessToken}`)
@@ -138,7 +138,7 @@ describe('Knowledge (e2e)', () => {
   // ─── GET after POST: verify chunks appear in listing ─────────────────────
 
   describe('GET /api/v1/knowledge/:botId (after adding chunks)', () => {
-    it('200 — lists added chunks with correct fields', async () => {
+    it('200, lists added chunks with correct fields', async () => {
       const res = await request(app.getHttpServer())
         .get(`/api/v1/knowledge/${botId}`)
         .set('Authorization', `Bearer ${accessToken}`)
@@ -162,13 +162,13 @@ describe('Knowledge (e2e)', () => {
   // ─── DELETE /api/v1/knowledge/:chunkId ───────────────────────────────────
 
   describe('DELETE /api/v1/knowledge/:chunkId', () => {
-    it('401 — no token', () => {
+    it('401, no token', () => {
       return request(app.getHttpServer())
         .delete(`/api/v1/knowledge/${chunkId}`)
         .expect(401);
     });
 
-    it('204 — deletes chunk', async () => {
+    it('204, deletes chunk', async () => {
       if (!chunkId) return;
 
       await request(app.getHttpServer())
@@ -177,7 +177,7 @@ describe('Knowledge (e2e)', () => {
         .expect(204);
     });
 
-    it('404 — deleted chunk no longer exists', async () => {
+    it('404, deleted chunk no longer exists', async () => {
       if (!chunkId) return;
 
       await request(app.getHttpServer())
