@@ -15,7 +15,7 @@
 ## 1. Fakty (na czym stoi ten plan)
 
 - **Widoczność organiczna ≈ 0:** GSC 8 kliknięć/28 dni (tylko brand), 0 backlinków,
-  Senuto TOP10: 0, [audyt SEO](seo/audyt-2026-06-30.md). SEO nie będzie kanałem
+  Senuto TOP10: 0, [SEO PLAYBOOK](seo/PLAYBOOK.md). SEO nie będzie kanałem
   sprzedaży przez najbliższe 6-12 mies. niezależnie od jakości treści.
 - **Churn SaaS dla mikrofirm: 3-7%/mies.**, 43% utrat w pierwszych 90 dniach
   (benchmarki B2B SaaS 2025/26). Przy 40 klientach tracisz ~2/mies. tylko żeby stać

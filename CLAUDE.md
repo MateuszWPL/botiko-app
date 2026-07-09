@@ -333,4 +333,4 @@ NIE mów "chatbot AI". Mów **"bot"**, "asystentka" kojarzy się tylko z branż�
 **W roadmapie (Faza 2+):**
 - Piloty: cold outreach, 3 darmowe piloty 30-dniowe, case studies
 - Wtyczka WordPress.org: po akceptacji review → deploy przez SVN (`.github/workflows/wp-deploy.yml`), dorobienie screenshotów, aktualizacja landingu/EmbedCode/SetupWizard na „zainstaluj z katalogu"
-- SEO off-page (główny bloker wzrostu): backlinki, Google Business Profile, wzmianki marki, patrz `docs/seo/PLAYBOOK.md` i `docs/seo/audyt-2026-06-30.md`
+- SEO off-page (główny bloker wzrostu): backlinki, Google Business Profile, wzmianki marki, patrz `docs/seo/PLAYBOOK.md`
